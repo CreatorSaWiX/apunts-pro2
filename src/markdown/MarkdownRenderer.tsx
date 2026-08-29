@@ -137,7 +137,7 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
                 <a
                     href={href}
                     download
-                    className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 text-[11px] font-bold tracking-wider uppercase rounded-xl border transition-all select-none bg-sky-500/10 text-sky-400 border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-500/40 hover:text-sky-300 shadow-md shadow-sky-950/20 group no-underline w-fit"
+                    className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 text-[11px] font-bold tracking-wider uppercase rounded-xl border transition select-none bg-sky-500/10 text-sky-400 border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-500/40 hover:text-sky-300 shadow-md shadow-sky-950/20 group no-underline w-fit"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform duration-200">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>

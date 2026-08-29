@@ -112,40 +112,42 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ value, onChange, columns })
                 </span>
             </button>
 
-            {isOpen && createPortal(
+            {createPortal(
                 <>
-                    <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setIsOpen(false); }} />
+                    {isOpen && <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setIsOpen(false); }} />}
                     <AnimatePresence>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            style={{ top: coords.top, left: coords.left, WebkitBackdropFilter: 'blur(24px)' }}
-                            className="fixed z-[9999] w-[180px] cursor-default flex flex-col gap-1 p-2 !rounded-[20px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {columns.map(c => {
-                                const isSelected = value === c.id;
-                                const theme = getColumnTheme(c);
-                                // Extract just the text color from theme to use in dropdown, and maybe bg
-                                const textColorMatch = theme.match(/text-\S+/);
-                                const textColor = textColorMatch ? textColorMatch[0] : 'text-white';
-                                const bgColorMatch = theme.match(/bg-\S+/);
-                                const bgColor = bgColorMatch ? bgColorMatch[0].replace('/10', '/20') : 'bg-white/10';
-                                
-                                return (
-                                    <button type="button"
-                                        key={c.id}
-                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onChange(c.id); setIsOpen(false); }}
-                                        className={`text-left px-3 py-2.5 rounded-[12px] text-[11px] font-bold tracking-wider transition-colors flex items-center justify-between ${isSelected ? `${bgColor} ${textColor}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                    >
-                                        <span className="uppercase">{c.title}</span>
-                                        {isSelected && <Check size={14} className={textColor} />}
-                                    </button>
-                                );
-                            })}
-                        </motion.div>
+                        {isOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                style={{ top: coords.top, left: coords.left, WebkitBackdropFilter: 'blur(24px)' }}
+                                className="fixed z-[9999] w-[180px] cursor-default flex flex-col gap-1 p-2 !rounded-[20px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {columns.map(c => {
+                                    const isSelected = value === c.id;
+                                    const theme = getColumnTheme(c);
+                                    // Extract just the text color from theme to use in dropdown, and maybe bg
+                                    const textColorMatch = theme.match(/text-\S+/);
+                                    const textColor = textColorMatch ? textColorMatch[0] : 'text-white';
+                                    const bgColorMatch = theme.match(/bg-\S+/);
+                                    const bgColor = bgColorMatch ? bgColorMatch[0].replace('/10', '/20') : 'bg-white/10';
+                                    
+                                    return (
+                                        <button type="button"
+                                            key={c.id}
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onChange(c.id); setIsOpen(false); }}
+                                            className={`text-left px-3 py-2.5 rounded-[12px] text-[11px] font-bold tracking-wider transition-colors flex items-center justify-between ${isSelected ? `${bgColor} ${textColor}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
+                                        >
+                                            <span className="uppercase">{c.title}</span>
+                                            {isSelected && <Check size={14} className={textColor} />}
+                                        </button>
+                                    );
+                                })}
+                            </motion.div>
+                        )}
                     </AnimatePresence>
                 </>,
                 document.body

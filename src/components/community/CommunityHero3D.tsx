@@ -59,7 +59,7 @@ const LiteHeroBanner = () => {
             }}
         >
             <div 
-                className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] animate-[spin_40s_linear_infinite] opacity-30 will-change-transform"
+                className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] animate-[spin_40s_linear_infinite] opacity-30"
                 style={{
                     backgroundImage: `radial-gradient(circle at 30% 40%, ${theme.accent}33 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(14, 165, 233, 0.2) 0%, transparent 50%)`
                 }}

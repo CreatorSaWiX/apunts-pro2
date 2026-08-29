@@ -152,106 +152,108 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange,
                 )}
             </button>
 
-            {isOpen && createPortal(
+            {createPortal(
                 <AnimatePresence>
-                    <motion.div
-                        ref={popoverRef}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
-                        style={{
-                            top: coords.top,
-                            left: coords.left,
-                            WebkitBackdropFilter: 'blur(24px)'
-                        }}
-                        className="fixed z-[9999] w-[280px] flex flex-col gap-4 p-5 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
-                        onClick={(e) => e.stopPropagation()}
-                        onDoubleClick={(e) => e.stopPropagation()}
-                        onPointerDown={(e) => e.stopPropagation()}
-                    >
-                        {/* Header: Month / Year */}
-                        <div className="flex items-center justify-between">
-                            <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
-                                <ChevronLeft size={16} />
-                            </button>
-                            <span className="text-[14px] font-bold text-white capitalize tracking-wide">
-                                {format(viewDate, 'MMMM yyyy', { locale })}
-                            </span>
-                            <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
-                                <ChevronRight size={16} />
-                            </button>
-                        </div>
-
-                        {/* Calendar Grid */}
-                        <div>
-                            <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-                                {['dl', 'dt', 'dc', 'dj', 'dv', 'ds', 'dg'].map(day => (
-                                    <div key={day} className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{day}</div>
-                                ))}
+                    {isOpen && (
+                        <motion.div
+                            ref={popoverRef}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
+                            style={{
+                                top: coords.top,
+                                left: coords.left,
+                                WebkitBackdropFilter: 'blur(24px)'
+                            }}
+                            className="fixed z-[9999] w-[280px] flex flex-col gap-4 p-5 !rounded-[24px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
+                            onClick={(e) => e.stopPropagation()}
+                            onDoubleClick={(e) => e.stopPropagation()}
+                            onPointerDown={(e) => e.stopPropagation()}
+                        >
+                            {/* Header: Month / Year */}
+                            <div className="flex items-center justify-between">
+                                <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+                                    <ChevronLeft size={16} />
+                                </button>
+                                <span className="text-[14px] font-bold text-white capitalize tracking-wide">
+                                    {format(viewDate, 'MMMM yyyy', { locale })}
+                                </span>
+                                <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+                                    <ChevronRight size={16} />
+                                </button>
                             </div>
-                            <div className="grid grid-cols-7 gap-1">
-                                {days.map(day => {
-                                    const isSelected = isSameDay(day, currentDate) && !!value;
-                                    const isCurrentMonth = isSameMonth(day, viewDate);
-                                    const isTodayDate = isToday(day);
 
-                                    return (
-                                        <button type="button"
-                                            key={day.toISOString()}
-                                            onClick={() => handleDayClick(day)}
-                                            className={`
-                                                h-8 w-8 rounded-full flex items-center justify-center text-[13px] font-semibold transition
-                                                ${!isCurrentMonth ? 'text-slate-600' : 'text-slate-300 hover:bg-white/10'}
-                                                ${isSelected ? 'bg-primary text-white shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]' : ''}
-                                                ${isTodayDate && !isSelected ? 'text-primary ring-1 ring-primary/50' : ''}
-                                            `}
-                                        >
-                                            {format(day, 'd')}
+                            {/* Calendar Grid */}
+                            <div>
+                                <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+                                    {['dl', 'dt', 'dc', 'dj', 'dv', 'ds', 'dg'].map(day => (
+                                        <div key={day} className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{day}</div>
+                                    ))}
+                                </div>
+                                <div className="grid grid-cols-7 gap-1">
+                                    {days.map(day => {
+                                        const isSelected = isSameDay(day, currentDate) && !!value;
+                                        const isCurrentMonth = isSameMonth(day, viewDate);
+                                        const isTodayDate = isToday(day);
+
+                                        return (
+                                            <button type="button"
+                                                key={day.toISOString()}
+                                                onClick={() => handleDayClick(day)}
+                                                className={`
+                                                    h-8 w-8 rounded-full flex items-center justify-center text-[13px] font-semibold transition
+                                                    ${!isCurrentMonth ? 'text-slate-600' : 'text-slate-300 hover:bg-white/10'}
+                                                    ${isSelected ? 'bg-primary text-white shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]' : ''}
+                                                    ${isTodayDate && !isSelected ? 'text-primary ring-1 ring-primary/50' : ''}
+                                                `}
+                                            >
+                                                {format(day, 'd')}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Elegant Time Selector */}
+                            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-slate-400">
+                                    <Clock size={16} />
+                                    <span className="text-[13px] font-medium tracking-wide">{t('planner.time', 'Hora')}</span>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    {/* Hours Control */}
+                                    <div className="flex flex-col items-center gap-1 group">
+                                        <button type="button" onClick={() => incrementTime('hours', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                            <ChevronUp size={14} strokeWidth={3} />
                                         </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Elegant Time Selector */}
-                        <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-slate-400">
-                                <Clock size={16} />
-                                <span className="text-[13px] font-medium tracking-wide">{t('planner.time', 'Hora')}</span>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                {/* Hours Control */}
-                                <div className="flex flex-col items-center gap-1 group">
-                                    <button type="button" onClick={() => incrementTime('hours', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
-                                        <ChevronUp size={14} strokeWidth={3} />
-                                    </button>
-                                    <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
-                                        {currentDate.getHours().toString().padStart(2, '0')}
+                                        <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
+                                            {currentDate.getHours().toString().padStart(2, '0')}
+                                        </div>
+                                        <button type="button" onClick={() => incrementTime('hours', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                            <ChevronDown size={14} strokeWidth={3} />
+                                        </button>
                                     </div>
-                                    <button type="button" onClick={() => incrementTime('hours', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
-                                        <ChevronDown size={14} strokeWidth={3} />
-                                    </button>
-                                </div>
 
-                                <span className="text-slate-500 font-bold mb-1">:</span>
+                                    <span className="text-slate-500 font-bold mb-1">:</span>
 
-                                {/* Minutes Control */}
-                                <div className="flex flex-col items-center gap-1 group">
-                                    <button type="button" onClick={() => incrementTime('minutes', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
-                                        <ChevronUp size={14} strokeWidth={3} />
-                                    </button>
-                                    <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
-                                        {currentDate.getMinutes().toString().padStart(2, '0')}
+                                    {/* Minutes Control */}
+                                    <div className="flex flex-col items-center gap-1 group">
+                                        <button type="button" onClick={() => incrementTime('minutes', 1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                            <ChevronUp size={14} strokeWidth={3} />
+                                        </button>
+                                        <div className="w-10 h-8 flex items-center justify-center bg-slate-800/80 rounded-lg border border-white/5 shadow-inner text-[15px] font-black text-white">
+                                            {currentDate.getMinutes().toString().padStart(2, '0')}
+                                        </div>
+                                        <button type="button" onClick={() => incrementTime('minutes', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
+                                            <ChevronDown size={14} strokeWidth={3} />
+                                        </button>
                                     </div>
-                                    <button type="button" onClick={() => incrementTime('minutes', -1)} className="text-slate-500 hover:text-primary transition-colors opacity-0 group-hover:opacity-100 p-0.5">
-                                        <ChevronDown size={14} strokeWidth={3} />
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    )}
                 </AnimatePresence>,
                 document.body
             )}

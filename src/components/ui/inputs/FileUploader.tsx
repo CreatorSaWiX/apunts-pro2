@@ -93,14 +93,8 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
         setUploading(true);
         setProgress(0);
         
-        const uploadedAttachments: Attachment[] = [];
-        
-        for (let i = 0; i < acceptedFiles.length; i++) {
-            const file = acceptedFiles[i];
-            
+        const uploadPromises = acceptedFiles.map(async (file, i) => {
             try {
-                setProgress(((i) / acceptedFiles.length) * 100);
-                
                 // 1. Generate preview
                 const { generatePreview } = await import('../../../lib/previewGenerator');
                 const previewUrl = await generatePreview(file);
@@ -123,21 +117,25 @@ const FileUploader = ({ onUploadComplete, maxFiles = 3, variant = 'default', acc
                     thumbnailPublicUrl = previewUrl;
                 }
                 
-                uploadedAttachments.push({
+                setProgress(((i + 1) / acceptedFiles.length) * 100);
+
+                return {
                     url: filePublicUrl, 
                     name: file.name,
                     type: file.type,
                     size: file.size,
                     thumbnailUrl: thumbnailPublicUrl
-                });
-                
-                setProgress(((i + 1) / acceptedFiles.length) * 100);
+                } as Attachment;
             } catch (err: unknown) {
                 console.error("Error pujant arxiu:", err);
                 const msg = (err as Error)?.message || 'Error desconegut';
                 alert(`Error amb ${file.name}: ${msg}`);
+                return null;
             }
-        }
+        });
+
+        const results = await Promise.all(uploadPromises);
+        const uploadedAttachments = results.filter((a): a is Attachment => a !== null);
         
         setUploading(false);
         onUploadComplete(uploadedAttachments);

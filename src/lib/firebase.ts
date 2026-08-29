@@ -12,7 +12,7 @@ const firebaseConfig = {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "000000000000",
     appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:000000000000:web:0000000000000000000000",
     // eslint-disable-next-line react-doctor/public-env-secret-name
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
+    databaseURL: import.meta.env.VITE_FIREBASE_DB_ENDPOINT
 };
 
 // Evitar múltiples inicialitzacions durant el Hot Module Replacement (HMR) de Vite

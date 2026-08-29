@@ -127,25 +127,24 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
 
             <MotionConfig reducedMotion={isMobile && isMenuOpen ? "always" : "never"}>
                 {/* Main Title with Staggered Letters - Hard Bypass on Mobile Menu */}
-                {isMobile && isMenuOpen ? (
-                    <div className="relative">
-                        <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
-                            <span className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
-                                APUNTS {theme.label}
-                            </span>
-                        </h1>
-                    </div>
-                ) : (
-                    <AnimatePresence mode="wait">
-                        {!isExiting && (
-                            <motion.div
-                                key={subject}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={letterContainerVariants}
-                                className="relative"
-                            >
+                <AnimatePresence mode="wait">
+                    {isMobile && isMenuOpen ? (
+                        <div key="mobile-title" className="relative">
+                            <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
+                                <span className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
+                                    APUNTS {theme.label}
+                                </span>
+                            </h1>
+                        </div>
+                    ) : !isExiting ? (
+                        <motion.div
+                            key={subject}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={letterContainerVariants}
+                            className="relative"
+                        >
                             <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
                                 <span className="inline-block mr-4">
                                     {"APUNTS".split("").map((char, i) => {
@@ -176,9 +175,8 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                                 </span>
                             </h1>
                         </motion.div>
-                        )}
-                    </AnimatePresence>
-                )}
+                    ) : null}
+                </AnimatePresence>
             </MotionConfig>
 
         </div >

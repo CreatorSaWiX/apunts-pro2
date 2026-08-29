@@ -40,13 +40,18 @@ const Modal = ({
     fullScreenOnMobile = false
 }: ModalProps) => {
 
+    const onCloseRef = React.useRef(onClose);
+    React.useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Escape') onCloseRef.current();
         };
         if (isOpen) window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    }, [isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -75,7 +80,6 @@ const Modal = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ layout: { type: "spring", stiffness: 400, damping: 35 }, type: "spring", stiffness: 400, damping: 30 }}
-                        style={{ willChange: 'transform, opacity' }}
                         className={`relative z-10 flex flex-col bg-[#0F172A]/30 backdrop-blur-xl border border-white/12 overflow-hidden shadow-2xl ${SIZE_MAP[size]} ${size === 'screen' ? 'rounded-none max-h-screen border-0' : `rounded-4xl max-h-[85vh] ${fullScreenOnMobile ? 'max-md:!rounded-none max-md:!max-w-none max-md:!w-screen max-md:!h-dvh max-md:!max-h-screen max-md:!border-0 [@media(max-height:600px)]:!rounded-none [@media(max-height:600px)]:!max-w-none [@media(max-height:600px)]:!w-screen [@media(max-height:600px)]:!h-dvh [@media(max-height:600px)]:!max-h-screen [@media(max-height:600px)]:!border-0' : ''}`} ${className}`}
                     >
                         <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent z-50 pointer-events-none" />

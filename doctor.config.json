@@ -1,0 +1,17 @@
+{
+  "ignore": {
+    "files": [
+      ".content-collections/**",
+      ".github/**",
+      ".vercel/**",
+      "dev-dist/**",
+      "dist/**",
+      "node_modules/**",
+      "portfolio/**",
+      "api/**",
+      "public/**",
+      "scripts/**",
+      "content-collections.ts"
+    ]
+  }
+}

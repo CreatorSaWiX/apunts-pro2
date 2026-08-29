@@ -67,7 +67,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     if (mentionedNodes.length > 0) {
         injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
         const now = Date.now();
-        for (const node of mentionedNodes) {
+        await Promise.all(mentionedNodes.map(async (node) => {
             try {
                 const cached = subjectCache.get(node.id);
                 if (cached && (now - cached.timestamp < CACHE_TTL_MS)) {
@@ -75,7 +75,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                     subjectCache.delete(node.id);
                     subjectCache.set(node.id, cached);
                     injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
-                    continue;
+                    return;
                 }
 
                 const baseUrl = process.env.VITE_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:5173");
@@ -104,7 +104,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             } catch (e) {
                 console.error(`Error llegint el context de ${node.id}:`, e);
             }
-        }
+        }));
     }
 
     const ai = new GoogleGenAI({ apiKey });

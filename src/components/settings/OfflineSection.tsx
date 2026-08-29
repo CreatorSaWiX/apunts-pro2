@@ -63,33 +63,35 @@ export const OfflineSection = () => {
         try {
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
-                const cachesData: CacheInfo[] = [];
-                for (const name of cacheNames) {
+                const cachesData: CacheInfo[] = await Promise.all(cacheNames.map(async (name) => {
                     const cache = await caches.open(name);
                     const requests = await cache.keys();
                     let totalSize = 0;
-                    const files: { url: string; size: number; isOpaque?: boolean }[] = [];
-                    for (const req of requests) {
+                    
+                    const filesPromises = requests.map(async (req) => {
                         const res = await cache.match(req);
-                        if (res) {
-                            let size = Number(res.headers.get('Content-Length')) || 0;
-                            const isOpaque = res.type === 'opaque';
-                            if (size === 0 && !isOpaque) {
-                                try {
-                                    const blob = await res.clone().blob();
-                                    size = blob.size;
-                                } catch (e) {
-                                    // ignore
-                                }
+                        if (!res) return null;
+                        
+                        let size = Number(res.headers.get('Content-Length')) || 0;
+                        const isOpaque = res.type === 'opaque';
+                        if (size === 0 && !isOpaque) {
+                            try {
+                                const blob = await res.clone().blob();
+                                size = blob.size;
+                            } catch (e) {
+                                // ignore
                             }
-                            totalSize += size;
-                            files.push({ url: req.url, size, isOpaque });
                         }
-                    }
-                    // Ordenem fitxers per mida descendent
+                        return { url: req.url, size, isOpaque };
+                    });
+                    
+                    const filesResults = await Promise.all(filesPromises);
+                    const files = filesResults.filter((f): f is { url: string; size: number; isOpaque?: boolean } => f !== null);
+                    
+                    totalSize = files.reduce((acc, f) => acc + f.size, 0);
                     files.sort((a, b) => b.size - a.size);
-                    cachesData.push({ name, size: totalSize, files });
-                }
+                    return { name, size: totalSize, files };
+                }));
                 setDetailedCaches(cachesData);
             }
             if ('indexedDB' in window && indexedDB.databases) {
@@ -118,7 +120,7 @@ export const OfflineSection = () => {
                 const downloadedStatus: Record<string, boolean> = {};
                 const sizes: Record<string, number> = {};
 
-                for (const req of keys) {
+                await Promise.all(keys.map(async (req) => {
                     const url = new URL(req.url).pathname;
                     const cat = activeKeys.find(k => url.startsWith(`/${k}/`));
                     if (cat) {
@@ -137,7 +139,7 @@ export const OfflineSection = () => {
                             sizes[cat] = (sizes[cat] || 0) + size;
                         }
                     }
-                }
+                }));
                 setIsDownloaded(downloadedStatus);
                 setCacheSizes(sizes);
             }
@@ -176,9 +178,7 @@ export const OfflineSection = () => {
         try {
             const urls = manifest[category] || [];
             const cache = await caches.open('offline-assets-custom');
-            for (const url of urls) {
-                await cache.delete(url);
-            }
+            await Promise.all(urls.map(url => cache.delete(url)));
 
             // Turn off auto sync
             setOfflineStorage(prev => ({ ...prev, [category]: false }));

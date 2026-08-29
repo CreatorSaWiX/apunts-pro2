@@ -119,9 +119,8 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                     </div>
 
                     {/* PDF Large Square Button - Right Aligned */}
-                    {(availablePdfs.ca || availablePdfs.es) && (
-                        <div className="relative shrink-0 self-center md:self-stretch flex items-center">
-                            <button
+                    <div className={`relative shrink-0 self-center md:self-stretch flex items-center ${(availablePdfs.ca || availablePdfs.es) ? '' : 'hidden'}`}>
+                        <button
                                 type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
                                 className="flex flex-col items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-xl shadow-red-950/20 group min-w-[100px] h-full max-h-[100px]"
@@ -183,7 +182,6 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
                                 )}
                             </AnimatePresence>
                         </div>
-                    )}
                 </div>
             </motion.div>
 

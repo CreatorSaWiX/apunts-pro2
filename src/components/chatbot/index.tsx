@@ -232,16 +232,21 @@ export const ChatBot: React.FC = () => {
     return () => { aborted = true; reader.abort(); };
   }, [t]);
 
+  const processFileRef = useRef(processFile);
+  useEffect(() => {
+    processFileRef.current = processFile;
+  }, [processFile]);
+
   useEffect(() => {
     if (!isOpen) return;
     const onOver = (e: DragEvent) => { e.preventDefault(); setIsDragging(true); };
     const onLeave = (e: DragEvent) => { e.preventDefault(); setIsDragging(false); };
-    const onDrop = (e: DragEvent) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer?.files?.length) processFile(e.dataTransfer.files[0]); };
+    const onDrop = (e: DragEvent) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer?.files?.length) processFileRef.current(e.dataTransfer.files[0]); };
     window.addEventListener('dragover', onOver);
     window.addEventListener('dragleave', onLeave);
     window.addEventListener('drop', onDrop);
     return () => { window.removeEventListener('dragover', onOver); window.removeEventListener('dragleave', onLeave); window.removeEventListener('drop', onDrop); };
-  }, [isOpen, processFile]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -518,7 +523,7 @@ export const ChatBot: React.FC = () => {
               <img 
                 src="data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQDQCdASrwAIcAPpFIoU0lpCMiIEgAsBIJaW7hAuE9nqvHMvZz5AKzeirh8/MXUVsn8uejLKAJOaFT0RDVQG2aHVUmu7TV/MW8j8bTN74Mxrlelr+L7wcXw5pDOQHcVRQLnomMfEmpbhaOIvvm+LKDGc8jcs9ZAAD+5RuPgy22KjEYaHVb/T4KpzaboZ837cgmaZuQ3AfJ/358UVn7Kor7PdSWeglnfN6PBnqZbM4phUlVCpp93nLmZD/W3pTt8oXiW3HHPu1UMHJM9cj/ahOwtz1QIbtlKAufGoEur39+8R85ZqgI/6VvmNXkb1zmSE1M2DWUQYWmdTAm5afHnOI3mPL7nWXOxmnQumrDC/WfEhJc8dfb82tQdGbrrxzlRWxMy3QqBSKY5TKH+OKRxeHz/vuIC97FEPVmQ2+C6CrkgsNcEKf5Cafa2gAAAA==" 
                 alt="" 
-                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none transform-gpu translate-z-0 will-change-transform" 
+                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none transform-gpu translate-z-0" 
               />
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>

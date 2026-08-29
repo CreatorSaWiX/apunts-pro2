@@ -140,9 +140,8 @@ const TopicPage: React.FC = () => {
                     className="mb-8 border-b border-white/5 pb-8 relative"
                 >
                     {/* PDF Download Button UI - Absolute Floating */}
-                    {(availablePdfs.ca || availablePdfs.es) && (
-                        <div className="absolute top-0 right-0 z-20">
-                            <button
+                    <div className={`absolute top-0 right-0 z-20 ${(availablePdfs.ca || availablePdfs.es) ? '' : 'hidden'}`}>
+                        <button
                                 type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
                                 className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-15"
@@ -200,7 +199,6 @@ const TopicPage: React.FC = () => {
                                 )}
                             </AnimatePresence>
                         </div>
-                    )}
 
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight mb-4 pr-20">
                         {topic.title}

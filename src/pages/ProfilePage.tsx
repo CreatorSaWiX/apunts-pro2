@@ -115,7 +115,7 @@ const ProfilePage = () => {
             {/* HERO SECTION */}
             <div className="relative w-full flex flex-col mb-4 md:mb-8 group/hero">
                 <div className="relative w-full h-[220px] md:h-[320px] lg:h-[380px]">
-                    <div ref={bannerRef} className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden" style={{ transformOrigin: 'top', willChange: 'transform' }}>
+                    <div ref={bannerRef} className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden" style={{ transformOrigin: 'top' }}>
                         {isBannerVideo ? (
                             <>
                                 <video 

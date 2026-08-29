@@ -126,14 +126,19 @@ interface SubjectWithTags extends SubjectDataItem {
         }
     }, [isOpen, currentSpec]);
 
+    const onCloseRef = useRef(onClose);
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
     // Keyboard shortcut to close
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Escape') onCloseRef.current();
         };
         if (isOpen) window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    }, [isOpen]);
 
     // Adjust categories to show 'comp' only if a spec is selected, and hide the spec itself to avoid redundancy
     const visibleCategories = CATEGORIES.filter(c => {

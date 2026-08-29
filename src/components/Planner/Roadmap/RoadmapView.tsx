@@ -293,7 +293,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="absolute bottom-6 right-6 z-40 hidden lg:flex flex-col items-end gap-3 pointer-events-none"
                 >
-                    <div className="bg-slate-900/95 border border-white/10 rounded-3xl p-3 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto" style={{ transform: 'translateZ(0)', willChange: 'transform' }}>
+                    <div className="bg-slate-900/95 border border-white/10 rounded-3xl p-3 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto" style={{ transform: 'translateZ(0)' }}>
 
                         {/* Nota Mitjana Widget */}
                         <div className="flex items-center gap-4 px-2 py-1">
@@ -671,43 +671,33 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
             />
 
             {/* Lazy-mount modals: only mount when open to avoid unnecessary context subscriptions and re-renders */}
-            {isSearchModalOpen && (
-                <SubjectSearchModal
-                    isOpen={isSearchModalOpen}
-                    onClose={() => setIsSearchModalOpen(false)}
-                />
-            )}
+            <SubjectSearchModal
+                isOpen={isSearchModalOpen}
+                onClose={() => setIsSearchModalOpen(false)}
+            />
 
-            {isDetailsOpen && (
-                <SubjectDetailsModal
-                    isOpen={isDetailsOpen}
-                    onClose={() => setIsDetailsOpen(false)}
-                    subjectId={selectedNodeId}
-                />
-            )}
+            <SubjectDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                subjectId={selectedNodeId}
+            />
 
-            {isExperienceModalOpen && (
-                <ExperienceSelectorModal
-                    isOpen={isExperienceModalOpen}
-                    onClose={() => setIsExperienceModalOpen(false)}
-                />
-            )}
+            <ExperienceSelectorModal
+                isOpen={isExperienceModalOpen}
+                onClose={() => setIsExperienceModalOpen(false)}
+            />
 
-            {isValidationsModalOpen && (
-                <ValidationsModal
-                    isOpen={isValidationsModalOpen}
-                    onClose={() => setIsValidationsModalOpen(false)}
-                />
-            )}
+            <ValidationsModal
+                isOpen={isValidationsModalOpen}
+                onClose={() => setIsValidationsModalOpen(false)}
+            />
 
-            {isOpenAI && (
-                <RoadmapAIPromptBar
-                    isOpen={isOpenAI}
-                    onClose={onCloseAI}
-                    nodes={nodes as any}
-                    addSubjectNode={() => {}}
-                />
-            )}
+            <RoadmapAIPromptBar
+                isOpen={isOpenAI}
+                onClose={onCloseAI}
+                nodes={nodes as any}
+                addSubjectNode={() => {}}
+            />
         </div>
     );
 };

@@ -112,7 +112,7 @@ export default function HeapVisualizer() {
                                     stroke={isConnectedToSelected ? '#10b981' : '#334155'}
                                     strokeWidth={isConnectedToSelected ? '2.5' : '1.5'}
                                     strokeDasharray={isConnectedToSelected ? 'none' : '4 3'}
-                                    className="transition-all duration-300"
+                                    className="transition duration-300"
                                 />
                                 {/* GREATER-OR-EQUAL BADGE ON EDGE */}
                                 <rect
@@ -124,7 +124,7 @@ export default function HeapVisualizer() {
                                     fill="#020617"
                                     stroke={isConnectedToSelected ? '#10b981' : '#334155'}
                                     strokeWidth="1"
-                                    className="transition-all duration-300"
+                                    className="transition duration-300"
                                 />
                                 <text
                                     x={midX}
@@ -161,7 +161,7 @@ export default function HeapVisualizer() {
                                     fill={style.svgFill}
                                     stroke={style.svgStroke}
                                     strokeWidth="2"
-                                    className="transition-all duration-200 group-hover:stroke-emerald-400"
+                                    className="transition duration-200 group-hover:stroke-emerald-400"
                                 />
 
                                 {/* Node Value */}
@@ -230,7 +230,7 @@ export default function HeapVisualizer() {
                             key={node.idx}
                             onClick={() => setSelectedIdx(node.idx)}
                             layout
-                            className={`cursor-pointer relative w-14 h-14 rounded-2xl border-2 flex flex-col items-center justify-center transition-all duration-200
+                            className={`cursor-pointer relative w-14 h-14 rounded-2xl border-2 flex flex-col items-center justify-center transition duration-200
                                 ${style.bg} ${style.border} ${style.glow}
                                 ${node.idx === selectedIdx ? 'scale-105 z-10' : 'hover:border-slate-700'}`}
                         >

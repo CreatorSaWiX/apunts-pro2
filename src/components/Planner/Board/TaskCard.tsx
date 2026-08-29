@@ -260,7 +260,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') handleSave();
+                                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSave();
                                     if (e.key === 'Escape') {
                                         setEditTitle(task.title);
                                         setEditPriority(task.priority);

@@ -94,7 +94,7 @@ const SubjectNode = ({ id, data, selected }: NodeProps<Node<SubjectNodeData>>) =
             {/* Glowing rotating border for in_progress / retaking — disabled on mobile via CSS */}
             {(data.status === 'in_progress' || data.status === 'retaking') && (
                 <div className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen">
-                    <div className={`roadmap-spin-border absolute inset-[-50%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} style={{ willChange: 'transform' }} />
+                    <div className={`roadmap-spin-border absolute inset-[-50%] animate-[spin_3s_linear_infinite] ${data.status === 'retaking' ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]' : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'}`} />
                     <div className="absolute inset-[2px] bg-slate-900 rounded-lg" />
                 </div>
             )}

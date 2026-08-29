@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { Keyboard, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+
+const isMac = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().includes('mac') : false;
 
 export const ShortcutsSection = () => {
     const { t } = useTranslation();
@@ -9,9 +11,8 @@ export const ShortcutsSection = () => {
     const [listeningAction, setListeningAction] = useState<string | null>(null);
     const [showOnMobile, setShowOnMobile] = useState<boolean>(false);
 
-    const formatKey = (meta: boolean, key: string) => {
+    const formatKey = useCallback((meta: boolean, key: string) => {
         if (!key) return '';
-        const isMac = navigator.userAgent.toLowerCase().includes('mac');
         const metaStr = meta ? (isMac ? '⌘ + ' : 'Ctrl + ') : '';
         let displayKey = key.toUpperCase();
         if (key === ' ') displayKey = 'SPACE';
@@ -22,7 +23,7 @@ export const ShortcutsSection = () => {
         if (key === 'Enter') displayKey = 'ENTER';
         if (key === 'Backspace' || key === 'backspace') displayKey = '⌫ BACKSPACE';
         return `${metaStr}${displayKey}`;
-    };
+    }, []);
 
     useEffect(() => {
         if (!listeningAction) return;
@@ -62,7 +63,7 @@ export const ShortcutsSection = () => {
     }, [listeningAction, setShortcuts]);
 
     // Available actions
-    const categories = [
+    const categories = useMemo(() => [
         {
             id: 'global',
             label: t('settings.shortcuts.categories.global', 'Global'),
@@ -145,7 +146,7 @@ export const ShortcutsSection = () => {
                 { id: 'canvasColorCycle', label: t('settings.shortcuts.actions.canvasColorCycle', 'Ciclar Color'), default: { key: 'c', meta: false } }
             ]
         }
-    ];
+    ], [t]);
 
     return (
         <div id="shortcuts" className="flex flex-col gap-6 w-full pt-6 pb-12">

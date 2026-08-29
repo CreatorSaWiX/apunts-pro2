@@ -103,8 +103,10 @@ const createTasksStore = () =>
         addTask: async (taskData) => {
             const { user } = get();
             if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { collection, addDoc } = await import('firebase/firestore');
+            const [{ db }, { collection, addDoc }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
             
             const newTask = {
                 ...taskData,
@@ -120,8 +122,10 @@ const createTasksStore = () =>
         addBatchTasks: async (tasksData) => {
             const { user } = get();
             if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { collection, writeBatch, doc } = await import('firebase/firestore');
+            const [{ db }, { collection, writeBatch, doc }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
             
             const batch = writeBatch(db);
             const tasksRef = collection(db, 'users', user.id, 'tasks');
@@ -146,8 +150,10 @@ const createTasksStore = () =>
             set({ tasks: newTasks, filteredTasks: computeFilteredTasks(newTasks, filters) });
             
             if (!user) throw new Error("No user logged in");
-            const { db } = await import('../lib/firebase');
-            const { doc, updateDoc } = await import('firebase/firestore');
+            const [{ db }, { doc, updateDoc }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
             const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
             await updateDoc(taskRef, updates);
         },
@@ -162,8 +168,10 @@ const createTasksStore = () =>
             
             set({ tasks: newTasks, deletedTasks: newDeleted, filteredTasks: computeFilteredTasks(newTasks, filters) });
             
-            const { db } = await import('../lib/firebase');
-            const { doc, deleteDoc } = await import('firebase/firestore');
+            const [{ db }, { doc, deleteDoc }] = await Promise.all([
+                import('../lib/firebase'),
+                import('firebase/firestore')
+            ]);
             await deleteDoc(doc(db, 'users', user.id, 'tasks', taskId));
         },
 
@@ -176,8 +184,10 @@ const createTasksStore = () =>
             set({ deletedTasks: newDeleted });
             
             try {
-                const { db } = await import('../lib/firebase');
-                const { doc, setDoc } = await import('firebase/firestore');
+                const [{ db }, { doc, setDoc }] = await Promise.all([
+                    import('../lib/firebase'),
+                    import('firebase/firestore')
+                ]);
                 await setDoc(doc(db, 'users', user.id, 'tasks', lastDeleted.id), {
                     userId: lastDeleted.userId,
                     title: lastDeleted.title,
@@ -238,8 +248,10 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const loadTasks = async () => {
             try {
                 store.getState().setIsLoading(true);
-                const { db } = await import('../lib/firebase');
-                const { collection, query, onSnapshot } = await import('firebase/firestore');
+                const [{ db }, { collection, query, onSnapshot }] = await Promise.all([
+                    import('../lib/firebase'),
+                    import('firebase/firestore')
+                ]);
                 
                 const q = query(collection(db, 'users', user.id, 'tasks'));
                 

@@ -101,29 +101,40 @@ const QuizPage: React.FC = () => {
         }
     }, [currentQuestionIdx]);
 
+    const handleSelectOptionRef = useRef(handleSelectOption);
+    const handleNextRef = useRef(handleNext);
+    const handlePrevRef = useRef(handlePrev);
+    
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (isFinished || !quiz || isRestoring) return;
-            const key = e.key.toLowerCase();
-            const currentQ = quiz.questions[currentQuestionIdx];
+        handleSelectOptionRef.current = handleSelectOption;
+        handleNextRef.current = handleNext;
+        handlePrevRef.current = handlePrev;
+    }, [handleSelectOption, handleNext, handlePrev]);
 
-            if (['a', 'b', 'c', 'd'].includes(key)) {
-                const idx = key.charCodeAt(0) - 97; // 0 for a, 1 for b...
-                if (currentQ.options[idx]) {
-                    handleSelectOption(currentQ.options[idx].id);
+    useEffect(() => {
+        if (isFinished || !quiz || isRestoring) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const currentQ = quiz.questions[currentQuestionIdx];
+            if (!currentQ) return;
+            
+            if (e.key >= '1' && e.key <= '4') {
+                const optIndex = parseInt(e.key) - 1;
+                if (optIndex < currentQ.options.length) {
+                    handleSelectOptionRef.current(currentQ.options[optIndex].id);
                 }
             } else if (e.key === 'Enter' && selectedAnswers[currentQ.id]) {
-                handleNext();
+                handleNextRef.current();
             } else if (e.key === 'ArrowRight' && selectedAnswers[currentQ.id]) {
-                handleNext();
+                handleNextRef.current();
             } else if (e.key === 'ArrowLeft') {
-                handlePrev();
+                handlePrevRef.current();
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, handleSelectOption, handleNext, handlePrev, isRestoring]);
+    }, [isFinished, quiz, currentQuestionIdx, selectedAnswers, isRestoring]);
 
     if (!quiz || isRestoring) {
         return (

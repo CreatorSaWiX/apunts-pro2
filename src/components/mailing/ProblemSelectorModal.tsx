@@ -102,7 +102,6 @@ const ProblemSelectorModal: React.FC<ProblemSelectorModalProps> = ({ isOpen, onC
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={t('mailing.problemSelector.searchPlaceholder', "Buscar per codi (P37500) o títol...")}
                             className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 transition font-medium"
-                            autoFocus
                         />
                     </div>
                 </div>

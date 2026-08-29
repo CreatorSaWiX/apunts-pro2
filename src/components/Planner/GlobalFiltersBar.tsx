@@ -49,10 +49,10 @@ const GlobalFiltersBar: React.FC = () => {
         setOpenFilter(openFilter === filter ? null : filter);
     };
 
-    if (usedSubjects.length === 0 && activeFilterCount === 0) return null;
+    const isVisible = usedSubjects.length > 0 || activeFilterCount > 0;
 
     return (
-        <>
+        <div style={{ display: isVisible ? 'contents' : 'none' }}>
             {/* Mobile Filter Button (Top Left) */}
             <div className="md:hidden touch-landscape:hidden fixed top-5 left-4 z-50">
                 <NavigationPill>
@@ -85,9 +85,8 @@ const GlobalFiltersBar: React.FC = () => {
                 <div className="w-px h-6 bg-white/[0.1] mx-1 shrink-0 max-md:hidden touch-landscape:hidden"></div>
 
                 {/* Subjects Dropdown */}
-                {usedSubjects.length > 0 && (
-                    <div className="relative shrink-0 max-md:hidden touch-landscape:hidden">
-                        <button type="button"
+                <div className={`relative shrink-0 max-md:hidden touch-landscape:hidden ${usedSubjects.length > 0 ? '' : 'hidden'}`}>
+                    <button type="button"
                             onClick={() => toggleFilter('SUBJECTS')}
                             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-[0.2em] uppercase transition duration-300 border ${filters.subjects.length > 0 ? 'bg-indigo-400/10 text-indigo-300 border-indigo-400/30' : 'bg-[#111115]/80 backdrop-blur-xl text-slate-400 border-white/5 hover:border-white/10 hover:text-slate-200'} ${openFilter === 'SUBJECTS' ? 'border-white/20 bg-white/5 text-white' : ''}`}
                         >
@@ -125,7 +124,6 @@ const GlobalFiltersBar: React.FC = () => {
                             )}
                         </AnimatePresence>
                     </div>
-                )}
 
                 {/* Priorities Dropdown */}
                 <div className="relative shrink-0 max-md:hidden touch-landscape:hidden">
@@ -330,7 +328,7 @@ const GlobalFiltersBar: React.FC = () => {
                     </div>
                 </BottomSheet>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -367,8 +367,8 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                 {!isFullscreen && (
                     <div className={`${showMobilePreview ? 'flex w-full h-full' : 'hidden md:flex md:w-2/5'} flex-col border-l border-white/5 relative overflow-hidden bg-black noise-bg shrink-0`}>
                         {/* Abstract Ambient Glows */}
-                        <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu will-change-transform" />
-                        <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />
+                        <div className="absolute top-[10%] right-[10%] w-75 h-75 bg-primary/20 rounded-full blur-[120px] pointer-events-none transform-gpu" />
+                        <div className="absolute bottom-[10%] left-[10%] w-62.5 h-62.5 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none transform-gpu" />
 
                         <div className="flex items-center justify-between px-6 md:px-8 py-6 relative z-10">
                             <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase">

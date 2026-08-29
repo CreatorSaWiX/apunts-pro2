@@ -208,7 +208,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                                 }
                             }}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
+                                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                                     setIsEditingHeader(false);
                                     if (headerTitle.trim() && headerTitle !== column.title) {
                                         onUpdateColumn?.({ title: headerTitle.trim() });
@@ -288,7 +288,7 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                                 value={draftTitle}
                                 onChange={(e) => setDraftTitle(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') submitDraft();
+                                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) submitDraft();
                                     if (e.key === 'Escape') {
                                         setDraftTitle('');
                                         setIsDrafting(false);

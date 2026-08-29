@@ -274,7 +274,7 @@ const BoardView: React.FC = () => {
                                 value={newColumnTitle}
                                 onChange={(e) => setNewColumnTitle(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') handleAddColumn();
+                                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleAddColumn();
                                     if (e.key === 'Escape') setIsAddingColumn(false);
                                 }}
                                 placeholder={t('planner.boardView.listName', 'Nom de la llista...')}

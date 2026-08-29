@@ -95,7 +95,6 @@ const GifPicker = ({ onSelect, onClose }: GifPickerProps) => {
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Cerca a GIPHY..."
                         className="w-full bg-slate-800 text-slate-200 text-xs px-3 py-2 pl-9 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 placeholder:text-slate-500 transition"
-                        autoFocus
                     />
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 </div>

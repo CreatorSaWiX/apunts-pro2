@@ -83,7 +83,7 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
                 className="flex-1 bg-transparent text-slate-200 text-sm focus:outline-none border-b border-slate-500"
                 value={editingTitle}
                 onChange={e => setEditingTitle(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') renameChat(chat.id, editingTitle); if (e.key === 'Escape') setEditingId(null); }}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) renameChat(chat.id, editingTitle); if (e.key === 'Escape') setEditingId(null); }}
                 onClick={e => e.stopPropagation()}
               />
             ) : (

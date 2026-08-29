@@ -209,7 +209,7 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
                                 <button
                                     onClick={handleEnablePush}
                                     disabled={isActivating}
-                                    className="w-full sm:w-auto px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)] hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] flex items-center justify-center gap-2"
+                                    className="w-full sm:w-auto px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-xl transition shadow-[0_0_15px_rgba(99,102,241,0.4)] hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] flex items-center justify-center gap-2"
                                 >
                                     {isActivating ? <Spinner size="sm" variant="white" /> : t('notifications.push.enable', 'Activar Ara')}
                                 </button>

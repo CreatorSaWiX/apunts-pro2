@@ -51,26 +51,38 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
     const [touchEndY, setTouchEndY] = useState<number | null>(null);
     /* eslint-enable react-doctor/rerender-state-only-in-handlers */
 
+    const onPrevRef = useRef(onPrev);
+    const onNextRef = useRef(onNext);
+    const onCloseRef = useRef(onClose);
+    
     useEffect(() => {
-        if (!isOpen) return;
-        
-        // Lock body scroll to prevent background scrolling on mobile
+        onPrevRef.current = onPrev;
+        onNextRef.current = onNext;
+        onCloseRef.current = onClose;
+    }, [onPrev, onNext, onClose]);
+
+    useEffect(() => {
         const originalOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        }
         
         const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isOpen) return;
             const target = e.target as HTMLElement;
             if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
                 return;
             }
-            if (e.key === 'ArrowLeft' && onPrev) {
+            if (e.key === 'Escape') {
+                onCloseRef.current();
+            } else if (e.key === 'ArrowLeft' && onPrevRef.current) {
                 e.preventDefault();
                 setDirection('prev');
-                onPrev();
-            } else if (e.key === 'ArrowRight' && onNext) {
+                onPrevRef.current();
+            } else if (e.key === 'ArrowRight' && onNextRef.current) {
                 e.preventDefault();
                 setDirection('next');
-                onNext();
+                onNextRef.current();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -78,7 +90,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
             window.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = originalOverflow;
         };
-    }, [isOpen, onPrev, onNext]);
+    }, [isOpen]);
 
     const contentVariants: Variants = {
         enter: (dir: 'next' | 'prev' | null) => ({
@@ -237,7 +249,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
         }
     };
 
-    if (!isOpen || !post) return null;
+    if (!post) return null;
 
     const postImages = post.attachments?.filter(a => a.type.startsWith('image/') && !a.isCustomThumbnail) || [];
     const postFiles = post.attachments?.filter(a => !a.type.startsWith('image/') && !a.isCustomThumbnail) || [];

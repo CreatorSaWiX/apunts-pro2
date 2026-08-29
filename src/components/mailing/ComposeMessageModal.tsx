@@ -150,7 +150,6 @@ const ComposeMessageModal: React.FC<ComposeMessageModalProps> = ({
         }
     };
 
-    if (!isOpen) return null;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="xl" fullScreenOnMobile={true}>

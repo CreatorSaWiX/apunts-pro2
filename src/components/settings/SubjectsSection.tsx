@@ -39,8 +39,13 @@ export const SubjectsSection = () => {
     }, []);
 
     const handleSearchShortcut = useCallback(() => {
-        inputRef.current?.focus();
-    }, []);
+        if (isCommandOpen) {
+            setIsCommandOpen(false);
+            inputRef.current?.blur();
+        } else {
+            inputRef.current?.focus();
+        }
+    }, [isCommandOpen]);
 
     useShortcut('searchSubjects', handleSearchShortcut);
 
@@ -239,7 +244,10 @@ export const SubjectsSection = () => {
                 </div>
 
                 <div className="flex items-center mt-2 relative z-10 w-full h-18 bg-[#0a0d16] rounded-xl border border-white/5 px-4 shadow-inner overflow-x-auto custom-scrollbar">
-                    {homeSubjects.length > 0 ? (
+                    <div className={`w-full h-full flex items-center justify-center ${homeSubjects.length > 0 ? 'hidden' : 'flex'}`}>
+                        <span className="text-slate-600 text-sm italic w-full text-center">{t('settings.subjects.addPreview', 'Afegeix assignatures per veure el navbar')}</span>
+                    </div>
+                    <div className={`${homeSubjects.length > 0 ? 'block' : 'hidden'}`}>
                         <NavigationPill>
                             <AnimatePresence mode="popLayout">
                                 {homeSubjects.map(subj => {
@@ -280,9 +288,7 @@ export const SubjectsSection = () => {
                                 })}
                             </AnimatePresence>
                         </NavigationPill>
-                    ) : (
-                        <span className="text-slate-600 text-sm italic w-full text-center">{t('settings.subjects.addPreview', 'Afegeix assignatures per veure el navbar')}</span>
-                    )}
+                    </div>
                 </div>
             </div>
 

@@ -5,8 +5,9 @@ import { Settings2, Sparkles, Bot, Database, Keyboard, ChevronLeft, ChevronRight
 import { useAuth } from '../contexts/AuthContext';
 import { useIsMobile } from '../hooks/useIsMobile';
 
-import { GeneralSection } from '../components/settings/GeneralSection';
+import { LanguageSection } from '../components/settings/LanguageSection';
 import { SubjectsSection } from '../components/settings/SubjectsSection';
+import { PushNotificationSection } from '../components/settings/PushNotificationSection';
 
 // Seccions secundàries carregades amb Lazy Load (Code Splitting)
 const PlannerSection = lazy(() => import('../components/settings/PlannerSection').then(m => ({ default: m.PlannerSection })));
@@ -48,10 +49,11 @@ const SettingsPage = () => {
         switch (activeTab) {
             case 'general': return (
                 <div className="flex flex-col">
-                    <GeneralSection />
+                    <LanguageSection />
                     <SubjectsSection />
                     {user && (
                         <>
+                            <PushNotificationSection />
                             <PlannerSection />
                             <PrivacySection />
                             <DeleteAccSection />
@@ -124,35 +126,33 @@ const SettingsPage = () => {
                     )}
 
                     {/* Main Content Area */}
-                    {(!isMobile || mobileView === 'content') && (
-                        <main className="flex-1 h-auto relative z-20 pb-28 md:pb-20 safe-area-bottom">
-                            <div className="w-full px-6 py-6 md:px-12 md:py-20 flex flex-col items-start justify-start min-h-full">
-                                {isMobile && (
-                                    <button
-                                        onClick={() => setMobileView('menu')}
-                                        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-                                    >
-                                        <ChevronLeft size={20} />
-                                        <span className="font-medium text-[15px]">{t('common.back', 'Tornar')}</span>
-                                    </button>
-                                )}
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={activeTab}
-                                        initial={{ opacity: 0, y: 10, filter: isMobile ? 'none' : 'blur(4px)' }}
-                                        animate={{ opacity: 1, y: 0, filter: isMobile ? 'none' : 'blur(0px)' }}
-                                        exit={{ opacity: 0, y: -10, filter: isMobile ? 'none' : 'blur(4px)' }}
-                                        transition={{ duration: 0.25, ease: "easeOut" }}
-                                        className="w-full"
-                                    >
-                                        <Suspense fallback={<div className="w-full flex items-center justify-center p-12 text-slate-500 animate-pulse font-medium">Carregant secció...</div>}>
-                                            {renderActiveSection()}
-                                        </Suspense>
-                                    </motion.div>
-                                </AnimatePresence>
-                            </div>
-                        </main>
-                    )}
+                    <main className={`flex-1 h-auto relative z-20 pb-28 md:pb-20 safe-area-bottom ${(!isMobile || mobileView === 'content') ? 'block' : 'hidden'}`}>
+                        <div className="w-full px-6 py-6 md:px-12 md:py-20 flex flex-col items-start justify-start min-h-full">
+                            {isMobile && (
+                                <button
+                                    onClick={() => setMobileView('menu')}
+                                    className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+                                >
+                                    <ChevronLeft size={20} />
+                                    <span className="font-medium text-[15px]">{t('common.back', 'Tornar')}</span>
+                                </button>
+                            )}
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeTab}
+                                    initial={{ opacity: 0, y: 10, filter: isMobile ? 'none' : 'blur(4px)' }}
+                                    animate={{ opacity: 1, y: 0, filter: isMobile ? 'none' : 'blur(0px)' }}
+                                    exit={{ opacity: 0, y: -10, filter: isMobile ? 'none' : 'blur(4px)' }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="w-full"
+                                >
+                                    <Suspense fallback={<div className="w-full flex items-center justify-center p-12 text-slate-500 animate-pulse font-medium">Carregant secció...</div>}>
+                                        {renderActiveSection()}
+                                    </Suspense>
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    </main>
                 </div>
             </div>
         </div>

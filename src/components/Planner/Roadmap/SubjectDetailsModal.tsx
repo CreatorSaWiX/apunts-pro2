@@ -106,14 +106,19 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({ isOpen, onClo
         };
     }, [isOpen, subjectId]);
 
+    const onCloseRef = useRef(onClose);
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
+
     // Keyboard shortcut to close
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Escape') onCloseRef.current();
         };
         if (isOpen) window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
+    }, [isOpen]);
 
     return createPortal(
         <AnimatePresence>

@@ -159,7 +159,7 @@ export default function BSTVisualizer() {
                                     stroke={strokeColor}
                                     strokeWidth={isHighlighted ? '2.5' : '1.5'}
                                     strokeDasharray={isHighlighted ? 'none' : '4 3'}
-                                    className="transition-all duration-300"
+                                    className="transition duration-300"
                                 />
 
                                 {/* COMPARISON BADGE */}
@@ -172,7 +172,7 @@ export default function BSTVisualizer() {
                                     fill="#020617"
                                     stroke={strokeColor}
                                     strokeWidth="1"
-                                    className="transition-all duration-300"
+                                    className="transition duration-300"
                                 />
                                 <text
                                     x={midX}
@@ -209,7 +209,7 @@ export default function BSTVisualizer() {
                                     fill={style.svgFill}
                                     stroke={style.svgStroke}
                                     strokeWidth="2"
-                                    className="transition-all duration-200 group-hover:stroke-emerald-400"
+                                    className="transition duration-200 group-hover:stroke-emerald-400"
                                 />
 
                                 {/* Node Value */}
@@ -244,7 +244,7 @@ export default function BSTVisualizer() {
                                 key={val}
                                 onClick={() => setSelectedId(val)}
                                 layout
-                                className={`cursor-pointer relative w-12 h-12 rounded-2xl border-2 flex flex-col items-center justify-center transition-all duration-200
+                                className={`cursor-pointer relative w-12 h-12 rounded-2xl border-2 flex flex-col items-center justify-center transition duration-200
                                     ${style.bg} ${style.border} ${style.glow}
                                     ${isSel ? 'scale-105 z-10' : 'hover:border-slate-700'}`}
                             >
