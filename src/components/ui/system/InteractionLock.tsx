@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Maximize2, X } from 'lucide-react';
 import Spinner from '../Spinner';
 import { InteractionProvider } from '../../../contexts/InteractionContext';
@@ -211,8 +211,14 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
         return <div className={className}>{children}</div>;
     }
 
+    const interactionContextValue = useMemo(() => ({
+        isFullScreen,
+        setIsFullScreen,
+        resizeKey
+    }), [isFullScreen, resizeKey]);
+
     return (
-        <InteractionProvider value={{ isFullScreen, setIsFullScreen, resizeKey }}>
+        <InteractionProvider value={interactionContextValue}>
             <div
                 ref={containerRef}
                 className={`relative group ${className}`}

@@ -95,7 +95,8 @@ export const useCommunityFeed = (
                 const rawPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CommunityPost[];
 
                 if (debouncedSearch.trim()) {
-                    rawPosts.sort((a, b) => postIdsToFetch.indexOf(a.id) - postIdsToFetch.indexOf(b.id));
+                    const idIndexMap = new Map(postIdsToFetch.map((id, index) => [id, index]));
+                    rawPosts.sort((a, b) => (idIndexMap.get(a.id) ?? Infinity) - (idIndexMap.get(b.id) ?? Infinity));
                 }
 
                 setPosts(rawPosts);

@@ -27,7 +27,7 @@ export const useMultiplayerCanvas = (
     const updateCursor = useCallback((x: number, y: number) => {
         if (!user) return;
         const now = Date.now();
-        if (now - lastUpdate.current > 33) { // ~30fps
+        if (now - lastUpdate.current > 50) { // ~20fps to reduce network load
             lastUpdate.current = now;
             set(ref(rtdb, `community_canvas/presence/${user.id}`), {
                 x,
@@ -57,14 +57,22 @@ export const useMultiplayerCanvas = (
 
         const strokesRef = ref(rtdb, 'community_canvas/strokes');
 
-        // onChildAdded fires for ALL existing children on registration + new ones,
-        // so no separate initial get() is needed.
+        // Batch incoming strokes to avoid render thrashing during initial load or bulk inserts
+        let pendingStrokes: Stroke[] = [];
+        let batchRafId: number | null = null;
+
         const unsubscribeAdded = onChildAdded(strokesRef, (snapshot) => {
             if (snapshot.exists() && snapshot.key) {
                 const newStroke = { ...snapshot.val(), id: snapshot.key } as Stroke;
                 if (!localStrokesRef.current.has(newStroke.id)) {
-                    setStrokes(prev => [...prev, newStroke]);
+                    pendingStrokes.push(newStroke);
                     localStrokesRef.current.add(newStroke.id);
+                    
+                    if (batchRafId) cancelAnimationFrame(batchRafId);
+                    batchRafId = requestAnimationFrame(() => {
+                        setStrokes(prev => [...prev, ...pendingStrokes]);
+                        pendingStrokes = [];
+                    });
                 }
             }
         });
@@ -116,7 +124,7 @@ export const useMultiplayerCanvas = (
     const broadcastLiveStroke = useCallback((stroke: Stroke) => {
         if (!user) return;
         const now = Date.now();
-        if (now - lastLiveStrokeUpdate.current > 33) { // ~30fps throttle
+        if (now - lastLiveStrokeUpdate.current > 50) { // ~20fps throttle
             lastLiveStrokeUpdate.current = now;
             const strokesRef = ref(rtdb, `community_canvas/strokes/${stroke.id}`);
             set(strokesRef, stroke).catch(console.error);

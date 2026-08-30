@@ -42,32 +42,43 @@ export interface TasksState {
 type TasksStore = ReturnType<typeof createTasksStore>;
 
 const computeFilteredTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
+    if (tasks.length === 0) return [];
+    
+    // Pre-calculate date boundaries outside the loop for O(1) date operations
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endOfToday = new Date(today);
+    endOfToday.setHours(23, 59, 59, 999);
+    const endOfTodayTime = endOfToday.getTime();
+    
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+    nextWeek.setHours(23, 59, 59, 999);
+    const nextWeekTime = nextWeek.getTime();
+    
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
+    
+    const endOfTerm = new Date(today);
+    endOfTerm.setMonth(today.getMonth() + 4);
+    const endOfTermTime = endOfTerm.getTime();
+
     return tasks.filter(task => {
         if (filters.subjects.length > 0 && (!task.subjectId || !filters.subjects.includes(task.subjectId))) return false;
         if (filters.priorities.length > 0 && !filters.priorities.includes(task.priority)) return false;
+        
         if (filters.dateRange !== 'ALL') {
             if (!task.dueDate) return false;
-            const due = new Date(task.dueDate);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const dueTime = due.getTime();
+            const dueTime = new Date(task.dueDate).getTime();
             
             if (filters.dateRange === 'TODAY') {
-                const endOfToday = new Date(today);
-                endOfToday.setHours(23, 59, 59, 999);
-                if (dueTime > endOfToday.getTime()) return false;
+                if (dueTime > endOfTodayTime) return false;
             } else if (filters.dateRange === 'THIS_WEEK') {
-                const nextWeek = new Date(today);
-                nextWeek.setDate(today.getDate() + 7);
-                nextWeek.setHours(23, 59, 59, 999);
-                if (dueTime > nextWeek.getTime()) return false;
+                if (dueTime > nextWeekTime) return false;
             } else if (filters.dateRange === 'THIS_MONTH') {
-                const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
-                if (dueTime > endOfMonth.getTime() || dueTime < new Date(today.getFullYear(), today.getMonth(), 1).getTime()) return false;
+                if (dueTime > endOfMonth || dueTime < startOfMonth) return false;
             } else if (filters.dateRange === 'THIS_TERM') {
-                const endOfTerm = new Date(today);
-                endOfTerm.setMonth(today.getMonth() + 4);
-                if (dueTime > endOfTerm.getTime()) return false;
+                if (dueTime > endOfTermTime) return false;
             }
         }
         return true;

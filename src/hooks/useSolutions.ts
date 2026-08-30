@@ -17,7 +17,8 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
 
                 // Overlap global static solutions if problemIds are explicitly defined
                 if (problemIdsToCheck && problemIdsToCheck.length > 0) {
-                    const globalStaticSolutions = allSolutions.flatMap(t => t.solutions).filter(s => problemIdsToCheck.includes(s.id));
+                    const checkSet = new Set(problemIdsToCheck);
+                    const globalStaticSolutions = allSolutions.flatMap(t => t.solutions).filter(s => checkSet.has(s.id));
                     staticSolutions = [...staticSolutions, ...globalStaticSolutions];
                 }
 

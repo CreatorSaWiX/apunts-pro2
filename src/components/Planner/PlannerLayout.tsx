@@ -157,7 +157,8 @@ const PlannerLayout: React.FC = () => {
     }, [activeTab]);
 
     const usedSubjects = useMemo(() => {
-        return subjects.filter(subject => tasks.some(t => t.subjectId === subject.id));
+        const usedIds = new Set(tasks.map(t => t.subjectId));
+        return subjects.filter(subject => usedIds.has(subject.id));
     }, [subjects, tasks]);
 
     const activeFilterCount = filters.subjects.length + filters.priorities.length + (filters.dateRange !== 'ALL' ? 1 : 0);
