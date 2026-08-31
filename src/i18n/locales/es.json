@@ -45,6 +45,10 @@
     "labs": "Laboratorios",
     "madeWithLove": "Hecho con ❤️ para la FIB"
   },
+  "sw": {
+    "offlineReadyTitle": "App lista para funcionar sin conexión",
+    "offlineReadyDesc": "Los apuntes básicos se han descargado correctamente."
+  },
   "settings": {
     "contributor": "Colaborador",
     "title": "Ajustes",
@@ -79,6 +83,8 @@
     "offline": {
       "title": "Almacenamiento Offline",
       "subtitle": "Gestiona qué datos se guardan en el dispositivo para acceder sin internet.",
+      "coreReady": "App Shell Listo para Offline",
+      "coreNotReady": "App Shell No Preparado",
       "local": "Almacenamiento Local",
       "localSub": "Total ocupado por la aplicación en tu dispositivo.",
       "appShell": "App Shell (JS/CSS/HTML)",

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Download, Check, Trash2, FileText, ChevronDown, ChevronUp, Database, Info } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useSettingsStore } from '../../stores/useSettingsStore';
@@ -7,6 +7,12 @@ import { useTranslation } from 'react-i18next';
 import { tailwindColors } from '../../stores/useSubjectStore';
 
 const CORE_APP_SIZE = 3 * 1024 * 1024; // 3 MB
+
+interface CacheInfo {
+    name: string;
+    size: number;
+    files: { url: string; size: number; isOpaque: boolean }[];
+}
 
 export const OfflineSection = () => {
     const { t } = useTranslation();
@@ -23,16 +29,22 @@ export const OfflineSection = () => {
     const [cacheSizes, setCacheSizes] = useState<Record<string, number>>({});
     const [manifest, setManifest] = useState<Record<string, string[]>>({});
     const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
-    interface CacheInfo {
-        name: string;
-        size: number;
-        files: { url: string; size: number, isOpaque?: boolean }[];
-    }
     const [detailedCaches, setDetailedCaches] = useState<CacheInfo[]>([]);
     const [indexedDBs, setIndexedDBs] = useState<string[]>([]);
     const [expandedCache, setExpandedCache] = useState<string | null>(null);
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [isSWReady, setIsSWReady] = useState(false);
+
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                if (registration.active) {
+                    setIsSWReady(true);
+                }
+            });
+        }
+    }, []);
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -45,7 +57,7 @@ export const OfflineSection = () => {
         };
     }, []);
 
-    const updateQuota = () => {
+    const updateQuota = useCallback(() => {
         if (navigator.storage && navigator.storage.estimate) {
             navigator.storage.estimate().then((estimate: StorageEstimate & { usageDetails?: Record<string, number> }) => {
                 setStorageDetails({
@@ -57,9 +69,9 @@ export const OfflineSection = () => {
                 });
             });
         }
-    };
+    }, []);
 
-    const loadDetailedStorageInfo = async () => {
+    const loadDetailedStorageInfo = useCallback(async () => {
         try {
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
@@ -86,7 +98,7 @@ export const OfflineSection = () => {
                     });
                     
                     const filesResults = await Promise.all(filesPromises);
-                    const files = filesResults.filter((f): f is { url: string; size: number; isOpaque?: boolean } => f !== null);
+                    const files = filesResults.filter((f): f is { url: string; size: number; isOpaque: boolean } => f !== null);
                     
                     totalSize = files.reduce((acc, f) => acc + f.size, 0);
                     files.sort((a, b) => b.size - a.size);
@@ -101,9 +113,9 @@ export const OfflineSection = () => {
         } catch (e) {
             console.error("Error loading detailed storage", e);
         }
-    };
+    }, []);
 
-    const loadManifestAndCache = async () => {
+    const loadManifestAndCache = useCallback(async () => {
         try {
             const res = await fetch('/offline-manifest.json');
             if (!res.ok) throw new Error("Could not fetch manifest");
@@ -148,11 +160,11 @@ export const OfflineSection = () => {
         }
         updateQuota();
         loadDetailedStorageInfo();
-    };
+    }, [updateQuota, loadDetailedStorageInfo]);
 
     useEffect(() => {
         loadManifestAndCache();
-    }, []);
+    }, [loadManifestAndCache]);
 
     const handleDownload = async (category: string) => {
         if (!navigator.onLine) {
@@ -233,14 +245,14 @@ export const OfflineSection = () => {
         }
     };
 
-    const formatBytes = (bytes: number) => {
+    const formatBytes = useCallback((bytes: number) => {
         if (bytes === 0) return '0 B';
         if (!bytes) return t('settings.offline.unknown', 'Desconegut');
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-    };
+    }, [t]);
 
     const currentUsage = storageDetails?.usage || 0;
     const hasDetails = storageDetails?.caches !== undefined;
@@ -262,54 +274,63 @@ export const OfflineSection = () => {
     const corePercentage = (appShellSize / displayTotal) * 100;
     const otherPercentage = (indexedDbSize / displayTotal) * 100;
 
-    const availableCategories = Object.keys(manifest)
-        .filter(k => manifest[k] && manifest[k].length > 0)
-        .map(key => {
-            if (key === 'pdfs') {
-                return {
-                    id: 'pdfs',
-                    title: t('settings.offline.pdfsTitle', 'Apunts en PDF'),
-                    desc: t('settings.offline.pdfsDesc', 'Tota la col·lecció de PDFs del grau.'),
-                    color: 'bg-rose-500',
-                    colorText: 'text-rose-500',
-                    hexColor: '#f43f5e',
-                    filesCount: manifest[key].length
-                };
-            } else {
-                const subject = subjectsData.find(s => s.name.toLowerCase() === key.toLowerCase());
-                const defaultToken = subject?.colorToken?.split('-')[0] || 'sky';
-                const finalColor = customSubjectColors?.[subject?.name || ''] || defaultToken;
+    const availableCategories = useMemo(() => {
+        return Object.keys(manifest)
+            .filter(k => manifest[k] && manifest[k].length > 0)
+            .map(key => {
+                if (key === 'pdfs') {
+                    return {
+                        id: 'pdfs',
+                        title: t('settings.offline.pdfsTitle', 'Apunts en PDF'),
+                        desc: t('settings.offline.pdfsDesc', 'Tota la col·lecció de PDFs del grau.'),
+                        hexColor: '#f43f5e',
+                        filesCount: manifest[key].length
+                    };
+                } else {
+                    const subject = subjectsData.find(s => s.name.toLowerCase() === key.toLowerCase());
+                    const defaultToken = subject?.colorToken?.split('-')[0] || 'sky';
+                    const finalColor = customSubjectColors?.[subject?.name || ''] || defaultToken;
 
-                return {
-                    id: key,
-                    title: `${t('settings.offline.resourcesTitle', 'Recursos')} ${subject?.name || key.toUpperCase()}`,
-                    desc: subject?.description || `${t('settings.offline.resourcesDesc', 'Material i recursos per a')} ${key.toUpperCase()}.`,
-                    color: `bg-${finalColor}-500`,
-                    colorText: `text-${finalColor}-500`,
-                    hexColor: tailwindColors[finalColor]?.primary || '#0ea5e9',
-                    filesCount: manifest[key].length
-                };
-            }
-        });
+                    return {
+                        id: key,
+                        title: `${t('settings.offline.resourcesTitle', 'Recursos')} ${subject?.name || key.toUpperCase()}`,
+                        desc: subject?.description || `${t('settings.offline.resourcesDesc', 'Material i recursos per a')} ${key.toUpperCase()}.`,
+                        hexColor: tailwindColors[finalColor]?.primary || '#0ea5e9',
+                        filesCount: manifest[key].length
+                    };
+                }
+            });
+    }, [manifest, customSubjectColors, t]);
 
     return (
         <div id="offline-storage" className="flex flex-col items-start gap-8 w-full pt-4 pb-12">
             <div className="w-full border-b border-white/10 pb-6">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
                     <h2 className="text-2xl font-bold text-white">{t('settings.offline.title', 'Emmagatzematge Offline')}</h2>
+                    {isSWReady ? (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold shadow-sm shadow-emerald-500/5">
+                            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                            {t('settings.offline.coreReady', 'App Shell Llest per Offline')}
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold shadow-sm shadow-amber-500/5">
+                            <div className="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+                            {t('settings.offline.coreNotReady', 'App Shell No Preparat')}
+                        </div>
+                    )}
                 </div>
                 <p className="text-slate-400 text-sm font-medium">{t('settings.offline.subtitle', 'Gestiona quines dades es guarden al dispositiu per accedir-hi sense internet.')}</p>
             </div>
 
             <div className="w-full">
                 <div className="bg-white/2 border border-white/5 rounded-3xl p-8 flex flex-col gap-8 mb-8 relative overflow-hidden">
-                    <div className="flex justify-between items-end">
-                        <div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-4">
+                        <div className="flex-1">
                             <h3 className="text-white font-bold text-xl mb-1">{t('settings.offline.local', 'Emmagatzematge Local')}</h3>
                             <p className="text-sm text-slate-400">{t('settings.offline.localSub', "Total ocupat per l'aplicació al teu dispositiu.")}</p>
                         </div>
-                        <div className="text-right">
-                            <span className="text-3xl font-black text-white">{formatBytes(currentUsage)}</span>
+                        <div className="text-left sm:text-right shrink-0">
+                            <span className="text-3xl font-black text-white whitespace-nowrap">{formatBytes(currentUsage)}</span>
                         </div>
                     </div>
 
@@ -361,13 +382,13 @@ export const OfflineSection = () => {
 
                         return (
                             <div key={cat.id} className="flex flex-col p-5 rounded-2xl bg-white/2 border border-white/5 relative overflow-hidden group transition-colors">
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                                     <div
-                                        className="flex items-center gap-5 flex-1 min-w-0 cursor-pointer group-hover:opacity-80 transition-opacity"
+                                        className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0 cursor-pointer group-hover:opacity-80 transition-opacity w-full"
                                         onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
                                     >
                                         <div
-                                            className="w-12 h-12 rounded-xl flex flex-col items-center justify-center shrink-0 border transition duration-300"
+                                            className="w-12 h-12 sm:w-12 sm:h-12 rounded-xl flex flex-col items-center justify-center shrink-0 border transition duration-300"
                                             style={{
                                                 backgroundColor: downloaded ? `${cat.hexColor}20` : 'rgba(255,255,255,0.05)',
                                                 borderColor: downloaded ? `${cat.hexColor}40` : 'rgba(255,255,255,0.05)'
@@ -380,26 +401,28 @@ export const OfflineSection = () => {
                                                 {cat.id}
                                             </span>
                                         </div>
-                                        <div className="flex flex-col flex-1 min-w-0">
-                                            <div className="flex items-center gap-3">
-                                                <h3 className="text-base font-bold text-white truncate">{cat.title}</h3>
+                                        <div className="flex flex-col flex-1 min-w-0 pr-2 sm:pr-0">
+                                            <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                                                <h3 className="text-base font-bold text-white truncate max-w-full">{cat.title}</h3>
                                                 {downloaded && (
                                                     <span
-                                                        className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full shrink-0"
+                                                        className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full shrink-0 mt-1 sm:mt-0"
                                                         style={{ backgroundColor: `${cat.hexColor}15`, color: cat.hexColor }}
                                                     >
                                                         {formatBytes(cacheSizes[cat.id])}
                                                     </span>
                                                 )}
-                                                {expandedCategory === cat.id ? <ChevronUp size={16} className="text-slate-500 shrink-0" /> : <ChevronDown size={16} className="text-slate-500 shrink-0" />}
+                                                <div className="ml-auto sm:ml-0 shrink-0">
+                                                    {expandedCategory === cat.id ? <ChevronUp size={16} className="text-slate-500" /> : <ChevronDown size={16} className="text-slate-500" />}
+                                                </div>
                                             </div>
-                                            <p className="text-slate-400 text-sm truncate">{cat.filesCount} {t('settings.offline.filesAvailable', 'arxius disponibles')}</p>
+                                            <p className="text-slate-400 text-sm truncate mt-0.5">{cat.filesCount} {t('settings.offline.filesAvailable', 'arxius disponibles')}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-6 shrink-0 pl-4">
+                                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 sm:pl-4 w-full sm:w-auto border-t border-white/5 sm:border-0 pt-4 sm:pt-0">
                                         {/* Action Buttons */}
-                                        <div className="flex items-center gap-2 w-32 justify-end">
+                                        <div className="flex items-center gap-2 w-auto sm:w-32 justify-start sm:justify-end">
                                             {downloaded ? (
                                                 <button type="button"
                                                     disabled={processing}
@@ -421,11 +444,12 @@ export const OfflineSection = () => {
                                             )}
                                         </div>
 
-                                        <div className="w-px h-8 bg-white/10" />
+                                        <div className="hidden sm:block w-px h-8 bg-white/10" />
 
                                         {/* Auto-Sync Toggle */}
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs font-bold text-slate-400 hidden sm:block">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
+                                            <span className="text-xs font-bold text-slate-400 block sm:hidden">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
+                                            <span className="text-xs font-bold text-slate-400 hidden xl:block">{t('settings.offline.autoSync', 'Actualització automàtica')}</span>
                                             <button type="button"
                                                 onClick={() => handleToggleSync(cat.id, !isSyncEnabled)}
                                                 className={`relative w-11 h-6 rounded-full transition-colors duration-300 outline-none shrink-0 ${isSyncEnabled ? 'bg-emerald-500' : 'bg-slate-700'}`}

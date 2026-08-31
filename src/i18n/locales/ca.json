@@ -45,6 +45,10 @@
     "labs": "Laboratoris",
     "madeWithLove": "Fet amb ❤️ per a la FIB"
   },
+  "sw": {
+    "offlineReadyTitle": "App llesta per funcionar sense connexió",
+    "offlineReadyDesc": "Els apunts bàsics s'han descarregat correctament."
+  },
   "settings": {
     "contributor": "Col·laborador",
     "title": "Ajustaments",
@@ -79,6 +83,8 @@
     "offline": {
       "title": "Emmagatzematge Offline",
       "subtitle": "Gestiona quines dades es guarden al dispositiu per accedir-hi sense internet.",
+      "coreReady": "App Shell Llest per Offline",
+      "coreNotReady": "App Shell No Preparat",
       "local": "Emmagatzematge Local",
       "localSub": "Total ocupat per l'aplicació al teu dispositiu.",
       "appShell": "App Shell (JS/CSS/HTML)",

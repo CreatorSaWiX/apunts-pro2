@@ -45,6 +45,10 @@
     "labs": "Laboratories",
     "madeWithLove": "Made with ❤️ for FIB"
   },
+  "sw": {
+    "offlineReadyTitle": "App ready to work offline",
+    "offlineReadyDesc": "The basic notes have been successfully downloaded."
+  },
   "settings": {
     "contributor": "Contributor",
     "title": "Settings",
@@ -79,6 +83,8 @@
     "offline": {
       "title": "Offline Storage",
       "subtitle": "Manage what data is saved on the device for offline access.",
+      "coreReady": "App Shell Ready for Offline",
+      "coreNotReady": "App Shell Not Ready",
       "local": "Local Storage",
       "localSub": "Total space used by the app on your device.",
       "appShell": "App Shell (JS/CSS/HTML)",

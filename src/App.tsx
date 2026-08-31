@@ -9,6 +9,7 @@ import { AppProviders } from './contexts/AppProviders';
 import Spinner from './components/ui/Spinner';
 import { Analytics } from "@vercel/analytics/react";
 import ProtectedRoute from './components/ProtectedRoute';
+import { SWOfflineIndicator } from './components/ui/system/SWOfflineIndicator';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -73,6 +74,7 @@ function App() {
 
             {import.meta.env.PROD && <Analytics />}
             {showChatBot && <Suspense fallback={null}><ChatBot /></Suspense>}
+            <SWOfflineIndicator />
           </div>
         </LazyMotion>
       </MotionConfig>

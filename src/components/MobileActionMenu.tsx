@@ -1,7 +1,9 @@
 import React, { useState, useTransition } from 'react';
 import { m as motion } from 'framer-motion';
 import { Settings, Github, Heart } from 'lucide-react';
-import { useSubjectStore } from '../stores/useSubjectStore';
+import { useSubjectStore, tailwindColors } from '../stores/useSubjectStore';
+import { useSettingsStore } from '../stores/useSettingsStore';
+import subjectsData from '../data/subjects.json';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from 'react-router-dom';
@@ -21,10 +23,25 @@ const MobileActionMenu: React.FC<{
     setIsOpen: (val: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
     const { subject, setSubject } = useSubjectStore();
+    const { homeSubjects, customSubjectColors } = useSettingsStore();
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     const [, startTransition] = useTransition();
     const safeSubject = (subject || '').toLowerCase();
+
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+    
+    React.useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
+
+    const availableSubjectNames = React.useMemo(() => {
+        return new Set(
+            allPersonalNotes
+                .filter(note => note.lang === preferredLang && !note.draft)
+                .map(note => note.subject.toLowerCase())
+        );
+    }, [allPersonalNotes, preferredLang]);
 
     // Contributors state
     const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -92,28 +109,43 @@ const MobileActionMenu: React.FC<{
                                 {t('settings.subject', 'Assignatura')}
                             </label>
                             <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
-                                {(['pro2', 'm1', 'm2'] as const).map((sub) => (
-                                    <button type="button"
-                                        key={sub}
-                                        onClick={() => startTransition(() => setSubject(sub))}
-                                        className={`relative py-2 px-1 rounded-xl text-xs font-bold transition duration-300 z-10 ${safeSubject === sub
-                                            ? 'text-white'
-                                            : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                                {homeSubjects.map((sub) => {
+                                    const isAvailable = availableSubjectNames.has(sub.toLowerCase());
+                                    const subjectInfo = subjectsData.find(s => s.name.toLowerCase() === sub.toLowerCase());
+                                    const defaultToken = subjectInfo?.colorToken?.split('-')[0] || 'sky';
+                                    const colorFamily = customSubjectColors[sub] || defaultToken;
+                                    const hexColor = tailwindColors[colorFamily]?.primary || '#0ea5e9';
+                                    
+                                    return (
+                                        <button type="button"
+                                            key={sub}
+                                            disabled={!isAvailable}
+                                            onClick={() => {
+                                                if (isAvailable) startTransition(() => setSubject(sub));
+                                            }}
+                                            className={`relative py-2 px-1 rounded-xl text-xs font-bold transition duration-300 z-10 flex items-center justify-center gap-1 ${
+                                                safeSubject === sub.toLowerCase()
+                                                    ? 'text-white'
+                                                    : !isAvailable 
+                                                        ? 'text-slate-500 opacity-50 cursor-not-allowed'
+                                                        : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                             }`}
-                                    >
-                                        {safeSubject === sub && (
-                                            <motion.div
-                                                layoutId="active-subject-menu"
-                                                className={`absolute inset-0 rounded-xl z-[-1] bg-linear-to-r ${sub === 'pro2' ? 'from-sky-400 to-blue-500 shadow-[0_0_15px_rgba(56,189,248,0.4)]' :
-                                                    sub === 'm1' ? 'from-violet-500 to-fuchsia-500 shadow-[0_0_15px_rgba(139,92,246,0.4)]' :
-                                                        'from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(52,211,153,0.4)]'
-                                                    }`}
-                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                            />
-                                        )}
-                                        {sub.toUpperCase()}
-                                    </button>
-                                ))}
+                                        >
+                                            {safeSubject === sub.toLowerCase() && (
+                                                <motion.div
+                                                    layoutId="active-subject-menu"
+                                                    className="absolute inset-0 rounded-xl z-[-1]"
+                                                    style={{
+                                                        background: `linear-gradient(to right, ${hexColor}dd, ${hexColor})`,
+                                                        boxShadow: `0 0 15px ${hexColor}66`
+                                                    }}
+                                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                />
+                                            )}
+                                            {sub.toUpperCase()}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
