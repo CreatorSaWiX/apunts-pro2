@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, ExternalLink, Users, Clock, Target, CheckSquare, Layers, Activity, Book, Key } from 'lucide-react';

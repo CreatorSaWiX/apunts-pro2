@@ -10,7 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../../hooks/useShortcut';
 
 export const SubjectsSection = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language || 'ca';
     const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors, shortcuts } = useSettingsStore();
     const searchShortcut = shortcuts?.searchSubjects || { key: 'k', meta: true };
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +22,11 @@ export const SubjectsSection = () => {
     const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
     const [previewSubject, setPreviewSubject] = useState<string>('');
     const [subjectError, setSubjectError] = useState<string | null>(null);
+    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+
+    useEffect(() => {
+        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
+    }, []);
 
     useEffect(() => {
         if (homeSubjects.length > 0 && !homeSubjects.includes(previewSubject)) {
@@ -51,11 +57,28 @@ export const SubjectsSection = () => {
 
     const filteredSubjects = useMemo(() => {
         const query = searchQuery.toLowerCase();
-        return subjectsData.filter(s =>
+        
+        // Optimització: Precalculem quines assignatures estan disponibles
+        const availableSubjectNames = new Set(
+            allPersonalNotes
+                .filter(note => note.lang === currentLang && !note.draft)
+                .map(note => note.subject.toLowerCase())
+        );
+
+        const filtered = subjectsData.filter(s =>
             s.name.toLowerCase().includes(query) ||
             (s.description && s.description.toLowerCase().includes(query))
         ).filter(s => !homeSubjects.includes(s.name));
-    }, [searchQuery, homeSubjects]);
+
+        return filtered.sort((a, b) => {
+            const aIsAvailable = availableSubjectNames.has(a.name.toLowerCase());
+            const bIsAvailable = availableSubjectNames.has(b.name.toLowerCase());
+            
+            if (aIsAvailable && !bIsAvailable) return -1;
+            if (!aIsAvailable && bIsAvailable) return 1;
+            return 0;
+        });
+    }, [searchQuery, homeSubjects, allPersonalNotes, currentLang]);
 
     const toggleSubject = (subjectId: string) => {
         if (homeSubjects.includes(subjectId)) {
@@ -119,12 +142,21 @@ export const SubjectsSection = () => {
                                     {filteredSubjects.map(subject => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
+                                        
+                                        const isAvailable = allPersonalNotes.some(note => 
+                                            note.subject.toLowerCase() === subject.name.toLowerCase() && 
+                                            note.lang === currentLang && 
+                                            !note.draft
+                                        );
+
                                         return (
                                             <button
                                                 type="button"
                                                 key={subject.id}
+                                                disabled={!isAvailable}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+                                                    if (!isAvailable) return;
                                                     if (homeSubjects.length >= 6) {
                                                         setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
                                                         setSearchQuery('');
@@ -136,13 +168,18 @@ export const SubjectsSection = () => {
                                                     setIsCommandOpen(false);
                                                     setSubjectError(null);
                                                 }}
-                                                className="flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item hover:bg-white/5"
+                                                className={`flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item ${!isAvailable ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/5'}`}
                                                 aria-label="Obrir panell">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tailwindColors[colorFamily]?.primary || '#0ea5e9' }} />
-                                                    <span className="font-bold text-slate-200">{subject.name}</span>
+                                                    <div className={`w-2.5 h-2.5 rounded-full ${!isAvailable ? 'opacity-50' : ''}`} style={{ backgroundColor: tailwindColors[colorFamily]?.primary || '#0ea5e9' }} />
+                                                    <span className={`font-bold ${!isAvailable ? 'text-slate-400' : 'text-slate-200'}`}>{subject.name}</span>
+                                                    {!isAvailable && (
+                                                        <span className="text-[10px] uppercase font-bold tracking-wider text-rose-400 bg-rose-400/10 px-2 py-0.5 rounded-full ml-2 whitespace-nowrap">
+                                                            {t('settings.subjects.notAvailable', 'No disponible')}
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <ChevronRight size={18} className="text-slate-600 group-hover/item:text-white transition-colors" />
+                                                <ChevronRight size={18} className={`transition-colors ${!isAvailable ? 'text-slate-700' : 'text-slate-600 group-hover/item:text-white'}`} />
                                             </button>
                                         );
                                     })}
