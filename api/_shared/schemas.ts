@@ -93,6 +93,9 @@ export const r2PresignRequestSchema = z.object({
 
 // --- Reset Password Schemas ---
 export const resetPasswordRequestSchema = z.object({
-  email: z.email(),
-  lang: z.enum(["ca", "es", "en"]).optional().default("ca"),
+  email: z.string().trim().email(),
+  lang: z.string().optional().default("ca").transform((val) => {
+    if (["ca", "es", "en"].includes(val)) return val;
+    return "ca"; // Fallback to 'ca' if invalid
+  }),
 });

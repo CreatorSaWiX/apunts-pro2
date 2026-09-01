@@ -13,8 +13,13 @@ export const config = {
 initFirebaseIfNeeded();
 
 export default withMiddleware(async function handler(req: Request): Promise<Response> {
-    const rawBody = await req.json().catch(() => ({}));
+    const rawBody = await req.json().catch((e) => {
+        console.error("Error parsing JSON:", e);
+        return {};
+    });
+    console.log("[DEBUG] rawBody:", rawBody);
     const parseResult = resetPasswordRequestSchema.safeParse(rawBody);
+    console.log("[DEBUG] parseResult:", parseResult);
 
     if (!parseResult.success) {
         return jsonResponse({ error: "Falta l'email o format invàlid.", details: parseResult.error.format() }, 400);
@@ -176,3 +181,5 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
         return jsonResponse({ error: "S'ha produït un error al servidor." }, 500);
     }
 }, { requireAuth: false });
+// trigger HMR
+// trigger HMR again

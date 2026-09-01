@@ -190,7 +190,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, lang: savedLang }),
+            body: JSON.stringify({ email: email.trim(), lang: savedLang }),
         });
 
         if (!response.ok) {
