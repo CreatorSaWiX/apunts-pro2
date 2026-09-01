@@ -185,8 +185,13 @@ export function buildPlannerSystemInstruction(
     aiSettings: AiSettings | undefined,
     currentDate: string | undefined,
     subjects: unknown[],
-    currentTasks: unknown[]
+    currentTasks: unknown[],
+    availableStatuses?: string[]
 ): string {
+    const statusesStr = availableStatuses && availableStatuses.length > 0
+        ? `"${availableStatuses.join('" | "')}"`
+        : `"TODO" | "IN_PROGRESS" | "DONE"`;
+
     return `El teu nom és ${aiSettings?.identity?.name || "AI"}.
 Pronoms: ${aiSettings?.identity?.pronouns || "ell"}.
 
@@ -219,8 +224,13 @@ IMPORTANT: HAS DE RETORNAR ÚNICAMENT I EXCLUSIVAMENT UN OBJECTE JSON VÀLID. SE
 # INSTRUCCIONS:
 Pots executar una llista d'accions. Les accions possibles són:
 1. "CREATE": Per crear noves tasques. Reparteix-les lògicament usant startDate i dueDate. Usa l'hora actual com a base si no s'especifica res.
-2. "UPDATE": Per modificar tasques existents (posposar, canviar de color/assignatura, completar). Pots actualitzar el \`status\` a "TODO", "IN_PROGRESS", "IN_REVIEW", o "DONE".
+2. "UPDATE": Per modificar tasques existents (posposar, canviar de color/assignatura, completar). Pots actualitzar el \`status\` a un dels estats permesos.
 3. "DELETE": Per esborrar tasques.
+
+NORMES ESTRICTES DELS CAMPS:
+- El camp \`title\` HA DE SER MOLT CURT I DIRECTE (màxim 5-10 paraules). Si necessites escriure més, fes servir el camp \`description\`. Mai posis paràgrafs llargs al títol.
+- Crea títols realistes i coherents per a un estudiant.
+- Pel camp \`status\`, has d'utilitzar OBLIGATÒRIAMENT un d'aquests valors: ${statusesStr}. Si no n'estàs segur, utilitza el primer (ex: "${availableStatuses?.[0] || 'TODO'}").
 
 L'estructura exacta ha de ser:
 {
@@ -231,7 +241,7 @@ L'estructura exacta ha de ser:
         "title": "Nom de la tasca",
         "description": "Explicació (opcional)",
         "priority": "HIGH" | "MEDIUM" | "LOW",
-        "status": "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE",
+        "status": ${statusesStr},
         "estimatedMinutes": 60,
         "subjectId": "ID_DE_L_ASSIGNATURA" | null,
         "startDate": "2026-06-16T10:00:00.000Z" | null,

@@ -118,8 +118,15 @@ const AIPromptBar: React.FC<AIPromptBarProps> = ({ isOpen, onClose }) => {
                     currentTasks: tasks,
                     subjects: subjects.map(s => ({ id: s.id, name: s.name })),
                     currentDate: new Date().toISOString(),
+                    availableStatuses: (() => {
+                        try {
+                            const saved = localStorage.getItem('planner_columns');
+                            if (saved) return JSON.parse(saved).map((c: any) => c.id);
+                        } catch (e) {}
+                        return ["TODO", "IN_PROGRESS", "COMPLETE"];
+                    })(),
                     aiSettings,
-                    attachedFile,
+                    ...(attachedFile ? { attachedFile } : {}),
                     language: i18n.language
                 }),
                 signal: abortControllerRef.current.signal

@@ -1,4 +1,4 @@
-import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
+import { getLiteModels, applyThinkingConfig } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { plannerRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
@@ -14,7 +14,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
         });
     }
 
-    const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile } = parseResult.data;
+    const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile, availableStatuses } = parseResult.data;
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
@@ -34,7 +34,8 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                     aiSettings,
                     currentDate,
                     subjects,
-                    currentTasks
+                    currentTasks,
+                    availableStatuses
                 );
 
                 const msgParts: { text?: string; inlineData?: { data: string; mimeType: string } }[] = [];
@@ -49,62 +50,25 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                 let replied = false;
                 let hasStartedWriting = false;
 
-                for (const modelName of getLoadBalancedModels()) {
+                for (const modelName of getLiteModels()) {
                     try {
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction,
-                            responseMimeType: "application/json",
-                            responseSchema: {
-                                type: Type.OBJECT,
-                                properties: {
-                                    actions: {
-                                        type: Type.ARRAY,
-                                        items: {
-                                            type: Type.OBJECT,
-                                            properties: {
-                                                type: { type: Type.STRING },
-                                                taskId: { type: Type.STRING },
-                                                task: {
-                                                    type: Type.OBJECT,
-                                                    properties: {
-                                                        title: { type: Type.STRING },
-                                                        description: { type: Type.STRING },
-                                                        priority: { type: Type.STRING },
-                                                        status: { type: Type.STRING },
-                                                        estimatedMinutes: { type: Type.INTEGER },
-                                                        subjectId: { type: Type.STRING },
-                                                        startDate: { type: Type.STRING },
-                                                        dueDate: { type: Type.STRING }
-                                                    }
-                                                },
-                                                updates: {
-                                                    type: Type.OBJECT,
-                                                    properties: {
-                                                        status: { type: Type.STRING },
-                                                        startDate: { type: Type.STRING }
-                                                    }
-                                                }
-                                            },
-                                            required: ["type"]
-                                        }
-                                    }
-                                },
-                                required: ["actions"]
+                            generationConfig: {
+                                responseMimeType: "application/json"
                             }
                         };
 
-                        applyThinkingConfig(streamConfig, modelName);
-                        if (streamConfig.thinkingConfig) {
-                             (streamConfig.thinkingConfig as Record<string, any>).thinkingBudget = 32768;
-                        }
+                        // No thinking config needed for a secretary task
+
+                        emit('status', { phase: 'thinking', model: modelName });
+                        emit('thought', { text: `📡 Intentant generar amb el model **${modelName}**...\n` });
 
                         const responseStream = await genAI.models.generateContentStream({
                             model: modelName,
                             contents: msgParts,
                             config: streamConfig
                         });
-
-                        emit('status', { phase: 'thinking', model: modelName });
 
                         let accumulatedText = '';
 
@@ -128,6 +92,9 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                         let rData: { actions: unknown[] } | undefined;
                         try {
                             rData = JSON.parse(accumulatedText.trim());
+                            console.log("=== JSON RETORNAT PER LA IA ===");
+                            console.log(JSON.stringify(rData, null, 2));
+                            console.log("===============================");
                         } catch {
                             console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
                             rData = { actions: [] };
@@ -146,6 +113,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                             errMsg.match(/exhausted/i) || errMsg.match(/not found/i)) && !hasStartedWriting;
 
                         if (isFallbackable) {
+                            emit('thought', { text: `❌ El model ${modelName} ha fallat (Error ${errStatus || 'Cota/Servidor'}). Saltant al següent...\n\n` });
                             lastError = e;
                             continue;
                         }

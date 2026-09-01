@@ -36,7 +36,7 @@ export const chatRequestSchema = z.object({
       data: z.string().max(7_000_000), // ~5MB base64
       mimeType: z.string().max(100),
     })
-    .optional(),
+    .nullish(),
   aiSettings: aiSettingsSchema,
   language: z.string().max(10).optional().default("ca"),
 });
@@ -54,7 +54,7 @@ export const roadmapRequestSchema = z.object({
       data: z.string().max(7_000_000),
       mimeType: z.string().max(100),
     })
-    .optional(),
+    .nullish(),
 });
 
 // --- Quiz Schemas ---
@@ -66,16 +66,17 @@ export const quizRequestSchema = z.object({
 // --- Planner Schemas ---
 export const plannerRequestSchema = z.object({
   prompt: z.string().max(5000).optional(),
-  currentTasks: z.array(z.any()).max(500).optional().default([]),
-  subjects: z.array(z.any()).max(100).optional().default([]),
+  currentTasks: z.array(z.any()).max(2000).optional().default([]),
+  subjects: z.array(z.any()).max(1000).optional().default([]),
   currentDate: z.string().max(100).optional(),
+  availableStatuses: z.array(z.string()).max(100).optional(),
   aiSettings: aiSettingsSchema,
   attachedFile: z
     .object({
       data: z.string().max(7_000_000),
       mimeType: z.string().max(100),
     })
-    .optional(),
+    .nullish(),
 });
 
 // --- Algolia Sync Schemas ---
