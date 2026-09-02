@@ -40,10 +40,33 @@ export function withMiddleware(
     }
 
     try {
-      // 3. Extreure Token i Autenticar
+      // 3. Extreure Token
       const authHeader = req.headers.get("authorization") || "";
-      const idToken = authHeader.split("Bearer ")[1];
+      const match = authHeader.match(/^Bearer\s+(.*)$/i);
+      const idToken = match ? match[1] : undefined;
       
+      // 4. Rate Limiting (ABANS de la criptografia pesada per seguretat)
+      if (ratelimit) {
+        const xForwardedFor = req.headers.get("x-forwarded-for");
+        const ip = xForwardedFor ? xForwardedFor.split(",")[0].trim() : "unknown";
+        const identifier = idToken || ip; // Usem el token o la IP directament com a clau
+        const { success, limit, reset, remaining } = await ratelimit.limit(identifier);
+
+        if (!success) {
+          return new Response(JSON.stringify({ error: "S'ha superat el límit de peticions. Si us plau, torna-ho a provar més tard." }), {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "X-RateLimit-Limit": limit.toString(),
+              "X-RateLimit-Remaining": remaining.toString(),
+              "X-RateLimit-Reset": reset.toString(),
+              ...CORS_HEADERS
+            }
+          });
+        }
+      }
+
+      // 5. Autenticar Token
       let userId: string | undefined = undefined;
 
       if (idToken) {
@@ -63,27 +86,7 @@ export function withMiddleware(
           });
       }
 
-      if (ratelimit) {
-        const xForwardedFor = req.headers.get("x-forwarded-for");
-        const ip = xForwardedFor ? xForwardedFor.split(",")[0].trim() : "unknown";
-        const identifier = userId || ip;
-        const { success, limit, reset, remaining } = await ratelimit.limit(identifier);
-
-        if (!success) {
-          return new Response(JSON.stringify({ error: "S'ha superat el límit de peticions. Si us plau, torna-ho a provar més tard." }), {
-            status: 429,
-            headers: {
-              "Content-Type": "application/json",
-              "X-RateLimit-Limit": limit.toString(),
-              "X-RateLimit-Remaining": remaining.toString(),
-              "X-RateLimit-Reset": reset.toString(),
-              ...CORS_HEADERS
-            }
-          });
-        }
-      }
-
-      // 4. Cridar a l'endpoint real amb l'userId
+      // 6. Cridar a l'endpoint real amb l'userId
       return await handler(req, userId);
       
     } catch (error: unknown) {

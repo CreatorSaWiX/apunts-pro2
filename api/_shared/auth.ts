@@ -1,25 +1,20 @@
 import { getApps, initializeApp, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-let isInitialized = false;
-
 export function initFirebaseIfNeeded() {
-    if (!isInitialized) {
-        if (getApps().length === 0) {
-            try {
-                const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
-                if (serviceAccountJson) {
-                    const serviceAccount = JSON.parse(serviceAccountJson);
-                    initializeApp({
-                        credential: cert(serviceAccount)
-                    });
-                }
-            } catch (error) {
-                console.error("Error initializing Firebase Admin:", error);
-                throw new Error('Firebase admin not initialized');
+    if (getApps().length === 0) {
+        try {
+            const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+            if (serviceAccountJson) {
+                const serviceAccount = JSON.parse(serviceAccountJson);
+                initializeApp({
+                    credential: cert(serviceAccount)
+                });
             }
+        } catch (error) {
+            console.error("Error initializing Firebase Admin:", error);
+            throw new Error('Firebase admin not initialized', { cause: error });
         }
-        isInitialized = true;
     }
 }
 
