@@ -16,6 +16,8 @@ const LITE_MODELS = [
     'gemini-2.5-flash-lite',
 ];
 
+const ALL_MODELS = [...PREMIUM_MODELS, ...LITE_MODELS];
+
 // Models que suporten Thinking (Raonament intern previ)
 const THINKING_MODELS = new Set([
     'gemini-3.7-flash',
@@ -30,16 +32,16 @@ const THINKING_MODELS = new Set([
  * Això garanteix que tothom sempre intenta usar el millor model (3.7) primer,
  * i només salta als inferiors quan s'exhaureix la quota gratuïta.
  */
-export function getLoadBalancedModels(): string[] {
-    return [...PREMIUM_MODELS, ...LITE_MODELS];
+export function getLoadBalancedModels(): readonly string[] {
+    return ALL_MODELS;
 }
 
 /**
  * Per a generadors massius o de fons (com els Quizzes), retorna directament
  * els models Lite balancejats, ja que tenen molta més quota gratuïta (15 RPM / 500 RPD).
  */
-export function getLiteModels(): string[] {
-    return [...LITE_MODELS];
+export function getLiteModels(): readonly string[] {
+    return LITE_MODELS;
 }
 
 /**

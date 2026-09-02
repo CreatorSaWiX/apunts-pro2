@@ -95,9 +95,9 @@ L'estudiant està en una aplicació interactiva. SI l'alumne et demana EXPLÍCIT
 function sanitizePromptText(input: string | undefined, maxLength = 4000): string {
     if (!input) return "";
     return input
-        .replace(/<\|[^>]*\|>/g, "") // Elimina tokens especials d'estil ChatML (O(N) safe)
+        .replace(/<\|[^>]*\|>/g, "") // Elimina tokens especials d'estil ChatML
         .replace(/\[(SYSTEM|INSTRUCTION|SYSTEM_PROMPT)\]/gi, "") // Neutralitza etiquetes de sistema
-        .slice(0, maxLength);
+        .slice(0, maxLength); // Trunquem al final per evitar escapament de tokens parcials
 }
 
 export function buildChatSystemInstruction(

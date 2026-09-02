@@ -63,6 +63,23 @@ export const quizRequestSchema = z.object({
   markdownContent: z.string().min(1).max(100000),
 });
 
+export const quizOptionSchema = z.object({
+  id: z.string().min(1),
+  text: z.string().min(1),
+});
+
+export const quizQuestionSchema = z.object({
+  id: z.union([z.string(), z.number()]).optional(),
+  question: z.string().min(1),
+  options: z.array(quizOptionSchema).min(2),
+  correctOptionId: z.string().min(1),
+  explanation: z.string().optional().default(""),
+});
+
+export const quizResponseSchema = z.object({
+  questions: z.array(quizQuestionSchema).min(1),
+});
+
 // --- Planner Schemas ---
 export const plannerRequestSchema = z.object({
   prompt: z.string().max(5000).optional(),

@@ -2,6 +2,8 @@ import algoliasearch from 'algoliasearch';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
 import { algoliaSyncRequestSchema } from './_shared/schemas';
 
+let algoliaClient: ReturnType<typeof algoliasearch> | null = null;
+
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = algoliaSyncRequestSchema.safeParse(rawBody);
@@ -20,8 +22,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     }
 
     try {
-        const client = algoliasearch(appId, adminKey);
-        const index = client.initIndex('apunts_posts');
+        if (!algoliaClient) algoliaClient = algoliasearch(appId, adminKey);
+        const index = algoliaClient.initIndex('apunts_posts');
 
         if (action === 'create' || action === 'update') {
             if (!post || !post.id) {

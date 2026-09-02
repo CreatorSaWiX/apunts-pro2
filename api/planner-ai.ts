@@ -1,4 +1,4 @@
-import { getLiteModels, applyThinkingConfig } from './_shared/models';
+import { getLiteModels } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { plannerRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
@@ -27,7 +27,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
             };
 
             try {
-                const { GoogleGenAI, Type } = await import('@google/genai');
+                const { GoogleGenAI } = await import('@google/genai');
                 const genAI = new GoogleGenAI({ apiKey });
 
                 const systemInstruction = buildPlannerSystemInstruction(
@@ -54,9 +54,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                     try {
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction,
-                            generationConfig: {
-                                responseMimeType: "application/json"
-                            }
+                            responseMimeType: "application/json"
                         };
 
                         // No thinking config needed for a secretary task
@@ -91,16 +89,27 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
 
                         let rData: { actions: unknown[] } | undefined;
                         try {
-                            rData = JSON.parse(accumulatedText.trim());
-                            console.log("=== JSON RETORNAT PER LA IA ===");
-                            console.log(JSON.stringify(rData, null, 2));
-                            console.log("===============================");
-                        } catch {
-                            console.warn("Planner didn't return valid JSON, falling back.", accumulatedText);
-                            rData = { actions: [] };
+                            let cleanText = accumulatedText.trim();
+                            if (cleanText.startsWith('```')) {
+                                cleanText = cleanText.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+                            } else {
+                                const firstBrace = cleanText.indexOf('{');
+                                const lastBrace = cleanText.lastIndexOf('}');
+                                if (firstBrace !== -1 && lastBrace > firstBrace) {
+                                    cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                                }
+                            }
+                            rData = JSON.parse(cleanText);
+                            if (!rData || !Array.isArray(rData.actions)) {
+                                throw new Error("Format de resposta invàlid: manca l'array actions");
+                            }
+                        } catch (parseErr) {
+                            console.warn(`[Planner Fallback] Model ${modelName} no ha retornat JSON vàlid:`, parseErr);
+                            lastError = parseErr;
+                            continue; // Intentem amb el següent model de reserva
                         }
 
-                        emit('actions', { actions: rData?.actions || [] });
+                        emit('actions', { actions: rData.actions });
                         emit('done', {});
                         replied = true;
                         break;

@@ -59,8 +59,7 @@ interface SubjectDataItem {
 }
 
 const typedSubjectsData = subjectsData as SubjectDataItem[];
-
-
+const subjectsMap = new Map<string, SubjectDataItem>(typedSubjectsData.map(s => [s.name, s]));
 
 export interface RoadmapState {
     nodes: Node<SubjectNodeData>[];
@@ -143,7 +142,7 @@ const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number
     return { totalPassedECTS, averageGrade, canStartMaster, requiredAverageGrade };
 };
 
-// Extracted checkPrerequisites — optimized: loop-invariant values hoisted out of while
+// checkPrerequisites: Fixed-point DAG propagation for prerequisite cascading
 const SPECIAL_TYPES = new Set(['optional', 'specialization', 'tfg', 'tfm', 'mobility', 'internship']);
 const EXPERIENCE_TYPES = new Set(['tfg', 'tfm', 'mobility', 'internship']);
 
@@ -155,13 +154,14 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
         else incomingMap.set(e.target, [e.source]);
     }
 
-    // Pre-compute loop-invariant values: the while loop only cascades
-    // locked↔in_progress transitions, never changing 'passed' status,
-    // so these values remain stable across all iterations.
+    // Invariants de bucle: Les assignatures aprovades pertanyen a l'historial i mai muten aquí
+    const passedSet = new Set<string>();
     let maxPassedSemester = 0;
     let passedCredits = 0;
+
     for (const n of currentNodes) {
         if (n.data.status === 'passed') {
+            passedSet.add(n.id);
             passedCredits += n.data.credits;
             if (!SPECIAL_TYPES.has(n.data.type)) {
                 const sem = n.data.semester || getSemesterForSubject(n.id);
@@ -169,44 +169,32 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
             }
         }
     }
+
     const allowedSemester = Math.max(1, maxPassedSemester + 1);
 
-    let nodesChanged = true;
-    let newNodes = [...currentNodes];
-    let safetyCounter = 0;
-
-    while (nodesChanged && safetyCounter < 15) {
-        nodesChanged = false;
-        safetyCounter++;
-        const nodeMap = new Map(newNodes.map(n => [n.id, n]));
-
-        newNodes = newNodes.map(node => {
-            const incoming = incomingMap.get(node.id);
-            const edgePrereqsPassed = !incoming || incoming.every(sourceId => {
-                const sourceNode = nodeMap.get(sourceId);
-                return sourceNode?.data.status === 'passed';
-            });
-
-            const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
-            let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
-
-            if (EXPERIENCE_TYPES.has(node.data.type)) {
-                prereqsMet = edgePrereqsPassed && passedCredits >= 160;
-            }
-
-            if (!prereqsMet && node.data.status !== 'locked') {
-                nodesChanged = true;
-                return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus, attempts: 0, grade: null } };
-            }
-
-            if (prereqsMet && node.data.status === 'locked') {
-                nodesChanged = true;
-                return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
-            }
+    return currentNodes.map(node => {
+        // Regla d'or: Mai degradar l'historial acadèmic de l'alumne (passed, failed, retaking)
+        if (node.data.status === 'passed' || node.data.status === 'failed' || node.data.status === 'retaking') {
             return node;
-        });
-    }
-    return newNodes;
+        }
+
+        const incoming = incomingMap.get(node.id);
+        const edgePrereqsPassed = !incoming || incoming.every(sourceId => passedSet.has(sourceId));
+        const isSemesterAllowed = (node.data.semester || getSemesterForSubject(node.id)) <= allowedSemester;
+        
+        let prereqsMet = edgePrereqsPassed && isSemesterAllowed;
+        if (EXPERIENCE_TYPES.has(node.data.type)) {
+            prereqsMet = edgePrereqsPassed && passedCredits >= 160;
+        }
+
+        if (!prereqsMet && node.data.status !== 'locked') {
+            return { ...node, data: { ...node.data, status: 'locked' as SubjectStatus, attempts: 0, grade: null } };
+        }
+        if (prereqsMet && node.data.status === 'locked') {
+            return { ...node, data: { ...node.data, status: 'in_progress' as SubjectStatus, attempts: 1 } };
+        }
+        return node;
+    });
 };
 
 const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
@@ -275,7 +263,7 @@ const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
     }),
 
     addSubjectNode: (acronym, type) => set(state => {
-        const subject = (subjectsData as SubjectDataItem[]).find(s => s.name === acronym);
+        const subject = subjectsMap.get(acronym);
         const semester = getSemesterForSubject(acronym);
         const newNode: Node<SubjectNodeData> = {
             id: acronym, position: { x: 0, y: 0 },
@@ -365,7 +353,7 @@ const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
         const newNodes = state.nodes.filter(n => n.data.type !== 'specialization');
         spec.mandatory.forEach(acronym => {
             if (!newNodes.find(n => n.id === acronym)) {
-                const subject = (subjectsData as SubjectDataItem[]).find(s => s.name === acronym);
+                const subject = subjectsMap.get(acronym);
                 newNodes.push({
                     id: acronym, position: { x: 0, y: 0 },
                     data: { label: subject?.description || acronym, credits: getCreditsForSubject(acronym), status: 'locked', type: 'specialization', attempts: 0, description: subject?.description || acronym, semester: getSemesterForSubject(acronym), grade: null }
@@ -436,7 +424,7 @@ const isGradableNode = (node: Node<SubjectNodeData>): boolean => {
 
 const createInitialGraph = () => {
     const nodes: Node<SubjectNodeData>[] = geiBaseNodes.map(acronym => {
-        const subject = typedSubjectsData.find((s) => s.name === acronym);
+        const subject = subjectsMap.get(acronym);
         const semester = getSemesterForSubject(acronym);
         const isQ1 = semester === 1;
         return {

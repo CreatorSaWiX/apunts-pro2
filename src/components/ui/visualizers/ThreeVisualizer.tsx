@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
 import { InlineMath } from 'react-katex';
-import "mafs/core.css";
 import { InteractionLock } from '../system/InteractionLock';
 import { useInteraction } from '../../../contexts/InteractionContext';
 

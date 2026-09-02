@@ -55,7 +55,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     });
 
     const cleanFilename = filename.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-    const objectKey = `community/${Date.now()}-${cleanFilename}`;
+    const uniqueId = crypto.randomUUID();
+    const objectKey = `community/${Date.now()}-${uniqueId}-${cleanFilename}`;
 
     const command = new PutObjectCommand({
         Bucket: bucketName,

@@ -10,7 +10,6 @@ import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import remarkMark from "./remarkMark";
 import "katex/dist/katex.min.css"; // Import katex styles
-import "mafs/core.css"; // Mafs core CSS
 import "mafs/font.css"; // Mafs fonts 
 
 import { remarkDirectiveRehype } from "./remarkDirectiveRehype";

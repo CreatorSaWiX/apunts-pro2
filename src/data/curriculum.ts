@@ -35,39 +35,42 @@ export const geiBaseEdges = [
 ];
 
 // Helper to determine base ECTS based on acronym (default 6, 7.5 for some Q1/Q2)
+const q1q2 = new Set(['F', 'FM', 'IC', 'PRO1', 'M1', 'M2', 'PRO2', 'EC']);
 export const getCreditsForSubject = (acronym: string): number => {
-    const q1q2 = ['F', 'FM', 'IC', 'PRO1', 'M1', 'M2', 'PRO2', 'EC'];
-    if (q1q2.includes(acronym)) return 7.5;
+    if (q1q2.has(acronym)) return 7.5;
     if (acronym === 'TFG') return 18;
     if (acronym === 'TFM') return 30; // Depèn del màster, posem 30 estàndard
     return 6;
 };
 
+const semestersLookup: Record<string, number> = {
+    'F': 1, 'FM': 1, 'IC': 1, 'PRO1': 1,
+    'M1': 2, 'M2': 2, 'PRO2': 2, 'EC': 2,
+    'EDA': 3, 'PE': 3, 'SO': 3, 'CI': 3, 'BD': 3,
+    'EEE': 4, 'IDI': 4, 'IES': 4, 'AC': 4, 'XC': 4,
+    'PROP': 5, 'PAR': 5,
+    // Computació
+    'A': 5, 'G': 5, 'IA': 5,
+    'LI': 6, 'LP': 6, 'TC': 6,
+    // Enginyeria del Software
+    'AS': 5, 'ASW': 5, 'DBD': 5,
+    'ER': 6, 'GPS': 6, 'PES': 6,
+    // Enginyeria de Computadors
+    'AC2': 5, 'DSBM': 5, 'MP': 5,
+    'PEC': 6, 'SO2': 6, 'XC2': 6,
+    // Sistemes d'Informació
+    'ADEI': 5, 'DSI': 5, 'NE': 5,
+    'PSI': 6, 'SIO': 6, 'ABD': 6,
+    // Tecnologies de la Informació
+    'ASO': 5, 'PI': 5, 'PTI': 5,
+    'SI': 6, 'SOA': 6, 'TXC': 6,
+    // Comunes
+    'TFG': 8
+};
+
 // Helper to assign strict semester columns for the Grid layout
 export const getSemesterForSubject = (acronym: string): number => {
-    const semesters: Record<string, number> = {
-        'F': 1, 'FM': 1, 'IC': 1, 'PRO1': 1,
-        'M1': 2, 'M2': 2, 'PRO2': 2, 'EC': 2,
-        'EDA': 3, 'PE': 3, 'SO': 3, 'CI': 3, 'BD': 3,
-        'EEE': 4, 'IDI': 4, 'IES': 4, 'AC': 4, 'XC': 4,
-        'PROP': 5, 'PAR': 5,
-        // Computació
-        'A': 5, 'G': 5, 'IA': 5,
-        'LI': 6, 'LP': 6, 'TC': 6,
-        // Enginyeria del Software
-        'AS': 5, 'ASW': 5, 'DBD': 5,
-        'ER': 6, 'GPS': 6, 'PES': 6,
-        // Enginyeria de Computadors
-        'AC2': 5, 'DSBM': 5, 'MP': 5,
-        'PEC': 6, 'SO2': 6, 'XC2': 6,
-        // Sistemes d'Informació
-        'ADEI': 5, 'DSI': 5, 'NE': 5,
-        'PSI': 6, 'SIO': 6, 'ABD': 6, // Nota: poden variar, poso Q5 i Q6 per quadrar la graella
-        // Tecnologies de la Informació (assignació suggerida per la graella visual)
-        'ASO': 5, 'PI': 5, 'PTI': 5,
-        'SI': 6, 'SOA': 6, 'TXC': 6,
-    };
-    return semesters[acronym] || 8; // Default to row 8 if not defined
+    return semestersLookup[acronym] || 8; // Default to row 8 if not defined
 };
 
 export interface SpecializationData {

@@ -5,8 +5,6 @@ import { Stars, OrbitControls, Grid, PerformanceMonitor } from '@react-three/dre
 import * as THREE from 'three';
 import GraphVisualizer from '../visualizers/GraphVisualizer';
 import { Mafs, Coordinates, Plot } from 'mafs';
-import "mafs/core.css";
-
 interface AuthCanvasBackgroundProps {
     variant?: 'login' | 'register';
 }

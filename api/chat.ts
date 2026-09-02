@@ -24,6 +24,21 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
     return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
 }
 
+// ── Llistes per a fallback de cerca per paraules clau ────────────────────────
+const STOP_WORDS = new Set([
+    'aquest', 'aquesta', 'aquests', 'aquestes', 'sobre', 'perque', 'perquè', 'quan', 'molt',
+    'tenir', 'estar', 'dels', 'deles', 'com', 'que', 'què', 'mes', 'més', 'quin', 'quina',
+    'quins', 'quines', 'on', 'qui', 'per', 'amb', 'pel', 'pels', 'perla', 'perles', 'tot', 'tota',
+    'tots', 'totes', 'algun', 'alguna', 'alguns', 'algunes', 'uns', 'unes', 'una', 'el', 'la',
+    'els', 'les', 'un', 'de', 'en', 'i', 'o', 'a', 'al', 'als', 'del', 'fa', 'fet', 'fer', 'ha', 'han'
+]);
+
+const SHORT_TECH_TERMS = new Set([
+    'eda', 'm1', 'm2', 'pro', 'ec', 'ac', 'f', 'fm', 'tfg', 'tfm', 'sql', 'api', 'git',
+    'tcp', 'udp', 'ip', 'dfs', 'bfs', 'avl', 'bst', 'cpu', 'ram', 'dom', 'css', 'cua',
+    'cpp', 'c', 'os', 'io', 'vm', 'ui', 'ux', 'lan', 'wan', 'dns', 'ssh', 'sh', 'oop', 'poo'
+]);
+
 // ── Eines (Tools) ────────────────────────────────────────────────────────────
 const manageMemoryTool = {
     name: "manage_memory",
@@ -122,12 +137,42 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         else if (pathLower.includes('m1')) activeSubject = 'm1';
                         else if (pathLower.includes('m2')) activeSubject = 'm2';
 
-                        let count = 0;
-                        for (const note of allPersonalNotes) {
-                            if (!activeSubject || note.subject === activeSubject) {
+                        // Normalitzem C++ a cpp abans d'eliminar caràcters especials
+                        const normalizedMessage = message.toLowerCase().replace(/c\+\+/gi, 'cpp');
+                        const rawTokens = normalizedMessage
+                            .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+                            .split(/\s+/)
+                            .filter(Boolean);
+
+                        const keywords = rawTokens.filter(w => {
+                            if (SHORT_TECH_TERMS.has(w)) return true;
+                            return w.length > 3 && !STOP_WORDS.has(w);
+                        });
+
+                        if (keywords.length > 0) {
+                            const candidateNotes = allPersonalNotes.filter(
+                                note => !activeSubject || note.subject === activeSubject
+                            );
+
+                            const scoredNotes: { note: (typeof candidateNotes)[0]; score: number }[] = [];
+                            for (const note of candidateNotes) {
+                                let score = 0;
+                                const titleLower = note.title.toLowerCase();
+                                for (const kw of keywords) {
+                                    if (titleLower.includes(kw)) score += 5;
+                                }
+                                const contentLower = note.content.toLowerCase();
+                                for (const kw of keywords) {
+                                    if (contentLower.includes(kw)) score += 1;
+                                }
+                                if (score > 0) {
+                                    scoredNotes.push({ note, score });
+                                }
+                            }
+
+                            scoredNotes.sort((a, b) => b.score - a.score);
+                            for (const { note } of scoredNotes.slice(0, 5)) {
                                 notesCtx += `## Tema: ${note.title}\n\n${note.content}\n\n---\n\n`;
-                                count++;
-                                if (count >= 5) break;
                             }
                         }
                     }

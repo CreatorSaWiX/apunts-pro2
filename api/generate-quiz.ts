@@ -1,6 +1,6 @@
 import { getLiteModels } from './_shared/models';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { quizRequestSchema } from './_shared/schemas';
+import { quizRequestSchema, quizResponseSchema } from './_shared/schemas';
 import { buildQuizPrompt } from './_shared/prompts';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
@@ -23,30 +23,49 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     const prompt = buildQuizPrompt(topicId, markdownContent);
 
-    try {
-        const response = await ai.models.generateContent({
-            model: getLiteModels()[0],
-            contents: prompt,
-            config: {
-                responseMimeType: 'application/json',
-                temperature: 0.1, // Temperatura baixa per màxima precisió respecte al text
+    let lastError: unknown;
+    for (const modelName of getLiteModels()) {
+        try {
+            const response = await ai.models.generateContent({
+                model: modelName,
+                contents: prompt,
+                config: {
+                    responseMimeType: 'application/json',
+                    temperature: 0.1, // Temperatura baixa per màxima precisió respecte al text
+                }
+            });
+
+            const textResponse = response.text;
+            if (!textResponse) {
+                throw new Error('La resposta de Gemini està buida');
             }
-        });
 
-        const textResponse = response.text;
-        if (!textResponse) {
-            return jsonResponse({ error: 'La resposta de Gemini està buida' }, 500);
+            let cleanText = textResponse.trim();
+            if (cleanText.startsWith('```')) {
+                cleanText = cleanText.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+            } else {
+                const firstBrace = cleanText.indexOf('{');
+                const lastBrace = cleanText.lastIndexOf('}');
+                if (firstBrace !== -1 && lastBrace > firstBrace) {
+                    cleanText = cleanText.substring(firstBrace, lastBrace + 1);
+                }
+            }
+
+            const rawData = JSON.parse(cleanText);
+            const validated = quizResponseSchema.safeParse(rawData);
+            if (!validated.success) {
+                throw new Error(`Estructura de test invàlida retornada per Gemini: ${validated.error.message}`);
+            }
+
+            return jsonResponse(validated.data, 200);
+        } catch (error: unknown) {
+            console.warn(`[Quiz Fallback] Model ${modelName} ha fallat:`, error);
+            lastError = error;
+            continue; // Intentem amb el següent model Lite
         }
-
-        const data = JSON.parse(textResponse);
-
-        if (!data.questions || data.questions.length === 0) {
-            return jsonResponse({ error: 'Gemini no ha generat preguntes vàlides' }, 500);
-        }
-
-        return jsonResponse(data, 200);
-    } catch (error: unknown) {
-        console.error('Error al generar test:', error);
-        return jsonResponse({ error: (error as Error).message || 'Error intern al generar test' }, 500);
     }
+
+    console.error('Error al generar test (Tots els models han fallat):', lastError);
+    const errorMessage = lastError instanceof Error ? lastError.message : 'Error intern al generar test';
+    return jsonResponse({ error: errorMessage }, 500);
 });

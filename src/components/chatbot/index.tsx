@@ -307,8 +307,10 @@ export const ChatBot: React.FC = () => {
 
     try {
       let pageText = '';
-      try { pageText = (document.querySelector('main') || document.body).textContent?.replace(/\s+/g, ' ').slice(0, 4000) || ''; } catch (_) {
-          console.debug('Failed to read page text');
+      try {
+        pageText = (document.querySelector('main') || document.body).textContent?.replace(/\s+/g, ' ').slice(0, 4000) || '';
+      } catch (_) {
+        pageText = '';
       }
 
       const { auth } = await import('../../lib/firebase');

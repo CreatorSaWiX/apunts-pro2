@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Carrega .env.local o .env si existeixen localment
 if (typeof process.loadEnvFile === 'function') {
@@ -12,10 +11,6 @@ if (typeof process.loadEnvFile === 'function') {
         } catch {}
     }
 }
-
-// Per suportar __dirname en ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
