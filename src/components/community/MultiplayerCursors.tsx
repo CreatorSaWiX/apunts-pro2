@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import type { Cursor } from '../../hooks/useMultiplayerCanvas';
 import { MousePointer2 } from 'lucide-react';
-import { ref, onValue } from 'firebase/database';
-import { rtdb } from '../../lib/firebase';
+import { getRtdb } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface MultiplayerCursorsProps {}
@@ -15,24 +14,34 @@ const MultiplayerCursors: React.FC<MultiplayerCursorsProps> = () => {
     // Sync Cursors from Firebase
     useEffect(() => {
         if (!user) return;
-        const presenceRef = ref(rtdb, 'community_canvas/presence');
-        const unsubscribe = onValue(presenceRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const activeCursors: Record<string, Cursor> = {};
-                const now = Date.now();
-                
-                Object.keys(data).forEach(uid => {
-                    if (uid !== user.id && (now - data[uid].updatedAt < 10000)) {
-                        activeCursors[uid] = data[uid];
-                    }
-                });
-                setCursors(activeCursors);
-            } else {
-                setCursors({});
-            }
-        });
-        return () => unsubscribe();
+        let unsubscribe: (() => void) | undefined;
+        let cancelled = false;
+
+        const setup = async () => {
+            const rtdb = await getRtdb();
+            if (cancelled) return;
+            const { ref, onValue } = await import('firebase/database');
+            if (cancelled) return;
+            const presenceRef = ref(rtdb, 'community_canvas/presence');
+            unsubscribe = onValue(presenceRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const activeCursors: Record<string, Cursor> = {};
+                    const now = Date.now();
+                    
+                    Object.keys(data).forEach(uid => {
+                        if (uid !== user.id && (now - data[uid].updatedAt < 10000)) {
+                            activeCursors[uid] = data[uid];
+                        }
+                    });
+                    setCursors(activeCursors);
+                } else {
+                    setCursors({});
+                }
+            });
+        };
+        setup();
+        return () => { cancelled = true; unsubscribe?.(); };
     }, [user]);
 
     // Local interval to prune stale cursors when no Firebase updates arrive

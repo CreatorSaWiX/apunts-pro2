@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'fr
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useShortcut } from '../hooks/useShortcut';
 import { useSettingsStore } from '../stores/useSettingsStore';
+import { useTopicNotes } from '../hooks/useTopicNotes';
 
 const SpotlightCard = React.memo(({
     children,
@@ -106,44 +107,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const metricsRef = useRef<{ center: number, index: number }[]>([]);
 
-    const { sortedTopics, topicMeta } = useMemo(() => {
-        // Pre-compute metadata for all slugs in a single pass: O(M)
-        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
-        for (const note of allPersonalNotes) {
-            const existing = meta.get(note.slug);
-            if (!existing) {
-                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
-            } else {
-                if (note.isNew) existing.hasNew = true;
-                const upd = note.isUpdated || 0;
-                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
-            }
-        }
-
-        const topics = [...allPersonalNotes]
-            .filter(note => {
-                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
-                if (!isMatch) return false;
-
-                // Hide notes marked as draft
-                if (note.draft) {
-                    return false;
-                }
-
-                // Filtrar duplicats: quins idiomes té disponibles aquest slug?
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
-                const hasPreferred = versions.some(n => n.lang === preferredLang);
-
-                if (hasPreferred) {
-                    return note.lang === preferredLang;
-                } else {
-                    return note.lang === 'ca';
-                }
-            })
-            .sort((a, b) => a.order - b.order);
-
-        return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang, allPersonalNotes]);
+    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)
     useEffect(() => {
@@ -154,6 +118,19 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     // Load seen topics from localStorage on mount
     useEffect(() => {
         try {
+            // Migració de claus antigues per no perdre el progrés de l'usuari
+            const oldNew = localStorage.getItem('v1_seen-new-topics');
+            if (oldNew && !localStorage.getItem('seen-new-topics')) {
+                localStorage.setItem('seen-new-topics', oldNew);
+                localStorage.removeItem('v1_seen-new-topics');
+            }
+            
+            const oldVersions = localStorage.getItem('v1_seen-topic-versions');
+            if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
+                localStorage.setItem('seen-topic-versions', oldVersions);
+                localStorage.removeItem('v1_seen-topic-versions');
+            }
+
             const savedNew = localStorage.getItem('seen-new-topics');
             if (savedNew) {
                 setSeenNewTopics(JSON.parse(savedNew));

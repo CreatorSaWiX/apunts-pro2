@@ -109,18 +109,18 @@ async function buildEmbeddings() {
         return; // Retornem d'hora per no sobreescriure el fitxer amb un array buit
     }
 
-    // Ho desem a src/data/embeddings.json
-    const dataDir = path.resolve(__dirname, '../src/data');
+    // Ho desem a data/embeddings.json
+    const dataDir = path.join(process.cwd(), 'data');
     if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
     }
-    
+
     fs.writeFileSync(
         path.join(dataDir, 'embeddings.json'),
-        JSON.stringify(successChunks) // Si pesa molt podem fer-ho sense espais
+        JSON.stringify(successChunks, null, 2)
     );
 
-    console.log('✅ Embeddings generats i guardats a src/data/embeddings.json!');
+    console.log('✅ Embeddings generats i guardats a data/embeddings.json!');
 }
 
 buildEmbeddings().catch(console.error);

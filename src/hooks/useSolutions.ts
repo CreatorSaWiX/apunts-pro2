@@ -6,6 +6,8 @@ import type { Solution } from '../content/data/solutions';
 export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
     const [solutions, setSolutions] = useState<Solution[]>([]);
     const [loading, setLoading] = useState(true);
+    // Serialize array to a stable string key to avoid referential instability causing re-fetches
+    const problemIdsKey = problemIdsToCheck?.join(',') ?? '';
 
     useEffect(() => {
         let isMounted = true;
@@ -102,7 +104,8 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
             fetchSolutions();
         }
         return () => { isMounted = false; };
-    }, [topicId, problemIdsToCheck]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [topicId, problemIdsKey]);
 
     return { solutions, loading };
 };

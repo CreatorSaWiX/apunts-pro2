@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'luc
 import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hapticSelection, hapticLight } from '../lib/haptics';
+import { useTopicNotes } from '../hooks/useTopicNotes';
 
 import type { MotionValue } from 'framer-motion';
 
@@ -407,33 +408,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     
     const isInteractive = !(isMobile && isMenuOpen);
 
-    const { sortedTopics, topicMeta } = useMemo(() => {
-        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
-        for (const note of allPersonalNotes) {
-            const existing = meta.get(note.slug);
-            if (!existing) {
-                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
-            } else {
-                if (note.isNew) existing.hasNew = true;
-                const upd = note.isUpdated || 0;
-                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
-            }
-        }
-
-        const topics = [...allPersonalNotes]
-            .filter(note => {
-                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
-                if (!isMatch) return false;
-                if (note.draft) return false;
-
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
-                const hasPreferred = versions.some(n => n.lang === preferredLang);
-                return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
-            })
-            .sort((a, b) => a.order - b.order);
-
-        return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang, allPersonalNotes]);
+    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
 
     const carouselRef = useRef<HTMLDivElement>(null);
     const { scrollX } = useScroll({ container: carouselRef });
@@ -523,34 +498,47 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
 
     useEffect(() => {
         try {
-            const savedNew = localStorage.getItem('v1_seen-new-topics');
+            // Migració de claus antigues per no perdre el progrés de l'usuari
+            const oldNew = localStorage.getItem('v1_seen-new-topics');
+            if (oldNew && !localStorage.getItem('seen-new-topics')) {
+                localStorage.setItem('seen-new-topics', oldNew);
+                localStorage.removeItem('v1_seen-new-topics');
+            }
+            
+            const oldVersions = localStorage.getItem('v1_seen-topic-versions');
+            if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
+                localStorage.setItem('seen-topic-versions', oldVersions);
+                localStorage.removeItem('v1_seen-topic-versions');
+            }
+
+            const savedNew = localStorage.getItem('seen-new-topics');
             if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
-            const savedVersions = localStorage.getItem('v1_seen-topic-versions');
+            const savedVersions = localStorage.getItem('seen-topic-versions');
             if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
         } catch (e) {
-            console.debug('LocalStorage v1 read silenced:', e);
+            console.debug('LocalStorage read silenced:', e);
         }
     }, []);
 
     const markAsSeen = useCallback((slug: string, version?: number) => {
         try {
-            const savedNew = localStorage.getItem('v1_seen-new-topics');
+            const savedNew = localStorage.getItem('seen-new-topics');
             const prevNew = savedNew ? JSON.parse(savedNew) : [];
             if (!prevNew.includes(slug)) {
                 const updatedNew = [...prevNew, slug];
-                localStorage.setItem('v1_seen-new-topics', JSON.stringify(updatedNew));
+                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
             }
 
             if (version !== undefined) {
-                const savedVersions = localStorage.getItem('v1_seen-topic-versions');
+                const savedVersions = localStorage.getItem('seen-topic-versions');
                 const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
                 if (prevVersions[slug] !== version) {
                     const updatedVersions = { ...prevVersions, [slug]: version };
-                    localStorage.setItem('v1_seen-topic-versions', JSON.stringify(updatedVersions));
+                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
                 }
             }
         } catch (e) {
-            console.debug('LocalStorage v1 write silenced:', e);
+            console.debug('LocalStorage write silenced:', e);
         }
     }, []);
 
@@ -649,6 +637,19 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     
     useEffect(() => {
         try {
+            // Migració de claus antigues per no perdre el progrés de l'usuari
+            const oldNew = localStorage.getItem('v1_seen-new-topics');
+            if (oldNew && !localStorage.getItem('seen-new-topics')) {
+                localStorage.setItem('seen-new-topics', oldNew);
+                localStorage.removeItem('v1_seen-new-topics');
+            }
+            
+            const oldVersions = localStorage.getItem('v1_seen-topic-versions');
+            if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
+                localStorage.setItem('seen-topic-versions', oldVersions);
+                localStorage.removeItem('v1_seen-topic-versions');
+            }
+
             const savedNew = localStorage.getItem('seen-new-topics');
             if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
             const savedVersions = localStorage.getItem('seen-topic-versions');
@@ -680,33 +681,7 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
         }
     }, []);
 
-    const { sortedTopics, topicMeta } = useMemo(() => {
-        const meta = new Map<string, { hasNew: boolean; newestUpdate: number }>();
-        for (const note of allPersonalNotes) {
-            const existing = meta.get(note.slug);
-            if (!existing) {
-                meta.set(note.slug, { hasNew: !!note.isNew, newestUpdate: note.isUpdated || 0 });
-            } else {
-                if (note.isNew) existing.hasNew = true;
-                const upd = note.isUpdated || 0;
-                if (upd > existing.newestUpdate) existing.newestUpdate = upd;
-            }
-        }
-
-        const topics = [...allPersonalNotes]
-            .filter(note => {
-                const isMatch = note.subject === subject && !note.slug.includes('-lab-');
-                if (!isMatch) return false;
-                if (note.draft) return false;
-
-                const versions = allPersonalNotes.filter(n => n.slug === note.slug && !n.draft);
-                const hasPreferred = versions.some(n => n.lang === preferredLang);
-                return hasPreferred ? note.lang === preferredLang : note.lang === 'ca';
-            })
-            .sort((a, b) => a.order - b.order);
-
-        return { sortedTopics: topics, topicMeta: meta };
-    }, [subject, preferredLang, allPersonalNotes]);
+    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
         return (
             <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
                 <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
