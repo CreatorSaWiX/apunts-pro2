@@ -22,6 +22,12 @@
     "newConversation": "New conversation",
     "placeholder": "Message {{aiName}}...",
     "attachFile": "Attach image or PDF",
+    "voiceInput": "Voice dictation",
+    "stopVoice": "Stop dictation",
+    "micPermissionDenied": "Microphone permission denied. Check browser permissions.",
+    "micNetworkError": "Voice service unavailable or blocked by the browser.",
+    "micNoMic": "No microphone detected.",
+    "micNotSupported": "Speech recognition not supported in this browser.",
     "warning": "AI can make mistakes. Do not share sensitive or personal data.",
     "process": {
       "analyzingIntent": "Analyzing if the query requires internet access...",

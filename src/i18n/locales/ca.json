@@ -22,6 +22,12 @@
     "newConversation": "Nova conversa",
     "placeholder": "Escriu a {{aiName}}...",
     "attachFile": "Adjuntar imatge o PDF",
+    "voiceInput": "Dictar per veu",
+    "stopVoice": "Aturar dictat",
+    "micPermissionDenied": "Permís de micròfon denegat. Revisa els permisos del navegador.",
+    "micNetworkError": "Servei de veu no disponible o bloquejat pel navegador.",
+    "micNoMic": "No s'ha detectat cap micròfon.",
+    "micNotSupported": "Reconeixement de veu no suportat en aquest navegador.",
     "warning": "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.",
     "process": {
       "analyzingIntent": "Analitzant si la consulta requereix accés a internet...",

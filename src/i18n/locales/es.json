@@ -22,6 +22,12 @@
     "newConversation": "Nueva conversación",
     "placeholder": "Escribe a {{aiName}}...",
     "attachFile": "Adjuntar imagen o PDF",
+    "voiceInput": "Dictar por voz",
+    "stopVoice": "Detener dictado",
+    "micPermissionDenied": "Permiso de micrófono denegado. Revisa los permisos del navegador.",
+    "micNetworkError": "Servicio de voz no disponible o bloqueado por el navegador.",
+    "micNoMic": "No se ha detectado ningún micrófono.",
+    "micNotSupported": "Reconocimiento de voz no soportado en este navegador.",
     "warning": "La IA puede cometer errores. No compartas datos sensibles ni personales.",
     "process": {
       "analyzingIntent": "Analizando si la consulta requiere acceso a internet...",

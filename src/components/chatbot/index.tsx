@@ -11,6 +11,7 @@ import { LoginGate } from './LoginGate';
 import { ChatHistoryPanel } from './ChatHistoryPanel';
 import { MessagesOnly, ActiveStreamingMessage } from './MessageList';
 import { SendButton } from './SendButton';
+import { MicButton } from './MicButton';
 import type { Message, ChatMeta } from './constants';
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -717,7 +718,13 @@ export const ChatBot: React.FC = () => {
                       </button>
                       <ThinkingLevelSelector value={thinkingLevel} onChange={setThinkingLevel} />
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
+                      <MicButton
+                        input={input}
+                        onTranscript={setInput}
+                        lang={i18n.language?.startsWith('es') ? 'es-ES' : i18n.language?.startsWith('en') ? 'en-US' : 'ca-ES'}
+                        disabled={streamPhase !== 'idle'}
+                      />
                       <SendButton
                         onClick={handleSend}
                         disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
