@@ -75,7 +75,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         });
     }
 
-    const { message, history, currentPath, pageText, image, aiSettings, language } = parseResult.data;
+    const { message, history, currentPath, pageText, image, aiSettings, thinkingLevel, language } = parseResult.data;
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -302,7 +302,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             streamConfig.tools = [{ googleSearch: {} }];
                         }
 
-                        applyThinkingConfig(streamConfig as any, modelName);
+                        applyThinkingConfig(streamConfig as any, modelName, thinkingLevel);
 
                         emit('status', { phase: 'thinking', model: modelName });
                         emit('thought', { text: `📡 i18n:requestingModel:${modelName}\n` });

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, UploadCloud, Plus, Clock } from 'lucide-react';
+import { Bot, X, UploadCloud, Plus, Clock, ChevronUp, Check, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useLocation } from 'react-router-dom';
@@ -26,12 +26,87 @@ const getFirebase = () => {
   return firebaseModulesPromise;
 };
 
+const THINKING_LEVELS = [
+  { id: 'auto', label: 'Auto' },
+  { id: 'low', label: 'Baix' },
+  { id: 'medium', label: 'Mig' },
+  { id: 'high', label: 'Alt' }
+] as const;
+
+type ThinkingLevel = typeof THINKING_LEVELS[number]['id'];
+
+function ThinkingLevelSelector({ value, onChange }: { value: ThinkingLevel, onChange: (val: ThinkingLevel) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  return (
+    <div className="relative flex items-center" ref={containerRef}>
+      <button 
+        type="button" 
+        onClick={() => setIsOpen(!isOpen)} 
+        className={`shrink-0 px-2 py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1 ${isOpen ? 'text-slate-200 bg-white/5' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`} 
+        title="Nivell de Raonament"
+      >
+        <span className="text-[13px] font-medium leading-none mt-[1px]">
+          {THINKING_LEVELS.find(l => l.id === value)?.label}
+        </span>
+        <ChevronUp size={14} className={`transition-transform mt-[1px] ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.95, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: 8, scale: 0.95, filter: 'blur(4px)' }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="absolute bottom-[calc(100%+12px)] left-0 bg-[#0f172a]/90 backdrop-blur-3xl border border-white/10 rounded-2xl p-1.5 shadow-[0_16px_40px_-8px_rgba(0,0,0,0.8),_0_0_0_1px_rgba(255,255,255,0.05)] flex flex-col gap-0.5 z-50 origin-bottom-left min-w-[100px]"
+          >
+            {THINKING_LEVELS.map((level) => (
+              <button
+                key={level.id}
+                type="button"
+                onClick={() => { onChange(level.id); setIsOpen(false); }}
+                className="relative px-3 py-2 text-[13px] rounded-xl transition-colors group text-center"
+              >
+                {value === level.id && (
+                  <motion.div
+                    layoutId="thinking-active-bg"
+                    className="absolute inset-0 bg-white/10 rounded-xl"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+                <div className="relative z-10 flex items-center justify-between gap-3 w-full">
+                  <span className={`transition-colors whitespace-nowrap ${value === level.id ? 'text-white font-medium' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                    {level.label}
+                  </span>
+                  {value === level.id && <Check size={14} className="text-white" />}
+                </div>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const { aiSettings, setAiSettings } = useSettingsStore();
   const { t, i18n } = useTranslation();
   const aiName = aiSettings?.identity?.name;
-  
+
   const renderAIAvatar = useCallback((iconSize: number, iconClass: string) => {
     const url = aiSettings?.identity?.avatarUrl;
     if (!url) return <Bot size={iconSize} className={iconClass} />;
@@ -56,6 +131,13 @@ export const ChatBot: React.FC = () => {
   const [streamingText, setStreamingText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [attachedFile, setAttachedFile] = useState<{ data: string; mimeType: string; name: string } | null>(null);
+  const [thinkingLevel, setThinkingLevel] = useState<ThinkingLevel>(() => {
+    return (localStorage.getItem('chat_thinking_level') as ThinkingLevel) || 'auto';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('chat_thinking_level', thinkingLevel);
+  }, [thinkingLevel]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -76,9 +158,9 @@ export const ChatBot: React.FC = () => {
     return snap.docs.map((d: any) => {
       const data = d.data();
       const historyText = data.history ? data.history.map((m: any) => m.content).join(' ').toLowerCase() : '';
-      return { 
-        id: d.id, 
-        title: data.title || t('chat.conversation', 'Conversa'), 
+      return {
+        id: d.id,
+        title: data.title || t('chat.conversation', 'Conversa'),
         updatedAt: data.updatedAt || 0,
         searchableText: historyText
       };
@@ -162,12 +244,12 @@ export const ChatBot: React.FC = () => {
   const renameChat = useCallback(async (id: string, title: string) => {
     if (!user || !title.trim()) return;
     const [{ db }, { doc, updateDoc }] = await getFirebase();
-    
+
     await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: title.trim() });
     setChatList(prev => prev.map(c => c.id === id ? { ...c, title: title.trim() } : c));
-    
+
     if (id === currentChatId) setCurrentChatTitle(title.trim());
-    
+
     setEditingId(null);
   }, [user, currentChatId]);
 
@@ -195,24 +277,24 @@ export const ChatBot: React.FC = () => {
       });
     };
 
-    const onUp = () => { 
-      setIsResizing(false); 
-      document.body.style.cursor = 'default'; 
-      document.body.style.userSelect = 'auto'; 
+    const onUp = () => {
+      setIsResizing(false);
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
       if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = null;
       }
     };
-    
-    if (isResizing) { 
-      window.addEventListener('mousemove', onMove); 
-      window.addEventListener('mouseup', onUp); 
+
+    if (isResizing) {
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
     }
-    
-    return () => { 
-      window.removeEventListener('mousemove', onMove); 
-      window.removeEventListener('mouseup', onUp); 
+
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, [isResizing]);
@@ -329,6 +411,7 @@ export const ChatBot: React.FC = () => {
           pageText,
           image: fileToSend ? { data: fileToSend.data, mimeType: fileToSend.mimeType } : undefined,
           aiSettings,
+          thinkingLevel,
           language: i18n.language
         }),
         signal: controller.signal
@@ -389,7 +472,7 @@ export const ChatBot: React.FC = () => {
                 if (fullReplyText === '') {
                   setStreamPhase('writing');
                   if (fullThoughtText.length > 0) {
-                     thoughtDurationMs = Date.now() - requestStartTime;
+                    thoughtDurationMs = Date.now() - requestStartTime;
                   }
                 }
                 fullReplyText += parsed.text;
@@ -418,12 +501,12 @@ export const ChatBot: React.FC = () => {
       }
 
       const finalText = fullReplyText || streamingText || t('chat.noResponse', 'Sense resposta.');
-      
+
       // If we never hit 'delta' but we had thoughts (e.g. error happened right after thinking), set duration
       if (thoughtDurationMs === 0 && fullThoughtText.length > 0) {
-          thoughtDurationMs = Date.now() - requestStartTime;
+        thoughtDurationMs = Date.now() - requestStartTime;
       }
-      
+
       let finalMemories = [...(aiSettings?.userContext?.memories || [])];
       let memoriesAdded: string[] = [];
 
@@ -431,8 +514,8 @@ export const ChatBot: React.FC = () => {
         metadata.memory_actions.forEach((act) => {
           if (act.action === 'ADD' && act.new_fact) {
             if (!finalMemories.includes(act.new_fact)) {
-               finalMemories.push(act.new_fact);
-               memoriesAdded.push(act.new_fact);
+              finalMemories.push(act.new_fact);
+              memoriesAdded.push(act.new_fact);
             }
           } else if (act.action === 'UPDATE' && act.old_fact && act.new_fact) {
             const idx = finalMemories.findIndex(m => m === act.old_fact);
@@ -457,14 +540,14 @@ export const ChatBot: React.FC = () => {
         });
       }
 
-      const final: Message[] = [...newMessages, { 
-          id: crypto.randomUUID(),
-          role: 'model' as const, 
-          content: finalText, 
-          addedMemories: memoriesAdded, 
-          groundingMetadata: grounding, 
-          thoughtText: fullThoughtText,
-          thoughtTimeMs: thoughtDurationMs 
+      const final: Message[] = [...newMessages, {
+        id: crypto.randomUUID(),
+        role: 'model' as const,
+        content: finalText,
+        addedMemories: memoriesAdded,
+        groundingMetadata: grounding,
+        thoughtText: fullThoughtText,
+        thoughtTimeMs: thoughtDurationMs
       }];
       setMessages(final);
       setStreamingText('');
@@ -476,9 +559,9 @@ export const ChatBot: React.FC = () => {
       const errorObj = err as Error;
       if (errorObj?.name === 'AbortError') return;
       // Preserve accumulated thoughts even if the request fails
-      setMessages(prev => [...prev, { 
+      setMessages(prev => [...prev, {
         id: crypto.randomUUID(),
-        role: 'model', 
+        role: 'model',
         content: `**Error:** ${errorObj?.message || 'Error desconegut'}`,
         thoughtText: fullThoughtText,
         thoughtTimeMs: fullThoughtText ? (Date.now() - requestStartTime) : undefined
@@ -522,20 +605,20 @@ export const ChatBot: React.FC = () => {
           >
             {/* Background */}
             <div className="absolute inset-0 z-[-1] bg-[#020617] overflow-hidden">
-              <img 
-                src="data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQDQCdASrwAIcAPpFIoU0lpCMiIEgAsBIJaW7hAuE9nqvHMvZz5AKzeirh8/MXUVsn8uejLKAJOaFT0RDVQG2aHVUmu7TV/MW8j8bTN74Mxrlelr+L7wcXw5pDOQHcVRQLnomMfEmpbhaOIvvm+LKDGc8jcs9ZAAD+5RuPgy22KjEYaHVb/T4KpzaboZ837cgmaZuQ3AfJ/358UVn7Kor7PdSWeglnfN6PBnqZbM4phUlVCpp93nLmZD/W3pTt8oXiW3HHPu1UMHJM9cj/ahOwtz1QIbtlKAufGoEur39+8R85ZqgI/6VvmNXkb1zmSE1M2DWUQYWmdTAm5afHnOI3mPL7nWXOxmnQumrDC/WfEhJc8dfb82tQdGbrrxzlRWxMy3QqBSKY5TKH+OKRxeHz/vuIC97FEPVmQ2+C6CrkgsNcEKf5Cafa2gAAAA==" 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none transform-gpu translate-z-0" 
+              <img
+                src="data:image/webp;base64,UklGRlgBAABXRUJQVlA4IEwBAADQDQCdASrwAIcAPpFIoU0lpCMiIEgAsBIJaW7hAuE9nqvHMvZz5AKzeirh8/MXUVsn8uejLKAJOaFT0RDVQG2aHVUmu7TV/MW8j8bTN74Mxrlelr+L7wcXw5pDOQHcVRQLnomMfEmpbhaOIvvm+LKDGc8jcs9ZAAD+5RuPgy22KjEYaHVb/T4KpzaboZ837cgmaZuQ3AfJ/358UVn7Kor7PdSWeglnfN6PBnqZbM4phUlVCpp93nLmZD/W3pTt8oXiW3HHPu1UMHJM9cj/ahOwtz1QIbtlKAufGoEur39+8R85ZqgI/6VvmNXkb1zmSE1M2DWUQYWmdTAm5afHnOI3mPL7nWXOxmnQumrDC/WfEhJc8dfb82tQdGbrrxzlRWxMy3QqBSKY5TKH+OKRxeHz/vuIC97FEPVmQ2+C6CrkgsNcEKf5Cafa2gAAAA=="
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover blur-[50px] scale-[1.4] select-none pointer-events-none transform-gpu translate-z-0"
               />
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>
 
             {/* Login gate — shown when user is not authenticated */}
             {!user && (
-              <LoginGate 
-                 aiName={aiName} 
-                 setIsOpen={setIsOpen} 
-                 renderAIAvatar={renderAIAvatar} 
+              <LoginGate
+                aiName={aiName}
+                setIsOpen={setIsOpen}
+                renderAIAvatar={renderAIAvatar}
               />
             )}
 
@@ -575,7 +658,7 @@ export const ChatBot: React.FC = () => {
 
             {/* Messages */}
             <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-28 md:px-6 space-y-8 custom-scrollbar z-0 flex flex-col">
-              <MessagesOnly 
+              <MessagesOnly
                 messages={messages}
                 user={user}
                 renderAIAvatar={renderAIAvatar}
@@ -616,27 +699,34 @@ export const ChatBot: React.FC = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                <div className="flex items-end gap-2">
-                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf"
-                    onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="shrink-0 p-2 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors mb-0.5 ml-1" title={t('chat.attachFile', 'Adjuntar imatge o PDF')}>
-                    <Plus size={20} />
-                  </button>
+                <div className="flex flex-col gap-1 w-full">
                   <textarea
                     ref={textareaRef} value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.nativeEvent.isComposing) return; if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                     placeholder={t('chat.placeholder', 'Escriu a {{aiName}}...', { aiName })}
-                    className="flex-1 bg-transparent px-1 py-2.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
+                    className="w-full bg-transparent px-2 py-1.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
                     rows={1}
                   />
-                  <SendButton
-                    onClick={handleSend}
-                    disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
-                    hasInput={!!(input.trim() || attachedFile)}
-                    lastSentAt={lastSentAt}
-                    cooldownMs={COOLDOWN_MS}
-                  />
+                  <div className="flex items-center justify-between px-1 pb-1">
+                    <div className="flex items-center gap-1">
+                      <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf"
+                        onChange={e => { if (e.target.files?.[0]) { processFile(e.target.files[0]); e.target.value = ''; } }} />
+                      <button type="button" onClick={() => fileInputRef.current?.click()} className="shrink-0 p-1.5 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors" title={t('chat.attachFile', 'Adjuntar imatge o PDF')}>
+                        <Plus size={20} />
+                      </button>
+                      <ThinkingLevelSelector value={thinkingLevel} onChange={setThinkingLevel} />
+                    </div>
+                    <div className="flex items-center">
+                      <SendButton
+                        onClick={handleSend}
+                        disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
+                        hasInput={!!(input.trim() || attachedFile)}
+                        lastSentAt={lastSentAt}
+                        cooldownMs={COOLDOWN_MS}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="text-center mt-2.5 mb-0.5 pointer-events-auto">

@@ -38,6 +38,7 @@ export const chatRequestSchema = z.object({
     })
     .nullish(),
   aiSettings: aiSettingsSchema,
+  thinkingLevel: z.enum(["auto", "low", "medium", "high"]).optional().default("auto"),
   language: z.string().max(10).optional().default("ca"),
 });
 
