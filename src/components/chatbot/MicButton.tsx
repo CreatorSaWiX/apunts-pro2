@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Mic, MicOff, AlertCircle } from 'lucide-react';
+import { Mic, Square, Loader2, AlertCircle } from 'lucide-react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -10,9 +10,21 @@ interface MicButtonProps {
   disabled?: boolean;
 }
 
-const getSpeechRecognition = () => {
-  if (typeof window === 'undefined') return null;
-  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+const getSupportedMimeType = (): string => {
+  if (typeof window === 'undefined' || typeof MediaRecorder === 'undefined') return '';
+  const candidates = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/mp4',
+    'audio/aac',
+    'audio/ogg;codecs=opus',
+  ];
+  for (const mime of candidates) {
+    if (MediaRecorder.isTypeSupported(mime)) {
+      return mime;
+    }
+  }
+  return '';
 };
 
 export const MicButton: React.FC<MicButtonProps> = ({
@@ -22,16 +34,19 @@ export const MicButton: React.FC<MicButtonProps> = ({
   disabled = false,
 }) => {
   const { t } = useTranslation();
-  const [isListening, setIsListening] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const isListeningRef = useRef(false);
-  const recognitionRef = useRef<any>(null);
-  const baseTextRef = useRef<string>('');
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioStreamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<any>(null);
+  const startTimeRef = useRef<number>(0);
+
   const inputRef = useRef(input);
   inputRef.current = input;
-
-  const SpeechClass = getSpeechRecognition();
 
   // Auto-dismiss error message after 6 seconds
   useEffect(() => {
@@ -40,132 +55,174 @@ export const MicButton: React.FC<MicButtonProps> = ({
     return () => clearTimeout(timer);
   }, [errorMessage]);
 
-  // Clean up on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      isListeningRef.current = false;
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.onresult = null;
-          recognitionRef.current.onerror = null;
-          recognitionRef.current.onend = null;
-          recognitionRef.current.abort();
-        } catch {
-          // ignore
-        }
-        recognitionRef.current = null;
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (audioStreamRef.current) {
+        audioStreamRef.current.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
 
-  const toggleListening = useCallback(() => {
-    if (disabled) return;
-
-    // 1. If currently listening, stop immediately
-    if (isListeningRef.current) {
-      isListeningRef.current = false;
-      setIsListening(false);
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch {
-          // ignore
-        }
-        recognitionRef.current = null;
-      }
-      return;
+  const stopAudioTracks = () => {
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach(track => track.stop());
+      audioStreamRef.current = null;
     }
+  };
 
-    // 2. Check browser support
-    if (!SpeechClass) {
-      setErrorMessage(t('chat.micNotSupported', 'Reconeixement de veu no suportat en aquest navegador.'));
+  const handleTranscribeAudio = async (blob: Blob, mimeType: string) => {
+    setIsTranscribing(true);
+    setErrorMessage(null);
+
+    try {
+      // Convert audio blob to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => {
+          const result = reader.result as string;
+          const base64 = result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+      });
+      reader.readAsDataURL(blob);
+      const audioBase64 = await base64Promise;
+
+      const res = await fetch('/api/transcribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          audio: audioBase64,
+          mimeType,
+          language: lang,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Error en transcriure' }));
+        throw new Error(errorData.error || 'Error en el servidor de transcripció');
+      }
+
+      const data = await res.json();
+      const transcribedText = data.text?.trim();
+
+      if (transcribedText) {
+        const base = inputRef.current.trim();
+        onTranscript(base ? `${base} ${transcribedText}` : transcribedText);
+      }
+    } catch (err: any) {
+      console.error('[Clouffy Mic] Transcription error:', err);
+      setErrorMessage(err?.message || t('chat.micNetworkError', "Error de connexió en enviar l'àudio."));
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const startRecording = async () => {
+    if (disabled || isTranscribing) return;
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setErrorMessage(t('chat.micNotSupported', 'Gravació d\'àudio no suportada en aquest navegador.'));
       return;
     }
 
     setErrorMessage(null);
-
-    // Clean up any stale instance
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.abort();
-      } catch {
-        // ignore
-      }
-      recognitionRef.current = null;
-    }
+    audioChunksRef.current = [];
 
     try {
-      // NOTE: recognition.start() MUST be called strictly synchronously inside the user's click gesture!
-      const recognition = new SpeechClass();
-      const isSafari = typeof navigator !== 'undefined' && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioStreamRef.current = stream;
 
-      recognition.continuous = !isSafari;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
-      recognition.lang = lang;
+      const mimeType = getSupportedMimeType();
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
 
-      // Save the text that was already in the input so we append to it
-      const base = inputRef.current.trim();
-      baseTextRef.current = base ? `${base} ` : '';
-
-      recognition.onstart = () => {
-        isListeningRef.current = true;
-        setIsListening(true);
-        setErrorMessage(null);
-      };
-
-      recognition.onresult = (event: any) => {
-        let sessionTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          sessionTranscript += event.results[i][0].transcript;
-        }
-        if (sessionTranscript) {
-          const base = baseTextRef.current;
-          onTranscript(base ? `${base}${sessionTranscript.trimStart()}` : sessionTranscript);
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
         }
       };
 
-      recognition.onerror = (event: any) => {
-        if (event.error === 'no-speech') {
-          // Normal pause in speaking, ignore
+      recorder.onstop = () => {
+        const duration = (Date.now() - startTimeRef.current) / 1000;
+        stopAudioTracks();
+
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+
+        setIsRecording(false);
+        setRecordingSeconds(0);
+
+        // Ignore very brief clicks (< 0.5s)
+        if (duration < 0.5 || audioChunksRef.current.length === 0) {
           return;
         }
 
-        if (event.error === 'not-allowed') {
-          setErrorMessage(t('chat.micPermissionDenied', 'Permís de micròfon denegat. Revisa els permisos del navegador.'));
-        } else if (event.error === 'network') {
-          setErrorMessage(t('chat.micNetworkError', 'Servei de veu no disponible o bloquejat pel navegador.'));
-        } else if (event.error === 'audio-capture') {
-          setErrorMessage(t('chat.micNoMic', "No s'ha detectat cap micròfon."));
-        } else if (event.error === 'language-not-supported') {
-          setErrorMessage(`Idioma ${lang} no suportat pel navegador.`);
-        } else {
-          setErrorMessage(`Error: ${event.error}`);
-        }
-
-        isListeningRef.current = false;
-        setIsListening(false);
+        const effectiveMime = recorder.mimeType || mimeType || 'audio/webm';
+        const audioBlob = new Blob(audioChunksRef.current, { type: effectiveMime });
+        handleTranscribeAudio(audioBlob, effectiveMime);
       };
 
-      recognition.onend = () => {
-        isListeningRef.current = false;
-        setIsListening(false);
-        recognitionRef.current = null;
-      };
+      recorder.start(250); // collect chunk every 250ms
+      startTimeRef.current = Date.now();
+      setIsRecording(true);
+      setRecordingSeconds(0);
 
-      recognitionRef.current = recognition;
-
-      // Directly invoke synchronously inside the user activation
-      recognition.start();
+      // Start elapsed timer
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds(prev => {
+          // Auto-stop after 60 seconds
+          if (prev >= 60) {
+            stopRecording();
+            return 60;
+          }
+          return prev + 1;
+        });
+      }, 1000);
     } catch (err: any) {
-      console.error('[Clouffy Mic] Failed to start:', err);
-      isListeningRef.current = false;
-      setIsListening(false);
-      setErrorMessage(err?.message || 'Error en activar el micròfon');
+      console.warn('[Clouffy Mic] MediaRecorder start error:', err);
+      stopAudioTracks();
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setErrorMessage(t('chat.micPermissionDenied', 'Permís de micròfon denegat. Revisa els permisos del navegador.'));
+      } else if (err.name === 'NotFoundError') {
+        setErrorMessage(t('chat.micNoMic', "No s'ha detectat cap micròfon."));
+      } else {
+        setErrorMessage(err?.message || 'Error en activar el micròfon');
+      }
+      setIsRecording(false);
     }
-  }, [disabled, SpeechClass, lang, onTranscript, t]);
+  };
 
-  if (!SpeechClass) return null;
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (err) {
+        console.warn('Error stopping mediaRecorder:', err);
+      }
+    }
+  }, []);
+
+  const handleClick = () => {
+    if (isTranscribing) return;
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  const formatTimer = (sec: number) => {
+    const mins = Math.floor(sec / 60);
+    const remainingSec = sec % 60;
+    return `${mins}:${remainingSec < 10 ? '0' : ''}${remainingSec}`;
+  };
 
   return (
     <div className="relative flex items-center justify-center">
@@ -186,27 +243,46 @@ export const MicButton: React.FC<MicButtonProps> = ({
 
       <button
         type="button"
-        onClick={toggleListening}
-        disabled={disabled}
-        title={isListening ? t('chat.stopVoice', 'Aturar dictat') : t('chat.voiceInput', 'Dictar per veu')}
-        className={`relative shrink-0 p-2 rounded-full transition-all flex items-center justify-center ${
-          disabled
-            ? 'opacity-40 cursor-not-allowed text-slate-500'
-            : isListening
-            ? 'bg-red-500/20 text-red-400 ring-1 ring-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+        onClick={handleClick}
+        disabled={disabled || isTranscribing}
+        title={
+          isTranscribing
+            ? t('chat.transcribing', 'Transcribint amb IA...')
+            : isRecording
+            ? t('chat.stopVoice', 'Aturar i transcriure')
+            : t('chat.voiceInput', 'Dictar amb IA')
+        }
+        className={`relative shrink-0 p-2 rounded-full transition-all flex items-center justify-center gap-1.5 ${
+          disabled || isTranscribing
+            ? 'opacity-60 cursor-not-allowed text-slate-400 bg-white/5'
+            : isRecording
+            ? 'bg-red-500/20 text-red-400 ring-1 ring-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.3)] pr-3 pl-2.5'
             : 'text-slate-400 hover:text-slate-200 hover:bg-white/10'
         }`}
       >
-        {isListening && (
+        {isRecording && (
           <motion.span
             className="absolute inset-0 rounded-full bg-red-500/30 -z-0 pointer-events-none"
-            animate={{ scale: [1, 1.45, 1], opacity: [0.7, 0.1, 0.7] }}
+            animate={{ scale: [1, 1.4, 1], opacity: [0.7, 0.1, 0.7] }}
             transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
           />
         )}
+
         <span className="relative z-10 flex items-center justify-center">
-          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          {isTranscribing ? (
+            <Loader2 size={17} className="animate-spin text-sky-400" />
+          ) : isRecording ? (
+            <Square size={14} className="fill-red-400 text-red-400" />
+          ) : (
+            <Mic size={18} />
+          )}
         </span>
+
+        {isRecording && (
+          <span className="relative z-10 text-[11px] font-mono font-medium text-red-300 leading-none">
+            {formatTimer(recordingSeconds)}
+          </span>
+        )}
       </button>
     </div>
   );
