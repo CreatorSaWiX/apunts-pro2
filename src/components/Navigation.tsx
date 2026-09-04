@@ -193,33 +193,46 @@ const Navigation: React.FC = () => {
 
                             <div className="hidden md:block w-px h-5 bg-white/10 mx-1" />
 
-                            <NavLinkItem
-                                to="/profile"
-                                label={user ? t('nav.profile', 'El meu perfil') : ''}
-                                isActive={location.pathname === '/profile'}
-                                text={user?.username}
-                                className={`h-11 md:h-10 pl-1 md:pl-1.5 transition duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0 ${user ? 'flex' : 'hidden'}`}
-                            >
-                                <div className="relative flex items-center justify-center shrink-0">
-                                    <img src={user ? (resolveMediaUrl(user.avatar) || user.avatar) : ''} alt={user?.username || ''} loading="eager" className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} />
-                                    {unreadCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
-                                    )}
-                                </div>
-                                <AnimatePresence mode="popLayout">
-                                    {location.pathname === '/profile' && user && (
-                                        <motion.span 
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.8 }}
-                                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                            className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
-                                        >
-                                            {user.username}
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
-                            </NavLinkItem>
+                            {user && (
+                                <NavLinkItem
+                                    to="/profile"
+                                    label={t('nav.profile', 'El meu perfil')}
+                                    isActive={location.pathname === '/profile'}
+                                    text={user.username}
+                                    className={`h-11 md:h-10 pl-1 md:pl-1.5 transition duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0`}
+                                >
+                                    <div className="relative flex items-center justify-center shrink-0">
+                                        {user.avatar ? (
+                                            <img 
+                                                src={resolveMediaUrl(user.avatar) || user.avatar} 
+                                                alt={user.username || ''} 
+                                                loading="eager" 
+                                                className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} 
+                                            />
+                                        ) : (
+                                            <div className={`rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white border-2 transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`}>
+                                                {user.username?.[0]?.toUpperCase() || 'U'}
+                                            </div>
+                                        )}
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
+                                        )}
+                                    </div>
+                                    <AnimatePresence mode="popLayout">
+                                        {location.pathname === '/profile' && (
+                                            <motion.span 
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.8 }}
+                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
+                                            >
+                                                {user.username}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </NavLinkItem>
+                            )}
 
                             <div className={`h-11 md:h-10 px-3 md:px-0 md:w-10 items-center justify-center shrink-0 ${!user && isLoading ? 'flex' : 'hidden'}`}>
                                 <div className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-slate-800 animate-pulse border-2 border-white/10" />
