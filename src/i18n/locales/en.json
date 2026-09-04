@@ -565,6 +565,11 @@
     "backToHome": "Back to Home",
     "openInGithub": "Open in GitHub",
     "downloadPDF": "Download PDF",
+    "openDocument": "Open document",
+    "open": "Open",
+    "download": "Download",
+    "mobilePdfTip": "You can download or open the document in full screen.",
+    "pdfFallbackNotice": "Your mobile browser cannot preview the PDF here, but you can open or download it directly with the buttons.",
     "readTime": "minute read"
   },
   "solutions": {

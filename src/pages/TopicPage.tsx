@@ -54,6 +54,12 @@ const TopicPage: React.FC = () => {
     const isLab = topic?.slug.includes('-lab-');
     const filename = topic ? topic.slug.replace(new RegExp(`^${topic.subject}-`), '') : '';
 
+    const embeddedPdfUrl = React.useMemo(() => {
+        if (!topic?.content) return null;
+        const match = topic.content.match(/<object[^>]+data=["']([^"']+\.pdf)["']/i);
+        return match ? match[1] : null;
+    }, [topic?.content]);
+
     const { prevTopic, nextTopic } = React.useMemo(() => {
         if (!topic) return { prevTopic: undefined, nextTopic: undefined };
 
@@ -140,15 +146,29 @@ const TopicPage: React.FC = () => {
                     className="mb-8 border-b border-white/5 pb-8 relative"
                 >
                     {/* PDF Download Button UI - Absolute Floating */}
-                    <div className={`absolute top-0 right-0 z-20 ${(availablePdfs.ca || availablePdfs.es) ? '' : 'hidden'}`}>
-                        <button
+                    <div className={`absolute top-0 right-0 z-20 ${(availablePdfs.ca || availablePdfs.es || embeddedPdfUrl) ? '' : 'hidden'}`}>
+                        {embeddedPdfUrl ? (
+                            <a
+                                href={embeddedPdfUrl}
+                                download={embeddedPdfUrl.split('/').pop() || 'document.pdf'}
+                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-15 cursor-pointer no-underline active:scale-95"
+                                aria-label={t('downloadPDF', 'Descarregar PDF')}
+                                title={t('downloadPDF', 'Descarregar PDF')}
+                            >
+                                <FileText size={18} className="group-hover:scale-110 transition-transform duration-300" />
+                                <span>PDF</span>
+                            </a>
+                        ) : (
+                            <button
                                 type="button"
                                 onClick={() => setIsPdfMenuOpen(!isPdfMenuOpen)}
-                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-15"
-                                aria-label="Veure document">
+                                className="flex flex-col items-center justify-center gap-1 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl border transition select-none bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300 shadow-lg shadow-red-950/10 group min-w-15 cursor-pointer active:scale-95"
+                                aria-label="Veure document"
+                            >
                                 <FileText size={18} className="group-hover:scale-110 transition-transform duration-300" />
                                 <span>PDF</span>
                             </button>
+                        )}
                             
                             <AnimatePresence>
                                 {isPdfMenuOpen && (

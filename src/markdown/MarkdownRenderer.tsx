@@ -34,6 +34,7 @@ const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
+import PdfEmbedViewer from "../components/ui/PdfEmbedViewer";
 const ThreeFallback = () => {
     const { t } = useTranslation();
     return (
@@ -349,7 +350,18 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     ),
     mark: ({ ...props }) => (
         <mark className="bg-amber-500/20 text-amber-200 font-medium rounded-sm px-1.5 py-0.5" {...props} />
-    )
+    ),
+    object: ({ ...props }: any) => {
+        const data = (props.data || props.src) as string;
+        const type = (props.type as string) || '';
+        const isPdf = type === 'application/pdf' || (typeof data === 'string' && data.toLowerCase().includes('.pdf'));
+
+        if (isPdf && data) {
+            return <PdfEmbedViewer data={data} {...props} />;
+        }
+
+        return <object {...props} />;
+    }
 };
 
 const rehypePluginsConfig = [

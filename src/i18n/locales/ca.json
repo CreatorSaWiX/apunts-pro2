@@ -566,6 +566,11 @@
     "backToHome": "Tornar a Inici",
     "openInGithub": "Obrir a GitHub",
     "downloadPDF": "Descarregar PDF",
+    "openDocument": "Obrir document",
+    "open": "Obrir",
+    "download": "Descarregar",
+    "mobilePdfTip": "Pots descarregar o obrir el document a pantalla completa.",
+    "pdfFallbackNotice": "El teu navegador mòbil no permet previsualitzar el PDF aquí dins, però el pots obrir o descarregar directament amb els botons.",
     "readTime": "minuts de lectura"
   },
   "solutions": {

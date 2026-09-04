@@ -565,6 +565,11 @@
     "backToHome": "Volver a Inicio",
     "openInGithub": "Abrir en GitHub",
     "downloadPDF": "Descargar PDF",
+    "openDocument": "Abrir documento",
+    "open": "Abrir",
+    "download": "Descargar",
+    "mobilePdfTip": "Puedes descargar o abrir el documento a pantalla completa.",
+    "pdfFallbackNotice": "Tu navegador móvil no permite previsualizar el PDF aquí dentro, pero puedes abrirlo o descargarlo directamente con los botones.",
     "readTime": "minutos de lectura"
   },
   "solutions": {
