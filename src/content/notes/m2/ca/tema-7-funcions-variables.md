@@ -35,7 +35,7 @@ $$\bar{B}(\vec{a}, r) = \{ \vec{x} \in \mathbb{R}^n : d(\vec{x}, \vec{a}) \le r 
 | Si veus... | Atenció a... | Condició |
 | :--- | :--- | :--- |
 | **Arrels** ($\sqrt{g}$) | L'interior | $g(x, y) \ge 0$ |
-| **Logs** ($\ln g$) | L'argument | ==g(x, y) > 0== |
+| **Logs** ($\ln g$) | L'argument | $g(x, y) > 0$ |
 | **Fraccions** ($1/g$) | El denominador | $g(x, y) \neq 0$ |
 
 ### Mètode dels punts de prova
@@ -83,9 +83,9 @@ Podem descriure els conjunts segons el comportament de la seva frontera:
 | Nom | Equació Canònica | Significat dels Paràmetres |
 | :--- | :--- | :--- |
 | **Circumferència** | $x^2 + y^2 = r^2$ | $r$: Radi del cercle |
-| **El·lipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | ==a, b==: Semieixos (radi en $x$ i $y$) |
+| **El·lipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | $a, b$: Semieixos (radi en $x$ i $y$) |
 | **Hipèrbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | $a$: Distància del centre al vèrtex |
-| **Hipèrbola (Equilàtera)** | ==xy = k== | $k$: Determina la distància als eixos |
+| **Hipèrbola (Equilàtera)** | $xy = k$ | $k$: Determina la distància als eixos |
 | **Paràbola** | $y = a x^2$ | $a$: Factor d'obertura (més gran $\implies$ més estreta) |
 | **Diamant** | $\lvert x \rvert + \lvert y \rvert = k$ | $k$: Distància del centre als vèrtexs |
 | **Quadrat** | $\max(\lvert x \rvert, \lvert y \rvert) = k$ | $k$: Semicostat (distància del centre als costats) |
@@ -100,7 +100,7 @@ Per als exercicis de conjunts en 3D, les superfícies "mare" són:
 
 | Superfície | Equació | Descripció Visual |
 | :--- | :--- | :--- |
-| **Pla** | ==Ax + By + Cz = D== | Full de paper infinit |
+| **Pla** | $Ax + By + Cz = D$ | Full de paper infinit |
 | **Esfera** | $x^2 + y^2 + z^2 = r^2$ | Pilota de ping-pong |
 | **Cilindre** | $x^2 + y^2 = r^2$ | Tub infinit (eix Z) |
 | **Paraboloide** | $z = x^2 + y^2$ | Copa / Bol |
@@ -108,7 +108,7 @@ Per als exercicis de conjunts en 3D, les superfícies "mare" són:
 ::threeviz{type="vis_superficies_basiques_3d"}
 
 ### Corbes de Nivell
-Són les línies de "tall" a una altura $k$ constant (==f(x, y) = k==).
+Són les línies de "tall" a una altura $k$ constant ($f(x, y) = k$).
 
 ::threeviz{type="vis_corbes_nivell_3d_2d"}
 

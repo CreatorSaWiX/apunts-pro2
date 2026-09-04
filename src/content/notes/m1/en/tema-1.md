@@ -37,10 +37,10 @@ Try moving the vertices below. See how the connections are maintained even if yo
 ```
 :::
 
-A graph $G$ is a pair ==(V, A)== where $V$ is the set of vertices (non-empty) and $A$ is the set of edges.
+A graph $G$ is a pair $(V, A)$ where $V$ is the set of vertices (non-empty) and $A$ is the set of edges.
 
-- **Order ($n$)**: The number of vertices, ==n = |V|==.
-- **Size ($m$)**: The number of edges, ==m = |A|==.
+- **Order ($n$)**: The number of vertices, $n = |V|$.
+- **Size ($m$)**: The number of edges, $m = |A|$.
 
 ## 2. Relationships: neighbors and incidence
 
@@ -74,7 +74,7 @@ We have two main ways to store a graph in memory:
 For each person, we have a list of their friends. Ideal for graphs with few edges as it saves memory. **Example**: "User u is friends with [v, w, z]".
 
 ### B. Adjacency matrix
-An ($n \times n$) table of 0s and 1s. If the matrix has a $1$ at position ==(i, j)==, vertex $i$ is connected to $j$. 
+An ($n \times n$) table of 0s and 1s. If the matrix has a $1$ at position $(i, j)$, vertex $i$ is connected to $j$. 
 
 $$
 M_A = \begin{pmatrix}
@@ -129,7 +129,7 @@ $$
 
 > **Degree sequence**:
 > It's simply making a list of the degrees of all vertices, usually ordered from largest to smallest.
-> Ex: A "triangle with a hanging tail" graph has the degree list ==S = (3, 2, 2, 1)==.
+> Ex: A "triangle with a hanging tail" graph has the degree list $S = (3, 2, 2, 1)$.
 
 Since $2|A|$ is always an EVEN number, the sum of the degrees must be even. This means it's **impossible** for there to be an odd number of people with an odd number of friends.
 
@@ -436,7 +436,7 @@ Do not try to draw the complementary if they ask for numbers on the exam. The co
 ### Union graph ($G \cup G'$)
 It is the disjoint union of two graphs. We simply draw them next to each other.
 - **Vertex and Edges**: $V_{total} = V \cup V'$ and $A_{total} = A \cup A'$.
-- If $V \cap V' = \emptyset$ (they do not share nodes), the total order is exactly ==n + n'==.
+- If $V \cap V' = \emptyset$ (they do not share nodes), the total order is exactly $n + n'$.
 
 **Example**: $C_3 \cup C_3$
 :::graph{height=150}

@@ -22,7 +22,7 @@ $$\lim_{x \to a} f(x) = l \iff \lim_{x \to a^+} f(x) = \lim_{x \to a^-} f(x) = l
 For a function to be "continuous" at a point $a$, three rules must be met:
 1. The limit must exist: $l = \lim_{x \to a} f(x)$.
 2. The point must be valid: $a \in D$.
-3. The limit and the value of the function must match: ==l = f(a)==.
+3. The limit and the value of the function must match: $l = f(a)$.
 
 ### Discontinuities
 - **Removable:** The limit exists, but condition 2 or 3 fails.
@@ -34,10 +34,10 @@ For a function to be "continuous" at a point $a$, three rules must be met:
 :::
 
 ### Bolzano's Theorem
-If a function is continuous on a closed interval ==[a, b]== and at the endpoints it changes sign ($f(a) \cdot f(b) < 0$), then there is at least one point $c \in (a, b)$ such that ==f(c) = 0==.
+If a function is continuous on a closed interval $[a, b]$ and at the endpoints it changes sign ($f(a) \cdot f(b) < 0$), then there is at least one point $c \in (a, b)$ such that $f(c) = 0$.
 
 ### Weierstrass's Theorem
-Every continuous function on a closed interval ==[a, b]== is guaranteed to have an absolute maximum point $M$ and an absolute minimum $m$ within this interval.
+Every continuous function on a closed interval $[a, b]$ is guaranteed to have an absolute maximum point $M$ and an absolute minimum $m$ within this interval.
 
 ## 5. Approximate resolution of equations
 

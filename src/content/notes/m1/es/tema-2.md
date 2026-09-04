@@ -14,7 +14,7 @@ order: 2
 
 ## 2. Cortes y puentes
 
-Un grafo es **conexo** si siempre hay algún camino entre cualquier par de vértices. Si alguno no llega, se fragmenta en **componentes conexas** separadas. Cualquier grafo conexo de tamaño real exige como mínimo el uso estricto de ==n - 1== aristas (si tenemos un grafo conexo de 5 vértices, entonces tiene exactamente 4 aristas).
+Un grafo es **conexo** si siempre hay algún camino entre cualquier par de vértices. Si alguno no llega, se fragmenta en **componentes conexas** separadas. Cualquier grafo conexo de tamaño real exige como mínimo el uso estricto de $n - 1$ aristas (si tenemos un grafo conexo de 5 vértices, entonces tiene exactamente 4 aristas).
 
 *   **Vértice de corte**: Si borramos este único vértice, cortamos tantas conexiones que el grafo se divide instantáneamente en MÁS componentes conexas.
 *   **Arista puente**: Si borramos esta arista en solitario, rompemos el grafo en **exactamente 2** componentes conexas.
@@ -50,7 +50,7 @@ A nivel global de grafo tenemos 4 definiciones clave a evaluar dependiendo de es
 3.  **Radio $r(G)$**: Si buscamos el punto más eficiente del mapa... La menor excentricidad disponible obtenida por algún vértice se llama radio.
 4.  **Centro del Grafo**: Cualquiera y todos los vértices donde hayan calculado tener de forma milagrosa justamente la excentricidad exactamente igual a dicho **radio**.
 
-**Ejemplo:** Consideremos el camino ==a - b - c - d==:
+**Ejemplo:** Consideremos el camino $a - b - c - d$:
 
 | | $d(\cdot, a)$ | $d(\cdot, b)$ | $d(\cdot, c)$ | $d(\cdot, d)$ | **Excentricidad** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
@@ -61,7 +61,7 @@ A nivel global de grafo tenemos 4 definiciones clave a evaluar dependiendo de es
 
 *   **Diámetro** $D(G) = \max(3,2,2,3) = 3$
 *   **Radio** $r(G) = \min(3,2,2,3) = 2$
-*   **Centro** = $\{b, c\}$ (los vértices con excentricidad === r==)
+*   **Centro** = $\{b, c\}$ (los vértices con excentricidad $= r$)
 
 ---
 
@@ -81,9 +81,9 @@ Mientras que el DFS cae en picado, el **BFS** se propaga radialmente por capas. 
 Si tenemos un array `D` que nos guarda cuántos pasos llevamos dados:
 1. Poner el nodo de origen ($v$) a distancia `0` dentro de `D`. `D[v] = 0`.
 2. Encolas y añades el $v$ a la lista de Visitados ($W$).
-3. Cuando extraes el primero de la cola (llamado $x$), todos los nuevos adyacentes inexplorados ($y$) tomarán estrictamente como distancia oficial el valor **==D[y] = D[x] + 1==**. ¡Y tú avanzas a otro barrio!
+3. Cuando extraes el primero de la cola (llamado $x$), todos los nuevos adyacentes inexplorados ($y$) tomarán estrictamente como distancia oficial el valor **$D[y] = D[x] + 1$**. ¡Y tú avanzas a otro barrio!
 
-> Sea el grafo simple ==G = (V,A)== y su vértice $v \in V$. El vector resultante $D$ obtenido manualmente durante **las rutinas puras del algoritmo BFS** garantiza convertirse en el almacenamiento real de la **distancia mínima de caminos del vértice original $v$ hacia cualquier otro** ubicado en toda la raíz de nodos conectados.
+> Sea el grafo simple $G = (V,A)$ y su vértice $v \in V$. El vector resultante $D$ obtenido manualmente durante **las rutinas puras del algoritmo BFS** garantiza convertirse en el almacenamiento real de la **distancia mínima de caminos del vértice original $v$ hacia cualquier otro** ubicado en toda la raíz de nodos conectados.
 
 :::algoviz{algorithm="bfs2"}
 :::

@@ -14,7 +14,7 @@ order: 2
 
 ## 2. Talls i ponts
 
-Un graf és **connex** si sempre hi ha algun camí entre qualsevol parella de vèrtexs. Si algun no hi arriba, es fragmenta en **components connexos** separats. Qualsevol graf connex de mida real exigeix com a mínim l'ús estricte ==n - 1== arestes (si tenim un graf connex de 5 vèrtexs, aleshores té exactament 4 arestes).
+Un graf és **connex** si sempre hi ha algun camí entre qualsevol parella de vèrtexs. Si algun no hi arriba, es fragmenta en **components connexos** separats. Qualsevol graf connex de mida real exigeix com a mínim l'ús estricte $n - 1$ arestes (si tenim un graf connex de 5 vèrtexs, aleshores té exactament 4 arestes).
 
 *   **Vèrtex de tall**: Si esborrem aquest sol vèrtex, tallem tantes connexions que el graf es divideix instantàniament en MÉS components connexos.
 *   **Aresta pont**: Si esborrem aquesta aresta en solitari, trenquem el graf en **exactament 2** components connexos.
@@ -50,7 +50,7 @@ A nivell global de graf tenim 4 definicions claus a avaluar depenent d'aquesta $
 3.  **Radi $r(G)$**: Si cerquem el punt més eficient del mapa... La menor excentricitat disponible obtinguda per algun vèrtex es diu radi.
 4.  **Centre del Graf**: Qualsevol i tots els vèrtexs on hagin calculat tenir de forma miraculosa justament l'excentricitat exactament igual al dit **radi**.
 
-**Exemple:** Considerem el camí ==a - b - c - d==:
+**Exemple:** Considerem el camí $a - b - c - d$:
 
 | | $d(\cdot, a)$ | $d(\cdot, b)$ | $d(\cdot, c)$ | $d(\cdot, d)$ | **Excentricitat** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
@@ -61,7 +61,7 @@ A nivell global de graf tenim 4 definicions claus a avaluar depenent d'aquesta $
 
 *   **Diàmetre** $D(G) = \max(3,2,2,3) = 3$
 *   **Radi** $r(G) = \min(3,2,2,3) = 2$
-*   **Centre** = $\{b, c\}$ (els vèrtexs amb excentricitat === r==)
+*   **Centre** = $\{b, c\}$ (els vèrtexs amb excentricitat $= r$)
 
 ---
 
@@ -81,9 +81,9 @@ Mentre que el DFS baixa en picat "caient", el **BFS** es propaga radialment per 
 Si tenim un array `D` que ens guarda quants passos portem fets:
 1. Posar el node d'origen ($v$) a distància `0` dins de `D`. `D[v] = 0`.
 2. Encues i afegeixes el $v$ a la llista de Visitat ($W$).
-3. Quan extrems el primer de la cua (anomenat $x$), tots els nous adjacents inexplorats ($y$) prendran estrictament com a distància oficial el valor **==D[y] = D[x] + 1==**. I tu avances a un altre barri!
+3. Quan extrems el primer de la cua (anomenat $x$), tots els nous adjacents inexplorats ($y$) prendran estrictament com a distància oficial el valor **$D[y] = D[x] + 1$**. I tu avances a un altre barri!
 
-> Sigui el graf simple ==G = (V,A)== i el seu vèrtex $v \in V$. El vector resultori $D$ obtingut manualment durant **les rutines pures de l'algorisme BFS** garanteix esdevindre l'emmagatzematge real de la **distància mínima de camins del vèrtex original $v$ cap a qualsevol altre** ubicat a tota l'arrel de nodes connectats.
+> Sigui el graf simple $G = (V,A)$ i el seu vèrtex $v \in V$. El vector resultori $D$ obtingut manualment durant **les rutines pures de l'algorisme BFS** garanteix esdevindre l'emmagatzematge real de la **distància mínima de camins del vèrtex original $v$ cap a qualsevol altre** ubicat a tota l'arrel de nodes connectats.
 
 :::algoviz{algorithm="bfs2"}
 :::

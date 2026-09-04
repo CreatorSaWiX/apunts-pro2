@@ -31,10 +31,10 @@ A **vector space** over a field $\mathbb{K}$ (which will normally be $\mathbb{R}
 
 | Axiom | Definition | Example (in $\mathbb{R}^2$) |
 | :--- | :--- | :--- |
-| **e1** Associative | ==u + (v + w) = (u + v) + w== | ==(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)== |
-| **e2** Commutative | ==u + v = v + u== | ==(1,2) + (3,4) = (3,4) + (1,2) = (4,6)== |
-| **e3** Identity element | $\exists! \, 0_E \in E : u + 0_E = u$ | ==(x,y) + (0,0) = (x,y)== |
-| **e4** Inverse element | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | ==(3,-2) + (-3,2) = (0,0)== |
+| **e1** Associative | $u + (v + w) = (u + v) + w$ | $(1,1) + [(2,0) + (0,3)] = [(1,1) + (2,0)] + (0,3)$ |
+| **e2** Commutative | $u + v = v + u$ | $(1,2) + (3,4) = (3,4) + (1,2) = (4,6)$ |
+| **e3** Identity element | $\exists! \, 0_E \in E : u + 0_E = u$ | $(x,y) + (0,0) = (x,y)$ |
+| **e4** Inverse element | $\forall u, \exists! \, (-u) : u + (-u) = 0_E$ | $(3,-2) + (-3,2) = (0,0)$ |
 
 ::mafs{type="vis_axiomes_suma"}
 
@@ -57,7 +57,7 @@ Beyond $\mathbb{R}^n$, we find many other sets that satisfy these properties:
 *   **Polynomials $\mathcal{P}(\mathbb{R})$**: All polynomials with real coefficients.
 *   **Polynomials of degree $\leq d$ ($\mathcal{P}_d(\mathbb{R})$)**: Fixing a maximum degree.
 *   **Trivial space $\{0_E\}$**: Formed only by the zero vector.
-*   **Solutions of a homogeneous linear system**: The set of solutions to ==Ax = 0== always forms a vector space.
+*   **Solutions of a homogeneous linear system**: The set of solutions to $Ax = 0$ always forms a vector space.
 
 ::mafs{type="vis_exemples_espais"}
 
@@ -103,8 +103,8 @@ Formally, a non-empty subset $S \subseteq E$ is a **vector subspace** if it itse
 ### 2.3 Linear independence
 
 A set of vectors $\{u_1, \dots, u_k\}$ is **linearly independent (LI)** if each one provides **new information**. If one were **linearly dependent (LD)**, it would mean that it's "redundant" because you can manufacture it by combining the others. For example: 
-*   **LI (Independent)**: ==u = (1, 0)== and ==v = (0, 1)==. There is no way to multiply $(1,0)$ by a number and get $(0,1)$. They are totally different paths.
-*   **LD (Dependent)**: ==u = (1, 2)== and ==v = (2, 4)==. Here ==v = 2u==. Vector $v$ doesn't tell us anything new, it's just vector $u$ stretched. **It's redundant**.
+*   **LI (Independent)**: $u = (1, 0)$ and $v = (0, 1)$. There is no way to multiply $(1,0)$ by a number and get $(0,1)$. They are totally different paths.
+*   **LD (Dependent)**: $u = (1, 2)$ and $v = (2, 4)$. Here $v = 2u$. Vector $v$ doesn't tell us anything new, it's just vector $u$ stretched. **It's redundant**.
 
 To know if a set is LI or LD, we have three main methods:
 
@@ -124,7 +124,7 @@ If we have numerical vectors, the fastest way is to put them as columns in a mat
 *   If **$r = \text{number of vectors}$** $\implies$ **LI**.
 *   If **$r < \text{number of vectors}$** $\implies$ **LD**.
 
-**Example**: For $u=(1,0,1)$, $v=(0,1,1)$ and $w=(1,1,2)$, the rank of the matrix is 2 (because ==w = u + v==). Since we have 3 vectors but the rank is 2, the set is **LD**.
+**Example**: For $u=(1,0,1)$, $v=(0,1,1)$ and $w=(1,1,2)$, the rank of the matrix is 2 (because $w = u + v$). Since we have 3 vectors but the rank is 2, the set is **LD**.
 
 ### Method 3: System resolution (DCS/ICS)
 When we set up the fundamental equation as a system of homogeneous linear equations ($Ax=0$):
@@ -152,7 +152,7 @@ Trying to unite two subspaces by simply "putting them together" (as if they were
 *   **Intuition**: Imagine two lines (the X axis and the Y axis). The union is only the points that are on the axes. But if you add the vector $(1,0)$ from the X axis and $(0,1)$ from the Y axis, you get $(1,1)$, which is in the middle of the plane and **off the axes**. You've left the "club"!
 *   **Conclusion**: The union is **NOT** normally a subspace.
 
-### 3. Sum (==S + W==): The expansion
+### 3. Sum ($S + W$): The expansion
 Since the union fails, the **sum** is the solution to merge subspaces. It consists of taking all possible sums between a vector from $S$ and one from $W$.
 *   **Intuition**: It's like taking two lines and "filling" all the space between them until forming a complete plane. The sum is **always** a subspace (the smallest one containing $S$ and $W$).
 *   **In practice**: To find a basis for $S+W$, we join the generators of $S$ and those of $W$ and eliminate the redundant ones (the dependent ones).
@@ -178,7 +178,7 @@ The **dimension** ($\dim E$) is the number of vectors any of its bases has.
 | :--- | :--- |
 | $\mathbb{R}^n$ | $n$ |
 | $\mathcal{M}_{m \times n}(\mathbb{K})$ | $m \cdot n$ |
-| $\mathcal{P}_d(\mathbb{R})$ | ==d + 1== |
+| $\mathcal{P}_d(\mathbb{R})$ | $d + 1$ |
 | Trivial subspace $\{0_E\}$ | $0$ |
 
 ### Grassmann's Formula
@@ -186,9 +186,9 @@ Vital for sum and intersection exercises:
 $$\dim(S+W) = \dim S + \dim W - \dim(S \cap W)$$
 
 Let there be $k$ vectors in a space $E$ of dimension $n$:
-1. **==k > n==**: The set is **always LD** (redundant vectors).
-2. **==k < n==**: The set **cannot generate** $E$ (missing vectors).
-3. **==k = n==**: If you prove they are **LI** (or that they generate), they are automatically a **Basis**. (This saves you half the work!).
+1. **$k > n$**: The set is **always LD** (redundant vectors).
+2. **$k < n$**: The set **cannot generate** $E$ (missing vectors).
+3. **$k = n$**: If you prove they are **LI** (or that they generate), they are automatically a **Basis**. (This saves you half the work!).
 
 ::mafs{type="vis_regles_or_base"}
 
@@ -217,13 +217,13 @@ They express each component of the vector in terms of parameters ($\alpha, \beta
   Ex: $\langle (1,0), (0,1) \rangle \implies (x,y) = \alpha(1,0) + \beta(0,1) \implies \{x=\alpha, y=\beta\}$.
 
 ### B. From Generators to Implicit (Gauss Method)
-You have the generators $\langle u_1, u_2 \rangle$ and you want to know what equations the variables ==(x, y, z)== must satisfy.
+You have the generators $\langle u_1, u_2 \rangle$ and you want to know what equations the variables $(x, y, z)$ must satisfy.
 
 **Practical example (Step by step):**
 Let $u_1=(1,1,2)^T$ and $u_2=(0,1,1)^T$. We write the augmented matrix:
 $$ \left( \begin{array}{cc|c} 1 & 0 & x \\ 1 & 1 & y \\ 2 & 1 & z \end{array} \right) \xrightarrow{R_2-R_1, R_3-2R_1} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ 0 & 1 & z-2x \end{array} \right) \xrightarrow{R_3-R_2} \left( \begin{array}{cc|c} 1 & 0 & x \\ 0 & 1 & y-x \\ \mathbf{0} & \mathbf{0} & \mathbf{z-x-y} \end{array} \right) $$
 For the system to be consistent, what remains to the right of the row of zeros must be **0**.
-**Answer**: The implicit equation is ==z - x - y = 0==.
+**Answer**: The implicit equation is $z - x - y = 0$.
 
 ### B. From Implicit to Generators
 Simply solve the system of linear equations. The free variables (parameters) will give you the basis vectors.

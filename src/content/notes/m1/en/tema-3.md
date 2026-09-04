@@ -115,7 +115,7 @@ The Elimination Theorem is your best weapon. If you find a single vertex that, w
 
 **For graph families:**
 - **Trees:** They are never Hamiltonian (they have leaves).
-- **Complete bipartite ($K_{r,s}$):** They are only Hamiltonian if ==r = s==.
+- **Complete bipartite ($K_{r,s}$):** They are only Hamiltonian if $r = s$.
 - **Wheel ($W_n$):** It is always Hamiltonian (the outer cycle already gives us the path).
 :::
 
@@ -124,7 +124,7 @@ The Elimination Theorem is your best weapon. If you find a single vertex that, w
 These conditions guarantee the existence of a cycle if the graph has "many" edges:
 
 - **Dirac's Theorem**: If all vertices have degree $g(v) \ge \frac{n}{2}$, the graph is **Hamiltonian**.
-- **Ore's Theorem**: If for each pair of **non-adjacent** vertices ==u, v==, the sum of their degrees is $g(u) + g(v) \ge n$, the graph is **Hamiltonian**.
+- **Ore's Theorem**: If for each pair of **non-adjacent** vertices $u, v$, the sum of their degrees is $g(u) + g(v) \ge n$, the graph is **Hamiltonian**.
 
 ### The exploration algorithm (backtracking)
 

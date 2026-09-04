@@ -14,7 +14,7 @@ order: 2
 
 ## 2. Cuts and bridges
 
-A graph is **connected** if there is always some path between any pair of vertices. If some cannot be reached, it fragments into separate **connected components**. Any real-sized connected graph demands at a minimum the strict use of ==n - 1== edges (if we have a connected graph of 5 vertices, then it has exactly 4 edges).
+A graph is **connected** if there is always some path between any pair of vertices. If some cannot be reached, it fragments into separate **connected components**. Any real-sized connected graph demands at a minimum the strict use of $n - 1$ edges (if we have a connected graph of 5 vertices, then it has exactly 4 edges).
 
 *   **Cut vertex**: If we delete this single vertex, we cut so many connections that the graph instantly divides into MORE connected components.
 *   **Bridge edge**: If we delete this edge alone, we break the graph into **exactly 2** connected components.
@@ -50,7 +50,7 @@ At the global graph level we have 4 key definitions to evaluate depending on thi
 3.  **Radius $r(G)$**: If we are looking for the most efficient point on the map... The lowest available eccentricity obtained by some vertex is called the radius.
 4.  **Graph Center**: Any and all vertices where they have miraculously calculated to have precisely the eccentricity exactly equal to said **radius**.
 
-**Example:** Let's consider the path ==a - b - c - d==:
+**Example:** Let's consider the path $a - b - c - d$:
 
 | | $d(\cdot, a)$ | $d(\cdot, b)$ | $d(\cdot, c)$ | $d(\cdot, d)$ | **Eccentricity** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
@@ -61,7 +61,7 @@ At the global graph level we have 4 key definitions to evaluate depending on thi
 
 *   **Diameter** $D(G) = \max(3,2,2,3) = 3$
 *   **Radius** $r(G) = \min(3,2,2,3) = 2$
-*   **Center** = $\{b, c\}$ (the vertices with eccentricity === r==)
+*   **Center** = $\{b, c\}$ (the vertices with eccentricity $= r$)
 
 ---
 
@@ -81,9 +81,9 @@ While the DFS dives steeply, the **BFS** propagates radially in layers. In the c
 If we have an array `D` that saves how many steps we have taken:
 1. Put the origin node ($v$) at distance `0` inside `D`. `D[v] = 0`.
 2. Enqueue and add $v$ to the Visited list ($W$).
-3. When you extract the first from the queue (called $x$), all the new unexplored adjacents ($y$) will strictly take as official distance the value **==D[y] = D[x] + 1==**. And you advance to another neighborhood!
+3. When you extract the first from the queue (called $x$), all the new unexplored adjacents ($y$) will strictly take as official distance the value **$D[y] = D[x] + 1$**. And you advance to another neighborhood!
 
-> Let the simple graph be ==G = (V,A)== and its vertex $v \in V$. The resulting vector $D$ obtained manually during **the pure routines of the BFS algorithm** is guaranteed to become the actual storage of the **minimum path distance from the original vertex $v$ to any other** located in the entire root of connected nodes.
+> Let the simple graph be $G = (V,A)$ and its vertex $v \in V$. The resulting vector $D$ obtained manually during **the pure routines of the BFS algorithm** is guaranteed to become the actual storage of the **minimum path distance from the original vertex $v$ to any other** located in the entire root of connected nodes.
 
 :::algoviz{algorithm="bfs2"}
 :::

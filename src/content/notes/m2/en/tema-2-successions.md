@@ -8,7 +8,7 @@ subject: "m2"
 
 ## 1.1 Definition
 
-Imagine an infinite list of ordered numbers. That is, literally, a sequence. Mathematically, we define it as a map where to each natural number (==1, 2, 3...==) we assign a real number. We usually use the letter $a$ and a subscript $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
+Imagine an infinite list of ordered numbers. That is, literally, a sequence. Mathematically, we define it as a map where to each natural number ($1, 2, 3...$) we assign a real number. We usually use the letter $a$ and a subscript $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
 
 There are three main ways to define them, and we must know how to identify them:
 
@@ -86,7 +86,7 @@ $$
 
 ### B. The number e and $1^\infty$
 
-A sequence is **increasing** if each term is greater than or equal to the previous one ($a_m \leq a_n$ when ==m < n==). It is **decreasing** if the opposite happens. Sequences that are increasing or decreasing are generically called **monotonic**.
+A sequence is **increasing** if each term is greater than or equal to the previous one ($a_m \leq a_n$ when $m < n$). It is **decreasing** if the opposite happens. Sequences that are increasing or decreasing are generically called **monotonic**.
 
 **By the monotone convergence theorem**, every monotonic and bounded sequence is necessarily convergent. The best example of this is the sequence $a_n = \left(1 + \frac{1}{n}\right)^n$.
 
@@ -97,8 +97,8 @@ It is strictly increasing and is trapped between $2$ and $3$. Since it grows but
 Finally, how do we calculate stranger limits if we don't have polynomials or simple sums? We have two great diagnostic tools:
 
 1.  **Root test:** We calculate the limit of the n-th root of the absolute value of the term: $\lim_n \sqrt[n]{|a_n|} = L$.
-    *   If ==L < 1==, the original limit of $a_n$ is $0$.
-    *   If ==L > 1==, the sequence escapes to infinity ($\lim_n |a_n| = +\infty$).
+    *   If $L < 1$, the original limit of $a_n$ is $0$.
+    *   If $L > 1$, the sequence escapes to infinity ($\lim_n |a_n| = +\infty$).
 
 2.  **Ratio test:** If we don't like roots, we can take a term and divide it by the previous one: $\lim_n \frac{|a_n|}{|a_{n-1}|} = L$. The results work exactly the same: if it yields less than 1 it converges to 0, and if it is greater than 1 it diverges.
 

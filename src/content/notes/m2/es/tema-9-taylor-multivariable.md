@@ -63,7 +63,7 @@ Sea $\Delta = \det(Hf(a))$ el determinante:
 El polinomio de Taylor de grado $n$ en el punto $\mathbf{a}$ aproxima la función $f$ cerca de aquel punto.
 
 ### Fórmula desplegada (Grado 1 y 2)
-Para cálculos manuales en dos variables cerca de ==(a, b)==:
+Para cálculos manuales en dos variables cerca de $(a, b)$:
 $$
 P_1(x, y) = f(a, b) + \left[ \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b) \right] 
 $$
@@ -83,7 +83,7 @@ $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a
 > Si tienes que calcular el polinomio en el origen $(0,0)$ de una función compuesta como $f(x,y) = \ln(1+2x+3y)$, **¡no derives 5 veces!** 
 > 1. Identifica el corazón de la función: $\ln(1+t)$.
 > 2. Usa el desarrollo de Taylor 1D: $t - \frac{t^2}{2} + \dots$
-> 3. Sustituye ==t = 2x+3y== y desarrolla algebraicamente.
+> 3. Sustituye $t = 2x+3y$ y desarrolla algebraicamente.
 > *Esta técnica es mucho más rápida y segura.*
 
 ::threeviz{type="taylor_3d"} -->
@@ -139,4 +139,4 @@ $$
 
 ::three{type="vis_diferencial_increment"}
 
-El **Diferencial** ($df$) representa el incremento aproximado de la función cuando nos movemos una distancia pequeña ==(dx, dy)== desde el punto inicial.
+El **Diferencial** ($df$) representa el incremento aproximado de la función cuando nos movemos una distancia pequeña $(dx, dy)$ desde el punto inicial.

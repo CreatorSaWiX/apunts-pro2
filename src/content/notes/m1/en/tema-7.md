@@ -22,7 +22,7 @@ In $\mathbb{R}^2$ and $\mathbb{R}^3$ exercises, the most typical transformations
 
 ::three{type="vis_transformacions_hibrida"}
 
-> **3D Geometry**: While in $\mathbb{R}^2$ we only have one axis of rotation, in $\mathbb{R}^3$ we can rotate around ==X, Y== or $Z$. Notice how **reflection** inverts the object; it's a key concept in computer graphics.
+> **3D Geometry**: While in $\mathbb{R}^2$ we only have one axis of rotation, in $\mathbb{R}^3$ we can rotate around $X, Y$ or $Z$. Notice how **reflection** inverts the object; it's a key concept in computer graphics.
 
 ---
 
@@ -37,20 +37,20 @@ For a function $f: E \to F$ to be linear, it must meet **two sacred conditions**
 2.  **Scalar Multiplication**: $f(\lambda \cdot \vec{u}) = \lambda \cdot f(\vec{u})$  
     *(If you double the input, the output is doubled).*
 
-A linear map **always** sends the zero vector to the zero vector ($f(\vec{0}_E) = \vec{0}_F$). If you see a function where ==f(0,0) = (1,2)==, you know for sure that it is **not** linear!
+A linear map **always** sends the zero vector to the zero vector ($f(\vec{0}_E) = \vec{0}_F$). If you see a function where $f(0,0) = (1,2)$, you know for sure that it is **not** linear!
 
 ::mafs{type="vis_propietats_lineals"}
 
 ### How to work with polynomials and matrices?
 When the exercise is not about $\mathbb{R}^n$, the first step is to convert the objects into "number vectors" (coordinates) with respect to a basis. Once you have the vectors, the exercise is solved exactly the same as in $\mathbb{R}^n$.
-*   **Polynomials ($\mathbb{R}_n[x]$)**: A polynomial $ax^2 + bx + c$ becomes the vector ==(a, b, c)== if we use the basis $\{x^2, x, 1\}$.
-*   **Matrices ($\mathcal{M}_{2 \times 2}$)**: A matrix $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ becomes the vector ==(a, b, c, d)== using the canonical matrix basis.
+*   **Polynomials ($\mathbb{R}_n[x]$)**: A polynomial $ax^2 + bx + c$ becomes the vector $(a, b, c)$ if we use the basis $\{x^2, x, 1\}$.
+*   **Matrices ($\mathcal{M}_{2 \times 2}$)**: A matrix $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ becomes the vector $(a, b, c, d)$ using the canonical matrix basis.
 
 ---
 
 ## 2. The Associated Matrix
 
-Working with formulas like ==f(x,y) = (2x+y, x-y)== is tiring. Luckily, all the information of a linear map can be stored in a **matrix**. This matrix acts as a "translator".
+Working with formulas like $f(x,y) = (2x+y, x-y)$ is tiring. Luckily, all the information of a linear map can be stored in a **matrix**. This matrix acts as a "translator".
 
 ::mafs{type="vis_matriu_associada"}
 

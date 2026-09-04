@@ -141,7 +141,7 @@ void parentesis(istream& in, ostream& out) {
 
 ### Exercici 3: Recursivitat simulada amb Piles
 
-L'ordinador utilitza una pila oculta (el Call-Stack) per processar funcions recursives. Aquest exercici ens demostra com qualsevol funció recursiva del tipus $f(n-1)$ pot traduir-se a codi iteratiu. Al bucle iteratiu prenem el `.top()`, i si compleix la condició de viabilitat (==v > 0==), simulem la creació teòrica d'activitats afegint manualment dues operacions més petites a la pila.
+L'ordinador utilitza una pila oculta (el Call-Stack) per processar funcions recursives. Aquest exercici ens demostra com qualsevol funció recursiva del tipus $f(n-1)$ pot traduir-se a codi iteratiu. Al bucle iteratiu prenem el `.top()`, i si compleix la condició de viabilitat ($v > 0$), simulem la creació teòrica d'activitats afegint manualment dues operacions més petites a la pila.
 
 <details>
 <summary>Codi solució: recursivitat.cc</summary>
@@ -228,7 +228,7 @@ void patata_calenta(istream& in, ostream& out) {
 
 ### Exercici 6: Comptador Recents (Sliding Window)
 
-Atès un llindar base de tolerància de temps $T$, quants anteriors segueixen "vius" passat el temps? Aquest patró es coneix com a finestra lliscant ("Sliding Window") i és la principal propietat vitalícies útil d'una cua. Al llegir un nou instant ($actual$), caduquem els més vells utilitzats mirant el `front()`: Si és menor que ==actual - T==, ho podem donar per prescrit. Acabada la purga seqüencial, demanem simple quin `size()` actiu tenim!
+Atès un llindar base de tolerància de temps $T$, quants anteriors segueixen "vius" passat el temps? Aquest patró es coneix com a finestra lliscant ("Sliding Window") i és la principal propietat vitalícies útil d'una cua. Al llegir un nou instant ($actual$), caduquem els més vells utilitzats mirant el `front()`: Si és menor que $actual - T$, ho podem donar per prescrit. Acabada la purga seqüencial, demanem simple quin `size()` actiu tenim!
 
 <details>
 <summary>Codi solució: recents.cc</summary>

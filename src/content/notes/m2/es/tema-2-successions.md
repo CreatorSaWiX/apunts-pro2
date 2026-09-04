@@ -8,7 +8,7 @@ subject: "m2"
 
 ## 1.1 Definición
 
-Imaginemos una lista infinita de números ordenados. Eso es, literalmente, una sucesión. Matemáticamente, la definimos como una aplicación donde a cada número natural (==1, 2, 3...==) le asignamos un número real. Normalmente usamos la letra $a$ y un subíndice $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
+Imaginemos una lista infinita de números ordenados. Eso es, literalmente, una sucesión. Matemáticamente, la definimos como una aplicación donde a cada número natural ($1, 2, 3...$) le asignamos un número real. Normalmente usamos la letra $a$ y un subíndice $n$: $(a_n) = a_1, a_2, a_3, \dots, a_n, \dots$
 
 Hay tres maneras principales de definirlas, y las tenemos que saber identificar:
 
@@ -86,7 +86,7 @@ $$
 
 ### B. El número e y $1^\infty$
 
-Una sucesión es **creciente** si cada término es mayor o igual que el anterior ($a_m \leq a_n$ cuando ==m < n==). Es **decreciente** si pasa lo contrario. Las sucesiones que son crecientes o decrecientes se llaman genéricamente **monótonas**.
+Una sucesión es **creciente** si cada término es mayor o igual que el anterior ($a_m \leq a_n$ cuando $m < n$). Es **decreciente** si pasa lo contrario. Las sucesiones que son crecientes o decrecientes se llaman genéricamente **monótonas**.
 
 **Por teorema de la convergencia monótona**, toda sucesión monótona y acotada es obligatoriamente convergente. El mejor ejemplo de esto es la sucesión $a_n = \left(1 + \frac{1}{n}\right)^n$.
 
@@ -97,8 +97,8 @@ Es estrictamente creciente y está atrapada entre el $2$ y el $3$. Como crece pe
 Finalmente, ¿cómo calculamos límites más extraños si no tenemos ni polinomios ni sumas sencillas? Tenemos dos grandes herramientas de diagnóstico:
 
 1.  **Criterio de la raíz:** Calculamos el límite de la raíz enésima del valor absoluto del término: $\lim_n \sqrt[n]{|a_n|} = L$.
-    *   Si ==L < 1==, el límite original de $a_n$ es $0$.
-    *   Si ==L > 1==, la sucesión se escapa hacia infinito ($\lim_n |a_n| = +\infty$).
+    *   Si $L < 1$, el límite original de $a_n$ es $0$.
+    *   Si $L > 1$, la sucesión se escapa hacia infinito ($\lim_n |a_n| = +\infty$).
 
 2.  **Criterio del cociente:** Si no nos gustan las raíces, podemos coger un término y dividirlo por el anterior: $\lim_n \frac{|a_n|}{|a_{n-1}|} = L$. Los resultados funcionan exactamente igual: si da menor a 1 converge a 0, y si es mayor a 1 diverge.
 

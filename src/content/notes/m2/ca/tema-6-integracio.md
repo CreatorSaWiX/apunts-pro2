@@ -26,13 +26,13 @@ Estem calculant l'àrea d'un rectangle infinitesimal. La integral suma tots aque
 $$F(x) = \int_a^x f(t) dt$$
 llavors es compleix que:
 1. $F$ és contínua en l'interval $[a,b]$.
-2. Si $f$ és contínua en algun punt $c \in (a,b)$, llavors la funció àrea $F$ és derivable en $c$ i ==F'(c) = f(c)==.
+2. Si $f$ és contínua en algun punt $c \in (a,b)$, llavors la funció àrea $F$ és derivable en $c$ i $F'(c) = f(c)$.
 
 ::mafs{type="teorema_fonamental"}
 
 ### Derivada d'una integral
 
-Sigui $f$ contínua i ==u(x), v(x)== funcions derivables. Si definim: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , aleshores la derivada és:
+Sigui $f$ contínua i $u(x), v(x)$ funcions derivables. Si definim: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , aleshores la derivada és:
 
 $$
 F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)
@@ -63,7 +63,7 @@ Per treballar amb integrals definides, és essencial recordar aquestes propietat
 
 <!-- ### Primitiva i regla de Barrow
 
-Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que ==F'(x) = f(x)== per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
+Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que $F'(x) = f(x)$ per a tot $x \in (a,b)$, es diu que $F$ és una **primitiva** de $f$ en l'interval $(a,b)$.
 
 ::mafs{type="primitiva_familia"}
 
@@ -71,7 +71,7 @@ Si tenim dues funcions $f$ i $F$ definides en l'interval $(a,b)$ tal que ==F'(x)
 
 Aquest concepte ens introdueix una de les eines més importants i pràctiques per avaluar integrals definides: la **Regla de Barrow**. Ens permet calcular l'integral definida d'una funció contínua de manera molt senzilla si podem trobar una de les seves primitives.
 
-> **Regla de Barrow**: Si $f$ és contínua en $[a,b]$ i $F$ és contínua en $[a,b]$ i derivable en $(a,b)$ sent una primitiva (==F'(x) = f(x)==), llavors:
+> **Regla de Barrow**: Si $f$ és contínua en $[a,b]$ i $F$ és contínua en $[a,b]$ i derivable en $(a,b)$ sent una primitiva ($F'(x) = f(x)$), llavors:
 > $$\int_a^b f(x) dx = F(b) - F(a)$$
 
 ::mafs{type="regla_barrow"}
@@ -79,12 +79,12 @@ Aquest concepte ens introdueix una de les eines més importants i pràctiques pe
 ### Propietats de simetria i paritat
 
 Si la funció $f$ presenta simetries, l'estudi de la funció àrea $F(x) = \int_0^x f(t)dt$ se simplifica:
-- Si **$f$ és parella** (==f(-x) = f(x)==), llavors **$F$ és imparella** (==F(-x) = -F(x)==).
-- Si **$f$ és imparella** (==f(-x) = -f(x)==), llavors **$F$ és parella** (==F(-x) = F(x)==).
+- Si **$f$ és parella** ($f(-x) = f(x)$), llavors **$F$ és imparella** ($F(-x) = -F(x)$).
+- Si **$f$ és imparella** ($f(-x) = -f(x)$), llavors **$F$ és parella** ($F(-x) = F(x)$).
 
 ::mafs{type="paritat_integrals"}
 
-> Recorda que la integral d'una funció imparella en un interval simètric ==[-a, a]== és sempre $0$.
+> Recorda que la integral d'una funció imparella en un interval simètric $[-a, a]$ és sempre $0$.
 
 ### Límits i indeterminacions amb integrals
 
@@ -99,10 +99,10 @@ $$\lim_{x \to a} \frac{\int_a^x f(t)dt}{g(x)} = \lim_{x \to a} \frac{f(x)}{g'(x)
 ### Estudi local de la funció integral
 
 Podem estudiar el comportament de $F(x) = \int_a^x f(t)dt$ sense calcular la integral:
-- **Punts crítics**: Són els valors de $x$ on ==F'(x) = f(x) = 0==.
-- **Creixement**: $F$ creix on ==f(x) > 0== i decreix on ==f(x) < 0==.
-- **Concavitat**: Estudiem ==F''(x) = f'(x)==. Si ==f'(x) > 0==, $F$ és convexa ($\cup$).
-- **Punts d'Inflexió**: On ==f'(x) = 0== i hi ha canvi de curvatura. -->
+- **Punts crítics**: Són els valors de $x$ on $F'(x) = f(x) = 0$.
+- **Creixement**: $F$ creix on $f(x) > 0$ i decreix on $f(x) < 0$.
+- **Concavitat**: Estudiem $F''(x) = f'(x)$. Si $f'(x) > 0$, $F$ és convexa ($\cup$).
+- **Punts d'Inflexió**: On $f'(x) = 0$ i hi ha canvi de curvatura. -->
 
 ---
 
@@ -169,7 +169,7 @@ Aquestes són les eines analítiques que hem utilitzat per resoldre els exercici
 
 ### 3.1 Càlcul d'Àrees entre corbes
 Per trobar l'àrea limitada per dues funcions $f$ i $g$:
-1. Trobem els punts de tall igualant ==f(x) = g(x)==.
+1. Trobem els punts de tall igualant $f(x) = g(x)$.
 2. Determinem quina funció és superior a l'interval $[a,b]$.
 3. Calculem l'àrea com: $A = \int_a^b |f(x) - g(x)| dx$.
 

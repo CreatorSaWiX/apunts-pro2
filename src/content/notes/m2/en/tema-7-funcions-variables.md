@@ -35,7 +35,7 @@ $$\bar{B}(\vec{a}, r) = \{ \vec{x} \in \mathbb{R}^n : d(\vec{x}, \vec{a}) \le r 
 | If you see... | Pay attention to... | Condition |
 | :--- | :--- | :--- |
 | **Roots** ($\sqrt{g}$) | The inside | $g(x, y) \ge 0$ |
-| **Logs** ($\ln g$) | The argument | ==g(x, y) > 0== |
+| **Logs** ($\ln g$) | The argument | $g(x, y) > 0$ |
 | **Fractions** ($1/g$) | The denominator | $g(x, y) \neq 0$ |
 
 ### Test point method
@@ -83,9 +83,9 @@ We can describe sets according to the behavior of their boundary:
 | Name | Canonical Equation | Meaning of Parameters |
 | :--- | :--- | :--- |
 | **Circle** | $x^2 + y^2 = r^2$ | $r$: Radius of the circle |
-| **Ellipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | ==a, b==: Semi-axes (radius in $x$ and $y$) |
+| **Ellipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | $a, b$: Semi-axes (radius in $x$ and $y$) |
 | **Hyperbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | $a$: Distance from the center to the vertex |
-| **Rectangular Hyperbola** | ==xy = k== | $k$: Determines the distance to the axes |
+| **Rectangular Hyperbola** | $xy = k$ | $k$: Determines the distance to the axes |
 | **Parabola** | $y = a x^2$ | $a$: Opening factor (larger $\implies$ narrower) |
 | **Diamond** | $\lvert x \rvert + \lvert y \rvert = k$ | $k$: Distance from the center to the vertices |
 | **Square** | $\max(\lvert x \rvert, \lvert y \rvert) = k$ | $k$: Semi-side (distance from center to sides) |
@@ -100,7 +100,7 @@ For 3D set exercises, the "mother" surfaces are:
 
 | Surface | Equation | Visual Description |
 | :--- | :--- | :--- |
-| **Plane** | ==Ax + By + Cz = D== | Infinite sheet of paper |
+| **Plane** | $Ax + By + Cz = D$ | Infinite sheet of paper |
 | **Sphere** | $x^2 + y^2 + z^2 = r^2$ | Ping-pong ball |
 | **Cylinder** | $x^2 + y^2 = r^2$ | Infinite tube (Z-axis) |
 | **Paraboloid** | $z = x^2 + y^2$ | Cup / Bowl |
@@ -108,6 +108,6 @@ For 3D set exercises, the "mother" surfaces are:
 ::threeviz{type="vis_superficies_basiques_3d"}
 
 ### Contour Lines
-These are the "cut" lines at a constant height $k$ (==f(x, y) = k==).
+These are the "cut" lines at a constant height $k$ ($f(x, y) = k$).
 
 ::threeviz{type="vis_corbes_nivell_3d_2d"}

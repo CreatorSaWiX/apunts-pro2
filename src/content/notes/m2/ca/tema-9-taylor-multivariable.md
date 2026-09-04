@@ -63,7 +63,7 @@ Sigui $\Delta = \det(Hf(a))$ el determinant:
 El polinomi de Taylor de grau $n$ en el punt $\mathbf{a}$ aproxima la funció $f$ prop d'aquell punt.
 
 ### Fórmula desplegada (Grau 1 i 2)
-Per a càlculs manuals en dues variables prop de ==(a, b)==:
+Per a càlculs manuals en dues variables prop de $(a, b)$:
 $$
 P_1(x, y) = f(a, b) + \left[ \frac{\partial f}{\partial x}(a,b)(x-a) + \frac{\partial f}{\partial y}(a,b)(y-b) \right] 
 $$
@@ -83,7 +83,7 @@ $$P_2(\mathbf{x}) = f(\mathbf{a}) + \nabla f(\mathbf{a})^T (\mathbf{x}-\mathbf{a
 > Si has de calcular el polinomi a l'origen $(0,0)$ d'una funció composta com $f(x,y) = \ln(1+2x+3y)$, **no derivis 5 vegades!** 
 > 1. Identifica el cor de la funció: $\ln(1+t)$.
 > 2. Usa el desenvolupament de Taylor 1D: $t - \frac{t^2}{2} + \dots$
-> 3. Substitueix ==t = 2x+3y== i desenvolupa algebraicament.
+> 3. Substitueix $t = 2x+3y$ i desenvolupa algebraicament.
 > *Aquesta tècnica és molt més ràpida i segura.*
 
 ::threeviz{type="taylor_3d"} -->
@@ -139,4 +139,4 @@ $$
 
 ::three{type="vis_diferencial_increment"}
 
-El **Diferencial** ($df$) representa l'increment aproximat de la funció quan ens movem una distància petita ==(dx, dy)== des del punt inicial.
+El **Diferencial** ($df$) representa l'increment aproximat de la funció quan ens movem una distància petita $(dx, dy)$ des del punt inicial.

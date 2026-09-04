@@ -22,7 +22,7 @@ En exercicis de $\mathbb{R}^2$ i $\mathbb{R}^3$, les transformacions més típiq
 
 ::three{type="vis_transformacions_hibrida"}
 
-> **Geometria en 3D**: Mentre que a $\mathbb{R}^2$ només tenim un eix de rotació, a $\mathbb{R}^3$ podem rotar respecte a ==X, Y== o $Z$. Fixa't com la **reflexió** inverteix l'objecte; és un concepte clau en gràfics per ordinador.
+> **Geometria en 3D**: Mentre que a $\mathbb{R}^2$ només tenim un eix de rotació, a $\mathbb{R}^3$ podem rotar respecte a $X, Y$ o $Z$. Fixa't com la **reflexió** inverteix l'objecte; és un concepte clau en gràfics per ordinador.
 
 ---
 
@@ -37,20 +37,20 @@ Perquè una funció $f: E \to F$ sigui lineal, ha de complir **dues condicions s
 2.  **Producte per escalar**: $f(\lambda \cdot \vec{u}) = \lambda \cdot f(\vec{u})$  
     *(Si dupliques l'entrada, la sortida es duplica).*
 
-Una aplicació lineal **sempre** envia el vector zero al vector zero ($f(\vec{0}_E) = \vec{0}_F$). Si veus una funció on ==f(0,0) = (1,2)==, ja saps segur que **no** és lineal!
+Una aplicació lineal **sempre** envia el vector zero al vector zero ($f(\vec{0}_E) = \vec{0}_F$). Si veus una funció on $f(0,0) = (1,2)$, ja saps segur que **no** és lineal!
 
 ::mafs{type="vis_propietats_lineals"}
 
 ### Com treballar amb polinomis i matrius?
 Quan l'exercici no és de $\mathbb{R}^n$, el primer pas és convertir els objectes en "vectors de números" (coordenades) respecte a una base. Un cop tens els vectors, l'exercici es resol exactament igual que a $\mathbb{R}^n$.
-*   **Polinomis ($\mathbb{R}_n[x]$)**: Un polinomi $ax^2 + bx + c$ es converteix en el vector ==(a, b, c)== si usem la base $\{x^2, x, 1\}$.
-*   **Matrius ($\mathcal{M}_{2 \times 2}$)**: Una matriu $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ es converteix en el vector ==(a, b, c, d)== usant la base canònica de matrius.
+*   **Polinomis ($\mathbb{R}_n[x]$)**: Un polinomi $ax^2 + bx + c$ es converteix en el vector $(a, b, c)$ si usem la base $\{x^2, x, 1\}$.
+*   **Matrius ($\mathcal{M}_{2 \times 2}$)**: Una matriu $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ es converteix en el vector $(a, b, c, d)$ usant la base canònica de matrius.
 
 ---
 
 ## 2. La matriu associada
 
-Treballar amb fórmules tipus ==f(x,y) = (2x+y, x-y)== és cansat. Per sort, tota la informació d'una aplicació lineal es pot guardar en una **matriu**. Aquesta matriu actua com un "traductor".
+Treballar amb fórmules tipus $f(x,y) = (2x+y, x-y)$ és cansat. Per sort, tota la informació d'una aplicació lineal es pot guardar en una **matriu**. Aquesta matriu actua com un "traductor".
 
 ::mafs{type="vis_matriu_associada"}
 

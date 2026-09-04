@@ -125,7 +125,7 @@ $$
 x + y + z = 0 \implies x = -y - z
 $$
 
-Since we have 3 variables and 1 equation, we have ==3 - 1 = 2== degrees of freedom. This means that the **geometric multiplicity** is:
+Since we have 3 variables and 1 equation, we have $3 - 1 = 2$ degrees of freedom. This means that the **geometric multiplicity** is:
 $$
 m_g(2) = \dim(E_2) = 2
 $$
@@ -145,16 +145,16 @@ A - 6I = \begin{pmatrix} -3 & 1 & 1 \\ 2 & -2 & 2 \\ 1 & 1 & -3 \end{pmatrix}
 $$
 
 Putting in row echelon form or simplifying the equations:
-1.  ==-3x + y + z = 0==
+1.  $-3x + y + z = 0$
 2.  $2x - 2y + 2z = 0 \implies x - y + z = 0 \implies y = x + z$
-3.  ==x + y - 3z = 0==
+3.  $x + y - 3z = 0$
 
-We substitute ==y = x + z== in equation 3:
+We substitute $y = x + z$ in equation 3:
 $$
 x + (x + z) - 3z = 0 \implies 2x - 2z = 0 \implies x = z
 $$
 
-If ==x = z==, then ==y = z + z = 2z==. Therefore, the vectors have the form ==(z, 2z, z) = z(1, 2, 1)==.
+If $x = z$, then $y = z + z = 2z$. Therefore, the vectors have the form $(z, 2z, z) = z(1, 2, 1)$.
 The **geometric multiplicity** is:
 $$m_g(6) = \dim(E_6) = 1$$
 
@@ -219,7 +219,7 @@ These properties will help you in proof exercises:
 The concept is the same for polynomial spaces ($P_n(\mathbb{R})$) or matrices ($\mathcal{M}_n(\mathbb{R})$):
 
 1.  Choose a basis (usually the canonical one).
-2.  Find the associated matrix ==M(f, B)==.
+2.  Find the associated matrix $M(f, B)$.
 3.  Apply the diagonalization process to this matrix.
 4.  Remember that the resulting "eigenvectors" will be the coordinates of the elements of the original space (polynomial, matrix, etc.).
 

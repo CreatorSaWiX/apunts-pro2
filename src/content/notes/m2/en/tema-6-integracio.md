@@ -26,13 +26,13 @@ We are calculating the area of an infinitesimal rectangle. The integral sums all
 $$F(x) = \int_a^x f(t) dt$$
 then it holds that:
 1. $F$ is continuous on the interval $[a,b]$.
-2. If $f$ is continuous at some point $c \in (a,b)$, then the area function $F$ is differentiable at $c$ and ==F'(c) = f(c)==.
+2. If $f$ is continuous at some point $c \in (a,b)$, then the area function $F$ is differentiable at $c$ and $F'(c) = f(c)$.
 
 ::mafs{type="teorema_fonamental"}
 
 ### Derivative of an integral
 
-Let $f$ be continuous and ==u(x), v(x)== be differentiable functions. If we define: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , then the derivative is:
+Let $f$ be continuous and $u(x), v(x)$ be differentiable functions. If we define: $F(x) = \int_{u(x)}^{v(x)} f(t)dt$ , then the derivative is:
 
 $$
 F'(x) = f(v(x)) \cdot v'(x) - f(u(x)) \cdot u'(x)
@@ -63,7 +63,7 @@ To work with definite integrals, it is essential to remember these properties:
 
 <!-- ### Primitive and Barrow's rule
 
-If we have two functions $f$ and $F$ defined on the interval $(a,b)$ such that ==F'(x) = f(x)== for all $x \in (a,b)$, $F$ is said to be a **primitive** of $f$ on the interval $(a,b)$.
+If we have two functions $f$ and $F$ defined on the interval $(a,b)$ such that $F'(x) = f(x)$ for all $x \in (a,b)$, $F$ is said to be a **primitive** of $f$ on the interval $(a,b)$.
 
 ::mafs{type="primitiva_familia"}
 
@@ -71,7 +71,7 @@ If we have two functions $f$ and $F$ defined on the interval $(a,b)$ such that =
 
 This concept introduces one of the most important and practical tools for evaluating definite integrals: **Barrow's Rule**. It allows us to calculate the definite integral of a continuous function very easily if we can find one of its primitives.
 
-> **Barrow's Rule**: If $f$ is continuous on $[a,b]$ and $F$ is continuous on $[a,b]$ and differentiable on $(a,b)$ being a primitive (==F'(x) = f(x)==), then:
+> **Barrow's Rule**: If $f$ is continuous on $[a,b]$ and $F$ is continuous on $[a,b]$ and differentiable on $(a,b)$ being a primitive ($F'(x) = f(x)$), then:
 > $$\int_a^b f(x) dx = F(b) - F(a)$$
 
 ::mafs{type="regla_barrow"}
@@ -79,12 +79,12 @@ This concept introduces one of the most important and practical tools for evalua
 ### Symmetry and parity properties
 
 If the function $f$ presents symmetries, the study of the area function $F(x) = \int_0^x f(t)dt$ is simplified:
-- If **$f$ is even** (==f(-x) = f(x)==), then **$F$ is odd** (==F(-x) = -F(x)==).
-- If **$f$ is odd** (==f(-x) = -f(x)==), then **$F$ is even** (==F(-x) = F(x)==).
+- If **$f$ is even** ($f(-x) = f(x)$), then **$F$ is odd** ($F(-x) = -F(x)$).
+- If **$f$ is odd** ($f(-x) = -f(x)$), then **$F$ is even** ($F(-x) = F(x)$).
 
 ::mafs{type="paritat_integrals"}
 
-> Remember that the integral of an odd function over a symmetric interval ==[-a, a]== is always $0$.
+> Remember that the integral of an odd function over a symmetric interval $[-a, a]$ is always $0$.
 
 ### Limits and indeterminacies with integrals
 
@@ -99,10 +99,10 @@ $$\lim_{x \to a} \frac{\int_a^x f(t)dt}{g(x)} = \lim_{x \to a} \frac{f(x)}{g'(x)
 ### Local study of the integral function
 
 We can study the behavior of $F(x) = \int_a^x f(t)dt$ without calculating the integral:
-- **Critical points**: These are the values of $x$ where ==F'(x) = f(x) = 0==.
-- **Growth**: $F$ increases where ==f(x) > 0== and decreases where ==f(x) < 0==.
-- **Concavity**: We study ==F''(x) = f'(x)==. If ==f'(x) > 0==, $F$ is convex ($\cup$).
-- **Inflection Points**: Where ==f'(x) = 0== and there is a change of curvature. -->
+- **Critical points**: These are the values of $x$ where $F'(x) = f(x) = 0$.
+- **Growth**: $F$ increases where $f(x) > 0$ and decreases where $f(x) < 0$.
+- **Concavity**: We study $F''(x) = f'(x)$. If $f'(x) > 0$, $F$ is convex ($\cup$).
+- **Inflection Points**: Where $f'(x) = 0$ and there is a change of curvature. -->
 
 ---
 
@@ -169,7 +169,7 @@ These are the analytical tools we have used to solve the exercises in this topic
 
 ### 3.1 Calculation of Areas between curves
 To find the area bounded by two functions $f$ and $g$:
-1. We find the intersection points by setting ==f(x) = g(x)==.
+1. We find the intersection points by setting $f(x) = g(x)$.
 2. We determine which function is on top in the interval $[a,b]$.
 3. We calculate the area as: $A = \int_a^b |f(x) - g(x)| dx$.
 

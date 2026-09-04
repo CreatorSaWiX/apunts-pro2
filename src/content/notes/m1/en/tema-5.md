@@ -30,8 +30,8 @@ $$
 | Type | Description | Formal Representation | Practical Example |
 | :--- | :--- | :--- | :--- |
 | **Square** | Same number of rows as columns ($m=n$). | $A \in \mathcal{M}_{n \times n}(\mathbb{K})$ | $\begin{pmatrix} 1 & 5 \\ -2 & 3 \end{pmatrix}$ |
-| **Upper triangular** | All elements below the diagonal are zero. | $a_{ij} = 0$ if ==i > j== | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
-| **Lower triangular** | All elements above the diagonal are zero. | $a_{ij} = 0$ if ==i < j== | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
+| **Upper triangular** | All elements below the diagonal are zero. | $a_{ij} = 0$ if $i > j$ | $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 4 & 5 \\ 0 & 0 & 6 \end{pmatrix}$ |
+| **Lower triangular** | All elements above the diagonal are zero. | $a_{ij} = 0$ if $i < j$ | $\begin{pmatrix} 1 & 0 & 0 \\ 2 & 4 & 0 \\ 3 & 5 & 6 \end{pmatrix}$ |
 | **Diagonal** | Only elements on the diagonal can be non-zero. | $a_{ij} = 0$ if $i \neq j$ | $\begin{pmatrix} 2 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & -1 \end{pmatrix}$ |
 | **Identity ($I_n$)** | Diagonal matrix where all diagonal elements are $1$. | $a_{ii} = 1, a_{ij} = 0$ | $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ |
 | **Symmetric** | The matrix is equal to its transpose ($A = A^t$). | $a_{ij} = a_{ji}$ | $\begin{pmatrix} 1 & 2 \\ 2 & 3 \end{pmatrix}$ |
@@ -53,7 +53,7 @@ $$
 | :--- | :--- | :--- |
 | **Non-commutative** | $AB \neq BA$ : The order of the factors alters the product. | $\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \neq \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$ |
 | **Transpose** | $(AB)^t = B^t A^t$ : The order of the factors is inverted. | $\left( \begin{pmatrix} 1 & 2 \end{pmatrix} \begin{pmatrix} 3 \\ 0 \end{pmatrix} \right)^t = \begin{pmatrix} 3 & 0 \end{pmatrix} \begin{pmatrix} 1 \\ 2 \end{pmatrix}$ |
-| **Associative** | ==(AB)C = A(BC)== : Grouping does not change the result. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
+| **Associative** | $(AB)C = A(BC)$ : Grouping does not change the result. | $\left( \begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right) \begin{pmatrix} 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \end{pmatrix} \left( \begin{pmatrix} 0 \\ 1 \end{pmatrix} \begin{pmatrix} 2 \end{pmatrix} \right)$ |
 | **Polynomial** | $p(A) = A^2 + \dots + \mathbf{a_0 I}$ : Constants carry the Identity. | For $p(x) = x^2 - 1$, we use $p(A) = A^2 - \mathbf{I}$. |
 
 ### Inverse matrix ($A^{-1}$)
@@ -78,7 +78,7 @@ $$
 **Equivalence ($A \sim B$)**: We say that $A$ and $B$ are equivalent if we can get from one to the other by combining elementary operations.
 > **Example**:  
 > $A = \begin{pmatrix} 1 & 2 \\ 3 & 1 \end{pmatrix} \xrightarrow{R_2 - 3R_1} \mathbf{B = \begin{pmatrix} 1 & 2 \\ 0 & -5 \end{pmatrix}}$  
-> This is expressed in matrices as ==B = EA== where $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
+> This is expressed in matrices as $B = EA$ where $E = \begin{pmatrix} 1 & 0 \\ -3 & 1 \end{pmatrix}$.
 
 ### Row echelon matrices and rank
 We say a matrix is in **row echelon form** when it has a descending staircase structure:
@@ -135,7 +135,7 @@ A system is defined, discussed (to know if it has a solution) and resolved (Gaus
 | Format | Description | Example |
 | :--- | :--- | :--- |
 | **Algebraic** | The equations as they are. | $\begin{cases} x + 2y = 3 \\ x + y = 2 \end{cases}$ |
-| **Matrix** | Product ==Ax = b== | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
+| **Matrix** | Product $Ax = b$ | $\begin{pmatrix} 1 & 2 \\ 1 & 1 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ |
 | **Augmented** | Block $(A \mid b)$ | $\begin{pmatrix} 1 & 2 & \mid & 3 \\ 1 & 1 & \mid & 2 \end{pmatrix}$ |
 
 Where the general **augmented matrix** is:
@@ -159,7 +159,7 @@ We say that two systems are equivalent if they have the **same general solution*
 2. **Determined consistent system (DCS)**: It has a single solution.
 3. **Indetermined consistent system (ICS)**: It has infinite solutions.
 
-### Homogeneous systems (==b = 0==)
+### Homogeneous systems ($b = 0$)
 These are systems where the entire column of independent terms is zero.
 - **They are always consistent**: They have at least the **trivial solution** $(0, \dots, 0)$.
 - **Discussion by rank**:
@@ -169,12 +169,12 @@ These are systems where the entire column of independent terms is zero.
 ### Resolution of row echelon systems
 In a consistent row echelon system with $r = \text{rank}$ and $n = \text{unknowns}$:
 - **Principal variables**: Correspond to the pivots (there are $r$).
-- **Free variables**: The rest (==n - r==), which become parameters $\lambda, \mu, \dots$
+- **Free variables**: The rest ($n - r$), which become parameters $\lambda, \mu, \dots$
 
 **Example of parametric form (ICS)**:
-If the result is ==x + 2y = 5==, we set $y = \lambda$ (free):
+If the result is $x + 2y = 5$, we set $y = \lambda$ (free):
 $$ \begin{cases} x = 5 - 2\lambda \\ y = \lambda \end{cases} \implies (x, y) = (5, 0) + \lambda(-2, 1) $$
-> The system has **1 degree of freedom** (==n-r = 1==).
+> The system has **1 degree of freedom** ($n-r = 1$).
 
 ---
 
@@ -186,11 +186,11 @@ Let **$r = \text{rank}(A)$**, **$r' = \text{rank}(A \mid b)$** and **$n$** the n
 
 | Rank Condition | System Type | Solutions | Observation in Gauss |
 | :--- | :--- | :--- | :--- |
-| **==r < r'==** | **Inconsistent (IS)** | None | A row appears: $(0 \dots 0 \mid b)$ with $b \neq 0$. |
-| **==r = r' = n==** | **Determined Cons. (DCS)** | Unique | We have as many pivots as unknowns. |
-| **==r = r' < n==** | **Indetermined Cons. (ICS)** | Infinite | There are $n-r$ free variables (parameters). |
+| **$r < r'$** | **Inconsistent (IS)** | None | A row appears: $(0 \dots 0 \mid b)$ with $b \neq 0$. |
+| **$r = r' = n$** | **Determined Cons. (DCS)** | Unique | We have as many pivots as unknowns. |
+| **$r = r' < n$** | **Indetermined Cons. (ICS)** | Infinite | There are $n-r$ free variables (parameters). |
 
-> If the system is consistent (==r = r'==), the value of **$r$** is called the **rank of the system**.
+> If the system is consistent ($r = r'$), the value of **$r$** is called the **rank of the system**.
 
 ---
 
@@ -205,7 +205,7 @@ Gaussian elimination is the systematic algorithm for solving SLEs. It follows th
 
 > **Step-by-step example**: We solve $\begin{cases} x + 2y = 3 \\ 2x + 4y = 6 \end{cases}$
 > 1. **Augmented**: $\left(\begin{array}{cc|c} 1 & 2 & 3 \\ 2 & 4 & 6 \end{array}\right) \xrightarrow{R_2 - 2R_1} \left(\begin{array}{cc|c} \mathbf{1} & 2 & 3 \\ 0 & 0 & 0 \end{array}\right)$
-> 2. **Discussion**: $\text{rank}(A) = 1$, $\text{rank}(A|b) = 1$, ==n = 2==. Since ==1 = 1 < 2==, it is an **ICS**.
+> 2. **Discussion**: $\text{rank}(A) = 1$, $\text{rank}(A|b) = 1$, $n = 2$. Since $1 = 1 < 2$, it is an **ICS**.
 > 3. **Solution**: $x + 2y = 3 \implies x = 3 - 2\lambda, y = \lambda$.
 
 ---
@@ -219,7 +219,7 @@ The determinant is a scalar value that indicates if a square matrix is invertibl
 
 | Method | Rule / Definition | Example |
 | :--- | :--- | :--- |
-| **$2 \times 2$** | Cross product: ==ad - bc== | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
+| **$2 \times 2$** | Cross product: $ad - bc$ | $\begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = 4 - 6 = -2$ |
 | **Diagonal / Triang.** | Product of the diagonal elements. | $\det \begin{pmatrix} \mathbf{2} & 5 \\ 0 & \mathbf{3} \end{pmatrix} = 2 \cdot 3 = 6$ |
 | **Minors/Cofactors** | Expand by a row/column. | $\sum a_{ik} (-1)^{i+k} \det(A_{ik})$ |
 | **Sarrus ($3 \times 3$)** | Sum of diagonals (positive and negative). | Only for orders $n=3$. |

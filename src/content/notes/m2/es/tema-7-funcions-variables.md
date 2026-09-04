@@ -35,7 +35,7 @@ $$\bar{B}(\vec{a}, r) = \{ \vec{x} \in \mathbb{R}^n : d(\vec{x}, \vec{a}) \le r 
 | Si ves... | Atención a... | Condición |
 | :--- | :--- | :--- |
 | **Raíces** ($\sqrt{g}$) | El interior | $g(x, y) \ge 0$ |
-| **Logs** ($\ln g$) | El argumento | ==g(x, y) > 0== |
+| **Logs** ($\ln g$) | El argumento | $g(x, y) > 0$ |
 | **Fracciones** ($1/g$) | El denominador | $g(x, y) \neq 0$ |
 
 ### Método de los puntos de prueba
@@ -83,9 +83,9 @@ Podemos describir los conjuntos según el comportamiento de su frontera:
 | Nombre | Ecuación Canónica | Significado de los Parámetros |
 | :--- | :--- | :--- |
 | **Circunferencia** | $x^2 + y^2 = r^2$ | $r$: Radio del círculo |
-| **Elipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | ==a, b==: Semiejes (radio en $x$ e $y$) |
+| **Elipse** | $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ | $a, b$: Semiejes (radio en $x$ e $y$) |
 | **Hipérbola** | $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ | $a$: Distancia del centro al vértice |
-| **Hipérbola (Equilátera)** | ==xy = k== | $k$: Determina la distancia a los ejes |
+| **Hipérbola (Equilátera)** | $xy = k$ | $k$: Determina la distancia a los ejes |
 | **Parábola** | $y = a x^2$ | $a$: Factor de apertura (más grande $\implies$ más estrecha) |
 | **Diamante** | $\lvert x \rvert + \lvert y \rvert = k$ | $k$: Distancia del centro a los vértices |
 | **Cuadrado** | $\max(\lvert x \rvert, \lvert y \rvert) = k$ | $k$: Semilado (distancia del centro a los lados) |
@@ -100,7 +100,7 @@ Para los ejercicios de conjuntos en 3D, las superficies "madre" son:
 
 | Superficie | Ecuación | Descripción Visual |
 | :--- | :--- | :--- |
-| **Plano** | ==Ax + By + Cz = D== | Hoja de papel infinita |
+| **Plano** | $Ax + By + Cz = D$ | Hoja de papel infinita |
 | **Esfera** | $x^2 + y^2 + z^2 = r^2$ | Pelota de ping-pong |
 | **Cilindro** | $x^2 + y^2 = r^2$ | Tubo infinito (eje Z) |
 | **Paraboloide** | $z = x^2 + y^2$ | Copa / Bol |
@@ -108,6 +108,6 @@ Para los ejercicios de conjuntos en 3D, las superficies "madre" son:
 ::threeviz{type="vis_superficies_basiques_3d"}
 
 ### Curvas de Nivel
-Son las líneas de "corte" a una altura $k$ constante (==f(x, y) = k==).
+Son las líneas de "corte" a una altura $k$ constante ($f(x, y) = k$).
 
 ::threeviz{type="vis_corbes_nivell_3d_2d"}

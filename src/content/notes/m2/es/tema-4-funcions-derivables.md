@@ -18,7 +18,7 @@ Una función es derivable en un punto si podemos medir su cambio instantáneo de
 Este valor $f'(a)$ se llama la **derivada** de $f$ en $a$.
 
 ### Interpretación Geométrica
-Geométricamente, la derivada $f'(a)$ nos da la **pendiente** (la inclinación) de la recta tangente a la gráfica justo en el punto ==(a, f(a))==. 
+Geométricamente, la derivada $f'(a)$ nos da la **pendiente** (la inclinación) de la recta tangente a la gráfica justo en el punto $(a, f(a))$. 
 
 La ecuación de esta recta tangente es:
 $$y = f(a) + f'(a)(x - a)$$
@@ -51,7 +51,7 @@ $$f'(x) = u(x)^{v(x)} \left( v'(x) \ln u(x) + v(x) \frac{u'(x)}{u(x)} \right)$$
 Estos teoremas nos permiten asegurar la existencia de puntos con propiedades concretas solo mirando los extremos de un intervalo.
 
 ### Teorema de Rolle
-Si $f$ es continua en ==[a, b]==, derivable en ==(a, b)== y **==f(a) = f(b)==**, entonces existe al menos un punto $c \in (a, b)$ tal que:
+Si $f$ es continua en $[a, b]$, derivable en $(a, b)$ y **$f(a) = f(b)$**, entonces existe al menos un punto $c \in (a, b)$ tal que:
 $$f'(c) = 0$$
 *Intuición: Si subes una montaña y vuelves a bajar a la misma altura, en algún momento tu pendiente ha tenido que ser cero (la cima).*
 
@@ -59,7 +59,7 @@ $$f'(c) = 0$$
 
 
 ### Teorema del Valor Medio (Lagrange)
-Es una versión "inclinada" del de Rolle. Si $f$ es continua en ==[a, b]== y derivable en ==(a, b)==, existe un punto $c \in (a, b)$ tal que:
+Es una versión "inclinada" del de Rolle. Si $f$ es continua en $[a, b]$ y derivable en $(a, b)$, existe un punto $c \in (a, b)$ tal que:
 $$f'(c) = \frac{f(b) - f(a)}{b - a}$$
 *Significado: Hay un instante donde la pendiente de la tangente es paralela a la recta que une los puntos de inicio y final.*
 
@@ -76,7 +76,7 @@ Podemos saber si una función sube o baja mirando el signo de su primera derivad
 - $f'(x) < 0 \implies$ Función **decreciente**.
 
 Para encontrar **máximos y mínimos relativos**:
-1. Buscamos puntos donde ==f'(a) = 0== (puntos críticos).
+1. Buscamos puntos donde $f'(a) = 0$ (puntos críticos).
 2. Miramos la segunda derivada:
    - $f''(a) > 0 \implies$ **Mínimo** (forma de bol).
    - $f''(a) < 0 \implies$ **Máximo** (forma de paraguas).
@@ -92,7 +92,7 @@ $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
 Vemos la curvatura mirando el signo de la **segunda derivada**:
 - $f''(x) > 0 \implies$ **Convexa** (forma $\cup$).
 - $f''(x) < 0 \implies$ **Cóncava** (forma $\cap$).
-- Si ==f''(a) = 0== y hay cambio de signo, tenemos un **punto de inflexión**.
+- Si $f''(a) = 0$ y hay cambio de signo, tenemos un **punto de inflexión**.
 
 ---
 

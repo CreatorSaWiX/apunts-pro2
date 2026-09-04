@@ -125,7 +125,7 @@ $$
 x + y + z = 0 \implies x = -y - z
 $$
 
-Como tenemos 3 variables y 1 ecuación, tenemos ==3 - 1 = 2== grados de libertad. Esto significa que la **multiplicidad geométrica** es:
+Como tenemos 3 variables y 1 ecuación, tenemos $3 - 1 = 2$ grados de libertad. Esto significa que la **multiplicidad geométrica** es:
 $$
 m_g(2) = \dim(E_2) = 2
 $$
@@ -145,16 +145,16 @@ A - 6I = \begin{pmatrix} -3 & 1 & 1 \\ 2 & -2 & 2 \\ 1 & 1 & -3 \end{pmatrix}
 $$
 
 Escalonando o simplificando las ecuaciones:
-1.  ==-3x + y + z = 0==
+1.  $-3x + y + z = 0$
 2.  $2x - 2y + 2z = 0 \implies x - y + z = 0 \implies y = x + z$
-3.  ==x + y - 3z = 0==
+3.  $x + y - 3z = 0$
 
-Sustituimos ==y = x + z== en la ecuación 3:
+Sustituimos $y = x + z$ en la ecuación 3:
 $$
 x + (x + z) - 3z = 0 \implies 2x - 2z = 0 \implies x = z
 $$
 
-Si ==x = z==, entonces ==y = z + z = 2z==. Por tanto, los vectores tienen la forma ==(z, 2z, z) = z(1, 2, 1)==.
+Si $x = z$, entonces $y = z + z = 2z$. Por tanto, los vectores tienen la forma $(z, 2z, z) = z(1, 2, 1)$.
 La **multiplicidad geométrica** es:
 $$m_g(6) = \dim(E_6) = 1$$
 
@@ -219,7 +219,7 @@ Estas propiedades te ayudarán en ejercicios de demostración:
 El concepto es el mismo para espacios de polinomios ($P_n(\mathbb{R})$) o matrices ($\mathcal{M}_n(\mathbb{R})$):
 
 1.  Elige una base (normalmente la canónica).
-2.  Encuentra la matriz asociada ==M(f, B)==.
+2.  Encuentra la matriz asociada $M(f, B)$.
 3.  Aplica el proceso de diagonalización a esta matriz.
 4.  Recuerda que los "vectores propios" resultantes serán las coordenadas de los elementos del espacio original (polinomio, matriz, etc.).
 
