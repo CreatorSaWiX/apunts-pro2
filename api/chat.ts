@@ -220,10 +220,10 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             const emit = async (event: string, data: object): Promise<boolean> => {
                 if (req.signal.aborted || controller.desiredSize === null) return false;
 
-                // Backpressure: si el client no consumeix prou ràpid, la cua interna s'omple (desiredSize <= 0).
-                // Pausem l'emissió cedint l'Event Loop fins que el client dreni el buffer.
+                //Contrapressió
+                const maxBackpressureTimeout = Date.now() + 10_000;
                 while (controller.desiredSize !== null && controller.desiredSize <= 0) {
-                    if (req.signal.aborted) return false;
+                    if (req.signal.aborted || Date.now() > maxBackpressureTimeout) return false;
                     await new Promise(resolve => setTimeout(resolve, 20));
                 }
 
@@ -351,7 +351,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             return { memory_actions: [] };
                         }
                     }
-                    return {memory_actions: []};
+                    return { memory_actions: [] };
                 })();
 
                 const [notesContext, attemptWithSearch] = await Promise.all([ragPromise, intentPromise]);
