@@ -3,33 +3,32 @@ import { withMiddleware } from './_shared/middleware';
 import { plannerRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { buildPlannerSystemInstruction } from './_shared/prompts';
+import { getGoogleGenAI } from './_shared/gemini';
+import { parseGenAIError } from './_shared/errors';
+import { createSseEmitter } from './_shared/sse';
 
 export default withMiddleware(async function handler(req: Request): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
     const parseResult = plannerRequestSchema.safeParse(rawBody);
 
     if (!parseResult.success) {
-        return new Response(JSON.stringify({ error: 'Dades invàlides', details: parseResult.error.format() }), { 
+        return new Response(JSON.stringify({ error: 'Dades invàlides', details: parseResult.error.format() }), {
             status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
         });
     }
 
     const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile, availableStatuses } = parseResult.data;
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
+    const ai = getGoogleGenAI();
+    if (!ai) {
+        return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
+    }
 
-    const encoder = new TextEncoder();
     const stream = new ReadableStream({
         async start(controller) {
-            const emit = (event: string, data: object) => {
-                controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-            };
+            const emit = createSseEmitter(controller, req);
 
             try {
-                const { GoogleGenAI } = await import('@google/genai');
-                const genAI = new GoogleGenAI({ apiKey });
-
                 const systemInstruction = buildPlannerSystemInstruction(
                     aiSettings,
                     currentDate,
@@ -42,7 +41,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                 if (prompt) msgParts.push({ text: prompt });
                 else msgParts.push({ text: "Analitza aquest document." });
 
-                if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+                if (attachedFile?.data && attachedFile?.mimeType) {
                     msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
                 }
 
@@ -57,28 +56,25 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                             responseMimeType: "application/json"
                         };
 
-                        // No thinking config needed for a secretary task
+                        await emit('status', { phase: 'thinking', model: modelName });
+                        await emit('thought', { text: `📡 Intentant generar amb el model **${modelName}**...\n` });
 
-                        emit('status', { phase: 'thinking', model: modelName });
-                        emit('thought', { text: `📡 Intentant generar amb el model **${modelName}**...\n` });
-
-                        const responseStream = await genAI.models.generateContentStream({
+                        const responseStream = await ai.models.generateContentStream({
                             model: modelName,
                             contents: msgParts,
-                            config: streamConfig
+                            config: streamConfig as any
                         });
 
                         let accumulatedText = '';
 
                         for await (const chunk of responseStream) {
-                            if (req.signal.aborted) {
-                                controller.close();
+                            if (req.signal.aborted || controller.desiredSize === null) {
                                 return;
                             }
                             if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
                                 for (const part of chunk.candidates[0].content.parts) {
                                     if (part.thought && part.text) {
-                                        emit('thought', { text: part.text });
+                                        await emit('thought', { text: part.text });
                                     } else if (part.text) {
                                         hasStartedWriting = true;
                                         accumulatedText += part.text;
@@ -100,47 +96,49 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                                 }
                             }
                             rData = JSON.parse(cleanText);
-                            if (!rData || !Array.isArray(rData.actions)) {
-                                throw new Error("Format de resposta invàlid: manca l'array actions");
-                            }
-                        } catch (parseErr) {
-                            console.warn(`[Planner Fallback] Model ${modelName} no ha retornat JSON vàlid:`, parseErr);
-                            lastError = parseErr;
-                            continue; // Intentem amb el següent model de reserva
+                        } catch (pErr) {
+                            console.warn(`[Planner AI] Error parsejant JSON de ${modelName}:`, pErr);
+                            throw new Error("El model ha retornat un format JSON invàlid.");
                         }
 
-                        emit('actions', { actions: rData.actions });
-                        emit('done', {});
+                        if (!rData || !Array.isArray(rData.actions)) {
+                            throw new Error("La resposta del model no conté la propietat 'actions' requerida.");
+                        }
+
+                        await emit('actions', rData);
+                        await emit('done', {});
                         replied = true;
-                        break;
+                        break; // Èxit amb aquest model!
+
                     } catch (e: unknown) {
-                        const errMsg = e instanceof Error ? e.message : String(e);
-                        const errStatus = (e as { status?: number })?.status;
-                        const isFallbackable =
-                            (errStatus === 429 || errStatus === 503 || errStatus === 404 ||
-                            errMsg.includes('429') || errMsg.includes('503') || errMsg.includes('404') ||
-                            errMsg.match(/exhausted/i) || errMsg.match(/not found/i)) && !hasStartedWriting;
+                        lastError = e;
+                        const parsed = parseGenAIError(e);
+
+                        console.warn(`[Planner Fallback] Model ${modelName} ha fallat:`, parsed.cleanMessage);
+
+                        const isFallbackable = (parsed.isQuota || parsed.isUnavailable || parsed.isNotFound) && !hasStartedWriting;
 
                         if (isFallbackable) {
-                            emit('thought', { text: `❌ El model ${modelName} ha fallat (Error ${errStatus || 'Cota/Servidor'}). Saltant al següent...\n\n` });
-                            lastError = e;
+                            await emit('thought', { text: `❌ El model ${modelName} ha fallat (${parsed.cleanMessage}). Saltant al següent...\n\n` });
                             continue;
                         }
 
-                        emit('error', { message: errMsg || 'Error intern del servidor' });
-                        emit('done', {});
+                        await emit('error', { message: parsed.cleanMessage || 'Error intern del servidor' });
+                        await emit('done', {});
                         replied = true;
                         break;
                     }
                 }
 
                 if (!replied) {
-                    emit('error', { message: (lastError as Error)?.message || 'Tots els models han fallat' });
-                    emit('done', {});
+                    const parsedLast = parseGenAIError(lastError);
+                    await emit('error', { message: parsedLast.cleanMessage || 'Tots els models han fallat' });
+                    await emit('done', {});
                 }
             } catch (err: unknown) {
-                emit('error', { message: (err as Error).message || 'Error de procés' });
-                emit('done', {});
+                const parsed = parseGenAIError(err);
+                await emit('error', { message: parsed.cleanMessage || 'Error de procés' });
+                await emit('done', {});
             } finally {
                 try {
                     controller.close();

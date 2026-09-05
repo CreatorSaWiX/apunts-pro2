@@ -1,9 +1,11 @@
-import { GoogleGenAI } from '@google/genai';
 import { getLoadBalancedModels } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
 import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts';
+import { getGoogleGenAI } from './_shared/gemini';
+import { parseGenAIError } from './_shared/errors';
+import { createSseEmitter } from './_shared/sse';
 
 interface SubjectOfficialData {
     acronim?: string;
@@ -45,8 +47,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
+    const ai = getGoogleGenAI();
+    if (!ai) {
         return new Response(JSON.stringify({ error: 'Error intern del servidor (C)' }), { 
             status: 500, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } 
         });
@@ -71,7 +73,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             try {
                 const cached = subjectCache.get(node.id);
                 if (cached && (now - cached.timestamp < CACHE_TTL_MS)) {
-                    // Refresh LRU order
                     subjectCache.delete(node.id);
                     subjectCache.set(node.id, cached);
                     injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
@@ -93,7 +94,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         }))
                     };
 
-                    // Limitem el cache a 100 assignatures (LRU)
                     if (subjectCache.size >= 100) {
                         const oldestKey = subjectCache.keys().next().value;
                         if (oldestKey) subjectCache.delete(oldestKey);
@@ -107,7 +107,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         }));
     }
 
-    const ai = new GoogleGenAI({ apiKey });
     const systemInstruction = buildRoadmapSystemInstruction(
         aiSettings,
         userName || "",
@@ -148,16 +147,13 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     if (prompt) msgParts.push({ text: prompt });
     else msgParts.push({ text: "Analitza aquest document." });
 
-    if (attachedFile && attachedFile.data && attachedFile.mimeType) {
+    if (attachedFile?.data && attachedFile?.mimeType) {
         msgParts.push({ inlineData: { data: attachedFile.data, mimeType: attachedFile.mimeType } });
     }
 
-    const encoder = new TextEncoder();
     const sseStream = new ReadableStream({
         async start(controller) {
-            const emit = (event: string, data: object) => {
-                controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-            };
+            const emit = createSseEmitter(controller, req);
 
             try {
                 let lastError: unknown;
@@ -178,24 +174,25 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             config: streamConfig as never
                         });
 
-                        emit('status', { phase: 'thinking', model: modelName });
+                        await emit('status', { phase: 'thinking', model: modelName });
 
                         let hasToolCall = false;
-                        let toolCallData = null;
+                        let toolCallData: unknown = null;
 
                         for await (const chunk of responseStream) {
-                            if (req.signal.aborted) {
-                                controller.close();
+                            if (req.signal.aborted || controller.desiredSize === null) {
                                 return;
                             }
                             if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
                                 for (const part of chunk.candidates[0].content.parts) {
                                     if (part.thought && part.text) {
-                                        emit('thought', { text: part.text });
+                                        const ok = await emit('thought', { text: part.text });
+                                        if (!ok) return;
                                     } else if (part.text) {
                                         hasStartedWriting = true;
-                                        emit('status', { phase: 'writing' });
-                                        emit('message', { text: part.text });
+                                        await emit('status', { phase: 'writing' });
+                                        const ok = await emit('message', { text: part.text });
+                                        if (!ok) return;
                                     }
                                 }
                             }
@@ -209,30 +206,31 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         }
 
                         if (hasToolCall && toolCallData) {
-                            emit('actions', { actions: (toolCallData as { actions?: unknown[] }).actions });
+                            await emit('actions', { actions: (toolCallData as { actions?: unknown[] }).actions });
                         }
 
-                        emit('done', {});
+                        await emit('done', {});
                         replied = true;
                         break;
                     } catch (e: unknown) {
-                        const errMessage = e instanceof Error ? e.message : String(e);
-                        const errStatus = (e as { status?: number })?.status;
-                        const is429 = (errStatus === 429 || errMessage.includes('429') || errMessage.includes('503') || errMessage.toLowerCase().includes('quota') || errMessage.toLowerCase().includes('rate')) && !hasStartedWriting;
-                        if (is429) {
-                            lastError = e;
+                        lastError = e;
+                        const parsed = parseGenAIError(e);
+
+                        if ((parsed.isQuota || parsed.isUnavailable) && !hasStartedWriting) {
                             continue;
                         }
-                        emit('error', { message: errMessage || 'Error intern del servidor' });
-                        emit('done', {});
+
+                        await emit('error', { message: parsed.cleanMessage || 'Error intern del servidor' });
+                        await emit('done', {});
                         replied = true;
                         break;
                     }
                 }
 
                 if (!replied) {
-                    emit('error', { message: (lastError as Error)?.message || 'Tots els models han fallat' });
-                    emit('done', {});
+                    const parsedLast = parseGenAIError(lastError);
+                    await emit('error', { message: parsedLast.cleanMessage || 'Tots els models han fallat' });
+                    await emit('done', {});
                 }
             } finally {
                 try {

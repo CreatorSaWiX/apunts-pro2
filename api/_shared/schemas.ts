@@ -20,6 +20,8 @@ export const aiSettingsSchema = z.object({
   }).optional(),
 }).optional();
 
+export type AiSettings = z.infer<typeof aiSettingsSchema>;
+
 // --- Chat Schemas ---
 export const chatMessageSchema = z.object({
   role: z.enum(["user", "model", "system"]),

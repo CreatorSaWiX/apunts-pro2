@@ -2,6 +2,8 @@ import { getLiteModels } from './_shared/models';
 import { withMiddleware, jsonResponse } from './_shared/middleware';
 import { quizRequestSchema, quizResponseSchema } from './_shared/schemas';
 import { buildQuizPrompt } from './_shared/prompts';
+import { getGoogleGenAI } from './_shared/gemini';
+import { parseGenAIError } from './_shared/errors';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
@@ -13,13 +15,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     const { topicId, markdownContent } = parseResult.data;
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return jsonResponse({ error: 'Clau de Gemini no configurada al servidor' }, 500);
-    }
-
-    const { GoogleGenAI } = await import('@google/genai');
-    const ai = new GoogleGenAI({ apiKey });
+    const ai = getGoogleGenAI();
+    if (!ai) return jsonResponse({ error: 'Clau de Gemini no configurada al servidor' }, 500);
 
     const prompt = buildQuizPrompt(topicId, markdownContent);
 
@@ -59,13 +56,17 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
             return jsonResponse(validated.data, 200);
         } catch (error: unknown) {
-            console.warn(`[Quiz Fallback] Model ${modelName} ha fallat:`, error);
             lastError = error;
-            continue; // Intentem amb el següent model Lite
+            const parsed = parseGenAIError(error);
+            console.warn(`[Quiz Fallback] Model ${modelName} ha fallat:`, parsed.cleanMessage);
+
+            // Si és un error de Quota o Servidors saturats, provem el següent model
+            if (parsed.isQuota || parsed.isUnavailable) continue;
+            break;
         }
     }
 
     console.error('Error al generar test (Tots els models han fallat):', lastError);
-    const errorMessage = lastError instanceof Error ? lastError.message : 'Error intern al generar test';
-    return jsonResponse({ error: errorMessage }, 500);
+    const parsedLast = parseGenAIError(lastError);
+    return jsonResponse({ error: parsedLast.cleanMessage || 'Error intern al generar test' }, 500);
 });
