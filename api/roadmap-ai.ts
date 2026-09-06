@@ -6,6 +6,7 @@ import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/promp
 import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
 import { createSseEmitter } from './_shared/sse';
+import { logGeminiPrompt } from './_shared/debug';
 
 interface SubjectOfficialData {
     acronim?: string;
@@ -167,6 +168,20 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             temperature: 0.1,
                             tools: [{ functionDeclarations: [roadmapTool] as unknown[] }]
                         };
+
+                        logGeminiPrompt({
+                            endpoint: 'roadmap-ai',
+                            model: modelName,
+                            systemInstruction,
+                            contents: [...formattedHistory, { role: 'user', parts: msgParts }],
+                            tools: streamConfig.tools,
+                            config: streamConfig,
+                            extra: {
+                                userName,
+                                currentNodesCount: currentNodes?.length,
+                                hasInjectedContext: !!injectedContext
+                            }
+                        });
 
                         const responseStream = await ai.models.generateContentStream({
                             model: modelName,

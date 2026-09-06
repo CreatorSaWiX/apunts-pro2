@@ -4,6 +4,7 @@ import { quizRequestSchema, quizResponseSchema } from './_shared/schemas';
 import { buildQuizPrompt } from './_shared/prompts';
 import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
+import { logGeminiPrompt } from './_shared/debug';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
@@ -23,13 +24,23 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     let lastError: unknown;
     for (const modelName of getLiteModels()) {
         try {
+            const config = {
+                responseMimeType: 'application/json',
+                temperature: 0.1, // Temperatura baixa per màxima precisió respecte al text
+            };
+
+            logGeminiPrompt({
+                endpoint: 'generate-quiz',
+                model: modelName,
+                contents: prompt,
+                config,
+                extra: { topicId }
+            });
+
             const response = await ai.models.generateContent({
                 model: modelName,
                 contents: prompt,
-                config: {
-                    responseMimeType: 'application/json',
-                    temperature: 0.1, // Temperatura baixa per màxima precisió respecte al text
-                }
+                config
             });
 
             const textResponse = response.text;

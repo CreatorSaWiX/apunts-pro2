@@ -6,6 +6,7 @@ import { buildPlannerSystemInstruction } from './_shared/prompts';
 import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
 import { createSseEmitter } from './_shared/sse';
+import { logGeminiPrompt } from './_shared/debug';
 
 export default withMiddleware(async function handler(req: Request): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
@@ -58,6 +59,20 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
 
                         await emit('status', { phase: 'thinking', model: modelName });
                         await emit('thought', { text: `📡 Intentant generar amb el model **${modelName}**...\n` });
+
+                        logGeminiPrompt({
+                            endpoint: 'planner-ai',
+                            model: modelName,
+                            systemInstruction,
+                            contents: msgParts,
+                            config: streamConfig,
+                            extra: {
+                                currentDate,
+                                tasksCount: currentTasks?.length,
+                                subjectsCount: subjects?.length,
+                                availableStatuses
+                            }
+                        });
 
                         const responseStream = await ai.models.generateContentStream({
                             model: modelName,

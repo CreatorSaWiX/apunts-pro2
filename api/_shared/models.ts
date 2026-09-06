@@ -14,16 +14,7 @@ const LITE_MODELS = [
 ];
 
 const ALL_MODELS = [...PREMIUM_MODELS, ...LITE_MODELS];
-
-// Models que suporten Thinking (Raonament intern previ)
-const THINKING_MODELS = new Set([
-    'gemini-3.8-flash',
-    'gemini-3.7-flash',
-    'gemini-3.6-flash',
-    'gemini-3.5-flash',
-    'gemini-3-flash-preview',
-    'gemini-2.5-flash'
-]);
+const THINKING_MODELS = new Set(PREMIUM_MODELS);
 
 /**
  * RPM: -/5, RPD: -/20, TPM: -/250K

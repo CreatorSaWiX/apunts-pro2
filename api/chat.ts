@@ -9,6 +9,7 @@ import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
 import { createSseEmitter, type SseEmitFn } from './_shared/sse';
 import { manageMemoryTool } from './_shared/chat-tools';
+import { logGeminiPrompt } from './_shared/debug';
 
 let vectorIndex: Index | null = null;
 function getVectorIndex(): Index | null {
@@ -71,6 +72,12 @@ async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseE
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 1500);
         try {
+            logGeminiPrompt({
+                endpoint: 'chat:classify_search',
+                model: liteModel,
+                contents: prompt
+            });
+
             const response = await ai.models.generateContent({
                 model: liteModel,
                 contents: prompt,
@@ -109,6 +116,14 @@ async function extractUserMemories(message: string, aiSettings: AiSettings | und
 
     for (const liteModel of getLiteModels()) {
         try {
+            logGeminiPrompt({
+                endpoint: 'chat:extract_memories',
+                model: liteModel,
+                systemInstruction: "Ets el Gestor de Memòria. Si l'usuari revela detalls nous rellevants, usa manage_memory amb ADD. Si diu quelcom que contradiu o actualitza una memòria de la llista, usa UPDATE. Si exigeix oblidar alguna memòria, usa DELETE. Retorna SKIP en text lliure només si no hi ha canvis a fer.",
+                contents: promptContent,
+                tools: [{ functionDeclarations: [manageMemoryTool] }]
+            });
+
             const metadataResponse = await ai.models.generateContent({
                 model: liteModel,
                 contents: promptContent,
@@ -213,6 +228,22 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
                         await emit('status', { phase: 'thinking', model: modelName });
                         await emit('thought', { text: `📡 i18n:requestingModel:${modelName}\n` });
+
+                        logGeminiPrompt({
+                            endpoint: 'chat',
+                            model: modelName,
+                            systemInstruction,
+                            contents: fullContents,
+                            tools: streamConfig.tools,
+                            config: streamConfig,
+                            extra: {
+                                currentPath,
+                                language,
+                                thinkingLevel,
+                                attemptWithSearch,
+                                ragNotesFound: !!notesContext
+                            }
+                        });
 
                         const response = await ai.models.generateContentStream({
                             model: modelName,
