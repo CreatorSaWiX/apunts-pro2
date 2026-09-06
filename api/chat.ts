@@ -3,25 +3,13 @@ import { getLoadBalancedModels, getLiteModels, applyThinkingConfig } from './_sh
 import { withMiddleware } from './_shared/middleware';
 import { chatRequestSchema, type AiSettings } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
-import { Index } from "@upstash/vector";
+import { resolveDynamicNotesContext } from './_shared/notes-router';
 import { buildChatSystemInstruction } from './_shared/prompts';
 import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
-import { createSseEmitter } from './_shared/sse';
+import { createSseEmitter, type SseEmitFn } from './_shared/sse';
 import { manageMemoryTool } from './_shared/chat-tools';
 import { logGeminiPrompt } from './_shared/debug';
-
-let vectorIndex: Index | null = null;
-function getVectorIndex(): Index | null {
-    if (vectorIndex) return vectorIndex;
-
-    const url = process.env.UPSTASH_VECTOR_REST_URL;
-    const token = process.env.UPSTASH_VECTOR_REST_TOKEN;
-    if (!url || !token) return null;
-
-    vectorIndex = new Index({ url, token });
-    return vectorIndex;
-}
 
 function truncateAtWordBoundary(text: string, maxLen: number): string {
     if (text.length <= maxLen) return text;
@@ -33,116 +21,55 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
     return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
 }
 
-// ── RAG: Cercador semàntic optimitzat, deduplicat i unilingüe ────────────────
-async function fetchRagNotes(
-    message: string,
-    ai: GoogleGenAI,
-    userLanguage: string = 'ca',
-    currentPath?: string,
-    pageText?: string
-): Promise<string> {
-    try {
-        // 1. Evitar RAG dispers si la consulta és autoreferent a la pàgina que l'alumne ja està mirant
-        const lowerMsg = message.toLowerCase().trim();
-        const isSelfReferential = /(aquest|aquesta|aquests|aquestes|este|esta|estos|estas|this|current)\s+(tema|pàgina|pagina|capítol|capitol|secció|seccio|text|apunt|resum|topic|page|section)/i.test(lowerMsg) ||
-            /^(resumeix|resumeix-me|resumir|resumeme|summarize|explica|explica'm|què diu|que dice)(\s+(el|la|aquest|aquesta|este|esta|tot|el que))?/i.test(lowerMsg);
+async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseEmitFn): Promise<boolean> {
+    await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
+    const trimmed = message.trim();
 
-        if (isSelfReferential && pageText && pageText.trim().length > 150) {
-            // El text de l'apunt que l'alumne vol consultar ja està inclòs a <page_context>.
-            // Evitem afegir apunts d'altres assignatures que distreguin o contaminin el model.
-            return "";
-        }
+    const prompt = `Ets un classificador d'intenció de cerca. Respon ÚNICAMENT amb '1' o '0'.
+Pregunta de l'usuari: "${truncateAtWordBoundary(trimmed, 300).replace(/"/g, '\\"')}"
+Aquesta consulta demana informació d'actualitat, notícies recents, esdeveniments en temps real, el temps meteorològic, preus, esports, o tecnologia recent del món real que pugui haver canviat?
+Respon 1 si requereix cerca a internet, o 0 si no en requereix:`;
 
-        const embedResponse = await ai.models.embedContent({
-            model: 'gemini-embedding-2',
-            contents: truncateAtWordBoundary(message, 500),
-            config: { outputDimensionality: 1536 }
-        });
-        const userVector = embedResponse.embeddings?.[0]?.values;
-
-        const index = getVectorIndex();
-        if (userVector && index) {
-            const queryResponse = await index.query({
-                vector: userVector,
-                topK: 12, // Demanem més resultats per poder filtrar per idioma i deduplicar
-                includeMetadata: true
+    for (const liteModel of getLiteModels()) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1200);
+        try {
+            logGeminiPrompt({
+                endpoint: 'chat:classify_search',
+                model: liteModel,
+                contents: prompt
             });
 
-            const targetLang = (userLanguage || 'ca').toLowerCase().slice(0, 2);
-            const langPrefix = `${targetLang}-`;
-
-            // 2. Filtrar exclusivament per l'idioma configurat per l'alumne
-            let langMatches = queryResponse.filter(r => r.id.startsWith(langPrefix));
-            // Si cap apunt coincideix amb l'idioma triat, fallback exclusiu a català ('ca-')
-            if (langMatches.length === 0 && targetLang !== 'ca') {
-                langMatches = queryResponse.filter(r => r.id.startsWith('ca-'));
-            }
-
-            // 3. Filtrar ferralla, apunts buits, marcadors de posició i coincidències febles (< 65%)
-            const cleanMatches = langMatches.filter(r => {
-                if (r.score < 0.65) return false;
-                const meta = r.metadata as Record<string, string> | undefined;
-                const content = (meta?.content || '').trim();
-                if (content.length < 80) return false;
-                if (content.includes('Contingut pendent') || content.includes("Aquest tema encara s'ha de redactar")) return false;
-                if (/^<object[\s\S]*<\/object>$/i.test(content)) return false;
-                return true;
+            const response = await ai.models.generateContent({
+                model: liteModel,
+                contents: prompt,
+                config: {
+                    temperature: 0,
+                    maxOutputTokens: 1,
+                    abortSignal: controller.signal,
+                }
             });
 
-            // 4. Deduplicar per tema (slug o títol) per no repetir el mateix tema múltiples vegades
-            const seenSlugs = new Set<string>();
-            const deduplicated: typeof cleanMatches = [];
-
-            for (const r of cleanMatches) {
-                const meta = r.metadata as Record<string, string> | undefined;
-                const slug = (meta?.slug || meta?.title || '').toLowerCase().trim();
-                if (!slug || seenSlugs.has(slug)) continue;
-                seenSlugs.add(slug);
-                deduplicated.push(r);
-                if (deduplicated.length >= 3) break; // Màxim 3 apunts oficials únics
+            clearTimeout(timeoutId);
+            const answer = (response.text || "").trim();
+            const search = answer.includes('1');
+            await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
+            return search;
+        } catch {
+            clearTimeout(timeoutId);
+            if (controller.signal.aborted) {
+                console.warn("[classifySearchIntent] Temps límit de 1.2s superat, prioritzant coneixement acadèmic.");
+                await emit('thought', { text: `i18n:searchFailed\n\n` });
+                return false;
             }
-
-            if (deduplicated.length === 0) return "";
-
-            return deduplicated
-                .map((r) => {
-                    const meta = r.metadata as Record<string, string> | undefined;
-                    return `## Tema: ${meta?.title ?? 'Sense títol'} (Rellevància: ${(r.score * 100).toFixed(1)}%)\n\n${meta?.content ?? ''}`;
-                })
-                .join('\n\n---\n\n');
         }
-    } catch (error) {
-        console.warn("RAG no disponible (Upstash), continuant amb context de pàgina i coneixement del model:", error);
     }
-    return "";
-}
-
-
-// Detecció d'intenció de cerca en temps real (0ms, regex en comptes de crida LLM)
-function needsSearch(message: string): boolean {
-    const text = message.toLowerCase().trim();
-    if (text.length < 4) return false;
-
-    const b = "(?:^|[\\s.,;:!?¿¡()\\[\\]\"]|$)";
-    const patterns = [
-        new RegExp(`${b}(avui|dema|demà|ahir|ara mateix|aquesta setmana|aquest mes|proxim|pròxim|proper|today|tomorrow|yesterday|hoy|manana|mañana|ayer|ahora|esta semana|próximo|proximo)${b}`),
-        new RegExp(`${b}(partit|partits|partido|partidos|match|game|horari|horaris|horario|horarios|schedule|jornada|classificacio|classificació|clasificacion|clasificación|resultat|resultats|resultado|resultados|score|barça|barca|madrid|futbol|fútbol|champions|lliga|liga|nba|f1|formula 1|fórmula 1)${b}`),
-        new RegExp(`${b}(noticia|notícia|noticias|notícies|news|actualitat|actualidad|ultima hora|última hora|latest|recent|recents|reciente|recientes)${b}`),
-        new RegExp(`${b}(temps|tiempo|weather|ploura|plourà|plou|llou|llover|temperatura)${b}`),
-        new RegExp(`${b}(preu|precio|price|borsa|bolsa|stock|crypto|bitcoin|dolar|dòlar|euro)${b}`)
-    ];
-
-    return patterns.some(p => p.test(text));
+    await emit('thought', { text: `i18n:searchFailed\n\n` });
+    return false;
 }
 
 // Necessitat guardar memòria d'usuari
 async function extractUserMemories(message: string, aiSettings: AiSettings | undefined, ai: GoogleGenAI): Promise<{ memory_actions: any[] }> {
-    // Short-circuit: missatges curts o salutacions no contenen fets memorables
-    const trivialPattern = /^(hola|hey|ei|ok|gràcies|merci|bon dia|bona nit|adéu|bye|thx|thanks|sí|no|va|vale|d'acord|entesos|genial|perfecte|\.+|!+|\?+)$/i;
-    if (message.trim().length < 15 || trivialPattern.test(message.trim())) {
-        return { memory_actions: [] };
-    }
-
     const currentMemories = (aiSettings?.userContext?.memories || []);
     const memoryCtx = currentMemories.length > 0
         ? "La llista actual de memòries de l'usuari és:\n" + currentMemories.map((m: string) => `- "${m}"`).join('\n')
@@ -215,11 +142,17 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             try {
                 await emit('status', { phase: 'thinking' });
 
-                // Execució paral·lela de tasques preparatòries
-                const ragPromise = fetchRagNotes(message, ai, language, currentPath, pageText);
+                // Resolució dinàmica d'apunts i intenció de cerca en paral·lel (models Lite)
+                const notesPromise = resolveDynamicNotesContext({
+                    message,
+                    currentPath,
+                    pageText,
+                    language
+                }, ai);
+                const searchPromise = classifySearchIntent(message, ai, emit);
                 const metadataPromise = extractUserMemories(message, aiSettings, ai);
 
-                const notesContext = await ragPromise;
+                const [notesContext, enableSearch] = await Promise.all([notesPromise, searchPromise]);
 
                 if (req.signal.aborted) return;
 
@@ -233,9 +166,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 if (image?.data && image?.mimeType) {
                     msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
                 }
-
-                // Detecció instantània d'intenció de cerca (0ms)
-                const enableSearch = needsSearch(message);
 
                 const fullContents = [...formattedHistory, { role: 'user', parts: msgParts }];
                 const allAvailable = getLoadBalancedModels();
@@ -285,7 +215,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                                 language,
                                 thinkingLevel,
                                 enableSearch,
-                                ragNotesFound: !!notesContext
+                                notesInjected: !!notesContext
                             }
                         });
 
@@ -353,29 +283,27 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             message: parsed.cleanMessage
                         });
 
-                        if ((parsed.isQuota || parsed.isUnavailable) && !hasStartedWriting) {
-                            const failReason = parsed.isQuota
-                                ? "reasonQuota"
-                                : (parsed.status === 503 ? "reason503" : "reasonSaturation");
-                            await emit('thought', { text: `❌ i18n:modelDenied:${modelName}:${failReason}\n\n` });
-                            await new Promise(resolve => setTimeout(resolve, 150));
-                            continue;
+                        // Si el contingut ha estat bloquejat per filtres de seguretat, no té sentit provar altres models
+                        if (parsed.cleanMessage.includes('SAFETY') || parsed.cleanMessage.includes('filtres') || parsed.cleanMessage.includes('RECITATION')) {
+                            await emit('error', { message: parsed.cleanMessage });
+                            await emit('done', {});
+                            return;
                         }
 
-                        let chunkErrorMsg = parsed.cleanMessage || 'Error intern del servidor';
-                        if (parsed.isQuota) {
-                            chunkErrorMsg = `⚠️ El model '${modelName}' ha denegat la petició per Quota Excedida (Límit de minuts o de dia).`;
-                        } else if (parsed.isNotFound) {
-                            chunkErrorMsg = `⚠️ El model '${modelName}' no existeix o no està disponible (Error 404).`;
-                        } else if (parsed.cleanMessage.toLowerCase().includes('not supported') || parsed.cleanMessage.toLowerCase().includes('invalid arg')) {
-                            chunkErrorMsg = `⚠️ El model '${modelName}' no suporta aquesta configuració: ` + chunkErrorMsg;
-                        } else {
-                            chunkErrorMsg = `⚠️ Error de l'API (${modelName}): ` + chunkErrorMsg;
+                        // Si el model ha fallat per quota, saturació, sobrecàrrega o indisponibilitat temporal:
+                        // Reintentem de forma resilient amb el següent model de la llista.
+                        // Si ja havíem començat a enviar text a la pantalla, emetem 'reset' perquè el client netegi els fragments truncats.
+                        if (hasStartedWriting) {
+                            await emit('reset', {});
+                            hasStartedWriting = false;
                         }
 
-                        await emit('error', { message: chunkErrorMsg });
-                        await emit('done', {});
-                        return;
+                        const failReason = parsed.isQuota
+                            ? "reasonQuota"
+                            : (parsed.status === 503 ? "reason503" : "reasonSaturation");
+                        await emit('thought', { text: `❌ i18n:modelDenied:${modelName}:${failReason}\n\n` });
+                        await new Promise(resolve => setTimeout(resolve, 150));
+                        continue;
                     }
                 }
 

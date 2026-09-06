@@ -117,7 +117,7 @@ export function buildChatSystemInstruction(
     const cleanContinuity = sanitizePromptText(aiSettings?.soul?.continuity || "", 1000);
     const cleanDirectives = sanitizePromptText(aiSettings?.soul?.customDirectives || "Cap directriu especial.", 1000);
     const cleanPath = sanitizePromptText(currentPath || "/", 200);
-    const cleanNotes = sanitizePromptText(notesContext, 8000);
+    const cleanNotes = sanitizePromptText(notesContext, 250000);
     const cleanMemories = (aiSettings?.userContext?.memories || [])
         .map((m: string) => `- ${sanitizePromptText(m, 150)}`)
         .slice(0, 30)
@@ -151,6 +151,17 @@ IDIOMA EXCLUSIU DE RESPOSTA (OBLIGATORI): L'idioma de preferència configurat pe
 Respon de manera natural, formatant en Markdown. Sigues directe i útil.
 IMPORTANT: Per a qualsevol fórmula o expressió matemàtica, utilitza SEMPRE LaTeX. Usa \`$$\` per a blocs d'equacions (en una línia nova) i \`$\` per a matemàtiques inline. Assegura't d'obrir i tancar correctament els entorns com \`\\begin{cases}\` i \`\\end{cases}\`.
 EXCEPCIÓ CRÍTICA: NO utilitzis MAI el símbol de dòlar \`$\` per a monedes o preus. Utilitza "USD" o escapa'l com a \`\\$\` per evitar trencar el renderitzador de matemàtiques.
+
+---
+
+## PRIORITAT DE CONTEXT I FONTS DE VERITAT:
+1. L'alumne està visualitzant actualment la pàgina: ${cleanPath}.
+2. El bloc <page_context> conté ÚNICAMENT el text visible a la pantalla de l'alumne en aquest moment.
+3. SI LA PREGUNTA DE L'ALUMNE FA REFERÈNCIA A UNA ALTRA ASSIGNATURA O TEMA (ex: està visualitzant M2 o IA però pregunta per M1, o demana resumir EDA, SO, etc.):
+   -> IGNORA COMPLETAMENT el contingut de <page_context>. No intentis connectar la resposta amb la pantalla actual tret que l'alumne ho demani explícitament.
+4. FONTS DE CONEIXEMENT:
+   - Si hi ha apunts oficials a <official_notes>: fes-los servir com a màxima font de veritat. Respecta estrictament el seu temari, teoremes i estructures. PROHIBIT TERMINANTMENT inventar-se temes o blocs inexistents.
+   - Si l'assignatura consultada (com EDA, SO, PE, CI, BD, IA) no disposa d'apunts complets a la plataforma web (marcada com a temari en construcció o pendent): respon amb el teu coneixement docent expert del programa oficial del Grau GEI (FIB-UPC), assenyalant amb honestedat i naturalitat que els apunts web d'aquesta assignatura estan en procés.
 
 ---
 

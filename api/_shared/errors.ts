@@ -42,22 +42,36 @@ export function parseGenAIError(e: unknown): ParsedApiError {
     }
 
     let cleanMessage = rawMsg;
-    const jsonStart = rawMsg.indexOf('{');
-    if (jsonStart !== -1) {
+    const firstBrace = rawMsg.indexOf('{');
+    const firstBracket = rawMsg.indexOf('[');
+    let startIdx = -1;
+    if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+        startIdx = firstBrace;
+    } else if (firstBracket !== -1) {
+        startIdx = firstBracket;
+    }
+
+    if (startIdx !== -1) {
         try {
-            const parsed = JSON.parse(rawMsg.substring(jsonStart));
-            if (parsed.error) {
-                if (typeof parsed.error.code === 'number') status = status ?? parsed.error.code;
-                if (typeof parsed.error.status === 'string') grpcCode = grpcCode ?? parsed.error.status;
-                if (Array.isArray(parsed.error.details) && parsed.error.details.length > 0) {
-                    reason = reason ?? parsed.error.details[0]?.reason;
+            const parsedJson = JSON.parse(rawMsg.substring(startIdx));
+            const errPayload = Array.isArray(parsedJson) ? (parsedJson[0]?.error || parsedJson[0]) : (parsedJson?.error || parsedJson);
+            if (errPayload) {
+                if (typeof errPayload.code === 'number') status = status ?? errPayload.code;
+                if (typeof errPayload.status === 'string') grpcCode = grpcCode ?? errPayload.status;
+                if (Array.isArray(errPayload.details) && errPayload.details.length > 0) {
+                    reason = reason ?? errPayload.details[0]?.reason;
                 }
-                if (typeof parsed.error.message === 'string') {
-                    cleanMessage = parsed.error.message;
+                if (typeof errPayload.message === 'string') {
+                    cleanMessage = errPayload.message;
                 }
             }
         } catch {
-            // Si no és un JSON vàlid, mantenim rawMsg
+            const matchMsg = rawMsg.match(/"message"\s*:\s*"([^"]+)"/);
+            if (matchMsg) cleanMessage = matchMsg[1];
+            const matchCode = rawMsg.match(/"code"\s*:\s*(\d+)/);
+            if (matchCode) status = status ?? parseInt(matchCode[1], 10);
+            const matchStatus = rawMsg.match(/"status"\s*:\s*"([^"]+)"/);
+            if (matchStatus) grpcCode = grpcCode ?? matchStatus[1];
         }
     }
 
@@ -67,7 +81,7 @@ export function parseGenAIError(e: unknown): ParsedApiError {
         retryAfterSeconds = Math.ceil(parseFloat(retryMatch[1]));
     }
 
-    const lowerMsg = rawMsg.toLowerCase();
+    const lowerMsg = (rawMsg + " " + cleanMessage).toLowerCase();
 
     const isQuota =
         status === 429 ||
@@ -83,6 +97,7 @@ export function parseGenAIError(e: unknown): ParsedApiError {
     const isUnavailable =
         status === 503 ||
         status === 500 ||
+        status === 502 ||
         status === 504 ||
         grpcCode === 'UNAVAILABLE' ||
         grpcCode === 14 ||
@@ -93,7 +108,14 @@ export function parseGenAIError(e: unknown): ParsedApiError {
         lowerMsg.includes('503') ||
         lowerMsg.includes('unavailable') ||
         lowerMsg.includes('high demand') ||
-        lowerMsg.includes('overloaded');
+        lowerMsg.includes('overloaded') ||
+        lowerMsg.includes('spikes in demand') ||
+        lowerMsg.includes('capacity') ||
+        lowerMsg.includes('server is busy') ||
+        lowerMsg.includes('fetch failed') ||
+        lowerMsg.includes('econnreset') ||
+        lowerMsg.includes('socket hang up') ||
+        lowerMsg.includes('network');
 
     const isNotFound =
         status === 404 ||

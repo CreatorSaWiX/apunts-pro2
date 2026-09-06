@@ -1,7 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 /**
  * Utilitats de depuració per a les crides a Google Gemini AI.
  * Permet inspeccionar el contingut exacte dels prompts, system instructions,
- * historial i configuracions enviades als models directament a la terminal.
+ * historial i configuracions enviades als models directament en un arxiu net.
  */
 
 export interface GeminiDebugPayload {
@@ -80,25 +83,22 @@ function sanitizeForLog(data: unknown): unknown {
 }
 
 /**
- * Formata els continguts (parts o historial de missatges) de manera llegible per humans.
+ * Formata els continguts de manera neta per a l'arxiu .log (sense caràcters ANSI d'escapament).
  */
-function formatContentsForLog(contents: unknown): string {
-    if (!contents) return `${C.gray}(buit)${C.reset}`;
+function formatContentsForLogPlain(contents: unknown): string {
+    if (!contents) return '(buit)';
 
-    // Si és text pla
     if (typeof contents === 'string') {
         return contents;
     }
 
-    // Si és una llista de missatges estructurats [{ role, parts }, ...]
     if (Array.isArray(contents)) {
         const lines: string[] = [];
         for (let i = 0; i < contents.length; i++) {
             const item = contents[i];
             if (item && typeof item === 'object' && 'role' in item && 'parts' in item) {
                 const role = String(item.role).toUpperCase();
-                const roleColor = role === 'USER' ? C.green : C.magenta;
-                lines.push(`${roleColor}${C.bold}[${role}]${C.reset}`);
+                lines.push(`[${role}]`);
 
                 const parts = Array.isArray(item.parts) ? item.parts : [item.parts];
                 for (const part of parts) {
@@ -111,12 +111,11 @@ function formatContentsForLog(contents: unknown): string {
                         if ('inlineData' in part && part.inlineData) {
                             const inline = part.inlineData as { mimeType?: string; data?: string };
                             const size = inline.data ? `${inline.data.length} bytes base64` : '';
-                            lines.push(`  ${C.yellow}[Adjunt: ${inline.mimeType || 'desconegut'} (${size})]${C.reset}`);
+                            lines.push(`  [Adjunt: ${inline.mimeType || 'desconegut'} (${size})]`);
                         }
                     }
                 }
             } else {
-                // Altres tipus d'array
                 lines.push(JSON.stringify(sanitizeForLog(item), null, 2));
             }
         }
@@ -127,8 +126,8 @@ function formatContentsForLog(contents: unknown): string {
 }
 
 /**
- * Imprimeix a la terminal un bloc visual clar i ordenat amb tota la informació
- * del prompt enviat a Gemini.
+ * Desa a un fitxer .log net tot el prompt enviat a Gemini (sobrescrivint l'anterior)
+ * i mostra únicament un resum compacte a la terminal per no saturar el buffer.
  */
 export function logGeminiPrompt(payload: GeminiDebugPayload): void {
     if (!isPromptDebugEnabled()) return;
@@ -147,36 +146,41 @@ export function logGeminiPrompt(payload: GeminiDebugPayload): void {
     const border = '═'.repeat(66);
     const divider = '─'.repeat(66);
 
-    console.log(`\n${C.cyan}╔${border}╗${C.reset}`);
-    console.log(`${C.cyan}║ GEMINI AI DEBUG ${C.dim}| ${time}${C.reset}`);
-    console.log(`${C.cyan}║ Endpoint: ${C.bold}${C.white}${endpoint}${C.reset}${C.cyan} | Model: ${C.bold}${C.yellow}${model}${C.reset}`);
-    console.log(`${C.cyan}╠${divider}╣${C.reset}`);
+    // Construeix el text complet i net sense codis ANSI per a l'arxiu
+    const logLines: string[] = [
+        border,
+        `GEMINI AI DEBUG LOG | ${time}`,
+        `Endpoint: ${endpoint} | Model: ${model}`,
+        border,
+        ''
+    ];
 
     // Metadades addicionals
     if (extra && Object.keys(extra).length > 0) {
-        console.log(`${C.blue}${C.bold}🔍 METADADES:${C.reset}`);
+        logLines.push('METADADES:');
         for (const [k, v] of Object.entries(extra)) {
-            console.log(`  ${C.dim}${k}:${C.reset} ${typeof v === 'object' ? JSON.stringify(v) : v}`);
+            logLines.push(`  ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`);
         }
-        console.log(`${C.cyan}╠${divider}╣${C.reset}`);
+        logLines.push('', divider, '');
     }
 
     // System Instruction
     if (systemInstruction) {
-        console.log(`${C.magenta}${C.bold}SYSTEM INSTRUCTION (${systemInstruction.length} caràcters):${C.reset}`);
-        console.log(systemInstruction.trim());
-        console.log(`${C.cyan}╠${divider}╣${C.reset}`);
+        logLines.push(`SYSTEM INSTRUCTION (${systemInstruction.length} caràcters):`);
+        logLines.push(systemInstruction.trim());
+        logLines.push('', divider, '');
     }
 
     // Continguts / Missatges / Prompt de l'usuari
-    console.log(`${C.green}${C.bold}CONTENTS (PROMPT / HISTORIAL):${C.reset}`);
-    console.log(formatContentsForLog(contents));
+    logLines.push('CONTENTS (PROMPT / HISTORIAL):');
+    logLines.push(formatContentsForLogPlain(contents));
+    logLines.push('');
 
     // Eines / Tools
     if (tools) {
-        console.log(`${C.cyan}╠${divider}╣${C.reset}`);
-        console.log(`${C.yellow}${C.bold}TOOLS (EINES):${C.reset}`);
-        console.log(JSON.stringify(sanitizeForLog(tools), null, 2));
+        logLines.push(divider, 'TOOLS (EINES):');
+        logLines.push(JSON.stringify(sanitizeForLog(tools), null, 2));
+        logLines.push('');
     }
 
     // Config addicional
@@ -186,11 +190,35 @@ export function logGeminiPrompt(payload: GeminiDebugPayload): void {
         delete filteredConfig.tools;
 
         if (Object.keys(filteredConfig).length > 0) {
-            console.log(`${C.cyan}╠${divider}╣${C.reset}`);
-            console.log(`${C.blue}${C.bold}CONFIG:${C.reset}`);
-            console.log(JSON.stringify(filteredConfig, null, 2));
+            logLines.push(divider, 'CONFIG:');
+            logLines.push(JSON.stringify(filteredConfig, null, 2));
+            logLines.push('');
         }
     }
 
+    logLines.push(border);
+    const fullLogText = logLines.join('\n');
+
+    // Escriure a l'arxiu net (sobrescriu sempre el fitxer anterior perquè quedi net)
+    const logFileName = 'gemini-prompt.log';
+    try {
+        const logFilePath = path.resolve(process.cwd(), logFileName);
+        fs.writeFileSync(logFilePath, fullLogText, 'utf-8');
+
+        // Si és un sub-endpoint específic (ex: chat, quiz, roadmap), en desem també una còpia dedicada
+        const safeEndpoint = endpoint.replace(/[^a-zA-Z0-9_-]/g, '_');
+        if (safeEndpoint && safeEndpoint !== 'prompt') {
+            fs.writeFileSync(path.resolve(process.cwd(), `gemini-${safeEndpoint}.log`), fullLogText, 'utf-8');
+        }
+    } catch (err) {
+        console.error('[DEBUG] No s\'ha pogut desar el log de Gemini:', err);
+    }
+
+    // A la terminal, imprimim només un resum compacte per evitar inundar el buffer
+    const kb = (Buffer.byteLength(fullLogText, 'utf8') / 1024).toFixed(1);
+    console.log(`\n${C.cyan}╔${border}╗${C.reset}`);
+    console.log(`${C.cyan}║ GEMINI AI DEBUG ${C.dim}| ${time}${C.reset}`);
+    console.log(`${C.cyan}║ Endpoint: ${C.bold}${C.white}${endpoint}${C.reset}${C.cyan} | Model: ${C.bold}${C.yellow}${model}${C.reset}`);
+    console.log(`${C.cyan}║ 📄 Log net desat a: ${C.bold}${C.green}${logFileName}${C.reset}${C.cyan} (${kb} KB)${C.reset}`);
     console.log(`${C.cyan}╚${border}╝\n${C.reset}`);
 }

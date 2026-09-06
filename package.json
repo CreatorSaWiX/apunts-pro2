@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:embeddings && npm run build:offline-manifest && vite build && tsc -b",
+    "build": "npm run build:offline-manifest && vite build && tsc -b",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:pdfs": "node scripts/build-pdfs.js",
     "build:solucionaris-pdfs": "tsx scripts/build-solucionaris-pdfs.ts",
     "build:offline-manifest": "node scripts/build-offline-manifest.js",
-    "build:embeddings": "tsx scripts/build-embeddings.ts",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
@@ -52,9 +51,6 @@
     "@tiptap/starter-kit": "^3.27.1",
     "@uiw/codemirror-theme-vscode": "^4.25.4",
     "@uiw/react-codemirror": "^4.25.4",
-    "@upstash/ratelimit": "^2.0.8",
-    "@upstash/redis": "^1.38.2",
-    "@upstash/vector": "^1.2.3",
     "@vercel/analytics": "^1.6.1",
     "@xyflow/react": "^12.11.0",
     "algoliasearch": "^4.27.0",
@@ -98,7 +94,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/canvas-confetti": "^1.9.0",
-    "firebase-admin": "^14.1.0",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^8.0.1",
@@ -112,6 +107,7 @@
     "eslint": "^10.9.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "firebase-admin": "^14.1.0",
     "globals": "^16.5.0",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",

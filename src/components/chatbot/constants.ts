@@ -31,4 +31,9 @@ export const MARKDOWN_CLS = `text-sm md:text-[15px]
   [&_li]:my-1.5 [&_li>p]:inline
   [&_strong]:text-slate-200 [&_strong]:font-semibold
   [&_blockquote]:border-l-2 [&_blockquote]:border-slate-600 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-slate-400
+  [&_table]:w-full [&_table]:border-collapse [&_table]:text-left [&_table]:text-[13px] md:[&_table]:text-[13.5px]
+  [&_thead]:bg-white/[0.06] [&_thead]:border-b [&_thead]:border-white/10
+  [&_th]:px-3.5 [&_th]:py-2.5 [&_th]:font-semibold [&_th]:text-slate-200 [&_th]:text-xs [&_th]:tracking-wider [&_th]:uppercase [&_th]:whitespace-nowrap
+  [&_tr]:border-b [&_tr]:border-white/[0.06] last:[&_tr]:border-b-0 hover:[&_tr]:bg-white/[0.03] [&_tr]:transition-colors
+  [&_td]:px-3.5 [&_td]:py-2.5 [&_td]:text-slate-300 [&_td]:align-middle [&_td]:leading-relaxed
   [&_hr]:hidden`;

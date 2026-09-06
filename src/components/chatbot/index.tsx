@@ -468,6 +468,16 @@ export const ChatBot: React.FC = () => {
                 if (parsed.phase === 'thinking') setStreamPhase('thinking');
                 else if (parsed.phase === 'writing') setStreamPhase('writing');
                 break;
+              case 'reset':
+                fullReplyText = '';
+                thoughtDurationMs = 0;
+                if (streamingUpdateRAF.current) {
+                  cancelAnimationFrame(streamingUpdateRAF.current);
+                  streamingUpdateRAF.current = null;
+                }
+                setStreamingText('');
+                setStreamPhase('thinking');
+                break;
               case 'thought':
                 setStreamPhase('thinking');
                 fullThoughtText += parsed.text;
@@ -662,7 +672,7 @@ export const ChatBot: React.FC = () => {
               onMouseDown={() => { setIsResizing(true); document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; }} />
 
             {/* Messages */}
-            <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-28 md:px-6 space-y-8 custom-scrollbar z-0 flex flex-col">
+            <div ref={messagesContainerRef} className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-52 md:px-6 md:pb-56 space-y-8 custom-scrollbar z-0 flex flex-col">
               <MessagesOnly
                 messages={messages}
                 user={user}
@@ -674,7 +684,7 @@ export const ChatBot: React.FC = () => {
                 streamingText={streamingText}
                 renderAIAvatar={renderAIAvatar}
               />
-              <div ref={messagesEndRef} className="h-4" />
+              <div ref={messagesEndRef} className="h-8 shrink-0" />
             </div>
 
             {/* Floating Header */}
