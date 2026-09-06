@@ -46,20 +46,36 @@ export function isRealNote(note: { content?: string; title?: string }): boolean 
 }
 
 /**
- * Neteja el contingut Markdown per a l'LLM:
+ * Neteja i compacta el contingut Markdown per a l'LLM:
  * - Elimina grans blocs JSON de grafs interactius per D3/ForceGraph
- * - Elimina contenidors i tags HTML <object> de visors de PDF
+ * - Elimina contenidors i tags HTML <object>, <iframe>, <div>, <span>
+ * - Elimina directives de contenidor (:::tip, ::::grid, :::warning, etc.)
+ * - Elimina línies decoratives llargues (---, ===, ***)
+ * - Compacta separadors de taules (|---|---|)
+ * - Elimina espais en blanc redundants i compacta salts de línia (\n)
  * - Preserva el 100% de la teoria, definicions, teoremes, fórmules KaTeX i codi
  */
 export function cleanNoteContentForLlm(content: string): string {
     return content
-        .replace(/:::graph[^\n]*\n```json[\s\S]*?```\n:::/gi, '')
-        .replace(/:::graph[\s\S]*?:::/gi, '')
-        .replace(/:::(?:grid|tip|warning|note|info)[^\n]*/gi, '')
-        .replace(/:::/g, '')
+        // 1. Elimina blocs interactius de grafs (amb o sense JSON)
+        .replace(/:{3,}graph[^\n]*\n```json[\s\S]*?```\n:{3,}/gi, '')
+        .replace(/:{3,}graph[\s\S]*?:{3,}/gi, '')
+        // 2. Elimina directrius de contenidor (:::tip, ::::grid, :::warning, etc.)
+        .replace(/:{3,}[a-zA-Z0-9_\-]+(?:\{[^\}]*\})?/gi, '')
+        .replace(/:{3,}/g, '')
+        // 3. Elimina tags HTML incrustats (object, iframe, div, span)
         .replace(/<object[\s\S]*?<\/object>/gi, '')
         .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
-        .replace(/\n{3,}/g, '\n\n')
+        .replace(/<\/?(?:div|span|p|small)[^>]*>/gi, '')
+        // 4. Elimina separadors decoratius redundants (línies de --- o === o ***)
+        .replace(/^[=\-_*]{3,}$/gm, '')
+        // 5. Compacta separadors de taules Markdown (| :--- | -> |--|)
+        .replace(/\|(?:[ \t]*:?-+:?[ \t]*\|)+/g, match => match.replace(/[ \t:]+/g, ''))
+        // 6. Elimina espais en blanc sobrants a final de línia i espais dobles
+        .replace(/[ \t]+$/gm, '')
+        .replace(/[ \t]{2,}/g, ' ')
+        // 7. Compacta salts de línia múltiples a un sol salt de línia (\n)
+        .replace(/\n{2,}/g, '\n')
         .trim();
 }
 
@@ -251,7 +267,7 @@ ${indexLines.join('\n')}
 
 CONTINGUT DETALLAT DE CADA TEMA:
 
-${contentBlocks.join('\n\n---\n\n')}`;
+${contentBlocks.join('\n\n')}`;
             }
 
             // Si l'assignatura és oficial de la FIB però no té apunts redactats a la web (ex: EDA, SO, BD, IA)
