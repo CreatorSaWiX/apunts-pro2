@@ -391,7 +391,11 @@ export const ChatBot: React.FC = () => {
     try {
       let pageText = '';
       try {
-        pageText = (document.querySelector('main') || document.body).textContent?.replace(/\s+/g, ' ').slice(0, 4000) || '';
+        const source = document.querySelector('main') || document.body;
+        const clone = source.cloneNode(true) as HTMLElement;
+        // Eliminar HTML visual de KaTeX (el .katex-mathml ja conté el LaTeX pur a <annotation>)
+        clone.querySelectorAll('.katex-html, script, style, svg, nav, footer, header').forEach(el => el.remove());
+        pageText = (clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 3000);
       } catch (_) {
         pageText = '';
       }

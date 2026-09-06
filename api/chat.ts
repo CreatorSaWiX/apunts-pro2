@@ -7,7 +7,7 @@ import { Index } from "@upstash/vector";
 import { buildChatSystemInstruction } from './_shared/prompts';
 import { getGoogleGenAI } from './_shared/gemini';
 import { parseGenAIError } from './_shared/errors';
-import { createSseEmitter, type SseEmitFn } from './_shared/sse';
+import { createSseEmitter } from './_shared/sse';
 import { manageMemoryTool } from './_shared/chat-tools';
 import { logGeminiPrompt } from './_shared/debug';
 
@@ -33,9 +33,26 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
     return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
 }
 
-// 7 apunts del upstash vector
-async function fetchRagNotes(message: string, ai: GoogleGenAI): Promise<string> {
+// ── RAG: Cercador semàntic optimitzat, deduplicat i unilingüe ────────────────
+async function fetchRagNotes(
+    message: string,
+    ai: GoogleGenAI,
+    userLanguage: string = 'ca',
+    currentPath?: string,
+    pageText?: string
+): Promise<string> {
     try {
+        // 1. Evitar RAG dispers si la consulta és autoreferent a la pàgina que l'alumne ja està mirant
+        const lowerMsg = message.toLowerCase().trim();
+        const isSelfReferential = /(aquest|aquesta|aquests|aquestes|este|esta|estos|estas|this|current)\s+(tema|pàgina|pagina|capítol|capitol|secció|seccio|text|apunt|resum|topic|page|section)/i.test(lowerMsg) ||
+            /^(resumeix|resumeix-me|resumir|resumeme|summarize|explica|explica'm|què diu|que dice)(\s+(el|la|aquest|aquesta|este|esta|tot|el que))?/i.test(lowerMsg);
+
+        if (isSelfReferential && pageText && pageText.trim().length > 150) {
+            // El text de l'apunt que l'alumne vol consultar ja està inclòs a <page_context>.
+            // Evitem afegir apunts d'altres assignatures que distreguin o contaminin el model.
+            return "";
+        }
+
         const embedResponse = await ai.models.embedContent({
             model: 'gemini-embedding-2',
             contents: truncateAtWordBoundary(message, 500),
@@ -47,10 +64,47 @@ async function fetchRagNotes(message: string, ai: GoogleGenAI): Promise<string> 
         if (userVector && index) {
             const queryResponse = await index.query({
                 vector: userVector,
-                topK: 7,
+                topK: 12, // Demanem més resultats per poder filtrar per idioma i deduplicar
                 includeMetadata: true
             });
-            return queryResponse
+
+            const targetLang = (userLanguage || 'ca').toLowerCase().slice(0, 2);
+            const langPrefix = `${targetLang}-`;
+
+            // 2. Filtrar exclusivament per l'idioma configurat per l'alumne
+            let langMatches = queryResponse.filter(r => r.id.startsWith(langPrefix));
+            // Si cap apunt coincideix amb l'idioma triat, fallback exclusiu a català ('ca-')
+            if (langMatches.length === 0 && targetLang !== 'ca') {
+                langMatches = queryResponse.filter(r => r.id.startsWith('ca-'));
+            }
+
+            // 3. Filtrar ferralla, apunts buits, marcadors de posició i coincidències febles (< 65%)
+            const cleanMatches = langMatches.filter(r => {
+                if (r.score < 0.65) return false;
+                const meta = r.metadata as Record<string, string> | undefined;
+                const content = (meta?.content || '').trim();
+                if (content.length < 80) return false;
+                if (content.includes('Contingut pendent') || content.includes("Aquest tema encara s'ha de redactar")) return false;
+                if (/^<object[\s\S]*<\/object>$/i.test(content)) return false;
+                return true;
+            });
+
+            // 4. Deduplicar per tema (slug o títol) per no repetir el mateix tema múltiples vegades
+            const seenSlugs = new Set<string>();
+            const deduplicated: typeof cleanMatches = [];
+
+            for (const r of cleanMatches) {
+                const meta = r.metadata as Record<string, string> | undefined;
+                const slug = (meta?.slug || meta?.title || '').toLowerCase().trim();
+                if (!slug || seenSlugs.has(slug)) continue;
+                seenSlugs.add(slug);
+                deduplicated.push(r);
+                if (deduplicated.length >= 3) break; // Màxim 3 apunts oficials únics
+            }
+
+            if (deduplicated.length === 0) return "";
+
+            return deduplicated
                 .map((r) => {
                     const meta = r.metadata as Record<string, string> | undefined;
                     return `## Tema: ${meta?.title ?? 'Sense títol'} (Rellevància: ${(r.score * 100).toFixed(1)}%)\n\n${meta?.content ?? ''}`;
@@ -63,50 +117,32 @@ async function fetchRagNotes(message: string, ai: GoogleGenAI): Promise<string> 
     return "";
 }
 
-// Necessitat cercador google
-async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseEmitFn): Promise<boolean> {
-    await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
-    const prompt = `Ets un classificador. Respon NOMÉS amb el número 1 o 0.\nL'usuari ha fet la següent consulta: "${message}"\nAquesta consulta demana informació actualitzada, notícies recents, o dades del món real que no es puguin deduir sense buscar a internet?\nRespon 1 si requereix cerca a internet, o 0 si no en requereix.`;
 
-    for (const liteModel of getLiteModels()) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1500);
-        try {
-            logGeminiPrompt({
-                endpoint: 'chat:classify_search',
-                model: liteModel,
-                contents: prompt
-            });
+// Detecció d'intenció de cerca en temps real (0ms, regex en comptes de crida LLM)
+function needsSearch(message: string): boolean {
+    const text = message.toLowerCase().trim();
+    if (text.length < 4) return false;
 
-            const response = await ai.models.generateContent({
-                model: liteModel,
-                contents: prompt,
-                config: {
-                    temperature: 0,
-                    maxOutputTokens: 5,
-                    abortSignal: controller.signal,
-                }
-            });
+    const b = "(?:^|[\\s.,;:!?¿¡()\\[\\]\"]|$)";
+    const patterns = [
+        new RegExp(`${b}(avui|dema|demà|ahir|ara mateix|aquesta setmana|aquest mes|proxim|pròxim|proper|today|tomorrow|yesterday|hoy|manana|mañana|ayer|ahora|esta semana|próximo|proximo)${b}`),
+        new RegExp(`${b}(partit|partits|partido|partidos|match|game|horari|horaris|horario|horarios|schedule|jornada|classificacio|classificació|clasificacion|clasificación|resultat|resultats|resultado|resultados|score|barça|barca|madrid|futbol|fútbol|champions|lliga|liga|nba|f1|formula 1|fórmula 1)${b}`),
+        new RegExp(`${b}(noticia|notícia|noticias|notícies|news|actualitat|actualidad|ultima hora|última hora|latest|recent|recents|reciente|recientes)${b}`),
+        new RegExp(`${b}(temps|tiempo|weather|ploura|plourà|plou|llou|llover|temperatura)${b}`),
+        new RegExp(`${b}(preu|precio|price|borsa|bolsa|stock|crypto|bitcoin|dolar|dòlar|euro)${b}`)
+    ];
 
-            clearTimeout(timeoutId);
-            const search = (response.text || "").trim() === '1';
-            await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
-            return search;
-        } catch {
-            clearTimeout(timeoutId);
-            if (controller.signal.aborted) {
-                console.warn("Classificador d'intenció ha superat el temps límit (1.5s).");
-                await emit('thought', { text: `i18n:searchFailed\n\n` });
-                return false;
-            }
-        }
-    }
-    await emit('thought', { text: `i18n:searchFailed\n\n` });
-    return false;
+    return patterns.some(p => p.test(text));
 }
 
 // Necessitat guardar memòria d'usuari
 async function extractUserMemories(message: string, aiSettings: AiSettings | undefined, ai: GoogleGenAI): Promise<{ memory_actions: any[] }> {
+    // Short-circuit: missatges curts o salutacions no contenen fets memorables
+    const trivialPattern = /^(hola|hey|ei|ok|gràcies|merci|bon dia|bona nit|adéu|bye|thx|thanks|sí|no|va|vale|d'acord|entesos|genial|perfecte|\.+|!+|\?+)$/i;
+    if (message.trim().length < 15 || trivialPattern.test(message.trim())) {
+        return { memory_actions: [] };
+    }
+
     const currentMemories = (aiSettings?.userContext?.memories || []);
     const memoryCtx = currentMemories.length > 0
         ? "La llista actual de memòries de l'usuari és:\n" + currentMemories.map((m: string) => `- "${m}"`).join('\n')
@@ -177,14 +213,13 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             let hasStartedWriting = false;
 
             try {
-                await emit('status', { phase: 'analyzing_intent' });
+                await emit('status', { phase: 'thinking' });
 
                 // Execució paral·lela de tasques preparatòries
-                const ragPromise = fetchRagNotes(message, ai);
-                const intentPromise = classifySearchIntent(message, ai, emit);
+                const ragPromise = fetchRagNotes(message, ai, language, currentPath, pageText);
                 const metadataPromise = extractUserMemories(message, aiSettings, ai);
 
-                const [notesContext, attemptWithSearch] = await Promise.all([ragPromise, intentPromise]);
+                const notesContext = await ragPromise;
 
                 if (req.signal.aborted) return;
 
@@ -199,28 +234,37 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                     msgParts.push({ inlineData: { data: image.data, mimeType: image.mimeType } });
                 }
 
-                const systemInstruction = buildChatSystemInstruction(
-                    aiSettings,
-                    currentPath,
-                    pageText,
-                    notesContext,
-                    attemptWithSearch,
-                    language
-                );
+                // Detecció instantània d'intenció de cerca (0ms)
+                const enableSearch = needsSearch(message);
 
                 const fullContents = [...formattedHistory, { role: 'user', parts: msgParts }];
-                let targetModels = getLoadBalancedModels();
-                if (attemptWithSearch) {
-                    targetModels = targetModels.filter(m => !m.startsWith('gemini-3'));
-                }
+                const allAvailable = getLoadBalancedModels();
+                // Si la consulta requereix cerca a internet (esport, actualitat, temps, etc.),
+                // prioritzem models Gemini 2.x que tenen l'eina Google Search activa sense error de quota.
+                // Per a la resta de preguntes (estudi, codi, mates), prioritzem Gemini 3.x amb thinking profund.
+                const targetModels = enableSearch
+                    ? [...allAvailable.filter(m => m.startsWith('gemini-2')), ...allAvailable.filter(m => !m.startsWith('gemini-2'))]
+                    : allAvailable;
 
                 // Bucle de resiliència en cascada
                 for (const modelName of targetModels) {
                     try {
+                        const modelHasSearch = enableSearch && modelName.startsWith('gemini-2');
+                        const systemInstruction = buildChatSystemInstruction(
+                            aiSettings,
+                            currentPath,
+                            pageText,
+                            notesContext,
+                            modelHasSearch,
+                            language
+                        );
+
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction
                         };
-                        if (attemptWithSearch) {
+
+                        // Google Search actiu només quan el model el suporta
+                        if (modelHasSearch) {
                             streamConfig.tools = [{ googleSearch: {} }];
                         }
 
@@ -240,7 +284,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                                 currentPath,
                                 language,
                                 thinkingLevel,
-                                attemptWithSearch,
+                                enableSearch,
                                 ragNotesFound: !!notesContext
                             }
                         });
