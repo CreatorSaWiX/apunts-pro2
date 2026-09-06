@@ -120,3 +120,11 @@ export const resetPasswordRequestSchema = z.object({
     return "ca"; // Fallback to 'ca' if invalid
   }),
 });
+
+// --- Transcribe Schemas ---
+export const transcribeRequestSchema = z.object({
+  audio: z.string().min(1, "L'àudio no pot estar buit"),
+  mimeType: z.string().min(1).default("audio/webm"),
+  language: z.string().optional().default("ca"),
+});
+

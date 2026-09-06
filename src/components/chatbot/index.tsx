@@ -52,10 +52,10 @@ function ThinkingLevelSelector({ value, onChange }: { value: ThinkingLevel, onCh
 
   return (
     <div className="relative flex items-center" ref={containerRef}>
-      <button 
-        type="button" 
-        onClick={() => setIsOpen(!isOpen)} 
-        className={`shrink-0 px-2 py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1 ${isOpen ? 'text-slate-200 bg-white/5' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`} 
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`shrink-0 px-2 py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1 ${isOpen ? 'text-slate-200 bg-white/5' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
         title="Nivell de Raonament"
       >
         <span className="text-[13px] font-medium leading-none mt-[1px]">

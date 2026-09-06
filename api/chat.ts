@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { getLoadBalancedModels, getLiteModels, applyThinkingConfig } from './_shared/models';
+import { getChatModels, getLiteModels, applyThinkingConfig } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { chatRequestSchema, type AiSettings } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
@@ -21,6 +21,7 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
     return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
 }
 
+//Necessitat google search
 async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseEmitFn): Promise<boolean> {
     await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
     const trimmed = message.trim();
@@ -55,21 +56,40 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix:`;
             const search = answer.includes('1');
             await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
             return search;
-        } catch {
+        } catch (e) {
             clearTimeout(timeoutId);
             if (controller.signal.aborted) {
                 console.warn("[classifySearchIntent] Temps límit de 1.2s superat, prioritzant coneixement acadèmic.");
                 await emit('thought', { text: `i18n:searchFailed\n\n` });
                 return false;
             }
+            console.warn("[classifySearchIntent] Model error:", e);
         }
     }
     await emit('thought', { text: `i18n:searchFailed\n\n` });
     return false;
 }
 
+interface MemoryAction {
+    type: 'ADD' | 'UPDATE' | 'DELETE';
+    content?: string;
+    index?: number;
+}
+
+const MEMORY_SYSTEM_INSTRUCTION =
+    "Ets el Gestor de Memòria. Si l'usuari revela detalls nous rellevants, usa manage_memory amb ADD. " +
+    "Si diu quelcom que contradiu o actualitza una memòria de la llista, usa UPDATE. " +
+    "Si exigeix oblidar alguna memòria, usa DELETE. Retorna SKIP en text lliure només si no hi ha canvis a fer.";
+
+const MEMORY_TOOLS = [{ functionDeclarations: [manageMemoryTool] }];
+
 // Necessitat guardar memòria d'usuari
-async function extractUserMemories(message: string, aiSettings: AiSettings | undefined, ai: GoogleGenAI): Promise<{ memory_actions: any[] }> {
+async function extractUserMemories(
+    message: string,
+    aiSettings: AiSettings | undefined,
+    ai: GoogleGenAI,
+    parentSignal?: AbortSignal
+): Promise<{ memory_actions: MemoryAction[] }> {
     const currentMemories = (aiSettings?.userContext?.memories || []);
     const memoryCtx = currentMemories.length > 0
         ? "La llista actual de memòries de l'usuari és:\n" + currentMemories.map((m: string) => `- "${m}"`).join('\n')
@@ -78,30 +98,49 @@ async function extractUserMemories(message: string, aiSettings: AiSettings | und
     const promptContent = `${memoryCtx}\n\nAnalitza el NOU missatge de l'usuari: "${truncateAtWordBoundary(message, 500).replace(/"/g, '\\"')}"`;
 
     for (const liteModel of getLiteModels()) {
+        if (parentSignal?.aborted) return { memory_actions: [] };
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const onParentAbort = () => controller.abort();
+        parentSignal?.addEventListener('abort', onParentAbort, { once: true });
+
         try {
             logGeminiPrompt({
                 endpoint: 'chat:extract_memories',
                 model: liteModel,
-                systemInstruction: "Ets el Gestor de Memòria. Si l'usuari revela detalls nous rellevants, usa manage_memory amb ADD. Si diu quelcom que contradiu o actualitza una memòria de la llista, usa UPDATE. Si exigeix oblidar alguna memòria, usa DELETE. Retorna SKIP en text lliure només si no hi ha canvis a fer.",
+                systemInstruction: MEMORY_SYSTEM_INSTRUCTION,
                 contents: promptContent,
-                tools: [{ functionDeclarations: [manageMemoryTool] }]
+                tools: MEMORY_TOOLS
             });
 
             const metadataResponse = await ai.models.generateContent({
                 model: liteModel,
                 contents: promptContent,
                 config: {
-                    systemInstruction: "Ets el Gestor de Memòria. Si l'usuari revela detalls nous rellevants, usa manage_memory amb ADD. Si diu quelcom que contradiu o actualitza una memòria de la llista, usa UPDATE. Si exigeix oblidar alguna memòria, usa DELETE. Retorna SKIP en text lliure només si no hi ha canvis a fer.",
-                    tools: [{ functionDeclarations: [manageMemoryTool] }],
+                    systemInstruction: MEMORY_SYSTEM_INSTRUCTION,
+                    tools: MEMORY_TOOLS,
                     temperature: 0.1,
-                    maxOutputTokens: 250
+                    maxOutputTokens: 250,
+                    abortSignal: controller.signal,
                 }
             });
+
+            clearTimeout(timeoutId);
+            parentSignal?.removeEventListener('abort', onParentAbort);
 
             const memoryCall = metadataResponse.functionCalls?.find(call => call.name === 'manage_memory');
             const actions = (memoryCall?.args as any)?.actions;
             return { memory_actions: Array.isArray(actions) ? actions : [] };
         } catch (e: any) {
+            clearTimeout(timeoutId);
+            parentSignal?.removeEventListener('abort', onParentAbort);
+
+            if (controller.signal.aborted || parentSignal?.aborted) {
+                console.warn("[extractUserMemories] Temps límit de 2s superat o petició cancel·lada.");
+                return { memory_actions: [] };
+            }
+
             const parsed = parseGenAIError(e);
             if (parsed.isQuota || parsed.isUnavailable) continue;
             console.warn("Extracció de metadades fallida (no crític):", e);
@@ -150,7 +189,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                     language
                 }, ai);
                 const searchPromise = classifySearchIntent(message, ai, emit);
-                const metadataPromise = extractUserMemories(message, aiSettings, ai);
+                const metadataPromise = extractUserMemories(message, aiSettings, ai, req.signal)
+                    .catch(e => { console.warn("[extractUserMemories] Non-critical failure:", e); return { memory_actions: [] as MemoryAction[] }; });
 
                 const [notesContext, enableSearch] = await Promise.all([notesPromise, searchPromise]);
 
@@ -168,33 +208,25 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 }
 
                 const fullContents = [...formattedHistory, { role: 'user', parts: msgParts }];
-                const allAvailable = getLoadBalancedModels();
-                // Si la consulta requereix cerca a internet (esport, actualitat, temps, etc.),
-                // prioritzem models Gemini 2.x que tenen l'eina Google Search activa sense error de quota.
-                // Per a la resta de preguntes (estudi, codi, mates), prioritzem Gemini 3.x amb thinking profund.
-                const targetModels = enableSearch
-                    ? [...allAvailable.filter(m => m.startsWith('gemini-2')), ...allAvailable.filter(m => !m.startsWith('gemini-2'))]
-                    : allAvailable;
+                const targetModels = getChatModels(enableSearch);
+
+                const systemInstruction = buildChatSystemInstruction(
+                    aiSettings,
+                    currentPath,
+                    pageText,
+                    notesContext,
+                    enableSearch,
+                    language
+                );
 
                 // Bucle de resiliència en cascada
                 for (const modelName of targetModels) {
                     try {
-                        const modelHasSearch = enableSearch && modelName.startsWith('gemini-2');
-                        const systemInstruction = buildChatSystemInstruction(
-                            aiSettings,
-                            currentPath,
-                            pageText,
-                            notesContext,
-                            modelHasSearch,
-                            language
-                        );
-
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction
                         };
 
-                        // Google Search actiu només quan el model el suporta
-                        if (modelHasSearch) {
+                        if (enableSearch) {
                             streamConfig.tools = [{ googleSearch: {} }];
                         }
 
@@ -284,7 +316,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         });
 
                         // Si el contingut ha estat bloquejat per filtres de seguretat, no té sentit provar altres models
-                        if (parsed.cleanMessage.includes('SAFETY') || parsed.cleanMessage.includes('filtres') || parsed.cleanMessage.includes('RECITATION')) {
+                        if (parsed.isSafety || parsed.isRecitation) {
                             await emit('error', { message: parsed.cleanMessage });
                             await emit('done', {});
                             return;
@@ -302,7 +334,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             ? "reasonQuota"
                             : (parsed.status === 503 ? "reason503" : "reasonSaturation");
                         await emit('thought', { text: `❌ i18n:modelDenied:${modelName}:${failReason}\n\n` });
-                        await new Promise(resolve => setTimeout(resolve, 150));
                         continue;
                     }
                 }
@@ -316,7 +347,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         ? `${parsedLast.retryAfterSeconds} segons`
                         : "un o dos minuts";
                     finalErrorMsg = `⚠️ Has esgotat tota la teva quota gratuïta (RPM o RPD) per als diferents models provats.\nL'API demana que t'esperis com a mínim **${waitTime}** abans de tornar-ho a provar.\n\n_Detall tècnic de l'últim intent: ${parsedLast.cleanMessage.substring(0, 150)}..._`;
-                } else if (parsedLast.cleanMessage.includes('SAFETY') || parsedLast.cleanMessage.includes('filtres')) {
+                } else if (parsedLast.isSafety || parsedLast.isRecitation) {
                     finalErrorMsg = "⚠️ El missatge ha estat bloquejat pels filtres de seguretat de Google.";
                 } else if (parsedLast.isUnavailable) {
                     finalErrorMsg = "⚠️ Els servidors de Google estan saturats. Torna-ho a intentar en uns minuts.";

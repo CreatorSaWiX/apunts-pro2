@@ -1,3 +1,5 @@
+// ── Models Premium (Raonament profund, codi, mates) ──────────────────────────
+// Quota AI Studio: 5 RPM, 20 RPD, 250K TPM
 const PREMIUM_MODELS = [
     'gemini-3.8-flash',
     'gemini-3.7-flash',
@@ -7,6 +9,8 @@ const PREMIUM_MODELS = [
     'gemini-2.5-flash',
 ];
 
+// ── Models Lite (Ràpids, encaminadors semàntics, memòria, transcripció) ──────
+// Quota AI Studio: 15 RPM, 500 RPD, 250K TPM
 const LITE_MODELS = [
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
@@ -17,17 +21,53 @@ const ALL_MODELS = [...PREMIUM_MODELS, ...LITE_MODELS];
 const THINKING_MODELS = new Set(PREMIUM_MODELS);
 
 /**
- * RPM: -/5, RPD: -/20, TPM: -/250K
+ * Retorna tots els models disponibles per a fallback genèric.
  */
 export function getLoadBalancedModels(): readonly string[] {
     return ALL_MODELS;
 }
 
 /**
- * RPM: -/15, RPD: -/500, TPM: -/250K
+ * Retorna els models d'alta velocitat i quota generosa (15 RPM / 500 RPD).
  */
 export function getLiteModels(): readonly string[] {
     return LITE_MODELS;
+}
+
+// ── Models amb suport de Google Search (Quota AI Studio: 1.500 cerques/dia) ──
+// Només la família Gemini 2.x suporta Google Search al pla gratuït (Gemini 3 té 0/0).
+const SEARCH_MODELS = [
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+];
+
+/**
+ * Comprova si un model suporta l'eina de Google Search Grounding.
+ */
+export function supportsGoogleSearch(modelName: string): boolean {
+    return SEARCH_MODELS.includes(modelName);
+}
+
+/**
+ * Retorna els models per al xat:
+ * - Si cal cerca: ÚNICAMENT els models amb Google Search actiu (Gemini 2.5).
+ * - Si no cal cerca: fa servir la llista estàndard (prioritzant Gemini 3 amb raonament profund).
+ */
+export function getChatModels(enableSearch: boolean): readonly string[] {
+    return enableSearch ? SEARCH_MODELS : ALL_MODELS;
+}
+
+/**
+ * Models multimodals òptims per a la transcripció d'àudio (MicButton).
+ * Prioritza models Lite per velocitat i quota de 500 RPD, amb fallback a Flash.
+ */
+export function getTranscribeModels(): readonly string[] {
+    return [
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash',
+    ];
 }
 
 export type ThinkingLevelOption = 'auto' | 'low' | 'medium' | 'high';

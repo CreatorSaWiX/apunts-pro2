@@ -7,6 +7,8 @@ export interface ParsedApiError {
     isQuota: boolean;
     isUnavailable: boolean;
     isNotFound: boolean;
+    isSafety: boolean;
+    isRecitation: boolean;
     retryAfterSeconds?: number;
     cleanMessage: string;
 }
@@ -123,6 +125,14 @@ export function parseGenAIError(e: unknown): ParsedApiError {
         grpcCode === 5 ||
         lowerMsg.includes('not found');
 
+    const isSafety =
+        lowerMsg.includes('safety') ||
+        lowerMsg.includes('filtres de seguretat');
+
+    const isRecitation =
+        lowerMsg.includes('recitation') ||
+        lowerMsg.includes('drets d\'autor');
+
     return {
         status,
         grpcCode,
@@ -130,6 +140,8 @@ export function parseGenAIError(e: unknown): ParsedApiError {
         isQuota,
         isUnavailable,
         isNotFound,
+        isSafety,
+        isRecitation,
         retryAfterSeconds,
         cleanMessage,
     };
