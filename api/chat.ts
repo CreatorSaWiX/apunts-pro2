@@ -10,6 +10,7 @@ import { parseGenAIError } from './_shared/errors';
 import { createSseEmitter, type SseEmitFn } from './_shared/sse';
 import { manageMemoryTool } from './_shared/chat-tools';
 import { logGeminiPrompt } from './_shared/debug';
+import { resolveGroundingChunks } from './_shared/grounding';
 
 function truncateAtWordBoundary(text: string, maxLen: number): string {
     if (text.length <= maxLen) return text;
@@ -46,7 +47,7 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix:`;
                 contents: prompt,
                 config: {
                     temperature: 0,
-                    maxOutputTokens: 1,
+                    maxOutputTokens: 5,
                     abortSignal: controller.signal,
                 }
             });
@@ -257,6 +258,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             config: streamConfig as any,
                         });
 
+                        let hasResolvedGrounding = false;
                         for await (const chunk of response) {
                             if (req.signal.aborted || controller.desiredSize === null) {
                                 return;
@@ -266,6 +268,10 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             if (!candidate) continue;
 
                             if (candidate.groundingMetadata) {
+                                if (candidate.groundingMetadata.groundingChunks?.length && !hasResolvedGrounding) {
+                                    hasResolvedGrounding = true;
+                                    await resolveGroundingChunks(candidate.groundingMetadata.groundingChunks);
+                                }
                                 const ok = await emit('grounding', candidate.groundingMetadata);
                                 if (!ok) return;
                             }
