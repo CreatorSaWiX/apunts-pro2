@@ -6,7 +6,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
         return jsonResponse({ error: 'Mètode no permès' }, 405);
     }
 
-    const rawBody = await req.json().catch(() => ({}));
+    const rawBody = (await req.json().catch(() => ({}))) as { chunks?: unknown };
     const chunks = rawBody?.chunks;
 
     if (!Array.isArray(chunks)) {
