@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, useMemo, lazy, Suspense } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
-import { useSettingsStore } from '../stores/useSettingsStore';
+import { useSettingsStore, DEFAULT_HOME_SUBJECTS } from '../stores/useSettingsStore';
 import Hero from '../components/Hero';
 import { m as motion } from 'framer-motion';
 import TopicCarousel from '../components/TopicCarousel';
@@ -12,20 +12,40 @@ const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 const HomePage = () => {
     const { subject, setSubject } = useSubjectStore();
     const { homeSubjects } = useSettingsStore();
-    const [displaySubject, setDisplaySubject] = useState(subject);
-    const [prevSubject, setPrevSubject] = useState(subject);
+
+    // Ensure displaySubjects has a fallback and is stable
+    const displaySubjects = useMemo(() => {
+        return homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
+    }, [homeSubjects]);
+
+    // If current subject is not in the active subjects list (e.g. deleted from Settings),
+    // immediately fall back to the first available subject.
+    const isCurrentSubjectValid = displaySubjects.some(
+        s => s.toUpperCase() === subject.toUpperCase()
+    );
+    const activeSubject = isCurrentSubjectValid ? subject : displaySubjects[0];
+
+    const [displaySubject, setDisplaySubject] = useState(activeSubject);
+    const [prevSubject, setPrevSubject] = useState(activeSubject);
     const [isExiting, setIsExiting] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Sync subject to displaySubject during render to avoid cascading renders
-    if (subject !== prevSubject) {
-        setPrevSubject(subject);
+    // Sync activeSubject to displaySubject during render to avoid cascading renders
+    if (activeSubject !== prevSubject) {
+        setPrevSubject(activeSubject);
         if (!isExiting) {
-            setDisplaySubject(subject);
+            setDisplaySubject(activeSubject);
         }
     }
+
+    // Sync store if current subject is invalid (e.g. after returning from settings)
+    useEffect(() => {
+        if (!isCurrentSubjectValid && displaySubjects.length > 0) {
+            setSubject(displaySubjects[0]);
+        }
+    }, [isCurrentSubjectValid, displaySubjects, setSubject]);
 
     // Cleanup timeout on unmount
     useEffect(() => {
@@ -35,7 +55,7 @@ const HomePage = () => {
     }, []);
 
     const handleSubjectChange = (newSubj: string) => {
-        if (newSubj === subject || isExiting) return;
+        if (newSubj.toUpperCase() === activeSubject.toUpperCase() || isExiting) return;
         
         // Canviar colors, targetes i menú instantàniament
         setSubject(newSubj);
@@ -61,10 +81,6 @@ const HomePage = () => {
 
     const isMobile = useIsMobile();
 
-    // Ensure the active subject is always in the list if they visit it via URL or cache, 
-    // but typically it's whatever they click.
-    const displaySubjects = homeSubjects.length > 0 ? homeSubjects : ['PRO2', 'M1', 'M2'];
-
     return (
         <div className="h-dvh w-full flex flex-col overflow-hidden leading-tight">
             {/* Mobile Action Menu (Lazy loaded) */}
@@ -78,7 +94,7 @@ const HomePage = () => {
             <div className="hidden md:flex absolute top-4 right-4 md:top-6 md:right-8 z-50 scale-90 md:scale-100 origin-top-right transition">
                 <NavigationPill>
                     {displaySubjects.map(subj => {
-                        const isActive = subject.toUpperCase() === subj.toUpperCase();
+                        const isActive = activeSubject.toUpperCase() === subj.toUpperCase();
                         return (
                             <button type="button"
                                 key={subj}

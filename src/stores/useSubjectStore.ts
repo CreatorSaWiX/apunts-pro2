@@ -75,8 +75,8 @@ interface SubjectState {
 export const useSubjectStore = create<SubjectState>()(
     persist(
         (set, get) => ({
-            subject: 'PRO2',
-            theme: calculateTheme('PRO2'),
+            subject: 'PE',
+            theme: calculateTheme('PE'),
             customColors: {},
             setSubject: (subject) => {
                 const newTheme = calculateTheme(subject, get().customColors);

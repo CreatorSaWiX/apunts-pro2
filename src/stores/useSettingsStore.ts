@@ -5,6 +5,8 @@ import { useSubjectStore } from './useSubjectStore';
 
 export type PlannerViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
+export const DEFAULT_HOME_SUBJECTS = ['PE', 'EDA', 'BD', 'CI', 'SO'];
+
 export type OfflineStorageSettings = Record<string, boolean>;
 const DEFAULT_OFFLINE_STORAGE: OfflineStorageSettings = {};
 
@@ -80,7 +82,7 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
     persist(
         (set) => ({
-            homeSubjects: ['PRO2', 'M1', 'M2'],
+            homeSubjects: DEFAULT_HOME_SUBJECTS,
             defaultPlannerView: 'board',
             customSubjectColors: {},
             aiSettings: DEFAULT_AI_SETTINGS,
@@ -88,9 +90,14 @@ export const useSettingsStore = create<SettingsState>()(
             shortcuts: DEFAULT_SHORTCUTS,
             isSettingsLoaded: false,
 
-            setHomeSubjects: (updater) => set((state) => ({
-                homeSubjects: typeof updater === 'function' ? updater(state.homeSubjects) : updater
-            })),
+            setHomeSubjects: (updater) => set((state) => {
+                const newSubjects = typeof updater === 'function' ? updater(state.homeSubjects) : updater;
+                const currentSubject = useSubjectStore.getState().subject;
+                if (newSubjects.length > 0 && !newSubjects.some(s => s.toUpperCase() === currentSubject.toUpperCase())) {
+                    useSubjectStore.getState().setSubject(newSubjects[0]);
+                }
+                return { homeSubjects: newSubjects };
+            }),
             setDefaultPlannerView: (updater) => set((state) => ({
                 defaultPlannerView: typeof updater === 'function' ? updater(state.defaultPlannerView) : updater
             })),
@@ -134,6 +141,13 @@ export const useSettingsStore = create<SettingsState>()(
                         useSubjectStore.getState().updateTheme(data.customSubjectColors);
                     }
 
+                    if (data.homeSubjects && data.homeSubjects.length > 0) {
+                        const currentSubject = useSubjectStore.getState().subject;
+                        if (!data.homeSubjects.some(s => s.toUpperCase() === currentSubject.toUpperCase())) {
+                            useSubjectStore.getState().setSubject(data.homeSubjects[0]);
+                        }
+                    }
+
                     return {
                         ...state,
                         ...(data.homeSubjects && { homeSubjects: data.homeSubjects }),
@@ -155,7 +169,17 @@ export const useSettingsStore = create<SettingsState>()(
                 aiSettings: state.aiSettings,
                 offlineStorage: state.offlineStorage,
                 shortcuts: state.shortcuts
-            })
+            }),
+            onRehydrateStorage: () => (state) => {
+                if (state && state.homeSubjects && state.homeSubjects.length > 0) {
+                    setTimeout(() => {
+                        const currentSubject = useSubjectStore.getState().subject;
+                        if (!state.homeSubjects.some(s => s.toUpperCase() === currentSubject.toUpperCase())) {
+                            useSubjectStore.getState().setSubject(state.homeSubjects[0]);
+                        }
+                    }, 0);
+                }
+            }
         }
     )
 );

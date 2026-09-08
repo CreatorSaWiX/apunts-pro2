@@ -2,7 +2,7 @@ import React, { useState, useTransition } from 'react';
 import { m as motion } from 'framer-motion';
 import { Settings, Github, Heart } from 'lucide-react';
 import { useSubjectStore, tailwindColors } from '../stores/useSubjectStore';
-import { useSettingsStore } from '../stores/useSettingsStore';
+import { useSettingsStore, DEFAULT_HOME_SUBJECTS } from '../stores/useSettingsStore';
 import subjectsData from '../data/subjects.json';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,15 @@ const MobileActionMenu: React.FC<{
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     const [, startTransition] = useTransition();
-    const safeSubject = (subject || '').toLowerCase();
+
+    const displaySubjects = React.useMemo(() => {
+        return homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
+    }, [homeSubjects]);
+
+    const isCurrentSubjectValid = displaySubjects.some(
+        s => s.toLowerCase() === (subject || '').toLowerCase()
+    );
+    const activeSubject = isCurrentSubjectValid ? (subject || '').toLowerCase() : displaySubjects[0].toLowerCase();
 
     const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
     
@@ -92,7 +100,7 @@ const MobileActionMenu: React.FC<{
                 onClick={() => setIsOpen(true)}
                 className="px-4 py-2 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)] text-slate-300 hover:text-white transition-colors focus:outline-none flex items-center gap-2"
             >
-                <span className="text-xs font-black tracking-widest uppercase bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">{safeSubject}</span>
+                <span className="text-xs font-black tracking-widest uppercase bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">{activeSubject}</span>
                 <Settings size={14} className="text-slate-400" />
             </motion.button>
             <BottomSheet
@@ -109,12 +117,13 @@ const MobileActionMenu: React.FC<{
                                 {t('settings.subject', 'Assignatura')}
                             </label>
                             <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
-                                {homeSubjects.map((sub) => {
+                                {displaySubjects.map((sub) => {
                                     const isAvailable = availableSubjectNames.has(sub.toLowerCase());
                                     const subjectInfo = subjectsData.find(s => s.name.toLowerCase() === sub.toLowerCase());
                                     const defaultToken = subjectInfo?.colorToken?.split('-')[0] || 'sky';
                                     const colorFamily = customSubjectColors[sub] || defaultToken;
                                     const hexColor = tailwindColors[colorFamily]?.primary || '#0ea5e9';
+                                    const isSubjectActive = activeSubject === sub.toLowerCase();
                                     
                                     return (
                                         <button type="button"
@@ -124,14 +133,14 @@ const MobileActionMenu: React.FC<{
                                                 if (isAvailable) startTransition(() => setSubject(sub));
                                             }}
                                             className={`relative py-2 px-1 rounded-xl text-xs font-bold transition duration-300 z-10 flex items-center justify-center gap-1 ${
-                                                safeSubject === sub.toLowerCase()
+                                                isSubjectActive
                                                     ? 'text-white'
                                                     : !isAvailable 
                                                         ? 'text-slate-500 opacity-50 cursor-not-allowed'
                                                         : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                             }`}
                                         >
-                                            {safeSubject === sub.toLowerCase() && (
+                                            {isSubjectActive && (
                                                 <motion.div
                                                     layoutId="active-subject-menu"
                                                     className="absolute inset-0 rounded-xl z-[-1]"
