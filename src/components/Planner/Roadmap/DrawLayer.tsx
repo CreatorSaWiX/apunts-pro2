@@ -30,12 +30,34 @@ const StrokeGlowFilter = React.memo(() => (
     </defs>
 ));
 
+// Event delegation: single handler on <g> instead of N inline closures per <path>.
+// Uses data-id attributes + bubbling pointerover for O(1) handler allocation.
 const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStroke }: { strokes: Stroke[]; currentTool: string; removeStroke: (id: string) => void }) => {
+    const handleEraseEvent = useCallback((e: React.PointerEvent<SVGGElement>) => {
+        if (currentTool !== 'eraser') return;
+        const target = e.target as SVGElement;
+        const strokeId = target.dataset?.id;
+        if (!strokeId) return;
+        if (e.type === 'pointerdown') {
+            e.stopPropagation();
+            removeStroke(strokeId);
+        } else if (e.buttons > 0) {
+            // Drag-to-erase via pointerover (bubbling alternative to pointerenter)
+            removeStroke(strokeId);
+        }
+    }, [currentTool, removeStroke]);
+
+    const isEraser = currentTool === 'eraser';
+
     return (
-        <>
+        <g
+            onPointerDown={isEraser ? handleEraseEvent : undefined}
+            onPointerOver={isEraser ? handleEraseEvent : undefined}
+        >
             {strokes.map(stroke => (
                 <path
                     key={stroke.id}
+                    data-id={stroke.id}
                     d={getSvgPathFromPoints(stroke.points)}
                     stroke={stroke.color}
                     strokeWidth={stroke.width}
@@ -43,21 +65,10 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     filter="url(#stroke-glow)"
-                    pointerEvents={currentTool === 'eraser' ? 'stroke' : 'none'}
-                    onPointerDown={(e) => {
-                        if (currentTool === 'eraser') {
-                            e.stopPropagation();
-                            removeStroke(stroke.id);
-                        }
-                    }}
-                    onPointerEnter={(e) => {
-                        if (currentTool === 'eraser' && e.buttons > 0) {
-                            removeStroke(stroke.id);
-                        }
-                    }}
+                    pointerEvents={isEraser ? 'stroke' : 'none'}
                 />
             ))}
-        </>
+        </g>
     );
 });
 
@@ -73,24 +84,34 @@ const DrawLayer: React.FC = () => {
         removeStroke: state.removeStroke
     })));
     
-    // Use refs for mutable drawing state to avoid O(N) array spreads per pointerMove frame
+    // Refs for mutable drawing state — avoids O(N) array spreads per pointerMove frame
     const currentStrokeRef = useRef<Stroke | null>(null);
     const currentPathRef = useRef<SVGPathElement | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
+    // Store volatile values in refs to break the useCallback dependency chain.
+    // Without this, viewport changes (x, y, zoom) during pan/zoom cascade through:
+    //   getMouseCoords → handlePointerDown/Move/Up → 4 callbacks × 60fps = 240 recreations/s
+    // With refs, all handlers have stable identity ([] deps).
+    const viewportRef = useRef({ x, y, zoom });
+    viewportRef.current = { x, y, zoom };
+    const drawStateRef = useRef({ isDrawMode, currentTool, currentColor, currentWidth });
+    drawStateRef.current = { isDrawMode, currentTool, currentColor, currentWidth };
+
     const getMouseCoords = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
         if (!svgRef.current) return { x: 0, y: 0 };
         const rect = svgRef.current.getBoundingClientRect();
-        // Convert screen coordinates to ReactFlow viewport coordinates
+        const { x: vx, y: vy, zoom: vz } = viewportRef.current;
         const clientX = e.clientX - rect.left;
         const clientY = e.clientY - rect.top;
         return {
-            x: (clientX - x) / zoom,
-            y: (clientY - y) / zoom
+            x: (clientX - vx) / vz,
+            y: (clientY - vy) / vz
         };
-    }, [x, y, zoom]);
+    }, []); // Stable — reads viewport from ref at event time
 
     const handlePointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+        const { isDrawMode, currentTool, currentColor, currentWidth } = drawStateRef.current;
         if (!isDrawMode || currentTool !== 'pen') return;
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -110,9 +131,10 @@ const DrawLayer: React.FC = () => {
             currentPathRef.current.setAttribute('stroke-width', String(currentWidth));
             currentPathRef.current.style.display = '';
         }
-    }, [isDrawMode, currentTool, currentColor, currentWidth, getMouseCoords]);
+    }, [getMouseCoords]); // Stable — reads draw state from ref
 
     const handlePointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+        const { isDrawMode, currentTool } = drawStateRef.current;
         if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
         
@@ -125,9 +147,10 @@ const DrawLayer: React.FC = () => {
             const d = currentPathRef.current.getAttribute('d') || '';
             currentPathRef.current.setAttribute('d', `${d} L ${coords.x} ${coords.y}`);
         }
-    }, [isDrawMode, currentTool, getMouseCoords]);
+    }, [getMouseCoords]); // Stable
 
     const handlePointerUp = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+        const { isDrawMode, currentTool } = drawStateRef.current;
         if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -142,7 +165,7 @@ const DrawLayer: React.FC = () => {
             currentPathRef.current.setAttribute('d', '');
             currentPathRef.current.style.display = 'none';
         }
-    }, [isDrawMode, currentTool, addStroke]);
+    }, [addStroke]); // Stable — addStroke is a zustand action (stable ref)
 
     return (
         <svg

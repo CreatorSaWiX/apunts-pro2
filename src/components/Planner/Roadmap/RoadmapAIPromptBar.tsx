@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useRoadmapAI } from '../../../hooks/useRoadmapAI';
 import { ArrowUp, Sparkles, StopCircle, CheckCircle2, Plus, X } from 'lucide-react';
-import { useShallow } from 'zustand/react/shallow';
 import { useSettingsStore } from '../../../stores/useSettingsStore';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown, { type Components } from 'react-markdown';
@@ -49,11 +48,11 @@ export const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const suggestions = [
+    const suggestions = useMemo(() => [
         t('planner.roadmapAI.suggestions.hardware', "Què haig de fer si vull ser hardware engineer?"),
         t('planner.roadmapAI.suggestions.addAI', "Afegeix IA al meu roadmap"),
         t('planner.roadmapAI.suggestions.evalEDA', "Com s'avalua EDA?")
-    ];
+    ], [t]);
 
     const onDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
     const onDragLeave = () => setIsDragging(false);
@@ -293,7 +292,7 @@ export const RoadmapAIPromptBar: React.FC<RoadmapAIPromptBarProps> = ({
                                         {suggestions.map((s) => (
                                             <button type="button"
                                                 key={s}
-                                                onClick={() => { setPrompt(s); setTimeout(() => handleGenerate(), 50); }}
+                                                onClick={() => doGenerate(s)}
                                                 className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-slate-300 transition-colors backdrop-blur-md cursor-pointer whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
                                             >
                                                 {s}

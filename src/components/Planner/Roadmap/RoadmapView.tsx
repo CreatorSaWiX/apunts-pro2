@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
@@ -138,12 +138,16 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
+    // Derived flag: true during the exit animation. Used to strip interactive
+    // features and skip heavy sub-trees so the main thread stays free for
+    // the CSS/JS exit transition (opacity+transform).
+    const isExiting = !isPresent;
 
-    useCanvasShortcuts({ enabled: isDrawMode, onClose: () => setIsDrawMode(false) });
+    useCanvasShortcuts({ enabled: isDrawMode && !isExiting, onClose: () => setIsDrawMode(false) });
 
     useEffect(() => {
         if (!isPresent) {
-            const timer = setTimeout(() => setShouldRender(false), 500); // 500ms allows the 400ms exit animation to finish
+            const timer = setTimeout(() => setShouldRender(false), 450);
             return () => clearTimeout(timer);
         } else {
             setShouldRender(true);
@@ -162,20 +166,25 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         return () => { window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false })); };
     }, [isDrawMode]);
 
-    // Set the node type for all nodes
+    // WeakMap structural sharing: during drag, applyNodeChanges only creates
+    // new references for moved nodes (~1 per frame). We cache the typed version
+    // keyed by the source node reference, reusing unchanged nodes and reducing
+    // object allocations from O(n) to O(changed) per frame.
+    // WeakMap entries auto-GC when source nodes are dereferenced.
+    const typedNodesCacheRef = useRef(new WeakMap<object, (typeof nodes)[number]>());
     const typedNodes = useMemo(() => {
+        const cache = typedNodesCacheRef.current;
         return nodes.map(n => {
-            // Keep specialized types if they match our custom nodes
-            if (['mobility', 'internship', 'tfg', 'tfm'].includes(n.data.type as string)) {
-                return { ...n, type: n.data.type };
-            }
-            if (n.data.type === 'text') {
-                return { ...n, type: 'textNode' };
-            }
-            if (n.data.type === 'postit') {
-                return { ...n, type: 'postItNode' };
-            }
-            return { ...n, type: 'subjectNode' };
+            const cached = cache.get(n);
+            if (cached) return cached;
+            const dataType = n.data.type as string;
+            const resolvedType = dataType === 'text' ? 'textNode'
+                : dataType === 'postit' ? 'postItNode'
+                : (dataType === 'mobility' || dataType === 'internship' || dataType === 'tfg' || dataType === 'tfm') ? dataType
+                : 'subjectNode';
+            const typed = { ...n, type: resolvedType };
+            cache.set(n, typed);
+            return typed;
         });
     }, [nodes]);
 
@@ -188,11 +197,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         setIsMenuOpen(true);
     }, []);
 
+    // Only scan nodes when the context menu is actually visible.
+    // Previously this ran O(n) find() on every drag frame even with no menu open.
     const selectedNodeData = useMemo(() => {
-        if (!selectedNodeId) return null;
+        if (!selectedNodeId || !isMenuOpen) return null;
         const node = nodes.find(n => n.id === selectedNodeId);
         return node ? node.data as SubjectNodeData : null;
-    }, [selectedNodeId, nodes]);
+    }, [selectedNodeId, nodes, isMenuOpen]);
 
     const currentSpecNode = useMemo(() => nodes.find(n => n.data.type === 'specialization'), [nodes]);
     const currentSpec = useMemo(() => {
@@ -200,7 +211,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
     }, [currentSpecNode]);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         setIsSaving(true);
         try {
             await saveRoadmap(strokes as any);
@@ -209,13 +220,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         } finally {
             setIsSaving(false);
         }
-    };
+    }, [saveRoadmap, strokes]);
 
-    const handleAddAnnotation = (type: 'text' | 'postit') => {
+    const handleAddAnnotation = useCallback((type: 'text' | 'postit') => {
         const center = reactFlowInstance.screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
         addAnnotationNode(type, center.x, center.y);
         setIsDrawMode(false);
-    };
+    }, [reactFlowInstance, addAnnotationNode, setIsDrawMode]);
 
     // Planned ECTS calculation moved here to respect Rules of Hooks
     const totalPlannedECTS = useMemo(() => nodes.reduce((sum, n) => sum + (n.data.credits || 0), 0), [nodes]);
@@ -271,13 +282,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                         className="bg-transparent"
                         minZoom={0.1}
                         maxZoom={2}
-                        panOnDrag={!isDrawMode}
-                        nodesDraggable={!isDrawMode}
-                        zoomOnScroll={!isDrawMode}
-                        zoomOnPinch={!isDrawMode}
+                        panOnDrag={!isDrawMode && !isExiting}
+                        nodesDraggable={!isDrawMode && !isExiting}
+                        zoomOnScroll={!isDrawMode && !isExiting}
+                        zoomOnPinch={!isDrawMode && !isExiting}
                         zoomOnDoubleClick={false}
-                        elementsSelectable={!isDrawMode}
-                        nodesConnectable={!isDrawMode}
+                        elementsSelectable={!isDrawMode && !isExiting}
+                        nodesConnectable={!isDrawMode && !isExiting}
                         defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
                     >
                         <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
@@ -286,6 +297,10 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     </ReactFlow>
                 </TargetGradeProvider>
 
+                {/* During exit animation, strip all interactive overlays to keep
+                    the main thread free. Only the ReactFlow canvas remains visible
+                    while the parent motion.div fades it out. */}
+                {!isExiting && (<>
                 {/* ECTS Circular Glass Widget Bottom Right (Spatial UI) */}
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
@@ -659,6 +674,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                         ]}
                     />
                 )}
+                </>)}
             </div>
 
             <SubjectContextMenu
@@ -670,34 +686,46 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 onOpenDetails={() => setIsDetailsOpen(true)}
             />
 
-            {/* Lazy-mount modals: only mount when open to avoid unnecessary context subscriptions and re-renders */}
-            <SubjectSearchModal
-                isOpen={isSearchModalOpen}
-                onClose={() => setIsSearchModalOpen(false)}
-            />
+            {/* True lazy-mount: components only instantiate when opened, eliminating
+                idle zustand subscriptions, cascading useMemo chains (SubjectSearchModal
+                runs 3 O(n) memos per drag frame when mounted), and background DOM. */}
+            {isSearchModalOpen && (
+                <SubjectSearchModal
+                    isOpen={isSearchModalOpen}
+                    onClose={() => setIsSearchModalOpen(false)}
+                />
+            )}
 
-            <SubjectDetailsModal
-                isOpen={isDetailsOpen}
-                onClose={() => setIsDetailsOpen(false)}
-                subjectId={selectedNodeId}
-            />
+            {isDetailsOpen && (
+                <SubjectDetailsModal
+                    isOpen={isDetailsOpen}
+                    onClose={() => setIsDetailsOpen(false)}
+                    subjectId={selectedNodeId}
+                />
+            )}
 
-            <ExperienceSelectorModal
-                isOpen={isExperienceModalOpen}
-                onClose={() => setIsExperienceModalOpen(false)}
-            />
+            {isExperienceModalOpen && (
+                <ExperienceSelectorModal
+                    isOpen={isExperienceModalOpen}
+                    onClose={() => setIsExperienceModalOpen(false)}
+                />
+            )}
 
-            <ValidationsModal
-                isOpen={isValidationsModalOpen}
-                onClose={() => setIsValidationsModalOpen(false)}
-            />
+            {isValidationsModalOpen && (
+                <ValidationsModal
+                    isOpen={isValidationsModalOpen}
+                    onClose={() => setIsValidationsModalOpen(false)}
+                />
+            )}
 
-            <RoadmapAIPromptBar
-                isOpen={isOpenAI}
-                onClose={onCloseAI}
-                nodes={nodes as any}
-                addSubjectNode={() => {}}
-            />
+            {isOpenAI && (
+                <RoadmapAIPromptBar
+                    isOpen={isOpenAI}
+                    onClose={onCloseAI}
+                    nodes={nodes as any}
+                    addSubjectNode={() => {}}
+                />
+            )}
         </div>
     );
 };

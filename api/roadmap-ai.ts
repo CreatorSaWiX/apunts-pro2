@@ -1,4 +1,4 @@
-import { getLoadBalancedModels } from './_shared/models';
+import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { roadmapRequestSchema } from './_shared/schemas';
 import { CORS_HEADERS } from './_shared/cors';
@@ -40,7 +40,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         });
     }
 
-    const { prompt, currentNodes, history, memory, aiSettings, userName, attachedFile } = parseResult.data;
+    const { prompt, currentNodes, history, memory, aiSettings, userName, language, attachedFile } = parseResult.data;
 
     if (!prompt && !attachedFile) {
         return new Response(JSON.stringify({ error: 'Falta el paràmetre "prompt" o arxiu adjunt' }), { 
@@ -57,12 +57,18 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     // --- EXTRACCIÓ DINÀMICA DE CONTEXT ---
     let injectedContext = "";
-    let mentionedNodes = currentNodes.filter((node: RoadmapNode) => {
-        const regex = new RegExp(`\\b${node.id}\\b`, 'i');
-        return regex.test(prompt || "");
-    });
 
-    if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(prompt || "")) {
+    // Single combined regex instead of N per-node regex compilations.
+    // O(P + N) where P = prompt length, N = number of nodes.
+    const promptText = prompt || "";
+    const escapedIds = currentNodes.map((n: RoadmapNode) => n.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const combinedPattern = escapedIds.length > 0 ? new RegExp(`\\b(${escapedIds.join('|')})\\b`, 'gi') : null;
+    const matchedIdSet = combinedPattern
+        ? new Set((promptText.match(combinedPattern) || []).map((m: string) => m.toUpperCase()))
+        : new Set<string>();
+    let mentionedNodes = currentNodes.filter((node: RoadmapNode) => matchedIdSet.has(node.id.toUpperCase()));
+
+    if (mentionedNodes.length === 0 && /(assignatur|cursar|roadmap|semestre|preparar|avaluaci|professor|hores|estudi|consell)/i.test(promptText)) {
         mentionedNodes = currentNodes.filter((n: RoadmapNode) => n.status === 'in_progress');
         if (mentionedNodes.length === 0) mentionedNodes = currentNodes.slice(0, 5); 
     }
@@ -70,14 +76,16 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     if (mentionedNodes.length > 0) {
         injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
         const now = Date.now();
-        await Promise.all(mentionedNodes.map(async (node) => {
+        // Return context strings instead of mutating shared variable inside Promise.all
+        // (concurrent string concatenation is non-atomic and order-nondeterministic)
+        const contextParts = await Promise.all(mentionedNodes.map(async (node) => {
             try {
                 const cached = subjectCache.get(node.id);
                 if (cached && (now - cached.timestamp < CACHE_TTL_MS)) {
+                    // LRU refresh: move to end of Map insertion order
                     subjectCache.delete(node.id);
                     subjectCache.set(node.id, cached);
-                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
-                    return;
+                    return `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
                 }
 
                 const baseUrl = process.env.VITE_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:5173");
@@ -100,12 +108,15 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         if (oldestKey) subjectCache.delete(oldestKey);
                     }
                     subjectCache.set(node.id, { data: filteredData, timestamp: now });
-                    injectedContext += `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
+                    return `\n## Dades oficials de ${node.id}:\n${JSON.stringify(filteredData)}\n`;
                 }
+                return '';
             } catch (e) {
                 console.error(`Error llegint el context de ${node.id}:`, e);
+                return '';
             }
         }));
+        injectedContext += contextParts.join('');
     }
 
     const systemInstruction = buildRoadmapSystemInstruction(
@@ -113,7 +124,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         userName || "",
         memory,
         currentNodes,
-        injectedContext
+        injectedContext,
+        language || "ca"
     );
 
     const formattedHistory = history.map((msg: { role: string; content: string }) => ({
@@ -168,6 +180,10 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             temperature: 0.1,
                             tools: [{ functionDeclarations: [roadmapTool] as unknown[] }]
                         };
+
+                        // Enable thinking for Gemini 3.x models (was missing — model
+                        // couldn't reason properly without includeThoughts: true)
+                        applyThinkingConfig(streamConfig as any, modelName);
 
                         logGeminiPrompt({
                             endpoint: 'roadmap-ai',

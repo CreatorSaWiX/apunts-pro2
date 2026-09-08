@@ -52,6 +52,7 @@ export const roadmapRequestSchema = z.object({
   memory: z.any().optional(),
   aiSettings: aiSettingsSchema,
   userName: z.string().max(100).optional(),
+  language: z.string().max(10).optional().default("ca"),
   attachedFile: z
     .object({
       data: z.string().max(7_000_000),

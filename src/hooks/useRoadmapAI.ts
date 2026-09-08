@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { auth, db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export interface Message {
     id: string;
@@ -117,8 +119,6 @@ export const useRoadmapAI = (
             }));
 
         try {
-            const { auth, db } = await import('../lib/firebase');
-            const { doc, getDoc } = await import('firebase/firestore');
             const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
             const uid = auth.currentUser?.uid;
 
@@ -173,7 +173,23 @@ export const useRoadmapAI = (
             let sseBuffer = "";
             const aiMsgId = (Date.now() + 1).toString();
 
-            // Afegim el missatge buit abans de començar l'streaming
+            // RAF-based batching: accumulate text and flush to React state at
+            // ~60fps instead of per-SSE-chunk (~200 setMessages → ~15).
+            let pendingRaf = 0;
+            const flushMessageUpdate = () => {
+                pendingRaf = 0;
+                setMessages(prev => {
+                    const lastIdx = prev.length - 1;
+                    const last = prev[lastIdx];
+                    if (last?.id === aiMsgId) {
+                        const updated = [...prev];
+                        updated[lastIdx] = { ...last, content: aiResponse, changes };
+                        return updated;
+                    }
+                    return prev;
+                });
+            };
+
             setMessages(prev => [...prev, { id: aiMsgId, role: 'ai', content: "", changes: [] }]);
             setStreamPhase('connecting');
             setThoughtText('');
@@ -215,11 +231,16 @@ export const useRoadmapAI = (
                                 break;
                             case 'message':
                                 aiResponse += parsed.text;
-                                setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: aiResponse } : m));
+                                // Schedule batched UI update instead of per-chunk setState
+                                if (!pendingRaf) {
+                                    pendingRaf = requestAnimationFrame(flushMessageUpdate);
+                                }
                                 break;
                             case 'actions':
                                 changes = parsed.actions || [];
-                                setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, changes } : m));
+                                if (!pendingRaf) {
+                                    pendingRaf = requestAnimationFrame(flushMessageUpdate);
+                                }
                                 for (const change of changes) {
                                     if (change.type === 'add' && change.subject) {
                                         addSubjectNode(change.subject, 'optional');
@@ -235,6 +256,12 @@ export const useRoadmapAI = (
                     }
                 }
             }
+
+            // Final flush: cancel pending RAF and write complete content
+            if (pendingRaf) {
+                cancelAnimationFrame(pendingRaf);
+            }
+            flushMessageUpdate();
 
             window.dispatchEvent(new CustomEvent('ai-magic-done'));
 
