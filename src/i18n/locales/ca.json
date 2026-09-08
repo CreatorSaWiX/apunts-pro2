@@ -1,5 +1,6 @@
 {
   "chat": {
+    "stop": "Atura la generació",
     "wait": "Espera {{cooldown}}s",
     "newChat": "Nou Xat",
     "conversation": "Conversa",

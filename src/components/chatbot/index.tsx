@@ -84,6 +84,7 @@ export const ChatBot: React.FC = () => {
     thoughtText,
     streamingText,
     sendMessage,
+    stopStreaming,
     lastSentAt,
   } = useChatStream();
 
@@ -403,7 +404,9 @@ export const ChatBot: React.FC = () => {
                       />
                       <SendButton
                         onClick={handleSend}
-                        disabled={(!input.trim() && !attachedFile) || streamPhase !== 'idle'}
+                        onStop={stopStreaming}
+                        isStreaming={streamPhase !== 'idle'}
+                        disabled={(!input.trim() && !attachedFile) && streamPhase === 'idle'}
                         hasInput={!!(input.trim() || attachedFile)}
                         lastSentAt={lastSentAt}
                         cooldownMs={COOLDOWN_MS}

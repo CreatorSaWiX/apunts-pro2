@@ -21,10 +21,8 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
     const { prompt, currentTasks, subjects, currentDate, aiSettings, attachedFile, availableStatuses } = parseResult.data;
 
     const ai = getGoogleGenAI();
-    if (!ai) {
-        return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
-    }
-
+    if (!ai) return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), { status: 500, headers: CORS_HEADERS });
+    
     const stream = new ReadableStream({
         async start(controller) {
             const emit = createSseEmitter(controller, req);

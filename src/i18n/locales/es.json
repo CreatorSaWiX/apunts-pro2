@@ -1,5 +1,6 @@
 {
   "chat": {
+    "stop": "Detener generación",
     "wait": "Espera {{cooldown}}s",
     "newChat": "Nuevo Chat",
     "conversation": "Conversación",

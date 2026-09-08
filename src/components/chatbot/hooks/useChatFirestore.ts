@@ -21,6 +21,35 @@ interface UseChatFirestoreOptions {
   onCloseHistory?: () => void;
 }
 
+interface ChatDocData {
+  title?: string;
+  updatedAt?: number;
+  history?: Message[];
+}
+
+/** Transforma les dades d'un document Firestore al format ChatMeta de manera optimitzada */
+function formatChatDoc(
+  id: string,
+  data: ChatDocData,
+  fallbackTitle: string
+): ChatMeta {
+  let searchableText = '';
+  if (data.history && data.history.length > 0) {
+    for (const m of data.history) {
+      if (m?.content) {
+        searchableText += m.content.toLowerCase() + ' ';
+      }
+    }
+  }
+
+  return {
+    id,
+    title: data.title || fallbackTitle,
+    updatedAt: data.updatedAt || 0,
+    searchableText: searchableText.trim(),
+  };
+}
+
 export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFirestoreOptions) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentChatId, setCurrentChatId] = useState('');
@@ -28,44 +57,60 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
   const [chatList, setChatList] = useState<ChatMeta[]>([]);
   const isInitialLoad = useRef(true);
 
+  // Refs per estabilitzar callbacks i evitar re-renders innecessaris
+  const onCloseHistoryRef = useRef(onCloseHistory);
+  onCloseHistoryRef.current = onCloseHistory;
+
+  const chatListRef = useRef(chatList);
+  chatListRef.current = chatList;
+
   const fetchChatList = useCallback(async (): Promise<ChatMeta[]> => {
     if (!user) return [];
-    const [{ db }, { collection, getDocs, orderBy, query }] = await getFirebase();
-    const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
-    const snap = await getDocs(q);
-    return snap.docs.map((d: any) => {
-      const data = d.data();
-      const historyText = data.history ? data.history.map((m: any) => m.content).join(' ').toLowerCase() : '';
-      return {
-        id: d.id,
-        title: data.title || t('chat.conversation', 'Conversa'),
-        updatedAt: data.updatedAt || 0,
-        searchableText: historyText
-      };
-    });
+    try {
+      const [{ db }, { collection, getDocs, orderBy, query }] = await getFirebase();
+      const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
+      const snap = await getDocs(q);
+      const fallbackTitle = t('chat.conversation', 'Conversa');
+      return snap.docs.map((d: any) => formatChatDoc(d.id, d.data() as ChatDocData, fallbackTitle));
+    } catch (err) {
+      console.error('[useChatFirestore] Error fetching chat list:', err);
+      return [];
+    }
   }, [user, t]);
 
   const saveChat = useCallback(async (id: string, history: Message[], title: string) => {
     if (!user || !id) return;
-    const [{ db }, { doc, setDoc }] = await getFirebase();
-    await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
+    try {
+      const [{ db }, { doc, setDoc }] = await getFirebase();
+      await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
+    } catch (err) {
+      console.error('[useChatFirestore] Error saving chat:', err);
+    }
   }, [user]);
 
   const loadChat = useCallback(async (id: string) => {
-    if (!user) return;
-    const [{ db }, { doc, getDoc }] = await getFirebase();
-    const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
-    if (snap.exists()) {
-      setMessages(snap.data().history || []);
-      setCurrentChatTitle(snap.data().title || t('chat.conversation', 'Conversa'));
+    if (!user || !id) return;
+    try {
+      const [{ db }, { doc, getDoc }] = await getFirebase();
+      const snap = await getDoc(doc(db, 'users', user.id, 'chats', id));
+      if (snap.exists()) {
+        const data = snap.data() as ChatDocData;
+        setMessages(data.history || []);
+        setCurrentChatTitle(data.title || t('chat.conversation', 'Conversa'));
+      }
+    } catch (err) {
+      console.error('[useChatFirestore] Error loading chat:', err);
     }
   }, [user, t]);
 
-  // Inicialització quan s'obre el panell de xat
+  // Inicialització quan s'obre el panell de xat amb protecció contra condicions de cursa
   useEffect(() => {
     if (!isOpen || !user) return;
+    let isMounted = true;
     isInitialLoad.current = true;
+
     fetchChatList().then((list) => {
+      if (!isMounted) return;
       if (list.length === 0) {
         const id = newId();
         setCurrentChatId(id);
@@ -78,6 +123,10 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
         loadChat(list[0].id);
       }
     });
+
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, user, fetchChatList, t, loadChat]);
 
   const startNewChat = useCallback(async (closeHistory = true, skipSave = false) => {
@@ -88,8 +137,8 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
     setCurrentChatId(id);
     setMessages([]);
     setCurrentChatTitle(t('chat.newChat', 'Nou Xat'));
-    if (closeHistory) onCloseHistory?.();
-  }, [messages, currentChatId, currentChatTitle, saveChat, t, onCloseHistory]);
+    if (closeHistory) onCloseHistoryRef.current?.();
+  }, [messages, currentChatId, currentChatTitle, saveChat, t]);
 
   const switchChat = useCallback(async (id: string, closeHistory = true, skipSave = false) => {
     if (!skipSave && messages.length > 0 && currentChatId) {
@@ -97,29 +146,41 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
     }
     setCurrentChatId(id);
     await loadChat(id);
-    if (closeHistory) onCloseHistory?.();
-  }, [messages, currentChatId, currentChatTitle, saveChat, loadChat, onCloseHistory]);
+    if (closeHistory) onCloseHistoryRef.current?.();
+  }, [messages, currentChatId, currentChatTitle, saveChat, loadChat]);
 
   const deleteChat = useCallback(async (id: string) => {
-    if (!user) return;
-    const [{ db }, { doc, deleteDoc }] = await getFirebase();
-    await deleteDoc(doc(db, 'users', user.id, 'chats', id));
-    const newList = chatList.filter((c) => c.id !== id);
+    if (!user || !id) return;
+    try {
+      const [{ db }, { doc, deleteDoc }] = await getFirebase();
+      await deleteDoc(doc(db, 'users', user.id, 'chats', id));
+    } catch (err) {
+      console.error('[useChatFirestore] Error deleting chat:', err);
+    }
+
+    const currentList = chatListRef.current;
+    const newList = currentList.filter((c) => c.id !== id);
     setChatList(newList);
+
     if (id === currentChatId) {
       if (newList.length > 0) switchChat(newList[0].id, false, true);
       else startNewChat(false, true);
     }
-  }, [user, chatList, currentChatId, switchChat, startNewChat]);
+  }, [user, currentChatId, switchChat, startNewChat]);
 
   const renameChat = useCallback(async (id: string, title: string) => {
-    if (!user || !title.trim()) return;
-    const [{ db }, { doc, updateDoc }] = await getFirebase();
+    const trimmedTitle = title.trim();
+    if (!user || !id || !trimmedTitle) return;
+    try {
+      const [{ db }, { doc, updateDoc }] = await getFirebase();
+      await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: trimmedTitle });
+    } catch (err) {
+      console.error('[useChatFirestore] Error renaming chat:', err);
+    }
 
-    await updateDoc(doc(db, 'users', user.id, 'chats', id), { title: title.trim() });
-    setChatList((prev) => prev.map((c) => (c.id === id ? { ...c, title: title.trim() } : c)));
+    setChatList((prev) => prev.map((c) => (c.id === id ? { ...c, title: trimmedTitle } : c)));
 
-    if (id === currentChatId) setCurrentChatTitle(title.trim());
+    if (id === currentChatId) setCurrentChatTitle(trimmedTitle);
   }, [user, currentChatId]);
 
   return {

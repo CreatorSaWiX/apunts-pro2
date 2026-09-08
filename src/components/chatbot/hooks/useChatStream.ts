@@ -1,12 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { StreamPhase } from '../../AIStreamingIndicator';
 import type { Message } from '../constants';
+import type { AttachedFile } from './useChatLayout';
 
 export const COOLDOWN_MS = 15_000;
 
 interface SendMessageOptions {
   userMsg: string;
-  attachedFile: { data: string; mimeType: string; name: string } | null;
+  attachedFile: AttachedFile | null;
   messages: Message[];
   currentChatId: string;
   currentChatTitle: string;
@@ -21,6 +22,27 @@ interface SendMessageOptions {
   t: (key: string, fallback: string) => string;
 }
 
+/**
+ * Extreu el text principal de la pàgina activa de manera segura i optimitzada
+ * sense clonar elements innecessaris ni el propi xat.
+ */
+function extractPageText(): string {
+  try {
+    const mainEl =
+      document.querySelector('main article') ||
+      document.querySelector('main') ||
+      document.querySelector('#content');
+
+    if (!mainEl) return '';
+
+    const clone = mainEl.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('.katex-html, script, style, svg, nav, footer, header, [aria-hidden="true"]').forEach((el) => el.remove());
+    return (clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 3000);
+  } catch (_) {
+    return '';
+  }
+}
+
 export function useChatStream() {
   const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
   const [thoughtText, setThoughtText] = useState('');
@@ -29,21 +51,55 @@ export function useChatStream() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const streamingUpdateRAF = useRef<number | null>(null);
+  const pendingUpdatesRef = useRef<{ text?: string; thought?: string }>({});
   const lastSentAt = useRef<number>(0);
 
+  // Cancel·la animacions o peticions pendents en desmuntar
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
       if (streamingUpdateRAF.current) {
         cancelAnimationFrame(streamingUpdateRAF.current);
+        streamingUpdateRAF.current = null;
       }
     };
   }, []);
 
+  // Actualització visual suau de text amb requestAnimationFrame (màxim 60fps)
+  const scheduleUIUpdate = (text?: string, thought?: string) => {
+    if (text !== undefined) pendingUpdatesRef.current.text = text;
+    if (thought !== undefined) pendingUpdatesRef.current.thought = thought;
+
+    if (!streamingUpdateRAF.current) {
+      streamingUpdateRAF.current = requestAnimationFrame(() => {
+        streamingUpdateRAF.current = null;
+        if (pendingUpdatesRef.current.text !== undefined) {
+          setStreamingText(pendingUpdatesRef.current.text);
+        }
+        if (pendingUpdatesRef.current.thought !== undefined) {
+          setThoughtText(pendingUpdatesRef.current.thought);
+        }
+      });
+    }
+  };
+
+  const flushUIUpdates = (finalText?: string, finalThought?: string) => {
+    if (streamingUpdateRAF.current) {
+      cancelAnimationFrame(streamingUpdateRAF.current);
+      streamingUpdateRAF.current = null;
+    }
+    pendingUpdatesRef.current = {};
+    if (finalText !== undefined) setStreamingText(finalText);
+    if (finalThought !== undefined) setThoughtText(finalThought);
+  };
+
   const stopStreaming = useCallback(() => {
-    abortControllerRef.current?.abort();
-    abortControllerRef.current = null;
-    setStreamPhase('idle');
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    } else {
+      setStreamPhase('idle');
+    }
   }, []);
 
   const sendMessage = useCallback(async ({
@@ -89,8 +145,7 @@ export function useChatStream() {
 
     setMessages(newMessages);
     setStreamPhase('connecting');
-    setThoughtText('');
-    setStreamingText('');
+    flushUIUpdates('', '');
     setActiveGrounding(null);
 
     abortControllerRef.current?.abort();
@@ -98,19 +153,12 @@ export function useChatStream() {
     abortControllerRef.current = controller;
 
     let fullThoughtText = '';
+    let fullReplyText = '';
     const requestStartTime = Date.now();
     let thoughtDurationMs = 0;
 
     try {
-      let pageText = '';
-      try {
-        const source = document.querySelector('main') || document.body;
-        const clone = source.cloneNode(true) as HTMLElement;
-        clone.querySelectorAll('.katex-html, script, style, svg, nav, footer, header').forEach((el) => el.remove());
-        pageText = (clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 3000);
-      } catch (_) {
-        pageText = '';
-      }
+      const pageText = extractPageText();
 
       const { auth } = await import('../../../lib/firebase');
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
@@ -144,7 +192,6 @@ export function useChatStream() {
 
       const decoder = new TextDecoder();
       let sseBuffer = '';
-      let fullReplyText = '';
       let metadata: { memory_actions?: { action: string; old_fact?: string; new_fact?: string }[] } = {};
       let grounding: any = null;
 
@@ -160,17 +207,18 @@ export function useChatStream() {
           if (!eventBlock.trim()) continue;
 
           let eventType = 'message';
-          let eventData = '';
+          const dataLines: string[] = [];
 
           for (const line of eventBlock.split('\n')) {
-            if (line.startsWith('event: ')) {
-              eventType = line.substring(7).trim();
-            } else if (line.startsWith('data: ')) {
-              eventData = line.substring(6);
+            if (line.startsWith('event:')) {
+              eventType = line.replace(/^event:\s*/, '').trim();
+            } else if (line.startsWith('data:')) {
+              dataLines.push(line.replace(/^data:\s*/, ''));
             }
           }
 
-          if (!eventData) continue;
+          if (dataLines.length === 0) continue;
+          const eventData = dataLines.join('\n');
 
           try {
             const parsed = JSON.parse(eventData);
@@ -184,7 +232,7 @@ export function useChatStream() {
               case 'reset':
                 fullReplyText = '';
                 thoughtDurationMs = 0;
-                setStreamingText('');
+                flushUIUpdates('', undefined);
                 setStreamPhase('thinking');
                 break;
 
@@ -192,7 +240,7 @@ export function useChatStream() {
                 if (parsed.text) {
                   fullThoughtText += parsed.text;
                   setStreamPhase('thinking');
-                  setThoughtText(fullThoughtText);
+                  scheduleUIUpdate(undefined, fullThoughtText);
                 }
                 break;
 
@@ -204,7 +252,7 @@ export function useChatStream() {
                   }
                   fullReplyText += parsed.text;
                   setStreamPhase('writing');
-                  setStreamingText(fullReplyText);
+                  scheduleUIUpdate(fullReplyText, undefined);
                 }
                 break;
 
@@ -228,20 +276,28 @@ export function useChatStream() {
         }
       }
 
-      // Memory actions update
+      // Actualització de memòries a la configuració d'IA
       if (metadata.memory_actions && metadata.memory_actions.length > 0 && setAiSettings) {
         setAiSettings((prev: any) => {
-          let updatedMemories = [...(prev?.context?.userMemories || [])];
+          let updatedMemories = [...(prev?.userContext?.memories || [])];
           for (const action of metadata.memory_actions || []) {
-            if (action.action === 'add' && action.new_fact) {
+            const act = (action.action || '').toUpperCase();
+            if (act === 'ADD' && action.new_fact) {
               if (!updatedMemories.includes(action.new_fact)) updatedMemories.push(action.new_fact);
-            } else if (action.action === 'delete' && action.old_fact) {
+            } else if (act === 'DELETE' && action.old_fact) {
               updatedMemories = updatedMemories.filter((m) => m !== action.old_fact);
-            } else if (action.action === 'modify' && action.old_fact && action.new_fact) {
+            } else if ((act === 'UPDATE' || act === 'MODIFY') && action.old_fact && action.new_fact) {
               updatedMemories = updatedMemories.map((m) => (m === action.old_fact ? action.new_fact! : m));
             }
           }
-          return { ...prev, context: { ...prev?.context, userMemories: updatedMemories } };
+          return {
+            ...prev,
+            userContext: {
+              ...prev?.userContext,
+              memories: updatedMemories,
+            },
+            updatedAt: Date.now(),
+          };
         });
       }
 
@@ -261,20 +317,36 @@ export function useChatStream() {
       setMessages(finalMessages);
       await saveChat(currentChatId, finalMessages, autoTitle);
     } catch (err: any) {
-      if (err.name === 'AbortError') return;
-      const errorMsg = err.message || t('chat.errors.failedToConnect', 'Error de connexió');
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: 'model' as const,
-          content: `⚠️ **Error:** ${errorMsg}`,
-        },
-      ]);
+      const isAbort = err.name === 'AbortError';
+
+      // Si s'atura la generació però ja s'havia generat text, preservem la resposta parcial
+      if (isAbort && fullReplyText.trim()) {
+        const partialMessages: Message[] = [
+          ...newMessages,
+          {
+            id: crypto.randomUUID(),
+            role: 'model' as const,
+            content: fullReplyText.trim(),
+            thoughtText: fullThoughtText || undefined,
+            thoughtTimeMs: thoughtDurationMs || undefined,
+          },
+        ];
+        setMessages(partialMessages);
+        saveChat(currentChatId, partialMessages, autoTitle).catch(() => {});
+      } else if (!isAbort) {
+        const errorMsg = err.message || t('chat.errors.failedToConnect', 'Error de connexió');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            role: 'model' as const,
+            content: `⚠️ **Error:** ${errorMsg}`,
+          },
+        ]);
+      }
     } finally {
+      flushUIUpdates('', '');
       setStreamPhase('idle');
-      setStreamingText('');
-      setThoughtText('');
       setActiveGrounding(null);
     }
   }, [streamPhase]);
