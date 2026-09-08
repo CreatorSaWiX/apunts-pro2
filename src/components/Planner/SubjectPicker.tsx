@@ -4,6 +4,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useTasks } from '../../contexts/TasksContext';
 import { useShallow } from 'zustand/react/shallow';
+import { getSubjectColor } from '../../stores/useSubjectStore';
 
 interface SubjectPickerProps {
     value: string | null | undefined;
@@ -89,6 +90,7 @@ const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placehol
     }, [isOpen]);
 
     const currentSubject = value ? subjects?.find(s => s.id === value) : null;
+    const currentColor = currentSubject ? getSubjectColor(currentSubject.colorToken) : null;
 
     return (
         <>
@@ -96,10 +98,14 @@ const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placehol
                 type="button"
                 ref={triggerRef}
                 onClick={togglePicker}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${currentSubject
-                    ? `text-${currentSubject.colorToken.replace('500', '400')} bg-${currentSubject.colorToken}/10 border-${currentSubject.colorToken}/20`
-                    : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
-                    } ${className}`}
+                style={currentColor ? {
+                    color: currentColor.accent,
+                    backgroundColor: `rgba(${currentColor.primary_rgb}, 0.1)`,
+                    borderColor: `rgba(${currentColor.primary_rgb}, 0.2)`
+                } : undefined}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
+                    !currentColor ? 'text-slate-400 bg-slate-500/10 border-slate-500/20' : ''
+                } ${className}`}
             >
                 <span className="font-semibold text-[10px] tracking-wider uppercase truncate">
                     {currentSubject ? currentSubject.name : (placeholder || t('planner.popover.noSubject', 'Sense assignatura'))}
@@ -138,16 +144,27 @@ const SubjectPicker: React.FC<SubjectPickerProps> = ({ value, onChange, placehol
                             >
                                 {t('planner.popover.noneSubject', 'Sense assignatura')}
                             </button>
-                            {filteredSubjects.map(s => (
-                                <button type="button"
-                                    key={s.id}
-                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onChange(s.id); setIsOpen(false); }}
-                                    className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${value === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                >
-                                    <span className={`w-2.5 h-2.5 rounded-full bg-${s.colorToken}`}></span>
-                                    {s.name}
-                                </button>
-                            ))}
+                            {filteredSubjects.map(s => {
+                                const sColor = getSubjectColor(s.colorToken);
+                                const isSelected = value === s.id;
+                                return (
+                                    <button type="button"
+                                        key={s.id}
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onChange(s.id); setIsOpen(false); }}
+                                        style={isSelected ? {
+                                            backgroundColor: `rgba(${sColor.primary_rgb}, 0.2)`,
+                                            color: sColor.accent
+                                        } : undefined}
+                                        className={`text-left px-4 py-3 rounded-xl text-[13px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${!isSelected ? 'text-slate-400 hover:bg-white/5 hover:text-slate-300' : ''}`}
+                                    >
+                                        <span 
+                                            className="w-2.5 h-2.5 rounded-full shrink-0" 
+                                            style={{ backgroundColor: sColor.primary }}
+                                        />
+                                        {s.name}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </motion.div>
                 </>,

@@ -32,6 +32,11 @@ export const tailwindColors: Record<string, { primary: string, primary_rgb: stri
     'rose':    { primary: '#f43f5e', primary_rgb: '244, 63, 94',   accent: '#fb7185', accent_rgb: '251, 113, 133' },
 };
 
+export const getSubjectColor = (colorToken?: string) => {
+    const family = colorToken ? colorToken.split('-')[0] : 'sky';
+    return tailwindColors[family] || tailwindColors['sky'];
+};
+
 const calculateTheme = (subject: string, customSubjectColors: Record<string, string> = {}): Theme => {
     const subjectInfo = (subjectsData as Array<{ name: string; colorToken?: string }>).find(
         (s) => s.name.toUpperCase() === subject.toUpperCase()

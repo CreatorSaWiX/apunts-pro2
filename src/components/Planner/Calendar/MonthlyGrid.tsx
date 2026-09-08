@@ -8,6 +8,7 @@ import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
 import { useShallow } from 'zustand/react/shallow';
 import NavigationPill from '../../ui/NavigationPill';
+import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 interface MonthlyGridProps {
     currentDate: Date;
@@ -71,14 +72,15 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
                 {tasks.map(task => {
                     const startDate = task.startDate ? new Date(task.startDate) : new Date();
                     const taskSubject = subjects.find(s => s.id === task.subjectId);
+                    const subjectColor = taskSubject ? getSubjectColor(taskSubject.colorToken) : null;
                     
                     let dotColor = 'bg-slate-400';
-                    if (taskSubject) {
-                        dotColor = `bg-${taskSubject.colorToken}`;
-                    } else if (task.priority === 'HIGH') {
-                        dotColor = 'bg-red-400';
-                    } else if (task.priority === 'MEDIUM') {
-                        dotColor = 'bg-amber-400';
+                    if (!subjectColor) {
+                        if (task.priority === 'HIGH') {
+                            dotColor = 'bg-red-400';
+                        } else if (task.priority === 'MEDIUM') {
+                            dotColor = 'bg-amber-400';
+                        }
                     }
 
                     return (
@@ -98,7 +100,10 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
                             }}
                             className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-white/[0.05] transition-colors cursor-default"
                         >
-                            <div className={`w-1.5 h-1.5 rounded-full ${dotColor} shrink-0`} />
+                            <div 
+                                className={`w-1.5 h-1.5 rounded-full ${!subjectColor ? dotColor : ''} shrink-0`} 
+                                style={subjectColor ? { backgroundColor: subjectColor.primary } : undefined}
+                            />
                             <span className="text-[10px] sm:text-[11px] font-medium truncate flex-1 leading-tight tracking-tight text-slate-300">{task.title}</span>
                         </div>
                     );

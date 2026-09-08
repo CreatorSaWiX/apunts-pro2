@@ -7,6 +7,7 @@ import type { TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 import BottomSheet from '../ui/mobile/BottomSheet';
 import NavigationPill from '../ui/NavigationPill';
+import { getSubjectColor } from '../../stores/useSubjectStore';
 
 const GlobalFiltersBar: React.FC = () => {
     const { t } = useTranslation();
@@ -106,6 +107,7 @@ const GlobalFiltersBar: React.FC = () => {
                                 >
                                     {usedSubjects.map(subject => {
                                         const isActive = filters.subjects.includes(subject.id);
+                                        const color = getSubjectColor(subject.colorToken);
                                         return (
                                             <button type="button"
                                                 key={subject.id}
@@ -113,7 +115,13 @@ const GlobalFiltersBar: React.FC = () => {
                                                 className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-left"
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <span className={`w-2.5 h-2.5 rounded-full bg-${subject.colorToken.split('-')[0]}-400 shadow-[0_0_8px_rgba(var(--${subject.colorToken.split('-')[0]}-400-rgb),0.5)]`} />
+                                                    <span 
+                                                        className="w-2.5 h-2.5 rounded-full shrink-0" 
+                                                        style={{
+                                                            backgroundColor: color.primary,
+                                                            boxShadow: `0 0 8px rgba(${color.primary_rgb}, 0.5)`
+                                                        }}
+                                                    />
                                                     <span className={`text-[12px] font-medium ${isActive ? 'text-white' : 'text-slate-300'}`}>{subject.name}</span>
                                                 </div>
                                                 {isActive && <Check size={14} className="text-white" />}
@@ -249,6 +257,7 @@ const GlobalFiltersBar: React.FC = () => {
                                     ) : (
                                         filteredSubjects.map(subject => {
                                             const isActive = filters.subjects.includes(subject.id);
+                                            const color = getSubjectColor(subject.colorToken);
                                             return (
                                                 <button type="button"
                                                     key={subject.id}
@@ -256,7 +265,13 @@ const GlobalFiltersBar: React.FC = () => {
                                                     className={`flex items-center justify-between w-full p-4 rounded-2xl border transition duration-300 ${isActive ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5'}`}
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <span className={`w-3 h-3 rounded-full bg-${subject.colorToken.split('-')[0]}-400 shadow-[0_0_12px_rgba(var(--${subject.colorToken.split('-')[0]}-400-rgb),0.5)]`} />
+                                                        <span 
+                                                            className="w-3 h-3 rounded-full shrink-0" 
+                                                            style={{
+                                                                backgroundColor: color.primary,
+                                                                boxShadow: `0 0 12px rgba(${color.primary_rgb}, 0.5)`
+                                                            }}
+                                                        />
                                                         <span className={`text-[14px] font-medium ${isActive ? 'text-white' : 'text-slate-300'}`}>{subject.name}</span>
                                                     </div>
                                                     {isActive && <Check size={18} className="text-white" />}

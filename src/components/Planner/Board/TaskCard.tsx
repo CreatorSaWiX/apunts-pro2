@@ -14,6 +14,7 @@ import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
 import SubjectPicker from '../SubjectPicker';
 import StatusPicker from './StatusPicker';
+import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 interface TaskCardProps {
     task: Task;
@@ -42,8 +43,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
     })));
     const subject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
 
-    const getSubjectClasses = (token: string) => {
-        return `text-${token} bg-${token}/10 border-${token}/20`;
+    const getSubjectStyle = (token?: string) => {
+        const color = getSubjectColor(token);
+        return {
+            color: color.accent,
+            backgroundColor: `rgba(${color.primary_rgb}, 0.1)`,
+            borderColor: `rgba(${color.primary_rgb}, 0.2)`
+        };
     };
 
     const mouseX = useMotionValue(0);
@@ -399,7 +405,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isOverlay, allColumns }) => {
 
                             <div className="ml-auto flex items-center gap-1.5">
                                 {subject && (
-                                    <span className={`text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md ${getSubjectClasses(subject.colorToken)}`}>
+                                    <span 
+                                        className="text-[9px] tracking-[0.1em] font-bold uppercase border px-2 py-0.5 rounded-md"
+                                        style={getSubjectStyle(subject.colorToken)}
+                                    >
                                         {subject.name}
                                     </span>
                                 )}

@@ -9,6 +9,7 @@ import { useTasks } from '../../../contexts/TasksContext';
 import { useShallow } from 'zustand/react/shallow';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 import NavigationPill from '../../ui/NavigationPill';
+import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 interface WeeklyGridProps {
     currentDate: Date;
@@ -218,9 +219,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         subjects: state.subjects
     })));
     const taskSubject = subjects.find(s => s.id === task.subjectId);
-    
-    // Si té assignatura utilitzem el seu color (ex: bg-fuchsia-400), sinó el de prioritat
-    const accentColor = taskSubject ? `bg-${taskSubject.colorToken}` : (priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW);
+    const subjectColor = taskSubject ? getSubjectColor(taskSubject.colorToken) : null;
+    const accentColorClass = !subjectColor ? (priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW) : '';
+    const accentStyle = subjectColor ? { backgroundColor: subjectColor.primary, color: subjectColor.primary } : undefined;
 
     return (
         <>
@@ -237,7 +238,10 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                         zIndex: 5
                     }}
                 >
-                    <div className={`absolute top-0 bottom-0 left-0 w-1 ${accentColor} shadow-[0_0_15px_currentColor] opacity-50`} />
+                    <div 
+                        className={`absolute top-0 bottom-0 left-0 w-1 ${accentColorClass} shadow-[0_0_15px_currentColor] opacity-50`} 
+                        style={accentStyle}
+                    />
                     <div className={`pl-3 pr-2 flex flex-col h-full overflow-hidden ${baseHeight < 40 ? 'py-0.5' : 'py-2'}`}>
                         {baseHeight >= 40 && (
                             <div className="flex items-center gap-1.5 opacity-40 mb-0.5 pr-4 shrink-0">
@@ -299,10 +303,16 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             onPointerCancel={handlePointerUp}
         >
             {/* Subtle Gradient background matching accent color */}
-            <div className={`absolute inset-0 opacity-[0.15] mix-blend-plus-lighter ${accentColor}`} />
+            <div 
+                className={`absolute inset-0 opacity-[0.15] mix-blend-plus-lighter ${accentColorClass}`} 
+                style={subjectColor ? { backgroundColor: subjectColor.primary } : undefined}
+            />
             
             {/* Color Accent Indicator */}
-            <div className={`absolute top-0 bottom-0 left-0 w-[3px] ${accentColor} shadow-[0_0_20px_currentColor] opacity-100`} />
+            <div 
+                className={`absolute top-0 bottom-0 left-0 w-[3px] ${accentColorClass} shadow-[0_0_20px_currentColor] opacity-100`} 
+                style={accentStyle}
+            />
 
             {/* Top Resize Handle */}
             {!isContinuingFromPrev && (

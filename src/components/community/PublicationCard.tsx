@@ -196,7 +196,7 @@ const PublicationCard = ({ post, isHeroMode = false, onThumbnailUpload }: Public
                 )}
                 {badgeText && (
                     <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold tracking-widest px-2 py-1 rounded-md flex items-center gap-1.5 shadow-xl">
-                        <span className="text-primary">{badgeIcon}</span>
+                        <span className="text-white">{badgeIcon}</span>
                         {badgeText}
                     </div>
                 )}

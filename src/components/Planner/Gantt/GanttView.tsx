@@ -10,6 +10,7 @@ import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor, closestC
 import { createPortal } from 'react-dom';
 import UnscheduledDrawer from '../UnscheduledDrawer';
 import TaskCard from '../Board/TaskCard';
+import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 const GanttView: React.FC = () => {
     const { filteredTasks: tasks, updateTask, subjects } = useTasks(useShallow(state => ({
@@ -404,8 +405,9 @@ const TaskBar: React.FC<{ task: LayoutTask, zoomLevel: number, timelineStart: Da
     const displayLeft = optimistic ? optimistic.left : task.leftMins * zoomLevel;
     const displayWidth = optimistic ? optimistic.width : Math.max(4, task.durationMins * zoomLevel);
 
-    const baseColorClass = subject?.colorToken ? `bg-${subject.colorToken}` : 
-        (task.priority === 'HIGH' ? 'bg-red-500' : task.priority === 'MEDIUM' ? 'bg-amber-500' : 'bg-indigo-500');
+    const subjectColor = subject?.colorToken ? getSubjectColor(subject.colorToken) : null;
+    const baseColorClass = !subjectColor ? 
+        (task.priority === 'HIGH' ? 'bg-red-500' : task.priority === 'MEDIUM' ? 'bg-amber-500' : 'bg-indigo-500') : '';
 
     return (
         <div
@@ -439,6 +441,7 @@ const TaskBar: React.FC<{ task: LayoutTask, zoomLevel: number, timelineStart: Da
                 left: displayLeft,
                 width: displayWidth,
                 top: task.trackIndex * 46 + 32,
+                ...(subjectColor ? { backgroundColor: subjectColor.primary } : {})
             }}
             title={`${task.title} \n${format(task.start, 'HH:mm')} - ${format(task.end, 'HH:mm')}`}
         >

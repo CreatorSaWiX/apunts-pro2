@@ -8,6 +8,7 @@ import type { TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 import SubjectPicker from './SubjectPicker';
 import BottomSheet from '../ui/mobile/BottomSheet';
+import { getSubjectColor } from '../../stores/useSubjectStore';
 
 export interface TaskPopoverEventDetail {
     x: number;
@@ -152,17 +153,27 @@ const TaskPopover: React.FC = () => {
                             {/* Llista d'assignatures */}
                             {filteredSubjects.map(s => {
                                 const isSelected = task.subjectId === s.id;
+                                const sColor = getSubjectColor(s.colorToken);
                                 return (
                                     <button
                                         key={s.id}
                                         onClick={() => updateTask(task.id, { subjectId: s.id })}
+                                        style={isSelected ? {
+                                            backgroundColor: `rgba(${sColor.primary_rgb}, 0.15)`,
+                                            borderColor: `rgba(${sColor.primary_rgb}, 0.3)`,
+                                            boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.1)'
+                                        } : undefined}
                                         className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition ${
-                                            isSelected 
-                                                ? `bg-${s.colorToken}/15 border-${s.colorToken}/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]` 
-                                                : 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]'
+                                            !isSelected ? 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]' : ''
                                         }`}
                                         aria-label="Obrir panell">
-                                        <div className={`w-3 h-3 rounded-full bg-${s.colorToken} shadow-[0_0_10px_currentColor]`} />
+                                        <div 
+                                            className="w-3 h-3 rounded-full shrink-0" 
+                                            style={{
+                                                backgroundColor: sColor.primary,
+                                                boxShadow: `0 0 10px rgba(${sColor.primary_rgb}, 0.5)`
+                                            }}
+                                        />
                                         <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>{s.name}</span>
                                     </button>
                                 );

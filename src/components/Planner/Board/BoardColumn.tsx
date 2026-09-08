@@ -10,6 +10,7 @@ import { Plus, Calendar, Flag, Play, Trash2, X, Check } from 'lucide-react';
 import { DateTimePicker } from './DateTimePicker';
 import { useTranslation } from 'react-i18next';
 import ConfirmModal from '../../ui/modals/ConfirmModal';
+import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 interface BoardColumnProps {
     column: { id: string; title: string; color?: string };
@@ -326,23 +327,27 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                             </button>
 
                             <div className="relative">
-                                {subjects && subjects.length > 0 && (
-                                    <button type="button"
-                                        onClick={toggleSubjectPicker}
-                                        className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
-                                            draftSubjectId 
-                                                ? (() => {
-                                                    const s = subjects.find(sub => sub.id === draftSubjectId);
-                                                    return s ? `text-${s.colorToken.replace('500', '400')} bg-${s.colorToken}/10 border-${s.colorToken}/20` : 'text-slate-400 bg-slate-500/10 border-slate-500/20';
-                                                })()
-                                                : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
-                                        }`}
-                                    >
-                                        <span className="font-semibold text-[10px] tracking-wider uppercase">
-                                            {draftSubjectId ? subjects.find(sub => sub.id === draftSubjectId)?.name : t('planner.boardView.subject', 'Assignatura')}
-                                        </span>
-                                    </button>
-                                )}
+                                {subjects && subjects.length > 0 && (() => {
+                                    const selectedSub = draftSubjectId ? subjects.find(sub => sub.id === draftSubjectId) : null;
+                                    const color = selectedSub ? getSubjectColor(selectedSub.colorToken) : null;
+                                    return (
+                                        <button type="button"
+                                            onClick={toggleSubjectPicker}
+                                            style={color ? {
+                                                color: color.accent,
+                                                backgroundColor: `rgba(${color.primary_rgb}, 0.1)`,
+                                                borderColor: `rgba(${color.primary_rgb}, 0.2)`
+                                            } : undefined}
+                                            className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors border ${
+                                                !color ? 'text-slate-400 bg-slate-500/10 border-slate-500/20' : ''
+                                            }`}
+                                        >
+                                            <span className="font-semibold text-[10px] tracking-wider uppercase">
+                                                {selectedSub ? selectedSub.name : t('planner.boardView.subject', 'Assignatura')}
+                                            </span>
+                                        </button>
+                                    );
+                                })()}
 
                                 <AnimatePresence>
                                 {showSubjectPicker && (
@@ -368,16 +373,27 @@ const BoardColumn: React.FC<BoardColumnProps> = ({ column, allColumns, tasks, on
                                             >
                                                 {t('planner.boardView.noSubject', 'Sense assignatura')}
                                             </button>
-                                            {filteredSubjects.map(s => (
-                                                <button type="button"
-                                                    key={s.id}
-                                                    onClick={(e) => { e.preventDefault(); setDraftSubjectId(s.id); setShowSubjectPicker(false); }}
-                                                    className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${draftSubjectId === s.id ? `bg-${s.colorToken}/20 text-${s.colorToken.replace('500', '400')}` : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'}`}
-                                                >
-                                                    <span className={`w-2 h-2 rounded-full bg-${s.colorToken}`}></span>
-                                                    {s.name}
-                                                </button>
-                                            ))}
+                                            {filteredSubjects.map(s => {
+                                                const sColor = getSubjectColor(s.colorToken);
+                                                const isSelected = draftSubjectId === s.id;
+                                                return (
+                                                    <button type="button"
+                                                        key={s.id}
+                                                        onClick={(e) => { e.preventDefault(); setDraftSubjectId(s.id); setShowSubjectPicker(false); }}
+                                                        style={isSelected ? {
+                                                            backgroundColor: `rgba(${sColor.primary_rgb}, 0.2)`,
+                                                            color: sColor.accent
+                                                        } : undefined}
+                                                        className={`text-left px-3 py-2 rounded-xl text-[12px] font-semibold tracking-wide transition-colors flex items-center gap-2 ${!isSelected ? 'text-slate-400 hover:bg-white/5 hover:text-slate-300' : ''}`}
+                                                    >
+                                                        <span 
+                                                            className="w-2 h-2 rounded-full shrink-0" 
+                                                            style={{ backgroundColor: sColor.primary }}
+                                                        />
+                                                        {s.name}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </motion.div>
                                 )}
