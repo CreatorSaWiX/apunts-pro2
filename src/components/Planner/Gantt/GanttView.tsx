@@ -45,19 +45,32 @@ const GanttView: React.FC = () => {
         localStorage.setItem('gantt_zoom', zoomLevel.toString());
     }, [zoomLevel]);
     
-    // Timeline window: we render a 28-day rolling window
-    const [baseDate, setBaseDate] = useState(() => {
-        return new Date();
-    });
+    // Timeline window: dynamic rolling window based on container width
+    const [baseDate, setBaseDate] = useState(() => new Date());
+    const [containerWidth, setContainerWidth] = useState(() => typeof window !== 'undefined' ? window.innerWidth : 1920);
 
-    const clientWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
-    const viewportMinutes = clientWidth / zoomLevel;
-    const totalMinutes = viewportMinutes * 6;
+    useEffect(() => {
+        const updateWidth = () => {
+            if (scrollContainerRef.current) {
+                setContainerWidth(scrollContainerRef.current.clientWidth || window.innerWidth);
+            }
+        };
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, []);
+
+    const viewportMinutes = containerWidth / zoomLevel;
+    const totalMinutes = viewportMinutes * 12;
     const totalWidthPixels = totalMinutes * zoomLevel;
 
     const timelineStart = useMemo(() => {
         return new Date(baseDate.getTime() - (totalMinutes / 2) * 60000);
     }, [baseDate, totalMinutes]);
+
+    const timelineEnd = useMemo(() => {
+        return new Date(timelineStart.getTime() + totalMinutes * 60000);
+    }, [timelineStart, totalMinutes]);
 
     // Track current time
     const [now, setNow] = useState(new Date());
@@ -74,57 +87,55 @@ const GanttView: React.FC = () => {
             scrollContainerRef.current.scrollLeft = nowPixels - scrollContainerRef.current.clientWidth / 2;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [containerWidth]);
 
-    // Infinite scroll handling
+    const isShiftingRef = useRef(false);
+
+    // Infinite scroll handling (seamlessly re-centers window when approaching buffer edge)
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
-        const threshold = target.clientWidth;
+        if (target.clientWidth === 0 || isShiftingRef.current) return;
         
-        // Shift per 1/4 of totalMinutes to stay centered
-        const shiftMinutes = totalMinutes / 4;
-        const shiftPixels = shiftMinutes * zoomLevel;
+        const threshold = 2 * target.clientWidth;
+        const maxScroll = target.scrollWidth - target.clientWidth;
 
-        if (target.scrollLeft < threshold) {
+        if (target.scrollLeft < threshold || target.scrollLeft > maxScroll - threshold) {
+            isShiftingRef.current = true;
+            
+            // Calculate the timestamp currently at the center of the viewport
+            const centerScreenPx = target.scrollLeft + target.clientWidth / 2;
+            const centerMinutes = centerScreenPx / zoomLevel;
+            const currentCenterTime = new Date(timelineStart.getTime() + centerMinutes * 60000);
+
             flushSync(() => {
-                setBaseDate(prev => new Date(prev.getTime() - shiftMinutes * 60000));
+                setBaseDate(currentCenterTime);
             });
-            target.scrollLeft += shiftPixels;
-        } else if (target.scrollLeft > target.scrollWidth - target.clientWidth - threshold) {
-            flushSync(() => {
-                setBaseDate(prev => new Date(prev.getTime() + shiftMinutes * 60000));
+
+            target.scrollLeft = (totalWidthPixels / 2) - target.clientWidth / 2;
+
+            requestAnimationFrame(() => {
+                isShiftingRef.current = false;
             });
-            target.scrollLeft -= shiftPixels;
         }
     };
 
-    // Zoom Handling
+    // Zoom Handling (relative to the center of the visible viewport)
     const handleZoomChange = (newZoom: number) => {
         if (!scrollContainerRef.current) return;
         const target = scrollContainerRef.current;
         if (target.clientWidth === 0) return;
         
-        // The current screen offset of the red line
-        const nowMinutes = (now.getTime() - timelineStart.getTime()) / 60000;
-        const nowPixels = nowMinutes * zoomLevel;
-        const currentScreenOffset = nowPixels - target.scrollLeft;
+        // Calculate the timestamp currently at the center of the viewport
+        const centerScreenPx = target.scrollLeft + target.clientWidth / 2;
+        const centerMinutes = centerScreenPx / zoomLevel;
+        const centerTime = new Date(timelineStart.getTime() + centerMinutes * 60000);
         
-        // Gravitational pull: smoothly move the red line towards the center of the screen 
-        // on every zoom tick, replicating the "zoom to playhead" centering behavior.
-        const centerPx = target.clientWidth / 2;
-        const pullFactor = 0.15; // 15% pull towards center per slider event
-        
-        const newScreenOffset = currentScreenOffset + (centerPx - currentScreenOffset) * pullFactor;
-        
-        // By setting baseDate EXACTLY to 'now', the red line is placed perfectly 
-        // at the center of the 6-screen container (which is 3 * clientWidth pixels from the left).
         flushSync(() => {
-            setBaseDate(new Date(now.getTime()));
+            setBaseDate(centerTime);
             setZoomLevel(newZoom);
         });
         
-        // We set the scroll position so that the 3 * clientWidth point sits exactly at our newScreenOffset
-        target.scrollLeft = (3 * clientWidth) - newScreenOffset;
+        target.scrollLeft = (totalWidthPixels / 2) - target.clientWidth / 2;
     };
 
     // Ruler configuration based on zoom
@@ -141,21 +152,54 @@ const GanttView: React.FC = () => {
     };
     
     const rulerConfig = getRulerConfig();
-    const gridTickPixels = rulerConfig.intervalMins * zoomLevel;
 
-    // Generate labels
+    // Generate labels aligned to clean time intervals in local time
     const labels = useMemo(() => {
         const arr = [];
-        for (let m = 0; m <= totalMinutes; m += rulerConfig.intervalMins) {
-            arr.push({ minutes: m, date: addMinutes(timelineStart, m) });
-        }
-        return arr;
-    }, [totalMinutes, rulerConfig.intervalMins, timelineStart]);
+        const intervalMins = rulerConfig.intervalMins;
+        const start = new Date(timelineStart.getTime());
 
-    // Smart Stacking Algorithm
+        let current: Date;
+        if (intervalMins >= 1440) {
+            current = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
+            if (current.getTime() < start.getTime()) {
+                current = addDays(current, 1);
+            }
+        } else if (intervalMins >= 60) {
+            const hoursStep = intervalMins / 60;
+            const hour = Math.ceil(start.getHours() / hoursStep) * hoursStep;
+            current = new Date(start.getFullYear(), start.getMonth(), start.getDate(), hour, 0, 0, 0);
+        } else {
+            const mins = Math.ceil(start.getMinutes() / intervalMins) * intervalMins;
+            current = new Date(start.getFullYear(), start.getMonth(), start.getDate(), start.getHours(), mins, 0, 0);
+        }
+
+        const startMs = timelineStart.getTime();
+        const endMs = timelineEnd.getTime();
+
+        while (current.getTime() <= endMs) {
+            const minutes = (current.getTime() - startMs) / 60000;
+            arr.push({ minutes, date: new Date(current.getTime()) });
+            current = addMinutes(current, intervalMins);
+        }
+
+        return arr;
+    }, [timelineStart, timelineEnd, rulerConfig.intervalMins]);
+
+    // Smart Stacking Algorithm (filters tasks that fall within the current timeline window buffer)
     const tasksWithLayout = useMemo(() => {
         const scheduledTasks = tasks.filter(t => t.startDate || t.dueDate);
-        const sorted = [...scheduledTasks].sort((a, b) => {
+        const bufferMs = 24 * 60 * 60000; // 24 hours buffer
+        const winStart = timelineStart.getTime() - bufferMs;
+        const winEnd = timelineEnd.getTime() + bufferMs;
+
+        const visibleTasks = scheduledTasks.filter(t => {
+            const start = t.startDate ? new Date(t.startDate).getTime() : new Date().getTime();
+            const end = t.dueDate ? new Date(t.dueDate).getTime() : (start + (t.estimatedMinutes || 60) * 60000);
+            return end >= winStart && start <= winEnd;
+        });
+
+        const sorted = [...visibleTasks].sort((a, b) => {
             const aStart = a.startDate ? new Date(a.startDate).getTime() : new Date().getTime();
             const bStart = b.startDate ? new Date(b.startDate).getTime() : new Date().getTime();
             return aStart - bStart;
@@ -169,7 +213,7 @@ const GanttView: React.FC = () => {
             const leftMins = (start.getTime() - timelineStart.getTime()) / 60000;
             return { ...task, start, end, durationMins, trackIndex: index, leftMins };
         });
-    }, [tasks, timelineStart]);
+    }, [tasks, timelineStart, timelineEnd]);
 
 
 
@@ -213,20 +257,52 @@ const GanttView: React.FC = () => {
                     className="flex-1 overflow-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] cursor-grab active:cursor-grabbing"
                 >
                 <div 
-                    className="relative min-h-full" 
-                    style={{ width: totalWidthPixels, backgroundImage: `repeating-linear-gradient(to right, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent ${gridTickPixels}px)` }}
+                    className="relative min-h-full overflow-hidden" 
+                    style={{ width: totalWidthPixels }}
                 >
+                    {/* Vertical Timeline Grid Lines */}
+                    <div className="absolute inset-0 top-8 pointer-events-none z-0">
+                        {labels.map(l => {
+                            const isDayBoundary = l.date.getHours() === 0 && l.date.getMinutes() === 0;
+                            const isMonday = l.date.getDay() === 1;
+                            const borderClass = rulerConfig.intervalMins >= 1440
+                                ? (isMonday ? 'border-white/[0.14]' : 'border-white/[0.06]')
+                                : (isDayBoundary ? 'border-white/[0.14]' : 'border-white/[0.05]');
+
+                            return (
+                                <div 
+                                    key={l.minutes}
+                                    className={`absolute top-0 bottom-0 border-l ${borderClass}`}
+                                    style={{ left: l.minutes * zoomLevel }}
+                                />
+                            );
+                        })}
+                    </div>
+
                     {/* Time Ruler Header */}
                     <div className="sticky top-0 h-8 bg-slate-900/80 backdrop-blur-md border-b border-white/[0.05] z-20 overflow-hidden pointer-events-none">
-                        {labels.map(l => (
-                            <div 
-                                key={l.minutes}
-                                className="absolute top-0 h-full border-l border-white/10 pl-2 pt-1.5 text-[10px] font-semibold text-slate-400 tracking-wider"
-                                style={{ left: l.minutes * zoomLevel }}
-                            >
-                                {format(l.date, rulerConfig.label, { locale: ca })}
-                            </div>
-                        ))}
+                        {labels.map(l => {
+                            const isDayBoundary = l.date.getHours() === 0 && l.date.getMinutes() === 0;
+                            const isMonday = l.date.getDay() === 1;
+                            const isHighlighted = rulerConfig.intervalMins >= 1440 ? isMonday : isDayBoundary;
+
+                            return (
+                                <div 
+                                    key={l.minutes}
+                                    className={`absolute top-0 h-full border-l pl-2 pt-1.5 text-[10px] font-semibold tracking-wider ${
+                                        isHighlighted 
+                                            ? 'border-white/20 text-white font-bold' 
+                                            : 'border-white/10 text-slate-400'
+                                    }`}
+                                    style={{ left: l.minutes * zoomLevel }}
+                                >
+                                    {isDayBoundary && rulerConfig.label === 'HH:mm' 
+                                        ? format(l.date, 'dd MMM', { locale: ca }) 
+                                        : format(l.date, rulerConfig.label, { locale: ca })
+                                    }
+                                </div>
+                            );
+                        })}
                     </div>
 
                     {/* Playhead (Now) */}
@@ -263,7 +339,7 @@ const GanttView: React.FC = () => {
                             setBaseDate(new Date(now.getTime()));
                         });
                         if (scrollContainerRef.current) {
-                            scrollContainerRef.current.scrollLeft = 3 * clientWidth - scrollContainerRef.current.clientWidth / 2;
+                            scrollContainerRef.current.scrollLeft = (totalWidthPixels / 2) - scrollContainerRef.current.clientWidth / 2;
                         }
                     }}
                     className="p-1.5 rounded-full bg-primary/20 hover:bg-primary/30 text-primary transition-colors cursor-pointer mr-2"
@@ -271,7 +347,15 @@ const GanttView: React.FC = () => {
                     aria-label="Vés a l'hora actual">
                     <Maximize size={16} />
                 </button>
-                <ZoomOut size={18} className="text-slate-400" />
+                <button
+                    type="button"
+                    onClick={() => handleZoomChange(Math.max(0.05, Math.round((zoomLevel - 0.2) * 100) / 100))}
+                    className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer rounded-lg hover:bg-white/5"
+                    title="Redueix el zoom"
+                    aria-label="Redueix el zoom"
+                >
+                    <ZoomOut size={18} />
+                </button>
                 <input 
                     type="range" 
                     min="0.05" 
@@ -281,7 +365,15 @@ const GanttView: React.FC = () => {
                     onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
                     className="w-32 accent-primary cursor-pointer"
                 />
-                <ZoomIn size={18} className="text-slate-400" />
+                <button
+                    type="button"
+                    onClick={() => handleZoomChange(Math.min(10, Math.round((zoomLevel + 0.2) * 100) / 100))}
+                    className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer rounded-lg hover:bg-white/5"
+                    title="Augmenta el zoom"
+                    aria-label="Augmenta el zoom"
+                >
+                    <ZoomIn size={18} />
+                </button>
                 <div className="text-xs font-bold text-slate-300 w-10 text-right">{Math.round(zoomLevel * 100)}%</div>
             </div>
 
