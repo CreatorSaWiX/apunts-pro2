@@ -59,6 +59,13 @@ export const MicButton: React.FC<MicButtonProps> = ({
         type="button"
         onClick={toggleRecording}
         disabled={disabled || isTranscribing}
+        aria-label={
+          isTranscribing
+            ? t('chat.transcribing', 'Transcribint amb IA...')
+            : isRecording
+            ? t('chat.stopVoice', 'Aturar i transcriure')
+            : t('chat.voiceInput', 'Dictar amb IA')
+        }
         title={
           isTranscribing
             ? t('chat.transcribing', 'Transcribint amb IA...')

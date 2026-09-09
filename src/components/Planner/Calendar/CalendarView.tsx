@@ -12,8 +12,6 @@ import {
     type DragEndEvent
 } from '@dnd-kit/core';
 import { createPortal } from 'react-dom';
-import { format } from 'date-fns';
-import { ca } from 'date-fns/locale';
 import { useTasks } from '../../../contexts/TasksContext';
 import { useShallow } from 'zustand/react/shallow';
 import type { Task } from '../../../types/tasks';

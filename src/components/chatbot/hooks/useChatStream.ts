@@ -161,7 +161,14 @@ export function useChatStream() {
       const pageText = extractPageText();
 
       const { auth } = await import('../../../lib/firebase');
+      if (!auth.currentUser && typeof auth.authStateReady === 'function') {
+        await auth.authStateReady();
+      }
       const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
+      if (!token) {
+        throw new Error(t('chat.errors.notAuthenticated', 'No autoritzat. Cal iniciar sessió.'));
+      }
 
       const res = await fetch('/api/chat', {
         method: 'POST',
