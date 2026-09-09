@@ -17,6 +17,20 @@ import { useChatFirestore } from './hooks/useChatFirestore';
 import { useChatStream, COOLDOWN_MS } from './hooks/useChatStream';
 import { useChatLayout } from './hooks/useChatLayout';
 
+function formatRelativeTime(timestamp?: number): string {
+  if (!timestamp) return '';
+  const diffSec = Math.floor((Date.now() - timestamp) / 1000);
+  if (diffSec < 60) return `${Math.max(1, diffSec)}s`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m`;
+  const diffHour = Math.floor(diffMin / 60);
+  if (diffHour < 24) return `${diffHour}h`;
+  const diffDay = Math.floor(diffHour / 24);
+  if (diffDay < 30) return `${diffDay}d`;
+  const diffMonth = Math.floor(diffDay / 30);
+  return `${diffMonth}mo`;
+}
+
 export const ChatBot: React.FC = () => {
   const { user } = useAuth();
   const { aiSettings, setAiSettings } = useSettingsStore();
@@ -29,8 +43,8 @@ export const ChatBot: React.FC = () => {
     (iconSize: number, iconClass: string) => {
       const url = aiSettings?.identity?.avatarUrl;
       if (!url) return <Bot size={iconSize} className={iconClass} />;
-      if (url.startsWith('http')) {
-        return <img src={url} alt="AI" className="w-full h-full object-cover rounded-[inherit]" />;
+      if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('/')) {
+        return <img src={url} alt={aiName || 'AI'} className="w-full h-full object-cover rounded-[inherit]" />;
       }
       return (
         <span className="flex items-center justify-center w-full h-full text-[1.2em] leading-none select-none">
@@ -38,13 +52,11 @@ export const ChatBot: React.FC = () => {
         </span>
       );
     },
-    [aiSettings?.identity?.avatarUrl]
+    [aiSettings?.identity?.avatarUrl, aiName]
   );
 
   const [isOpen, setIsOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState('');
   const [input, setInput] = useState('');
 
   const [thinkingLevel, setThinkingLevel] = useState<ThinkingLevel>(() => {
@@ -54,6 +66,24 @@ export const ChatBot: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('chat_thinking_level', thinkingLevel);
   }, [thinkingLevel]);
+
+  // ── Drecera de teclat: Tancar calaix o historial amb Escape ────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showHistory) {
+          setShowHistory(false);
+        } else {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, showHistory]);
 
   // ── Hook 3: Firestore sincronització i persistència ───────────────────────
   const {
@@ -120,7 +150,7 @@ export const ChatBot: React.FC = () => {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 250)}px`;
     }
-  }, [input]);
+  }, [input, textareaRef]);
 
   // Enviament del missatge
   const handleSend = useCallback(async () => {
@@ -171,6 +201,125 @@ export const ChatBot: React.FC = () => {
   ]);
 
   const isHomePage = location.pathname === '/';
+  const isEmpty = messages.length === 0 && streamPhase === 'idle';
+
+  const recentChats = chatList
+    .filter((c) => c.id !== currentChatId && c.title)
+    .slice(0, 3);
+
+  const renderChatInputBox = () => (
+    <div className="relative flex flex-col gap-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 transition duration-300 focus-within:bg-white/10 focus-within:border-white/20 shadow-lg ring-1 ring-black/20">
+      <AnimatePresence>
+        {attachedFile && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="px-2 pt-2"
+          >
+            <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2 ml-2">
+              {attachedFile.mimeType.startsWith('image/') ? (
+                <img
+                  src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`}
+                  alt={attachedFile.name || 'Preview'}
+                  className="h-16 object-contain rounded-lg"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg">
+                  <span className="text-xs font-bold text-slate-300">PDF</span>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setAttachedFile(null)}
+                title={t('chat.removeAttachment', 'Eliminar fitxer adjunt')}
+                aria-label={t('chat.removeAttachment', 'Eliminar fitxer adjunt')}
+                className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="flex flex-col gap-1 w-full">
+        <textarea
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.nativeEvent.isComposing) return;
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+          placeholder={t('chat.placeholder', 'Escriu a {{aiName}}...', { aiName: aiName || 'apunts' })}
+          aria-label={t('chat.inputLabel', 'Missatge per al xat')}
+          className="w-full bg-transparent px-2 py-1.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
+          rows={1}
+        />
+        <div className="flex items-center justify-between px-1 pb-1">
+          <div className="flex items-center gap-1">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*,.pdf"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  processFile(e.target.files[0]);
+                  e.target.value = '';
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="shrink-0 p-1.5 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+              title={t('chat.attachFile', 'Adjuntar imatge o PDF')}
+              aria-label={t('chat.attachFile', 'Adjuntar imatge o PDF')}
+            >
+              <Plus size={20} />
+            </button>
+            <ThinkingLevelSelector value={thinkingLevel} onChange={setThinkingLevel} />
+          </div>
+          <div className="flex items-center gap-1">
+            <MicButton
+              input={input}
+              onTranscript={setInput}
+              lang={
+                i18n.language?.startsWith('es')
+                  ? 'es-ES'
+                  : i18n.language?.startsWith('en')
+                  ? 'en-US'
+                  : 'ca-ES'
+              }
+              disabled={streamPhase !== 'idle'}
+            />
+            <SendButton
+              onClick={handleSend}
+              onStop={stopStreaming}
+              isStreaming={streamPhase !== 'idle'}
+              disabled={(!input.trim() && !attachedFile) && streamPhase === 'idle'}
+              hasInput={!!(input.trim() || attachedFile)}
+              lastSentAt={lastSentAt}
+              cooldownMs={COOLDOWN_MS}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderDisclaimer = () => (
+    <div className="text-center mt-2.5 mb-0.5 pointer-events-auto">
+      <p className="text-[10px] text-slate-500/60 font-medium tracking-wide select-none">
+        {t('chat.warning', "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.")}
+      </p>
+    </div>
+  );
 
   return (
     <>
@@ -181,7 +330,9 @@ export const ChatBot: React.FC = () => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-[100] w-12 h-12 rounded-full bg-slate-800 text-slate-300 border border-white/10 shadow-lg hover:bg-slate-700 transition-colors flex items-center justify-center"
+            title={t('chat.openChat', 'Obrir assistent IA')}
+            aria-label={t('chat.openChat', 'Obrir assistent IA')}
+            className="fixed bottom-6 right-6 z-[100] w-12 h-12 rounded-full bg-slate-800 text-slate-300 border border-white/10 shadow-lg hover:bg-slate-700 transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
           >
             <Bot size={22} />
           </motion.button>
@@ -191,6 +342,9 @@ export const ChatBot: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={aiName || t('chat.conversation', 'Conversa')}
             initial={{ x: '100%', opacity: 0.5 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
@@ -241,10 +395,6 @@ export const ChatBot: React.FC = () => {
                 <ChatHistoryPanel
                   chatList={chatList}
                   currentChatId={currentChatId}
-                  editingId={editingId}
-                  editingTitle={editingTitle}
-                  setEditingId={setEditingId}
-                  setEditingTitle={setEditingTitle}
                   setShowHistory={setShowHistory}
                   switchChat={switchChat}
                   renameChat={renameChat}
@@ -256,7 +406,10 @@ export const ChatBot: React.FC = () => {
 
             {/* Resizer bar */}
             <div
-              className="absolute left-0 top-0 bottom-0 w-2 hover:bg-slate-500/20 cursor-col-resize z-50 transition-colors"
+              role="separator"
+              aria-orientation="vertical"
+              aria-label={t('chat.resizeSidebar', 'Canviar mida del xat')}
+              className="absolute left-0 top-0 bottom-0 w-2 hover:bg-slate-500/20 cursor-col-resize z-50 transition-colors select-none"
               onMouseDown={() => {
                 setIsResizing(true);
                 document.body.style.cursor = 'col-resize';
@@ -264,32 +417,18 @@ export const ChatBot: React.FC = () => {
               }}
             />
 
-            {/* Àrea de Missatges */}
-            <div
-              ref={messagesContainerRef}
-              className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-52 md:px-6 md:pb-56 space-y-8 custom-scrollbar z-0 flex flex-col"
-            >
-              <MessagesOnly messages={messages} user={user} renderAIAvatar={renderAIAvatar} />
-              <ActiveStreamingMessage
-                streamPhase={streamPhase}
-                thoughtText={thoughtText}
-                streamingText={streamingText}
-                renderAIAvatar={renderAIAvatar}
-              />
-              <div ref={messagesEndRef} className="h-8 shrink-0" />
-            </div>
-
             {/* Capçalera flotant */}
             <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">
               <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">
-                {currentChatTitle}
+                {isEmpty ? (aiName || 'Agent') : currentChatTitle}
               </div>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => startNewChat()}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"
-                  title="Nova conversa"
+                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                  title={t('chat.newChat', 'Nou Xat')}
+                  aria-label={t('chat.newChat', 'Nou Xat')}
                 >
                   <Plus size={18} />
                 </button>
@@ -299,128 +438,93 @@ export const ChatBot: React.FC = () => {
                     fetchChatList().then(setChatList).catch(console.error);
                     setShowHistory(true);
                   }}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors"
-                  title="Historial"
+                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                  title={t('chat.history', 'Historial de converses')}
+                  aria-label={t('chat.history', 'Historial de converses')}
                 >
                   <Clock size={18} />
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1"
+                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                  title={t('common.close', 'Tancar')}
+                  aria-label={t('common.close', 'Tancar')}
                 >
                   <X size={18} />
                 </button>
               </div>
             </div>
 
-            {/* Input inferior flotant */}
-            <div className="absolute bottom-0 left-0 w-full p-4 pt-8 bg-gradient-to-t from-[#020617]/90 via-[#020617]/50 to-transparent z-10 pointer-events-none">
-              <div className="pointer-events-auto relative flex flex-col gap-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 transition duration-300 focus-within:bg-white/10 focus-within:border-white/20 shadow-lg ring-1 ring-black/20">
-                <AnimatePresence>
-                  {attachedFile && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="px-2 pt-2"
-                    >
-                      <div className="relative inline-block border border-white/10 rounded-xl bg-slate-900/50 p-1 mt-2 ml-2">
-                        {attachedFile.mimeType.startsWith('image/') ? (
-                          <img
-                            src={`data:${attachedFile.mimeType};base64,${attachedFile.data}`}
-                            alt="preview"
-                            className="h-16 object-contain rounded-lg"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="h-16 w-16 flex items-center justify-center bg-slate-800 rounded-lg">
-                            <span className="text-xs font-bold text-slate-300">PDF</span>
-                          </div>
-                        )}
+            {/* Contingut del xat: Estat Buit estil Antigravity o Conversa activa */}
+            {isEmpty ? (
+              <div className="flex-1 flex flex-col justify-between pt-16 pb-4 px-5 md:px-7 max-w-2xl mx-auto w-full overflow-y-auto custom-scrollbar z-0">
+                <div className="flex flex-col my-auto py-6">
+                  <h1 className="text-2xl md:text-3xl font-semibold text-slate-100 mb-6 tracking-tight text-center select-none">
+                    {aiName || 'apunts'}
+                  </h1>
+
+                  {renderChatInputBox()}
+
+                  {recentChats.length > 0 && (
+                    <div className="mt-8 flex flex-col gap-2.5">
+                      {recentChats.map((chat) => (
                         <button
+                          key={chat.id}
                           type="button"
-                          onClick={() => setAttachedFile(null)}
-                          className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg z-20"
+                          onClick={() => switchChat(chat.id)}
+                          className="flex items-center justify-between text-left py-1 text-slate-400 hover:text-slate-200 transition-colors group select-none"
                         >
-                          <X size={14} />
+                          <span className="truncate max-w-[80%] text-[13.5px] group-hover:text-slate-100">
+                            {chat.title}
+                          </span>
+                          <span className="text-[12px] text-slate-500 font-mono shrink-0 ml-2">
+                            {formatRelativeTime(chat.updatedAt)}
+                          </span>
                         </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <div className="flex flex-col gap-1 w-full">
-                  <textarea
-                    ref={textareaRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.nativeEvent.isComposing) return;
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                      }
-                    }}
-                    placeholder={t('chat.placeholder', 'Escriu a {{aiName}}...', { aiName })}
-                    className="w-full bg-transparent px-2 py-1.5 text-[15px] text-slate-200 placeholder-slate-400 focus:outline-none resize-none min-h-[44px] max-h-[250px] custom-scrollbar"
-                    rows={1}
-                  />
-                  <div className="flex items-center justify-between px-1 pb-1">
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        accept="image/*,.pdf"
-                        onChange={(e) => {
-                          if (e.target.files?.[0]) {
-                            processFile(e.target.files[0]);
-                            e.target.value = '';
-                          }
-                        }}
-                      />
+                      ))}
                       <button
                         type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="shrink-0 p-1.5 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded-full transition-colors"
-                        title={t('chat.attachFile', 'Adjuntar imatge o PDF')}
+                        onClick={() => {
+                          fetchChatList().then(setChatList).catch(console.error);
+                          setShowHistory(true);
+                        }}
+                        className="text-[13px] text-slate-500 hover:text-slate-300 transition-colors mt-2 text-left w-fit select-none"
                       >
-                        <Plus size={20} />
+                        {t('chat.seeAll', 'Veure tot')}
                       </button>
-                      <ThinkingLevelSelector value={thinkingLevel} onChange={setThinkingLevel} />
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MicButton
-                        input={input}
-                        onTranscript={setInput}
-                        lang={
-                          i18n.language?.startsWith('es')
-                            ? 'es-ES'
-                            : i18n.language?.startsWith('en')
-                            ? 'en-US'
-                            : 'ca-ES'
-                        }
-                        disabled={streamPhase !== 'idle'}
-                      />
-                      <SendButton
-                        onClick={handleSend}
-                        onStop={stopStreaming}
-                        isStreaming={streamPhase !== 'idle'}
-                        disabled={(!input.trim() && !attachedFile) && streamPhase === 'idle'}
-                        hasInput={!!(input.trim() || attachedFile)}
-                        lastSentAt={lastSentAt}
-                        cooldownMs={COOLDOWN_MS}
-                      />
-                    </div>
-                  </div>
+                  )}
                 </div>
+
+                {renderDisclaimer()}
               </div>
-              <div className="text-center mt-2.5 mb-0.5 pointer-events-auto">
-                <p className="text-[10px] text-slate-500/60 font-medium tracking-wide">
-                  {t('chat.warning', "L'IA pot cometre errors. No comparteixis dades sensibles ni personals.")}
-                </p>
-              </div>
-            </div>
+            ) : (
+              <>
+                {/* Àrea de Missatges */}
+                <div
+                  ref={messagesContainerRef}
+                  className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-52 md:px-6 md:pb-56 space-y-8 custom-scrollbar z-0 flex flex-col"
+                >
+                  <MessagesOnly messages={messages} user={user} renderAIAvatar={renderAIAvatar} />
+                  <ActiveStreamingMessage
+                    streamPhase={streamPhase}
+                    thoughtText={thoughtText}
+                    streamingText={streamingText}
+                    renderAIAvatar={renderAIAvatar}
+                  />
+                  <div ref={messagesEndRef} className="h-8 shrink-0" />
+                </div>
+
+                {/* Input inferior flotant */}
+                <div className="absolute bottom-0 left-0 w-full p-4 pt-8 bg-gradient-to-t from-[#020617]/90 via-[#020617]/50 to-transparent z-10 pointer-events-none">
+                  <div className="pointer-events-auto">
+                    {renderChatInputBox()}
+                  </div>
+                  {renderDisclaimer()}
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

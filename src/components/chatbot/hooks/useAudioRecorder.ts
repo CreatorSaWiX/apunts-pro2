@@ -7,15 +7,15 @@ const ERROR_AUTO_DISMISS_MS = 6000;
 /**
  * Retorna el tipus MIME d'àudio compatible amb el navegador actual.
  */
-const getSupportedMimeType = (): string => {
-	if (typeof window === 'undefined' || typeof MediaRecorder === 'undefined') return '';
+const getSupportedMimeType = (): string | null => {
+	if (typeof window === 'undefined' || typeof MediaRecorder === 'undefined') return null;
 	const candidates = [
-		'audio/webm',
-		'audio/webm;codecs=opus',
-		'audio/mp4',
-		'audio/ogg;codecs=opus',
+		'audio/webm',				//Chrome / Firefox / Edge
+		'audio/webm;codecs=opus',	//Chrome / Firefox / Edge però més eficient
+		'audio/mp4',				//iOS / MacOS
+		'audio/ogg;codecs=opus',	
 		'audio/ogg',
-		'audio/aac',
+		'audio/aac',				//iOS / MacOS
 		'audio/wav',
 	];
 	for (const mime of candidates) {
@@ -23,7 +23,7 @@ const getSupportedMimeType = (): string => {
 			return mime;
 		}
 	}
-	return '';
+	return null;
 };
 
 /**
@@ -39,24 +39,6 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
 		reader.onerror = reject;
 		reader.readAsDataURL(blob);
 	});
-};
-
-/**
- * Obté el token de Firebase Auth esperant que l'estat d'autenticació estigui inicialitzat
- * per evitar condicions de carrera en navegadors com Brave o Safari.
- */
-const getFirebaseAuthToken = async (): Promise<string | null> => {
-	try {
-		const { auth } = await import('../../../lib/firebase');
-		if (!auth.currentUser && typeof auth.authStateReady === 'function') {
-			await auth.authStateReady();
-		}
-		if (!auth.currentUser) return null;
-		return await auth.currentUser.getIdToken();
-	} catch (err) {
-		console.error('Error obtaining Firebase auth token:', err);
-		return null;
-	}
 };
 
 export interface UseAudioRecorderOptions {
@@ -163,6 +145,7 @@ export function useAudioRecorder({
 
 		try {
 			// 1. Obtenir token de Firebase Auth
+			const { getFirebaseAuthToken } = await import('../../../lib/firebase');
 			const token = await getFirebaseAuthToken();
 			if (!token) {
 				throw new Error(
@@ -361,3 +344,11 @@ export function useAudioRecorder({
 		clearErrorMessage,
 	};
 }
+
+/**
+ * 1. Demanar Micròfon
+ * 2. Gravar en Memòria
+ * 3. Aturar i Empaquetar
+ * 4. Enviar a Gemini getTranscribeModels()
+ * 5. Inserir Text al Xat
+ */

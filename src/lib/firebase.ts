@@ -18,6 +18,23 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
 
+/**
+ * Obté el token JWT de l'usuari actual de Firebase Auth esperant que l'estat
+ * d'autenticació estigui inicialitzat (authStateReady) per evitar race conditions.
+ */
+export const getFirebaseAuthToken = async (): Promise<string | null> => {
+    try {
+        if (!auth.currentUser && typeof auth.authStateReady === 'function') {
+            await auth.authStateReady();
+        }
+        if (!auth.currentUser) return null;
+        return await auth.currentUser.getIdToken();
+    } catch (err) {
+        console.error('Error obtaining Firebase auth token:', err);
+        return null;
+    }
+};
+
 // Habilitar persistència offline
 let firestoreDb;
 try {

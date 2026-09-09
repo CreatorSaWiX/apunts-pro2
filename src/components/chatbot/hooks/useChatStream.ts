@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { StreamPhase } from '../../AIStreamingIndicator';
-import type { Message } from '../constants';
+import type { Message, GroundingMetadata } from '../constants';
 import type { AttachedFile } from './useChatLayout';
+import type { AISettings } from '../../../types/ai';
 
 export const COOLDOWN_MS = 15_000;
 
@@ -11,14 +12,14 @@ interface SendMessageOptions {
   messages: Message[];
   currentChatId: string;
   currentChatTitle: string;
-  aiSettings: any;
+  aiSettings: AISettings;
   thinkingLevel: string;
   language: string;
   currentPath: string;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setCurrentChatTitle: (title: string) => void;
   saveChat: (id: string, history: Message[], title: string) => Promise<void>;
-  setAiSettings?: (settings: any) => void;
+  setAiSettings?: React.Dispatch<React.SetStateAction<AISettings>>;
   t: (key: string, fallback: string) => string;
 }
 
@@ -47,7 +48,7 @@ export function useChatStream() {
   const [streamPhase, setStreamPhase] = useState<StreamPhase>('idle');
   const [thoughtText, setThoughtText] = useState('');
   const [streamingText, setStreamingText] = useState('');
-  const [activeGrounding, setActiveGrounding] = useState<any>(null);
+  const [activeGrounding, setActiveGrounding] = useState<GroundingMetadata | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const streamingUpdateRAF = useRef<number | null>(null);
@@ -160,11 +161,8 @@ export function useChatStream() {
     try {
       const pageText = extractPageText();
 
-      const { auth } = await import('../../../lib/firebase');
-      if (!auth.currentUser && typeof auth.authStateReady === 'function') {
-        await auth.authStateReady();
-      }
-      const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+      const { getFirebaseAuthToken } = await import('../../../lib/firebase');
+      const token = await getFirebaseAuthToken();
 
       if (!token) {
         throw new Error(t('chat.errors.notAuthenticated', 'No autoritzat. Cal iniciar sessió.'));
@@ -200,7 +198,7 @@ export function useChatStream() {
       const decoder = new TextDecoder();
       let sseBuffer = '';
       let metadata: { memory_actions?: { action: string; old_fact?: string; new_fact?: string }[] } = {};
-      let grounding: any = null;
+      let grounding: GroundingMetadata | null = null;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -275,8 +273,8 @@ export function useChatStream() {
               case 'error':
                 throw new Error(parsed.message || parsed.error || 'Error en streaming');
             }
-          } catch (e: any) {
-            if (e.message && e.message !== 'Unexpected end of JSON input') {
+          } catch (e: unknown) {
+            if (e instanceof Error && e.message !== 'Unexpected end of JSON input') {
               throw e;
             }
           }
@@ -285,7 +283,7 @@ export function useChatStream() {
 
       // Actualització de memòries a la configuració d'IA
       if (metadata.memory_actions && metadata.memory_actions.length > 0 && setAiSettings) {
-        setAiSettings((prev: any) => {
+        setAiSettings((prev: AISettings) => {
           let updatedMemories = [...(prev?.userContext?.memories || [])];
           for (const action of metadata.memory_actions || []) {
             const act = (action.action || '').toUpperCase();
@@ -301,6 +299,7 @@ export function useChatStream() {
             ...prev,
             userContext: {
               ...prev?.userContext,
+              userPreferredName: prev?.userContext?.userPreferredName || '',
               memories: updatedMemories,
             },
             updatedAt: Date.now(),
@@ -315,7 +314,7 @@ export function useChatStream() {
           role: 'model' as const,
           content: fullReplyText,
           addedMemories: metadata.memory_actions?.map((a) => a.new_fact || a.old_fact || '').filter(Boolean),
-          groundingMetadata: grounding,
+          groundingMetadata: grounding || undefined,
           thoughtText: fullThoughtText || undefined,
           thoughtTimeMs: thoughtDurationMs || undefined,
         },
@@ -323,8 +322,10 @@ export function useChatStream() {
 
       setMessages(finalMessages);
       await saveChat(currentChatId, finalMessages, autoTitle);
-    } catch (err: any) {
-      const isAbort = err.name === 'AbortError';
+    } catch (err: unknown) {
+      const isAbort =
+        (err as { name?: string })?.name === 'AbortError' ||
+        (err instanceof DOMException && err.name === 'AbortError');
 
       // Si s'atura la generació però ja s'havia generat text, preservem la resposta parcial
       if (isAbort && fullReplyText.trim()) {
@@ -341,7 +342,7 @@ export function useChatStream() {
         setMessages(partialMessages);
         saveChat(currentChatId, partialMessages, autoTitle).catch(() => {});
       } else if (!isAbort) {
-        const errorMsg = err.message || t('chat.errors.failedToConnect', 'Error de connexió');
+        const errorMsg = err instanceof Error ? err.message : t('chat.errors.failedToConnect', 'Error de connexió');
         setMessages((prev) => [
           ...prev,
           {

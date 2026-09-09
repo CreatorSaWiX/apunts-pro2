@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { getChatModels, getLiteModels, applyThinkingConfig } from './_shared/models';
 import { withMiddleware } from './_shared/middleware';
 import { chatRequestSchema, type AiSettings } from './_shared/schemas';
@@ -27,14 +27,28 @@ async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseE
     await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
     const trimmed = message.trim();
 
-    const prompt = `Ets un classificador d'intenció de cerca. Respon ÚNICAMENT amb '1' o '0'.
-Pregunta de l'usuari: "${truncateAtWordBoundary(trimmed, 300).replace(/"/g, '\\"')}"
-Aquesta consulta demana informació d'actualitat, notícies recents, esdeveniments en temps real, el temps meteorològic, preus, esports, o tecnologia recent del món real que pugui haver canviat?
-Respon 1 si requereix cerca a internet, o 0 si no en requereix:`;
+    const prompt = `Ets un classificador d'intenció de cerca web per a un assistent d'apunts universitaris.
 
-    for (const liteModel of getLiteModels()) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200);
+Pregunta de l'usuari: "${truncateAtWordBoundary(trimmed, 300).replace(/"/g, '\\"')}"
+
+La teva tasca és retornar:
+1 -> Si cal cercar a internet (persones, entitats, bots, personatges, "coneixes X?", "qui és X?", eines noves, notícies, actualitat o termes externs).
+0 -> Si NO cal cercar perquè és teoria universitària estàndard (matemàtiques, derivades, matrius, algorísmia, grafs, C++), dubtes dels apunts o salutacions bàsiques ("hola", "gràcies").
+
+Respon ÚNICAMENT amb el dígit 1 o 0 (sense cap altre text).
+Dígit:`;
+
+    const candidateModels = getLiteModels();
+    const controllers = candidateModels.map(() => new AbortController());
+
+    // Execució en paral·lel de tots els models Lite: el primer que respongui determina el resultat (Promise.any)
+    const promises = candidateModels.map(async (liteModel, index) => {
+        const controller = controllers[index];
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const thinkingConfig = liteModel.startsWith('gemini-3')
+            ? { thinkingLevel: ThinkingLevel.MINIMAL }
+            : { thinkingBudget: 0 };
+
         try {
             logGeminiPrompt({
                 endpoint: 'chat:classify_search',
@@ -48,27 +62,32 @@ Respon 1 si requereix cerca a internet, o 0 si no en requereix:`;
                 config: {
                     temperature: 0,
                     maxOutputTokens: 5,
+                    thinkingConfig,
                     abortSignal: controller.signal,
                 }
             });
 
             clearTimeout(timeoutId);
             const answer = (response.text || "").trim();
-            const search = answer.includes('1');
-            await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
-            return search;
-        } catch (e) {
+            if (!answer) throw new Error("Resposta buida");
+            return answer.includes('1');
+        } catch (err) {
             clearTimeout(timeoutId);
-            if (controller.signal.aborted) {
-                console.warn("[classifySearchIntent] Temps límit de 1.2s superat, prioritzant coneixement acadèmic.");
-                await emit('thought', { text: `i18n:searchFailed\n\n` });
-                return false;
-            }
-            console.warn("[classifySearchIntent] Model error:", e);
+            throw err;
         }
+    });
+
+    try {
+        const search = await Promise.any(promises);
+        // Cancelem els altres models en curs per estalviar recursos
+        controllers.forEach(c => c.abort());
+        await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
+        return search;
+    } catch {
+        controllers.forEach(c => c.abort());
+        await emit('thought', { text: `i18n:searchFailed\n\n` });
+        return false;
     }
-    await emit('thought', { text: `i18n:searchFailed\n\n` });
-    return false;
 }
 
 interface MemoryAction {
@@ -115,6 +134,10 @@ async function extractUserMemories(
                 tools: MEMORY_TOOLS
             });
 
+            const thinkingConfig = liteModel.startsWith('gemini-3')
+                ? { thinkingLevel: ThinkingLevel.MINIMAL }
+                : { thinkingBudget: 0 };
+
             const metadataResponse = await ai.models.generateContent({
                 model: liteModel,
                 contents: promptContent,
@@ -123,6 +146,7 @@ async function extractUserMemories(
                     tools: MEMORY_TOOLS,
                     temperature: 0.1,
                     maxOutputTokens: 250,
+                    thinkingConfig,
                     abortSignal: controller.signal,
                 }
             });
@@ -182,18 +206,27 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             try {
                 await emit('status', { phase: 'thinking' });
 
-                // Resolució dinàmica d'apunts i intenció de cerca en paral·lel (models Lite)
-                const notesPromise = resolveDynamicNotesContext({
-                    message,
-                    currentPath,
-                    pageText,
-                    language
-                }, ai);
-                const searchPromise = classifySearchIntent(message, ai, emit);
+                // 1. Extracció de memòries en segon pla (no bloquejant)
                 const metadataPromise = extractUserMemories(message, aiSettings, ai, req.signal)
                     .catch(e => { console.warn("[extractUserMemories] Non-critical failure:", e); return { memory_actions: [] as MemoryAction[] }; });
 
-                const [notesContext, enableSearch] = await Promise.all([notesPromise, searchPromise]);
+                // 2. Classificació d'intenció de cerca (tots els models Lite en paral·lel, resposta instantània)
+                const enableSearch = await classifySearchIntent(message, ai, emit);
+
+                if (req.signal.aborted) return;
+
+                // 3. 'chat:notes_router' depèn de si s'ha de cercar o no:
+                // Si cal cercar a internet (enableSearch = true), no cal consultar ni injectar apunts universitaris.
+                // Si NO cal cercar (enableSearch = false), cerquem els apunts del campus rellevants.
+                let notesContext = "";
+                if (!enableSearch) {
+                    notesContext = await resolveDynamicNotesContext({
+                        message,
+                        currentPath,
+                        pageText,
+                        language
+                    }, ai);
+                }
 
                 if (req.signal.aborted) return;
 

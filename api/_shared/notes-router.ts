@@ -1,5 +1,5 @@
 import { allPersonalNotes } from '../../.content-collections/generated/index.js';
-import type { GoogleGenAI } from '@google/genai';
+import { type GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { getLiteModels } from './models';
 import { logGeminiPrompt } from './debug';
 import subjectsData from '../../src/data/subjects.json';
@@ -196,9 +196,16 @@ Determina quins apunts o temaris cal injectar per respondre amb màxima fidelita
 
     let routing: { scope?: string; subject?: string; subjects?: string[]; topic?: number } = {};
 
-    for (const model of getLiteModels()) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200);
+    const candidateModels = getLiteModels();
+    const controllers = candidateModels.map(() => new AbortController());
+
+    const promises = candidateModels.map(async (model, index) => {
+        const controller = controllers[index];
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const thinkingConfig = model.startsWith('gemini-3')
+            ? { thinkingLevel: ThinkingLevel.MINIMAL }
+            : { thinkingBudget: 0 };
+
         try {
             logGeminiPrompt({
                 endpoint: 'chat:notes_router',
@@ -213,17 +220,25 @@ Determina quins apunts o temaris cal injectar per respondre amb màxima fidelita
                     temperature: 0,
                     responseMimeType: 'application/json',
                     maxOutputTokens: 120,
+                    thinkingConfig,
                     abortSignal: controller.signal
                 }
             });
 
             clearTimeout(timeoutId);
-            routing = JSON.parse(res.text?.trim() || '{}');
-            break;
-        } catch {
+            return JSON.parse(res.text?.trim() || '{}');
+        } catch (err) {
             clearTimeout(timeoutId);
-            continue;
+            throw err;
         }
+    });
+
+    try {
+        routing = await Promise.any(promises);
+        controllers.forEach(c => c.abort());
+    } catch {
+        controllers.forEach(c => c.abort());
+        routing = {};
     }
 
     // Normalització d'assignatures (suport transparent per a 'subjects' com array o 'subject' singular)

@@ -1,3 +1,16 @@
+export interface GroundingChunk {
+  web?: {
+    uri?: string;
+    title?: string;
+  };
+}
+
+export interface GroundingMetadata {
+  webSearchQueries?: string[];
+  groundingChunks?: GroundingChunk[];
+  [key: string]: unknown;
+}
+
 export interface Message {
   id?: string;
   role: 'user' | 'model';
@@ -5,7 +18,7 @@ export interface Message {
   attachmentName?: string;
   attachmentType?: 'image' | 'pdf';
   addedMemories?: string[];
-  groundingMetadata?: any;
+  groundingMetadata?: GroundingMetadata;
   thoughtText?: string;
   thoughtTimeMs?: number;
 }

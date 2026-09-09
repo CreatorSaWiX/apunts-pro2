@@ -1,10 +1,16 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Message, ChatMeta } from '../constants';
+import type { User } from '../../../contexts/AuthContext';
 
 const newId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
 
-let firebaseModulesPromise: Promise<any> | null = null;
-const getFirebase = () => {
+type FirebaseModules = [
+  typeof import('../../../lib/firebase'),
+  typeof import('firebase/firestore')
+];
+
+let firebaseModulesPromise: Promise<FirebaseModules> | null = null;
+const getFirebase = (): Promise<FirebaseModules> => {
   if (!firebaseModulesPromise) {
     firebaseModulesPromise = Promise.all([
       import('../../../lib/firebase'),
@@ -14,8 +20,8 @@ const getFirebase = () => {
   return firebaseModulesPromise;
 };
 
-interface UseChatFirestoreOptions {
-  user: any;
+export interface UseChatFirestoreOptions {
+  user: User | null;
   isOpen: boolean;
   t: (key: string, fallback: string) => string;
   onCloseHistory?: () => void;
@@ -71,7 +77,7 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
       const q = query(collection(db, 'users', user.id, 'chats'), orderBy('updatedAt', 'desc'));
       const snap = await getDocs(q);
       const fallbackTitle = t('chat.conversation', 'Conversa');
-      return snap.docs.map((d: any) => formatChatDoc(d.id, d.data() as ChatDocData, fallbackTitle));
+      return snap.docs.map((d) => formatChatDoc(d.id, d.data() as ChatDocData, fallbackTitle));
     } catch (err) {
       console.error('[useChatFirestore] Error fetching chat list:', err);
       return [];
@@ -82,7 +88,8 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
     if (!user || !id) return;
     try {
       const [{ db }, { doc, setDoc }] = await getFirebase();
-      await setDoc(doc(db, 'users', user.id, 'chats', id), { history, title, updatedAt: Date.now() });
+      const sanitizedHistory = JSON.parse(JSON.stringify(history));
+      await setDoc(doc(db, 'users', user.id, 'chats', id), { history: sanitizedHistory, title, updatedAt: Date.now() });
     } catch (err) {
       console.error('[useChatFirestore] Error saving chat:', err);
     }

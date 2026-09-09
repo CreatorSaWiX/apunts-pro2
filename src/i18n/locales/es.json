@@ -19,6 +19,7 @@
     "login": "Inicia sesión",
     "dropToAttach": "Suelta para adjuntar",
     "history": "Historial de conversaciones",
+    "seeAll": "Ver todo",
     "noSavedChats": "Sin conversaciones guardadas",
     "newConversation": "Nueva conversación",
     "placeholder": "Escribe a {{aiName}}...",

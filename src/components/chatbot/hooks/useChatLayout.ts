@@ -1,18 +1,40 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
+export const DEFAULT_SIDEBAR_WIDTH = 550;
+export const MIN_SIDEBAR_WIDTH = 350;
+export const MAX_SIDEBAR_WIDTH_RATIO = 0.9;
+export const MOBILE_BREAKPOINT_PX = 768;
+export const MAX_ATTACHMENT_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
 export interface AttachedFile {
   data: string;
   mimeType: string;
   name: string;
 }
 
-interface UseChatLayoutOptions {
+export interface UseChatLayoutOptions {
   isOpen: boolean;
   t: (key: string, fallback: string) => string;
 }
 
-export function useChatLayout({ isOpen, t }: UseChatLayoutOptions) {
-  const [sidebarWidth, setSidebarWidth] = useState(550);
+export interface UseChatLayoutReturn {
+  sidebarWidth: number;
+  setSidebarWidth: React.Dispatch<React.SetStateAction<number>>;
+  isResizing: boolean;
+  setIsResizing: React.Dispatch<React.SetStateAction<boolean>>;
+  isDragging: boolean;
+  attachedFile: AttachedFile | null;
+  setAttachedFile: React.Dispatch<React.SetStateAction<AttachedFile | null>>;
+  processFile: (file: File) => void;
+  messagesContainerRef: React.RefObject<HTMLDivElement | null>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  scrollToBottom: (instant?: boolean) => void;
+}
+
+export function useChatLayout({ isOpen, t }: UseChatLayoutOptions): UseChatLayoutReturn {
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [attachedFile, setAttachedFile] = useState<AttachedFile | null>(null);
@@ -32,7 +54,7 @@ export function useChatLayout({ isOpen, t }: UseChatLayoutOptions) {
       alert(tRef.current('chat.errors.invalidFileType', "Només s'accepten imatges i PDFs."));
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
       alert(tRef.current('chat.errors.fileTooLarge', "L'arxiu és massa gran. Màxim 5MB."));
       return;
     }
@@ -133,7 +155,7 @@ export function useChatLayout({ isOpen, t }: UseChatLayoutOptions) {
     const root = document.getElementById('root') || document.body;
 
     const updateLayout = () => {
-      if (isOpen && window.innerWidth > 768) {
+      if (isOpen && window.innerWidth > MOBILE_BREAKPOINT_PX) {
         root.style.width = `calc(100vw - ${sidebarWidth}px)`;
         document.documentElement.style.setProperty('--chatbot-width', `${sidebarWidth}px`);
       } else {
@@ -163,7 +185,7 @@ export function useChatLayout({ isOpen, t }: UseChatLayoutOptions) {
       rafId = requestAnimationFrame(() => {
         rafId = null;
         const w = window.innerWidth - e.clientX;
-        if (w > 350 && w < window.innerWidth * 0.9) {
+        if (w > MIN_SIDEBAR_WIDTH && w < window.innerWidth * MAX_SIDEBAR_WIDTH_RATIO) {
           setSidebarWidth(w);
         }
       });

@@ -4,6 +4,12 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAudioRecorder } from './hooks/useAudioRecorder';
 
+export const formatAudioTimer = (sec: number): string => {
+  const mins = Math.floor(sec / 60);
+  const remainingSec = sec % 60;
+  return `${mins}:${remainingSec < 10 ? '0' : ''}${remainingSec}`;
+};
+
 interface MicButtonProps {
   input: string;
   onTranscript: (newText: string) => void;
@@ -11,7 +17,7 @@ interface MicButtonProps {
   disabled?: boolean;
 }
 
-export const MicButton: React.FC<MicButtonProps> = ({
+export const MicButton: React.FC<MicButtonProps> = React.memo(({
   input,
   onTranscript,
   lang = 'ca-ES',
@@ -32,17 +38,19 @@ export const MicButton: React.FC<MicButtonProps> = ({
     t,
   });
 
-  const formatTimer = (sec: number) => {
-    const mins = Math.floor(sec / 60);
-    const remainingSec = sec % 60;
-    return `${mins}:${remainingSec < 10 ? '0' : ''}${remainingSec}`;
-  };
+  const buttonLabel = isTranscribing
+    ? t('chat.transcribing', 'Transcribint amb IA...')
+    : isRecording
+    ? t('chat.stopVoice', 'Aturar i transcriure')
+    : t('chat.voiceInput', 'Dictar amb IA');
 
   return (
     <div className="relative flex items-center justify-center">
       <AnimatePresence>
         {errorMessage && (
           <motion.div
+            role="alert"
+            aria-live="assertive"
             initial={{ opacity: 0, y: 6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.95 }}
@@ -59,21 +67,9 @@ export const MicButton: React.FC<MicButtonProps> = ({
         type="button"
         onClick={toggleRecording}
         disabled={disabled || isTranscribing}
-        aria-label={
-          isTranscribing
-            ? t('chat.transcribing', 'Transcribint amb IA...')
-            : isRecording
-            ? t('chat.stopVoice', 'Aturar i transcriure')
-            : t('chat.voiceInput', 'Dictar amb IA')
-        }
-        title={
-          isTranscribing
-            ? t('chat.transcribing', 'Transcribint amb IA...')
-            : isRecording
-            ? t('chat.stopVoice', 'Aturar i transcriure')
-            : t('chat.voiceInput', 'Dictar amb IA')
-        }
-        className={`relative shrink-0 p-2 rounded-full transition-all flex items-center justify-center gap-1.5 ${
+        aria-label={buttonLabel}
+        title={buttonLabel}
+        className={`relative shrink-0 p-2 rounded-full transition-all flex items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 ${
           disabled || isTranscribing
             ? 'opacity-60 cursor-not-allowed text-slate-400 bg-white/5'
             : isRecording
@@ -101,10 +97,12 @@ export const MicButton: React.FC<MicButtonProps> = ({
 
         {isRecording && (
           <span className="relative z-10 text-[11px] font-mono font-medium text-red-300 leading-none">
-            {formatTimer(recordingSeconds)}
+            {formatAudioTimer(recordingSeconds)}
           </span>
         )}
       </button>
     </div>
   );
-};
+});
+
+MicButton.displayName = 'MicButton';

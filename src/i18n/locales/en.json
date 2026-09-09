@@ -19,6 +19,7 @@
     "login": "Log in",
     "dropToAttach": "Drop to attach",
     "history": "Chat history",
+    "seeAll": "See all",
     "noSavedChats": "No saved chats",
     "newConversation": "New conversation",
     "placeholder": "Message {{aiName}}...",

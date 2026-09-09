@@ -19,6 +19,7 @@
     "login": "Inicia sessió",
     "dropToAttach": "Deixa anar per adjuntar",
     "history": "Historial de converses",
+    "seeAll": "Veure tot",
     "noSavedChats": "Sense converses desades",
     "newConversation": "Nova conversa",
     "placeholder": "Escriu a {{aiName}}...",
