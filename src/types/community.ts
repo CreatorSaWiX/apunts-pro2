@@ -15,6 +15,15 @@ export interface PostReply {
     createdAt: Timestamp;
 }
 
+export interface PostAttachment {
+    url: string;
+    name: string;
+    type: string;
+    size: number;
+    thumbnailUrl?: string;
+    isCustomThumbnail?: boolean;
+}
+
 export interface CommunityPost {
     id: string;
     userId: string;
@@ -26,6 +35,6 @@ export interface CommunityPost {
     reactions: Record<string, Reaction>; // Key is userId
     isPinned: boolean;
     views?: number;
-    attachments?: { url: string; name: string; type: string; size: number; thumbnailUrl?: string; isCustomThumbnail?: boolean }[];
+    attachments?: PostAttachment[];
 }
 

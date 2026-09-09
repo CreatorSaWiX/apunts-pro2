@@ -10,8 +10,6 @@ interface LiquidToolbarProps {
 }
 
 export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, className = '', delay = 0.5, position = 'bottom' }) => {
-    const [isReady, setIsReady] = React.useState(false);
-
     const isSticky = position === 'sticky';
 
     return (
@@ -19,8 +17,7 @@ export const LiquidToolbar: React.FC<LiquidToolbarProps> = ({ children, classNam
             initial={isSticky ? { y: -50, opacity: 0 } : { y: 250 }}
             animate={isSticky ? { y: 0, opacity: 1 } : { y: 0 }}
             transition={{ delay, type: "spring", stiffness: 200, damping: 20 }}
-            onAnimationComplete={() => setIsReady(true)}
-            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'fixed bottom-6 sm:bottom-10 inset-x-0 z-40 sm:z-50'} flex justify-center pointer-events-none ${isReady ? '!transform-none' : ''} px-4`}
+            className={`${isSticky ? 'sticky top-24 z-40 mb-8' : 'fixed bottom-6 sm:bottom-10 inset-x-0 z-40 sm:z-50'} flex justify-center pointer-events-none px-4`}
         >
             <motion.div 
                 layout
@@ -52,9 +49,7 @@ export const LiquidToolbarButton: React.FC<LiquidToolbarButtonProps> = ({ active
     return (
         <motion.button
             layout
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
+            initial={false}
             whileHover="hover"
             whileTap="tap"
             variants={{ hover: {}, tap: {} }}

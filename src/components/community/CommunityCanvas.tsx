@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ReactFlow, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ReactFlow, Background, BackgroundVariant, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { DrawProvider, useDrawContext, type Stroke, type DrawTool } from '../../contexts/DrawContext';
+import { DrawProvider, useDrawContext, type Stroke } from '../../contexts/DrawContext';
 import { useShallow } from 'zustand/react/shallow';
 import CommunityDrawLayer from './CommunityDrawLayer';
 import { LiquidToolbar, LiquidToolbarButton } from '../ui/glass/LiquidToolbar';
 import LiquidPanel from '../ui/glass/LiquidPanel';
-import { Palette, X, Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
+import { Undo2, Redo2, Trash2, Pen, Eraser, Hand } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useMultiplayerCanvas } from '../../hooks/useMultiplayerCanvas';
@@ -14,9 +14,27 @@ import { useCanvasShortcuts } from '../../hooks/useCanvasShortcuts';
 
 import type { Node, Edge } from '@xyflow/react';
 
+/* Constants estàtiques fora del cicle de render */
+
 const EMPTY_NODES: Node[] = [];
 const EMPTY_EDGES: Edge[] = [];
 const PRO_OPTIONS = { hideAttribution: true };
+
+const DRAW_COLORS = [
+    { id: 'red', value: '#ef4444', labelKey: 'canvas.colors.red', defaultLabel: 'Vermell (R / 4 / C)' },
+    { id: 'blue', value: '#3b82f6', labelKey: 'canvas.colors.blue', defaultLabel: 'Blau (B / 5 / C)' },
+    { id: 'yellow', value: '#eab308', labelKey: 'canvas.colors.yellow', defaultLabel: 'Groc (Y / 6 / C)' },
+    { id: 'purple', value: '#a855f7', labelKey: 'canvas.colors.purple', defaultLabel: 'Lila (U / 7 / C)' },
+] as const;
+
+const STROKE_SIZES = [2, 4, 8] as const;
+
+const GRID_BACKGROUND_STYLE: React.CSSProperties = {
+    backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)',
+    backgroundSize: '60px 60px',
+    maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)',
+    WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)'
+};
 
 // A wrapper to use the hooks inside ReactFlowProvider and DrawProvider
 const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -39,35 +57,42 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     })));
     const { updateCursor, broadcastStroke, broadcastLiveStroke, broadcastClear, broadcastRemoveStroke } = useMultiplayerCanvas(strokes, setStrokes as React.Dispatch<React.SetStateAction<Stroke[]>>, currentColor);
     
-    // Enable draw mode by default when opening canvas, and manage body overflow
-    useEffect(() => {
-        setCurrentTool('pen');
-        
-        // Hide scrollbar on the page
-        document.body.style.overflow = 'hidden';
-        
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [setCurrentTool]);
-
-    // Keyboard shortcuts listener (Power user UX) - shared hook with customizable settings & i18n
-    useCanvasShortcuts({ onClose, onClearBroadcast: broadcastClear });
-
-    const drawColors = [
-        { id: 'red', value: '#ef4444' },
-        { id: 'blue', value: '#3b82f6' },
-        { id: 'yellow', value: '#eab308' },
-        { id: 'purple', value: '#a855f7' },
-    ];
-
     const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const [isSizeMenuOpen, setIsSizeMenuOpen] = useState(false);
+
+    // Gestió resilient del scroll de la pàgina
+    useEffect(() => {
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = prevOverflow;
+        };
+    }, []);
+
+    // Tancar els desplegables automàticament en canviar d'eina
+    useEffect(() => {
+        if (currentTool !== 'pen') {
+            setIsColorMenuOpen(false);
+            setIsSizeMenuOpen(false);
+        }
+    }, [currentTool]);
+
+    // Dreceres de teclat
+    useCanvasShortcuts({ onClose, onClearBroadcast: broadcastClear });
+
+    // Handler memoitzat per netejar el llenç
+    const handleClearCanvas = useCallback(() => {
+        if (window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) {
+            clearStrokes();
+            broadcastClear();
+        }
+    }, [t, clearStrokes, broadcastClear]);
 
     return (
         <div className="w-full h-full relative bg-[#09090b] overflow-hidden">
             {/* Background grids */}
-            <div className="absolute inset-0 pointer-events-none z-0 opacity-30" style={{ backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)', backgroundSize: '60px 60px', maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)' }} />
+            <div className="absolute inset-0 pointer-events-none z-0 opacity-30" style={GRID_BACKGROUND_STYLE} />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06)_0%,rgba(9,9,11,0.6)_60%,rgba(9,9,11,1)_100%)] pointer-events-none z-0" />
 
             <div className="w-full h-full relative z-10">
@@ -103,120 +128,113 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     <Eraser size={18} />
                 </LiquidToolbarButton>
 
-                <AnimatePresence mode="popLayout">
-                    {currentTool === 'pen' && (
-                        <motion.div
-                            key="pen-controls"
-                            layout
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            className="flex items-center gap-1"
-                        >
-                            <div className="w-px h-6 bg-white/10 mx-1" />
+                {currentTool === 'pen' && (
+                    <motion.div
+                        key="pen-controls"
+                        layout
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="flex items-center gap-1"
+                    >
+                        <div className="w-px h-6 bg-white/10 mx-1" />
 
-                            {/* Size controls */}
-                            <motion.div layout key="size-selector" className="relative">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsSizeMenuOpen(!isSizeMenuOpen)}
-                                    title={t('canvas.tools.sizeSelect', 'Seleccionar Mida')}
-                                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10"
-                                >
-                                    <div 
-                                        className="rounded-full bg-white transition duration-300"
-                                        style={{ width: currentWidth + 2, height: currentWidth + 2 }}
-                                    />
-                                </button>
+                        {/* Size controls */}
+                        <div key="size-selector" className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsSizeMenuOpen(!isSizeMenuOpen)}
+                                title={t('canvas.tools.sizeSelect', 'Seleccionar Mida')}
+                                className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10 cursor-pointer"
+                            >
+                                <div 
+                                    className="rounded-full bg-white transition duration-300"
+                                    style={{ width: currentWidth + 2, height: currentWidth + 2 }}
+                                />
+                            </button>
 
-                                <AnimatePresence>
-                                    {isSizeMenuOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
-                                        >
-                                            <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
-                                            
-                                            <div className="relative z-10 flex gap-2 px-2 items-center">
-                                                {[2, 4, 8].map(size => (
+                            <AnimatePresence>
+                                {isSizeMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                    >
+                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                        
+                                        <div className="relative z-10 flex gap-2 px-2 items-center">
+                                            {STROKE_SIZES.map(size => (
+                                                <button
+                                                    key={size}
+                                                    type="button"
+                                                    onClick={() => { setCurrentWidth(size); setIsSizeMenuOpen(false); }}
+                                                    title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
+                                                    className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition duration-300 cursor-pointer ${currentWidth === size ? 'bg-white/20 shadow-inner scale-110' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
+                                                    aria-label={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}>
+                                                    <div 
+                                                        className="rounded-full bg-white transition duration-300"
+                                                        style={{ width: size + 2, height: size + 2 }}
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+
+                        {/* Color controls */}
+                        <div key="color-selector" className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
+                                title={t('canvas.colors.select', 'Seleccionar Color')}
+                                className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10 cursor-pointer"
+                            >
+                                <div className="w-5 h-5 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
+                            </button>
+
+                            <AnimatePresence>
+                                {isColorMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                    >
+                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+                                        
+                                        <div className="relative z-10 flex gap-1 px-1">
+                                            {DRAW_COLORS.map(c => {
+                                                const colorLabel = t(c.labelKey, c.defaultLabel);
+                                                return (
                                                     <button
-                                                        key={size}
+                                                        key={c.id}
                                                         type="button"
-                                                        onClick={() => { setCurrentWidth(size); setIsSizeMenuOpen(false); }}
-                                                        title={t('canvas.tools.size', 'Mida {{size}}px ([ / ])', { size })}
-                                                        className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition duration-300 ${currentWidth === size ? 'bg-white/20 shadow-inner scale-110' : 'hover:bg-white/10 opacity-70 hover:opacity-100'}`}
-                                                        aria-label="Obrir panell">
-                                                        <div 
-                                                            className="rounded-full bg-white transition duration-300"
-                                                            style={{ width: size + 2, height: size + 2 }}
-                                                        />
+                                                        onClick={() => { setCurrentColor(c.value); setIsColorMenuOpen(false); }}
+                                                        title={colorLabel}
+                                                        className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition cursor-pointer ${currentColor === c.value ? 'bg-white/10 scale-110' : ''}`}
+                                                        aria-label={colorLabel}
+                                                    >
+                                                        <div className="w-5 h-5 rounded-full" style={{ backgroundColor: c.value, boxShadow: `0 0 8px ${c.value}80` }} />
                                                     </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </motion.div>
+                                                );
+                                            })}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
 
-                            <div className="w-px h-6 bg-white/10 mx-1" />
-
-                            {/* Color controls */}
-                            <motion.div layout key="color-selector" className="relative">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
-                                    title={t('canvas.colors.select', 'Seleccionar Color')}
-                                    className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center transition duration-300 hover:bg-white/10"
-                                >
-                                    <div className="w-5 h-5 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
-                                </button>
-
-                                <AnimatePresence>
-                                    {isColorMenuOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
-                                        >
-                                            <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
-                                            
-                                            <div className="relative z-10 flex gap-1 px-1">
-                                                {drawColors.map(c => {
-                                                    const colorTitles: Record<string, string> = {
-                                                        red: t('canvas.colors.red', 'Vermell (R / 4 / C)'),
-                                                        blue: t('canvas.colors.blue', 'Blau (B / 5 / C)'),
-                                                        yellow: t('canvas.colors.yellow', 'Groc (Y / 6 / C)'),
-                                                        purple: t('canvas.colors.purple', 'Lila (U / 7 / C)')
-                                                    };
-                                                    return (
-                                                        <button
-                                                            key={c.id}
-                                                            type="button"
-                                                            onClick={() => { setCurrentColor(c.value); setIsColorMenuOpen(false); }}
-                                                            title={colorTitles[c.id] || t('canvas.colors.cycle', 'Canviar color (C)')}
-                                                            className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === c.value ? 'bg-white/10 scale-110' : ''}`}
-                                                            aria-label="Botó"
-                                                        >
-                                                            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: c.value, boxShadow: `0 0 8px ${c.value}80` }} />
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </motion.div>
-
-                            <div className="w-px h-6 bg-white/10 mx-1" />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        <div className="w-px h-6 bg-white/10 mx-1" />
+                    </motion.div>
+                )}
 
                 <LiquidToolbarButton key="undo" onClick={undoStroke} active={false} className={!canUndo ? 'opacity-30 cursor-not-allowed' : ''} title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}>
                     <Undo2 size={18} />
@@ -226,7 +244,7 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     <Redo2 size={18} />
                 </LiquidToolbarButton>
 
-                <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) { clearStrokes(); broadcastClear(); } }} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10" title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}>
+                <LiquidToolbarButton key="clear" onClick={handleClearCanvas} active={false} className="text-red-400 hover:text-red-300 hover:bg-red-500/10" title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}>
                     <Trash2 size={18} />
                 </LiquidToolbarButton>
 
@@ -237,40 +255,15 @@ const CanvasContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
 interface CommunityCanvasProps {
     onClose: () => void;
-    isClosing?: boolean;
 }
 
-const CommunityCanvas: React.FC<CommunityCanvasProps> = ({ onClose, isClosing }) => {
-    // Retardem la càrrega del contingut pesat (ReactFlow) per garantir que l'animació CSS (clipPath) funcioni a 60FPS sense bloquejos
-    const [isReady, setIsReady] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsReady(true), 800);
-        return () => clearTimeout(timer);
-    }, []);
-
+const CommunityCanvas: React.FC<CommunityCanvasProps> = ({ onClose }) => {
     return (
         <ReactFlowProvider>
             <DrawProvider>
-                <AnimatePresence mode="wait">
-                    {isReady && !isClosing ? (
-                        <motion.div 
-                            key="canvas-content"
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
-                            exit={{ opacity: 0, scale: 0.98 }}
-                            transition={{ duration: 0.3, ease: "easeOut" }} 
-                            className="w-full h-full absolute inset-0"
-                        >
-                            <CanvasContent onClose={onClose} />
-                        </motion.div>
-                    ) : (
-                        <motion.div 
-                            key="canvas-bg"
-                            className="w-full h-full bg-[#09090b] absolute inset-0" 
-                        />
-                    )}
-                </AnimatePresence>
+                <div className="w-full h-full absolute inset-0 bg-[#09090b]">
+                    <CanvasContent onClose={onClose} />
+                </div>
             </DrawProvider>
         </ReactFlowProvider>
     );

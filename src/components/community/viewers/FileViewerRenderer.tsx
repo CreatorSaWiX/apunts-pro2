@@ -1,8 +1,9 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, memo } from 'react';
 import VideoViewer from './VideoViewer';
 import { Download, File, Box } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 import { resolveMediaUrl } from '../../../lib/mediaUtils';
+import { useTranslation } from 'react-i18next';
 
 const PdfViewer = lazy(() => import('./PdfViewer'));
 const CodeViewer = lazy(() => import('./CodeViewer'));
@@ -27,18 +28,27 @@ interface FileViewerRendererProps {
 const CODE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css', 'cpp', 'c', 'h', 'hpp', 'py', 'java', 'go', 'rs', 'php', 'rb'];
 const MODEL_EXTENSIONS = ['gltf', 'glb', 'obj'];
 
+const formatFileSize = (bytes: number): string => {
+    if (!bytes || bytes <= 0) return '0 B';
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
 const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererProps) => {
+    const { t } = useTranslation();
     const ext = filename.split('.').pop()?.toLowerCase() || '';
     const resolvedUrl = resolveMediaUrl(url) || url;
 
-    // Route to the correct viewer based on type or extension
+    // Redirigir al visor adequat segons tipus o extensió
     if (type.startsWith('video/')) {
         return <VideoViewer url={resolvedUrl} filename={filename} />;
     }
 
     if (type === 'application/pdf') {
         return (
-            <Suspense fallback={<ViewerSkeleton text="Carregant visor PDF..." />}>
+            <Suspense fallback={<ViewerSkeleton text={t('community.viewers.loadingPdf', 'Carregant visor PDF...')} />}>
                 <PdfViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
@@ -46,7 +56,7 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
 
     if (CODE_EXTENSIONS.includes(ext) || type.startsWith('text/')) {
         return (
-            <Suspense fallback={<ViewerSkeleton text="Carregant codi..." />}>
+            <Suspense fallback={<ViewerSkeleton text={t('community.viewers.loadingCode', 'Carregant codi...')} />}>
                 <CodeViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
@@ -54,27 +64,27 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
 
     if (MODEL_EXTENSIONS.includes(ext) || type.includes('model')) {
         return (
-            <Suspense fallback={<ViewerSkeleton text="Carregant visor 3D..." />}>
+            <Suspense fallback={<ViewerSkeleton text={t('community.viewers.loading3D', 'Carregant visor 3D...')} />}>
                 <Model3DViewer url={resolvedUrl} filename={filename} />
             </Suspense>
         );
     }
 
-    // Default fallback: a premium styled download card for unsupported files (ZIP, etc)
+    // Targeta de descàrrega per a fitxers no compatibles directament (ZIP, etc.)
     return (
         <div className="w-full p-6 rounded-2xl border border-white/10 bg-linear-to-br from-white/5 to-white/[0.01] flex flex-col sm:flex-row items-center gap-6 justify-between group hover:border-primary/50 transition-colors shadow-xl">
-            <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-primary/20 transition">
+            <div className="flex items-center gap-4 min-w-0">
+                <div className="w-16 h-16 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-primary/20 transition shrink-0">
                     {ext === 'zip' || ext === 'rar' || ext === 'tar' ? (
                         <Box size={32} className="text-slate-400 group-hover:text-primary transition-colors" />
                     ) : (
                         <File size={32} className="text-slate-400 group-hover:text-primary transition-colors" />
                     )}
                 </div>
-                <div>
-                    <h4 className="text-lg font-bold text-white group-hover:text-primary transition-colors">{filename}</h4>
+                <div className="min-w-0">
+                    <h4 className="text-lg font-bold text-white group-hover:text-primary transition-colors truncate">{filename}</h4>
                     <p className="text-sm text-slate-400 mt-1">
-                        {(size / 1024 / 1024).toFixed(2)} MB • Arxiu .{ext.toUpperCase()}
+                        {formatFileSize(size)} • {t('community.viewers.fileExt', 'Arxiu')} .{ext.toUpperCase()}
                     </p>
                 </div>
             </div>
@@ -83,13 +93,14 @@ const FileViewerRenderer = ({ url, filename, type, size }: FileViewerRendererPro
                 href={resolvedUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
+                download={filename}
                 className="px-6 py-3 rounded-xl bg-white/10 hover:bg-primary text-white font-bold text-sm flex items-center gap-2 transition active:scale-95 shadow-lg shrink-0"
             >
                 <Download size={18} />
-                Descarregar
+                {t('common.download', 'Descarregar')}
             </a>
         </div>
     );
 };
 
-export default FileViewerRenderer;
+export default memo(FileViewerRenderer);

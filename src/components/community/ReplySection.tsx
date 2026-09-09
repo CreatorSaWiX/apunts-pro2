@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { 
@@ -10,11 +10,16 @@ import { Smile, ChevronDown, ArrowUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { formatDistanceToNow } from 'date-fns';
-import { ca } from 'date-fns/locale';
+import { ca, es, enUS } from 'date-fns/locale';
+import type { Locale } from 'date-fns';
 import Spinner from '../ui/Spinner';
 import { CUSTOM_EMOJIS } from '../../lib/emojis';
 import { useMentions } from '../../hooks/useMentions';
 import MentionPopup from '../ui/modals/MentionPopup';
+import { useTranslation } from 'react-i18next';
+import { resolveMediaUrl } from '../../lib/mediaUtils';
+
+const dateLocales: Record<string, Locale> = { ca, es, en: enUS };
 
 interface ReplySectionProps {
     postId: string;
@@ -25,15 +30,97 @@ interface ReplySectionProps {
 
 const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
 
+interface ReplyItemProps {
+    reply: PostReply;
+    currentUserId?: string;
+    currentUserAvatar?: string;
+    currentUsername?: string;
+    currentLocale: Locale;
+    onNavigateToProfile?: (username: string) => void;
+}
+
+const ReplyItem = memo(({
+    reply,
+    currentUserId,
+    currentUserAvatar,
+    currentUsername,
+    currentLocale,
+    onNavigateToProfile
+}: ReplyItemProps) => {
+    const isCurrentUser = reply.userId === currentUserId;
+    const authorName = isCurrentUser ? (currentUsername || reply.username) : reply.username;
+    const authorAvatar = isCurrentUser ? (currentUserAvatar || reply.userAvatar) : reply.userAvatar;
+
+    const timeAgo = useMemo(() => {
+        if (!reply.createdAt) return 'Ara';
+        try {
+            const date = typeof reply.createdAt.toDate === 'function'
+                ? reply.createdAt.toDate()
+                : new Date(reply.createdAt.seconds * 1000);
+            return formatDistanceToNow(date, { locale: currentLocale, addSuffix: true });
+        } catch {
+            return 'Ara';
+        }
+    }, [reply.createdAt, currentLocale]);
+
+    const formattedContent = useMemo(() => {
+        if (!reply.content) return '';
+        return reply.content.replace(/:([a-zA-Z0-9_]+):/g, (match, name) => 
+            CUSTOM_EMOJIS[name] ? `![${name}](${CUSTOM_EMOJIS[name]})` : match
+        );
+    }, [reply.content]);
+
+    const handleProfileClick = () => {
+        if (onNavigateToProfile && authorName) {
+            onNavigateToProfile(authorName);
+        }
+    };
+
+    return (
+        <div className="flex gap-3 group">
+            <img
+                loading="lazy"
+                src={resolveMediaUrl(authorAvatar)}
+                alt={authorName}
+                className={`w-8 h-8 rounded-xl object-cover shrink-0 bg-slate-800 border border-white/10 ${onNavigateToProfile ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+                onClick={handleProfileClick}
+            />
+            <div className="flex-1 min-w-0 bg-white/5 rounded-2xl p-3 border border-white/5">
+                <div className="flex items-center justify-between mb-1">
+                    <span
+                        className={`text-xs font-bold text-slate-300 group-hover:text-primary transition-colors ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
+                        onClick={handleProfileClick}
+                    >
+                        {authorName}
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                        {timeAgo}
+                    </span>
+                </div>
+                <div className="text-xs text-slate-400 prose prose-invert prose-sm max-w-none prose-p:leading-normal prose-img:w-5 prose-img:h-5 prose-img:inline-block break-words">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {formattedContent}
+                    </ReactMarkdown>
+                </div>
+            </div>
+        </div>
+    );
+});
+ReplyItem.displayName = 'ReplyItem';
+
 const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }: ReplySectionProps) => {
+    const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const [replies, setReplies] = useState<PostReply[]>([]);
     const [loading, setLoading] = useState(true);
     const [newReply, setNewReply] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [visibleLimit, setVisibleLimit] = useState(3);
+    const [visibleLimit, setVisibleLimit] = useState(5);
     const repliesEndRef = useRef<HTMLDivElement>(null);
-    
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const currentLocale = dateLocales[i18n.language] || ca;
+
     const { 
         mentionSearch, 
         handleInputChange, 
@@ -66,7 +153,12 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
 
         const content = newReply.trim();
         setNewReply('');
-        
+
+        // Reinicialitzar alçada del textarea després d'enviar
+        if (textareaRef.current) {
+            textareaRef.current.style.height = '36px';
+        }
+
         try {
             await addDoc(collection(db, 'community_posts', postId, 'replies'), {
                 userId: user.id,
@@ -76,7 +168,7 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                 createdAt: serverTimestamp()
             });
 
-            // Send notification to post owner
+            // Notificar al propietari de la publicació
             if (postAuthorId !== user.id) {
                 await addDoc(collection(db, 'notifications'), {
                     userId: postAuthorId,
@@ -92,11 +184,11 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                 });
             }
 
-            // Send notifications to mentioned users
+            // Notificar als usuaris mencionats
             const mentionedUsers = getMentionedUsers(content, user.id);
             await Promise.all(mentionedUsers.map(async (mUser) => {
-                if (mUser.id === postAuthorId) return; // Skip if owner already notified
-                
+                if (mUser.id === postAuthorId) return; // Ometre si el propietari ja ha estat notificat
+
                 await addDoc(collection(db, 'notifications'), {
                     userId: mUser.id,
                     type: 'mention',
@@ -117,18 +209,22 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
         }
     };
 
-    const handleEmojiSelect = (emojiUrl: string) => {
+    const handleEmojiSelect = useCallback((emojiUrl: string) => {
         const emojiName = emojiUrl.split('/').pop()?.split('.')[0] || 'emoji';
         setNewReply(prev => prev + (prev.endsWith(' ') || prev === '' ? '' : ' ') + `:${emojiName}: `);
         setShowEmojiPicker(false);
-    };
+        textareaRef.current?.focus();
+    }, []);
 
-    const visibleReplies = replies.slice(0, visibleLimit);
+    const visibleReplies = useMemo(() => {
+        return replies.slice(0, visibleLimit);
+    }, [replies, visibleLimit]);
+
     const hasMore = replies.length > visibleLimit;
 
     return (
         <div className="flex flex-col h-full min-h-0 overflow-hidden">
-            {/* Replies List */}
+            {/* Llista de respostes */}
             <div className="flex-1 min-h-0 overflow-y-auto p-6 custom-scrollbar space-y-4">
                 {loading ? (
                     <div className="flex justify-center py-4">
@@ -136,46 +232,31 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                     </div>
                 ) : replies.length === 0 ? (
                     <div className="text-center py-4 text-slate-500 text-xs italic">
-                        Encara no hi ha respostes. <span className="text-slate-300">Sigues el primer!</span>
+                        {t('community.replySection.empty', 'Encara no hi ha respostes.')}{' '}
+                        <span className="text-slate-300">{t('community.replySection.beFirst', 'Sigues el primer!')}</span>
                     </div>
                 ) : (
                     <>
                         {visibleReplies.map((reply) => (
-                            <div key={reply.id} className="flex gap-3 group">
-                                <img loading="lazy"
-                                    src={reply.userId === user?.id ? (user?.avatar || reply.userAvatar) : reply.userAvatar} 
-                                    alt={reply.userId === user?.id ? (user?.username || reply.username) : reply.username} 
-                                    className={`w-8 h-8 rounded-xl object-cover shrink-0 ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
-                                    onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
-                                />
-                                <div className="flex-1 min-w-0 bg-white/5 rounded-2xl p-3 border border-white/5">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <span 
-                                            className={`text-xs font-bold text-slate-300 group-hover:text-primary transition-colors ${onNavigateToProfile ? 'cursor-pointer' : ''}`}
-                                            onClick={() => onNavigateToProfile && reply.username && onNavigateToProfile(reply.username)}
-                                        >
-                                            {reply.userId === user?.id ? (user?.username || reply.username) : reply.username}
-                                        </span>
-                                        <span className="text-[10px] text-slate-500">
-                                            {reply.createdAt?.toDate ? formatDistanceToNow(reply.createdAt.toDate(), { locale: ca, addSuffix: true }) : 'Ara'}
-                                        </span>
-                                    </div>
-                                    <div className="text-xs text-slate-400 prose prose-invert prose-sm max-w-none prose-p:leading-normal prose-img:w-5 prose-img:h-5 prose-img:inline-block">
-                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                            {reply.content ? reply.content.replace(/:([a-zA-Z0-9_]+):/g, (match, name) => CUSTOM_EMOJIS[name] ? `![${name}](${CUSTOM_EMOJIS[name]})` : match) : ''}
-                                        </ReactMarkdown>
-                                    </div>
-                                </div>
-                            </div>
+                            <ReplyItem
+                                key={reply.id}
+                                reply={reply}
+                                currentUserId={user?.id}
+                                currentUserAvatar={user?.avatar}
+                                currentUsername={user?.username}
+                                currentLocale={currentLocale}
+                                onNavigateToProfile={onNavigateToProfile}
+                            />
                         ))}
 
                         {hasMore && (
-                            <button type="button" 
+                            <button
+                                type="button" 
                                 onClick={() => setVisibleLimit(prev => prev + 10)}
                                 className="w-full py-2 text-[11px] font-bold text-slate-500 hover:text-primary transition-colors flex items-center justify-center gap-2"
                             >
                                 <ChevronDown size={14} />
-                                Veure {replies.length - visibleLimit} respostes més
+                                {t('community.replySection.showMore', 'Veure {{count}} respostes més', { count: replies.length - visibleLimit })}
                             </button>
                         )}
                     </>
@@ -183,12 +264,12 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                 <div ref={repliesEndRef} />
             </div>
 
-            {/* Input Area */}
+            {/* Àrea d'entrada */}
             {user ? (
                 <form onSubmit={handleSend} className="shrink-0 bg-transparent px-4 py-3 pb-8 sm:pb-4 relative">
                     <div className="flex items-end gap-2.5">
                         <img 
-                            src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} 
+                            src={resolveMediaUrl(user.avatar) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} 
                             alt={user.username} 
                             className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 bg-slate-800 mb-0.5"
                         />
@@ -196,15 +277,21 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                             
                             <div className="relative flex-1">
                                 {mentionSearch && (
-                                    <MentionPopup users={suggestedUsers} onSelect={(u) => setNewReply(insertMention(newReply, u))} position="top" />
+                                    <MentionPopup
+                                        users={suggestedUsers}
+                                        onSelect={(u) => setNewReply(insertMention(newReply, u))}
+                                        position="top"
+                                    />
                                 )}
                                 <textarea 
+                                    ref={textareaRef}
                                     value={newReply}
                                     onChange={(e) => {
                                         setNewReply(e.target.value);
                                         handleInputChange(e.target.value, e.target.selectionStart || 0);
                                     }}
-                                    placeholder="Afegeix un comentari..."
+                                    placeholder={t('community.replySection.placeholder', 'Afegeix un comentari...')}
+                                    aria-label={t('community.replySection.placeholder', 'Afegeix un comentari...')}
                                     rows={1}
                                     onInput={(e) => {
                                         const target = e.target as HTMLTextAreaElement;
@@ -220,6 +307,7 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                                 <button
                                     type="button"
                                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    aria-label={t('community.replySection.emojiPicker', 'Seleccionar emoji')}
                                     className={`p-1.5 rounded-full transition-colors mr-1 ${showEmojiPicker ? 'text-primary' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     <Smile size={22} />
@@ -228,16 +316,20 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                                     <div className="absolute bottom-full right-0 mb-4 z-50">
                                         <div className="fixed inset-0" onClick={() => setShowEmojiPicker(false)} />
                                         <div className="relative p-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-48 overflow-y-auto custom-scrollbar">
-                                            {CUSTOM_EMOTES.map(emoji => (
-                                                <button
-                                                    key={emoji}
-                                                    type="button"
-                                                    onClick={() => handleEmojiSelect(emoji)}
-                                                    className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
-                                                >
-                                                    <img src={emoji} alt="emoji" loading="lazy" className="w-6 h-6 object-contain" />
-                                                </button>
-                                            ))}
+                                            {CUSTOM_EMOTES.map(emoji => {
+                                                const emojiName = emoji.split('/').pop()?.split('.')[0] || 'emoji';
+                                                return (
+                                                    <button
+                                                        key={emoji}
+                                                        type="button"
+                                                        onClick={() => handleEmojiSelect(emoji)}
+                                                        aria-label={emojiName}
+                                                        className="p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center"
+                                                    >
+                                                        <img src={emoji} alt={emojiName} loading="lazy" className="w-6 h-6 object-contain" />
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 )}
@@ -245,6 +337,7 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                                 <button 
                                     type="submit"
                                     disabled={!newReply.trim()}
+                                    aria-label={t('community.replySection.send', 'Enviar comentari')}
                                     className={`p-1.5 rounded-full transition flex items-center justify-center mr-1 ${newReply.trim() ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-transparent text-slate-600'}`}
                                 >
                                     <ArrowUp size={20} strokeWidth={3} />
@@ -255,11 +348,11 @@ const ReplySection = ({ postId, postAuthorId, postContent, onNavigateToProfile }
                 </form>
             ) : (
                 <div className="shrink-0 bg-transparent text-center py-6 text-xs text-slate-500 uppercase tracking-widest font-bold">
-                    Inicia sessió per respondre
+                    {t('community.replySection.loginToReply', 'Inicia sessió per respondre')}
                 </div>
             )}
         </div>
     );
 };
 
-export default ReplySection;
+export default memo(ReplySection);

@@ -104,27 +104,38 @@ const Modal = ({
     return createPortal(content, document.body);
 };
 
-const ModalHeader = ({ title, children, className = '' }: { title?: string, children?: React.ReactNode, className?: string }) => (
-    <div className={`p-6 border-b border-white/8 relative shrink-0 ${className}`}>
+interface ModalSectionProps extends React.AriaAttributes {
+    children: React.ReactNode;
+    className?: string;
+    id?: string;
+    role?: string;
+}
+
+interface ModalHeaderProps extends ModalSectionProps {
+    title?: string;
+}
+
+const ModalHeader = ({ title, children, className = '', ...props }: ModalHeaderProps) => (
+    <div className={`p-6 border-b border-white/8 relative shrink-0 ${className}`} {...props}>
         {title && <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>}
         {children}
     </div>
 );
 
-const ModalBody = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`flex-1 overflow-y-auto p-6 custom-scrollbar ${className}`}>
+const ModalBody = ({ children, className = '', ...props }: ModalSectionProps) => (
+    <div className={`flex-1 overflow-y-auto p-6 custom-scrollbar ${className}`} {...props}>
         {children}
     </div>
 );
 
-const ModalSidebar = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`w-full md:w-72 border-r border-white/8 bg-white/2 shrink-0 flex flex-col ${className}`}>
+const ModalSidebar = ({ children, className = '', ...props }: ModalSectionProps) => (
+    <div className={`w-full md:w-72 border-r border-white/8 bg-white/2 shrink-0 flex flex-col ${className}`} {...props}>
         {children}
     </div>
 );
 
-const ModalLayout = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`flex flex-1 overflow-hidden h-full w-full ${className}`}>
+const ModalLayout = ({ children, className = '', ...props }: ModalSectionProps) => (
+    <div className={`flex flex-1 overflow-hidden h-full w-full ${className}`} {...props}>
         {children}
     </div>
 );

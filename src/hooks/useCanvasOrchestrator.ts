@@ -20,9 +20,9 @@ export function useCanvasOrchestrator() {
         setIsCanvasClosing(true);
         setIsBackgroundHidden(false);
         setIsCanvasFullyOpen(false);
-        const t1 = setTimeout(() => setIsCanvasOpen(false), 350);
-        const t2 = setTimeout(() => setIsCanvasClosing(false), 1200);
-        animationTimersRef.current.push(t1, t2);
+        setIsCanvasOpen(false);
+        const t = setTimeout(() => setIsCanvasClosing(false), 850);
+        animationTimersRef.current.push(t);
     }, []);
 
     useEffect(() => {

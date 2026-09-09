@@ -76,38 +76,27 @@ const LiteHeroBanner = () => {
 
 const CommunityHero3D = ({ isPaused = false }: { isPaused?: boolean }) => {
     const isMobile = useIsMobile();
-    const useLiteFallback = false;
-
-    const initialDpr = isMobile ? 1 : 1.5;
     const particleCount = isMobile ? 600 : 3000;
+    const initialDpr = isMobile ? 1 : 1.5;
+    const [dpr, setDpr] = useState<number>(initialDpr);
 
-    const [dpr, setDpr] = useState(initialDpr);
     const [mounted, setMounted] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setDpr(initialDpr);
-    }, [initialDpr]);
-
-    useEffect(() => {
-        if (useLiteFallback) return;
-        const timer = setTimeout(() => setMounted(true), 500);
+        const timer = setTimeout(() => setMounted(true), 300);
         return () => clearTimeout(timer);
-    }, [useLiteFallback]);
+    }, []);
 
     useEffect(() => {
-        if (useLiteFallback || !containerRef.current) return;
+        if (!containerRef.current) return;
         const observer = new IntersectionObserver(([entry]) => {
             setIsVisible(entry.isIntersecting);
         }, { threshold: 0.05 });
         observer.observe(containerRef.current);
         return () => observer.disconnect();
-    }, [useLiteFallback, mounted]);
-
-    if (useLiteFallback) {
-        return <LiteHeroBanner />;
-    }
+    }, [mounted]);
 
     return (
         <div

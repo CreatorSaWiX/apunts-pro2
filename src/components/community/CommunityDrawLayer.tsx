@@ -230,7 +230,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
                 <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden">
                     <div 
                         ref={customCursorRef}
-                        className={`absolute rounded-full border-2 backdrop-blur-sm ${currentTool === 'eraser' ? 'border-red-500 bg-red-500/20' : 'border-white/50'}`}
+                        className={`absolute rounded-full border-2 pointer-events-none ${currentTool === 'eraser' ? 'border-red-500 bg-red-500/20' : 'border-white/50'}`}
                         style={{
                             width: cursorSize,
                             height: cursorSize,
@@ -238,7 +238,8 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
                             marginTop: -cursorSize / 2,
                             boxShadow: currentTool === 'pen' ? `0 0 10px ${currentColor}` : 'none',
                             backgroundColor: currentTool === 'pen' ? `${currentColor}88` : undefined,
-                            transform: `translate(-100px, -100px)`
+                            transform: `translate(-100px, -100px)`,
+                            willChange: 'transform'
                         }}
                     />
                 </div>

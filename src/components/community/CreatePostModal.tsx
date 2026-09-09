@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense, useCallback, memo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, doc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
@@ -30,17 +30,31 @@ interface TiptapEditor {
     getHTML: () => string;
 }
 
-export default function CreatePostModal({ isOpen, onClose, initialSubject, postToEdit }: CreatePostModalProps) {
+const isHtmlEmpty = (html: string): boolean => {
+    if (!html) return true;
+    const clean = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    return clean.length === 0;
+};
+
+const formatFileSize = (bytes: number): string => {
+    if (!bytes || bytes <= 0) return '0 B';
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+const CreatePostModal = ({ isOpen, onClose, initialSubject, postToEdit }: CreatePostModalProps) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const { customSubjectColors } = useSettingsStore();
+
     const [subject, setSubject] = useState<SubjectType>(postToEdit?.subject || initialSubject || 'General');
     const [content, setContent] = useState(postToEdit?.content || '');
     const [debouncedContent, setDebouncedContent] = useState(postToEdit?.content || '');
     const [loading, setLoading] = useState(false);
 
     const [showSubjectSelector, setShowSubjectSelector] = useState(false);
-
     const [attachments, setAttachments] = useState<Attachment[]>(postToEdit?.attachments || []);
     const [error, setError] = useState<string | null>(null);
 
@@ -50,19 +64,42 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
     const [showUploader, setShowUploader] = useState(false);
     const [showMobilePreview, setShowMobilePreview] = useState(false);
 
-    const activeSubject = getSubjectById(subject);
+    const activeSubject = useMemo(() => getSubjectById(subject), [subject]);
 
+    // Initialize or load draft
     useEffect(() => {
+        if (!isOpen) return;
+
         if (postToEdit) {
             setSubject(postToEdit.subject);
             setContent(postToEdit.content);
             setDebouncedContent(postToEdit.content);
             setAttachments(postToEdit.attachments || []);
-        } else if (initialSubject) {
-            setSubject(initialSubject);
-        }
-    }, [initialSubject, postToEdit]);
+        } else if (user) {
+            // Restore existing draft if available
+            try {
+                const savedDraft = localStorage.getItem(`apunts_post_draft_${user.id}`);
+                if (savedDraft) {
+                    const parsed = JSON.parse(savedDraft);
+                    if (parsed.content || (parsed.attachments && parsed.attachments.length > 0)) {
+                        setContent(parsed.content || '');
+                        setDebouncedContent(parsed.content || '');
+                        setSubject(parsed.subject || initialSubject || 'General');
+                        setAttachments(parsed.attachments || []);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.debug('Failed to restore draft:', err);
+            }
 
+            if (initialSubject) {
+                setSubject(initialSubject);
+            }
+        }
+    }, [isOpen, initialSubject, postToEdit, user]);
+
+    // Debounce content for live preview and auto-saving drafts
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedContent(content);
@@ -70,35 +107,31 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
         return () => clearTimeout(handler);
     }, [content]);
 
-    const handleSaveDraft = () => {
-        if (!user) return;
-        const currentContent = editorInstance && !editorInstance.isDestroyed ? editorInstance.getHTML() : content;
-        if (!user || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !currentContent.trim()) && attachments.length === 0)) return;
-        
-        const draftData = {
-            content: currentContent,
-            subject,
-            attachments,
-            updatedAt: new Date().toISOString()
-        };
-        localStorage.setItem(`apunts_post_draft_${user.id}`, JSON.stringify(draftData));
-    };
-
+    // Auto-save draft when editing a new post
     useEffect(() => {
-        if (debouncedContent.trim() || attachments.length > 0) {
-            handleSaveDraft();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [debouncedContent, attachments, subject]);
+        if (!user || postToEdit) return;
 
-    const handleClearDraft = () => {
+        const hasAnyContent = !isHtmlEmpty(debouncedContent) || attachments.length > 0;
+        if (hasAnyContent) {
+            const draftData = {
+                content: debouncedContent,
+                subject,
+                attachments,
+                updatedAt: new Date().toISOString()
+            };
+            localStorage.setItem(`apunts_post_draft_${user.id}`, JSON.stringify(draftData));
+        }
+    }, [debouncedContent, attachments, subject, user, postToEdit]);
+
+    const handleClearDraft = useCallback(() => {
         if (!user) return;
         localStorage.removeItem(`apunts_post_draft_${user.id}`);
-    };
+    }, [user]);
 
     const handleSend = async () => {
         const finalContent = editorInstance && !editorInstance.isDestroyed ? editorInstance.getHTML() : content;
-        if (!user || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !finalContent.trim()) && attachments.length === 0)) return;
+        const hasContent = !isHtmlEmpty(finalContent) || attachments.length > 0;
+        if (!user || !hasContent) return;
 
         setLoading(true);
         setError(null);
@@ -144,7 +177,7 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
 
                 const docRef = await addDoc(collection(db, 'community_posts'), postData);
 
-                // Notify Algolia via Vercel webhook (fire and forget to not block UI)
+                // Notify Algolia via Vercel webhook (fire and forget)
                 fetch('/api/sync-algolia', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -160,13 +193,13 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
             handleClearDraft();
             onClose();
         } catch {
-            setError('No s\'ha pogut publicar el post. Torna-ho a provar.');
+            setError(t('community.createPost.errorPublish', "No s'ha pogut publicar el post. Torna-ho a provar."));
         } finally {
             setLoading(false);
         }
     };
 
-    const handleThumbnailUpload = (newAtts: Attachment[]) => {
+    const handleThumbnailUpload = useCallback((newAtts: Attachment[]) => {
         if (newAtts.length > 0) {
             setAttachments(prev => {
                 if (prev.length > 0) {
@@ -178,7 +211,22 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                 }
             });
         }
-    };
+    }, []);
+
+    const subjectColorStyle = useMemo(() => {
+        if (!activeSubject) {
+            return {
+                backgroundColor: '#64748b',
+                boxShadow: 'none'
+            };
+        }
+        const colorKey = customSubjectColors[activeSubject.label] || activeSubject.color;
+        const theme = tailwindColors[colorKey] || tailwindColors['slate'];
+        return {
+            backgroundColor: theme.primary || '#0ea5e9',
+            boxShadow: `0 0 10px rgba(${theme.primary_rgb || '14, 165, 233'}, 0.8)`
+        };
+    }, [activeSubject, customSubjectColors]);
 
     const livePreviewElement = useMemo(() => {
         if (!user) return null;
@@ -187,34 +235,47 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
             userId: user.id,
             username: user.username || 'Anònim',
             userAvatar: user.avatar || '',
-            content: debouncedContent.trim() || 'Comença a escriure per veure com queda...',
+            content: debouncedContent.trim() || t('community.createPost.previewPlaceholder', 'Comença a escriure per veure com queda...'),
             subject: subject,
             attachments: attachments,
             createdAt: Timestamp.now(),
             reactions: {},
             isPinned: false
         };
-        return <PublicationCard 
-            post={livePost} 
-            onThumbnailUpload={handleThumbnailUpload}
-        />;
-    }, [debouncedContent, user, subject, attachments]);
+        return (
+            <PublicationCard
+                post={livePost}
+                onThumbnailUpload={handleThumbnailUpload}
+            />
+        );
+    }, [debouncedContent, user, subject, attachments, handleThumbnailUpload, t]);
+
+    const isSubmitDisabled = loading || (isHtmlEmpty(content) && attachments.length === 0);
 
     if (!user) return null;
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={isFullscreen ? 'screen' : '6xl'} fullScreenOnMobile={true} hideCloseButton={true}>
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size={isFullscreen ? 'screen' : '6xl'}
+            fullScreenOnMobile={true}
+            hideCloseButton={true}
+        >
             <Modal.Layout className="flex-col md:flex-row h-full w-full">
                 {/* LEFT PANEL: EDITOR */}
                 <div className={`flex-1 flex flex-col relative z-10 w-full ${isFullscreen ? '' : 'md:w-3/5'} ${showMobilePreview ? 'hidden md:flex' : 'flex'}`}>
                     <Modal.Header className="px-4! md:px-8! py-4! md:py-6! border-none! bg-transparent! flex justify-between items-center w-full">
-                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{postToEdit ? t('community.createPost.editTitle', 'Editar recurs') : t('community.createPost.title', 'Nou recurs')}</h2>
+                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                            {postToEdit ? t('community.createPost.editTitle', 'Editar recurs') : t('community.createPost.title', 'Nou recurs')}
+                        </h2>
                         <div className="flex items-center gap-2 ml-auto">
                             <button
                                 type="button"
                                 onClick={() => setIsFullscreen(!isFullscreen)}
                                 className="hidden md:flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-white/15 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs group"
-                                title={isFullscreen ? "Minimitzar" : "Ampliar editor"}
+                                title={isFullscreen ? t('common.minimize', "Minimitzar") : t('common.fullscreen', "Ampliar editor")}
+                                aria-label={isFullscreen ? t('common.minimize', "Minimitzar") : t('common.fullscreen', "Ampliar editor")}
                             >
                                 {isFullscreen ? (
                                     <Minimize2 size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
@@ -226,16 +287,18 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                                 type="button"
                                 onClick={() => setShowMobilePreview(!showMobilePreview)}
                                 className={`md:hidden flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full transition text-white border border-white/10 backdrop-blur-md shadow-xs ${showMobilePreview ? 'bg-primary text-white border-primary/50' : 'bg-white/5 hover:bg-white/15'}`}
-                                title={showMobilePreview ? "Tancar miniatura" : "Veure miniatura"}
-                                aria-label="Veure">
+                                title={showMobilePreview ? t('community.createPost.hidePreview', "Tancar miniatura") : t('community.createPost.showPreview', "Veure miniatura")}
+                                aria-label={showMobilePreview ? t('community.createPost.hidePreview', "Tancar miniatura") : t('community.createPost.showPreview', "Veure miniatura")}
+                            >
                                 <Eye size={18} strokeWidth={showMobilePreview ? 3 : 2.5} />
                             </button>
                             <button
                                 type="button"
                                 onClick={onClose}
                                 className="flex p-2.5 min-w-[44px] min-h-[44px] items-center justify-center rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs"
-                                title="Tancar"
-                                aria-label="Tancar">
+                                title={t('common.close', 'Tancar')}
+                                aria-label={t('common.close', 'Tancar')}
+                            >
                                 <X size={18} strokeWidth={2.5} />
                             </button>
                         </div>
@@ -243,9 +306,6 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
 
                     {/* Content Area */}
                     <Modal.Body className="px-4! md:px-8! pb-6! pt-0! bg-transparent flex flex-col custom-scrollbar">
-
-
-
                         {/* Seamless Text Input or Rich Editor */}
                         <div className="relative shrink-0 flex-1 min-h-[200px] md:min-h-100 flex flex-col">
                             <Suspense fallback={
@@ -287,13 +347,17 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                                                         <div className="flex items-center gap-2">
                                                             <span className="truncate text-sm font-bold text-slate-200">{att.name}</span>
                                                             {att.isCustomThumbnail && (
-                                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-wider shrink-0">Miniatura</span>
+                                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-wider shrink-0">
+                                                                    {t('community.createPost.thumbnail', 'Miniatura')}
+                                                                </span>
                                                             )}
                                                         </div>
-                                                        <span className="text-xs text-slate-500">{(att.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                        <span className="text-xs text-slate-500">{formatFileSize(att.size)}</span>
                                                     </div>
                                                 </div>
-                                                <button type="button" aria-label="Eliminar fitxer"
+                                                <button
+                                                    type="button"
+                                                    aria-label={t('community.createPost.removeFile', 'Eliminar fitxer')}
                                                     onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
                                                     className="text-slate-500 hover:text-white p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full hover:bg-white/10 transition opacity-100 md:opacity-0 md:group-hover:opacity-100"
                                                 >
@@ -310,16 +374,15 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                     {/* Footer */}
                     <div className="px-4 md:px-8 py-4 md:py-5 border-t border-white/5 bg-transparent flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shrink-0">
                         <div className="flex items-center gap-2">
-
-
                             {isFullscreen && (
                                 <div className="relative">
                                     <button
                                         type="button"
                                         onClick={() => setShowUploader(!showUploader)}
                                         className={`w-10 h-10 flex items-center justify-center rounded-full transition ${showUploader ? 'text-white bg-white/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
-                                        title="Alternar Adjunts"
-                                        aria-label="Alternar Adjunts">
+                                        title={t('community.createPost.toggleAttachments', "Alternar Adjunts")}
+                                        aria-label={t('community.createPost.toggleAttachments', "Alternar Adjunts")}
+                                    >
                                         <Paperclip size={20} />
                                     </button>
                                 </div>
@@ -331,7 +394,6 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                                     <span>{error}</span>
                                 </div>
                             )}
-
                         </div>
 
                         <div className="flex items-center gap-2 md:gap-4 ml-auto sm:ml-0">
@@ -339,23 +401,25 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                                 type="button"
                                 onClick={() => setShowSubjectSelector(true)}
                                 className="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs md:text-sm font-medium transition group min-h-[44px]"
-                                aria-label="Element interactiu">
+                                aria-label={t('community.createPost.selectSubject', 'Seleccionar assignatura')}
+                            >
                                 <span
                                     className="w-2 h-2 rounded-full shrink-0"
-                                    style={activeSubject ? {
-                                        backgroundColor: tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary || '#0ea5e9',
-                                        boxShadow: `0 0 10px rgba(${tailwindColors[customSubjectColors[activeSubject.label] || activeSubject.color]?.primary_rgb || '14, 165, 233'}, 0.8)`
-                                    } : { backgroundColor: '#64748b' }}
+                                    style={subjectColorStyle}
                                 />
-                                <span className="truncate max-w-[110px] sm:max-w-none">{activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Assignatura')}</span>
+                                <span className="truncate max-w-[110px] sm:max-w-none">
+                                    {activeSubject ? activeSubject.label : t('community.createPost.noSubject', 'Assignatura')}
+                                </span>
                                 <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-colors shrink-0" />
                             </button>
 
-                            <button type="button"
+                            <button
+                                type="button"
                                 onClick={handleSend}
-                                disabled={loading || ((editorInstance && !editorInstance.isDestroyed ? editorInstance.isEmpty : !content.trim()) && attachments.length === 0)}
+                                disabled={isSubmitDisabled}
                                 className="px-6 md:px-8 py-2.5 md:py-3 bg-white text-black hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-white font-bold rounded-full transition hover:scale-105 active:scale-95 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] text-xs md:text-base min-h-[44px]"
-                             aria-label="Botó interactiu">
+                                aria-label={postToEdit ? t('common.save', 'Desar') : t('community.createPost.publishBtn', 'Publicar')}
+                            >
                                 {loading && <Spinner size="sm" variant="primary" />}
                                 {postToEdit ? t('common.save', 'Desar') : t('community.createPost.publishBtn', 'Publicar')}
                             </button>
@@ -379,12 +443,13 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                                 type="button"
                                 onClick={() => showMobilePreview ? setShowMobilePreview(false) : onClose()}
                                 className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 active:scale-95 transition text-white border border-white/10 backdrop-blur-md shadow-xs flex items-center gap-2"
-                                title={showMobilePreview ? "Tornar a l'edició" : "Tancar"}
+                                title={showMobilePreview ? t('community.createPost.backToEdit', "Tornar a l'edició") : t('common.close', "Tancar")}
+                                aria-label={showMobilePreview ? t('community.createPost.backToEdit', "Tornar a l'edició") : t('common.close', "Tancar")}
                             >
                                 {showMobilePreview ? (
                                     <>
                                         <ChevronLeft size={18} strokeWidth={2.5} />
-                                        <span className="text-xs font-bold pr-1 md:hidden">Tornar</span>
+                                        <span className="text-xs font-bold pr-1 md:hidden">{t('common.back', 'Tornar')}</span>
                                     </>
                                 ) : (
                                     <X size={18} strokeWidth={2.5} />
@@ -395,13 +460,13 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
                         <div className="flex-1 flex flex-col items-center justify-center p-8 relative z-10">
                             <div className="w-full max-w-[320px] flex flex-col items-center gap-6">
                                 {livePreviewElement}
-                                
+
                                 <div className="w-full max-w-[240px]">
-                                    <FileUploader 
-                                        onUploadComplete={handleThumbnailUpload} 
-                                        variant="button" 
-                                        acceptType="images" 
-                                        maxFiles={1} 
+                                    <FileUploader
+                                        onUploadComplete={handleThumbnailUpload}
+                                        variant="button"
+                                        acceptType="images"
+                                        maxFiles={1}
                                         maxSizeMB={5}
                                     />
                                 </div>
@@ -423,4 +488,6 @@ export default function CreatePostModal({ isOpen, onClose, initialSubject, postT
             />
         </Modal>
     );
-}
+};
+
+export default memo(CreatePostModal);

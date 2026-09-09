@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
@@ -8,7 +8,7 @@ import { html } from '@codemirror/lang-html';
 import { json } from '@codemirror/lang-json';
 import { Copy, Check } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
-
+import { useTranslation } from 'react-i18next';
 
 interface CodeViewerProps {
     url: string;
@@ -40,25 +40,24 @@ const getLanguageExtension = (filename: string) => {
 };
 
 const CodeViewer = ({ url, filename }: CodeViewerProps) => {
+    const { t } = useTranslation();
     const [code, setCode] = useState<string>('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
+        const controller = new AbortController();
         const fetchCode = async () => {
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, { signal: controller.signal });
                 if (!response.ok) throw new Error('Failed to fetch');
                 const text = await response.text();
-                if (isMounted) {
-                    setCode(text);
-                    setLoading(false);
-                }
+                setCode(text);
+                setLoading(false);
             } catch (err) {
-                console.error("Error fetching code:", err);
-                if (isMounted) {
+                if ((err as Error)?.name !== 'AbortError') {
+                    console.error("Error fetching code:", err);
                     setError(true);
                     setLoading(false);
                 }
@@ -66,14 +65,17 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
         };
 
         fetchCode();
-        return () => { isMounted = false; };
+        return () => {
+            controller.abort();
+        };
     }, [url]);
 
-    const handleCopy = () => {
+    const handleCopy = useCallback(() => {
+        if (!code) return;
         navigator.clipboard.writeText(code);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-    };
+    }, [code]);
 
     if (loading) {
         return (
@@ -86,7 +88,7 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
     if (error) {
         return (
             <div className="w-full p-4 bg-rose-500/10 text-rose-400 rounded-xl border border-rose-500/20 text-center text-sm font-medium">
-                No s'ha pogut carregar el codi font de l'arxiu.
+                {t('community.viewers.codeLoadError', "No s'ha pogut carregar el codi font de l'arxiu.")}
             </div>
         );
     }
@@ -102,12 +104,14 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
                     </div>
                     <span className="ml-2 text-xs font-mono text-slate-400">{filename}</span>
                 </div>
-                <button type="button" 
+                <button
+                    type="button" 
                     onClick={handleCopy}
+                    aria-label={copied ? t('common.copied', 'Copiat') : t('common.copy', 'Copiar')}
                     className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium"
-                 aria-label="Botó interactiu">
+                >
                     {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-                    {copied ? 'Copiat' : 'Copiar'}
+                    {copied ? t('common.copied', 'Copiat') : t('common.copy', 'Copiar')}
                 </button>
             </div>
             <div className="max-h-125 overflow-auto custom-scrollbar text-sm">
@@ -129,4 +133,4 @@ const CodeViewer = ({ url, filename }: CodeViewerProps) => {
     );
 };
 
-export default CodeViewer;
+export default memo(CodeViewer);

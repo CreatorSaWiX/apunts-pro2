@@ -46,7 +46,6 @@ const CommunityPage = () => {
         isCanvasOpen,
         isCanvasFullyOpen,
         isBackgroundHidden,
-        isCanvasClosing,
         handleOpenCanvas,
         handleCloseCanvas
     } = useCanvasOrchestrator();
@@ -330,7 +329,7 @@ const CommunityPage = () => {
                         className="fixed inset-0 z-30 bg-[#09090b]"
                     >
                         <Suspense fallback={null}>
-                            <CommunityCanvas onClose={handleCloseCanvas} isClosing={isCanvasClosing} />
+                            <CommunityCanvas onClose={handleCloseCanvas} />
                         </Suspense>
                     </motion.div>
                 )}

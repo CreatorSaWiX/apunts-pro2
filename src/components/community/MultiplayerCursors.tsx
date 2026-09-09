@@ -34,9 +34,23 @@ const MultiplayerCursors: React.FC<MultiplayerCursorsProps> = () => {
                             activeCursors[uid] = data[uid];
                         }
                     });
-                    setCursors(activeCursors);
+                    const activeUids = Object.keys(activeCursors);
+                    setCursors(prev => {
+                        const prevUids = Object.keys(prev);
+                        if (prevUids.length === 0 && activeUids.length === 0) return prev;
+                        // Comprovar si les dades han canviat realment
+                        if (prevUids.length === activeUids.length && activeUids.every(id => 
+                            prev[id] && 
+                            prev[id].x === activeCursors[id].x && 
+                            prev[id].y === activeCursors[id].y &&
+                            prev[id].color === activeCursors[id].color
+                        )) {
+                            return prev;
+                        }
+                        return activeCursors;
+                    });
                 } else {
-                    setCursors({});
+                    setCursors(prev => Object.keys(prev).length === 0 ? prev : {});
                 }
             });
         };
