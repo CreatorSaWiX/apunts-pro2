@@ -166,7 +166,10 @@ const createTasksStore = () =>
                 import('firebase/firestore')
             ]);
             const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
-            await updateDoc(taskRef, updates);
+            const sanitizedUpdates = Object.fromEntries(
+                Object.entries(updates).filter(([_, v]) => v !== undefined)
+            );
+            await updateDoc(taskRef, sanitizedUpdates);
         },
 
         deleteTask: async (taskId, task) => {

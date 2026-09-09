@@ -24,5 +24,5 @@ export interface Task {
     
     createdAt: string;
     
-    subjectId?: string;
+    subjectId?: string | null;
 }
