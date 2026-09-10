@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { flushSync, createPortal } from 'react-dom';
-import { useDroppable, useDraggable, useDndContext } from '@dnd-kit/core';
+import { useDroppable, useDraggable, useDndContext, useDndMonitor } from '@dnd-kit/core';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
@@ -55,6 +55,20 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const isAltPressed = useDuplicateModifier();
 
     const dragStart = React.useRef({ y: 0, height: 0, top: 0 });
+    const isResizingRef = React.useRef(false);
+    const hasResizedRef = React.useRef(false);
+    const wasDraggingRef = React.useRef(false);
+
+    React.useEffect(() => {
+        if (isDragging) {
+            wasDraggingRef.current = true;
+        } else if (wasDraggingRef.current) {
+            const timer = setTimeout(() => {
+                wasDraggingRef.current = false;
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [isDragging]);
 
     React.useEffect(() => {
         if (!isResizing) {
@@ -113,8 +127,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const handlePointerDown = (type: 'top' | 'bottom') => (e: React.PointerEvent) => {
         e.preventDefault(); // Això evita que l'input perdi el focus (onBlur)
         e.stopPropagation();
-        setIsSelected(true);
         setIsResizing(type);
+        isResizingRef.current = true;
+        hasResizedRef.current = false;
         dragStart.current = { y: e.clientY, height: currentHeight, top: currentTop };
         e.currentTarget.setPointerCapture(e.pointerId);
     };
@@ -123,6 +138,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         if (!isResizing) return;
         e.stopPropagation();
         const deltaY = e.clientY - dragStart.current.y;
+        if (Math.abs(deltaY) > 2) {
+            hasResizedRef.current = true;
+        }
         
         if (isResizing === 'bottom') {
             const rawHeight = dragStart.current.height + deltaY;
@@ -142,6 +160,11 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         const action = isResizing;
         setIsResizing(null);
         e.currentTarget.releasePointerCapture(e.pointerId);
+
+        setTimeout(() => {
+            isResizingRef.current = false;
+            hasResizedRef.current = false;
+        }, 300);
         
         const snappedTop = Math.round(currentTop / 5) * 5;
         const snappedMinutes = Math.max(15, Math.round(currentHeight / 5) * 5);
@@ -179,30 +202,14 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     const height = isResizing ? currentHeight : baseHeight;
     const layoutTop = isResizing ? currentTop : top;
     
-    const snappedY = transform ? Math.round(transform.y / 5) * 5 : 0;
-    const colWidth = taskRef.current?.parentElement?.offsetWidth || 0;
-    const snappedX = transform && colWidth ? Math.round(transform.x / colWidth) * colWidth : 0;
-
-    const visualTop = isResizing ? currentTop : isDragging ? Math.round((top + (transform?.y || 0)) / 5) * 5 : top;
-    
-    const endMinutes = Math.round(visualTop + height);
+    const endMinutes = Math.round(layoutTop + height);
     const endH = Math.floor(endMinutes / 60);
     const endM = endMinutes % 60;
     const endTimeStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-    const startMinutes = Math.round(visualTop);
+    const startMinutes = Math.round(layoutTop);
     const startH = Math.floor(startMinutes / 60);
     const startM = startMinutes % 60;
     const startTimeStr = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
-
-    // Temps originals per a la còpia fantasma
-    const origEndMinutes = Math.round(top + baseHeight);
-    const origEndH = Math.floor(origEndMinutes / 60);
-    const origEndM = origEndMinutes % 60;
-    const origEndTimeStr = `${origEndH.toString().padStart(2, '0')}:${origEndM.toString().padStart(2, '0')}`;
-    const origStartMinutes = Math.round(top);
-    const origStartH = Math.floor(origStartMinutes / 60);
-    const origStartM = origStartMinutes % 60;
-    const origStartTimeStr = `${origStartH.toString().padStart(2, '0')}:${origStartM.toString().padStart(2, '0')}`;
 
     const radiusClass = isContinuingFromPrev && isContinuingToNext ? 'rounded-none border-y-0' 
         : isContinuingFromPrev ? 'rounded-b-md rounded-t-none border-t-0' 
@@ -225,128 +232,147 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
 
     return (
         <>
-            {/* Còpia Fantasma quan es duplica amb Alt */}
-            {isDragging && isAltPressed && (
-                <div 
-                    className={`absolute left-1 right-1 border overflow-hidden flex flex-col pointer-events-none
-                        bg-slate-900/40 opacity-50 border-white/[0.03]
-                        ${radiusClass}
-                    `}
-                    style={{
-                        top: `${top}px`,
-                        height: `${baseHeight}px`,
-                        zIndex: 5
-                    }}
-                >
+            {/* Línies guies magnètiques en ajustar dates/hores */}
+            {isResizing && (
+                <>
+                    {/* Línia guia superior amb l'hora d'inici */}
                     <div 
-                        className={`absolute top-0 bottom-0 left-0 w-1 ${accentColorClass} shadow-[0_0_15px_currentColor] opacity-50`} 
-                        style={accentStyle}
-                    />
-                    <div className={`pl-3 pr-2 flex flex-col h-full overflow-hidden ${baseHeight < 40 ? 'py-0.5' : 'py-2'}`}>
-                        {baseHeight >= 40 && (
-                            <div className="flex items-center gap-1.5 opacity-40 mb-0.5 pr-4 shrink-0">
-                                <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{origStartTimeStr} - {origEndTimeStr}</span>
-                            </div>
-                        )}
-                        <div className={`font-bold leading-tight text-slate-200/50 shrink-0 ${baseHeight < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}>
-                            {task.title || 'Nova Tasca'}
-                        </div>
+                        className="absolute left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,1)] pointer-events-none"
+                        style={{ top: `${layoutTop}px`, zIndex: 45 }}
+                    >
+                        <span className={`absolute -top-5 left-1 px-1.5 py-0.5 rounded text-[10px] font-bold shadow-md font-mono tracking-wider transition-transform ${isResizing === 'top' ? 'bg-emerald-500 text-slate-950 scale-105 ring-2 ring-emerald-300' : 'bg-emerald-500 text-slate-950'}`}>
+                            {startTimeStr}
+                        </span>
                     </div>
-                </div>
+
+                    {/* Línia guia inferior amb l'hora de finalització */}
+                    <div 
+                        className="absolute left-0 right-0 h-[2px] bg-emerald-400/90 shadow-[0_0_10px_rgba(52,211,153,0.8)] pointer-events-none"
+                        style={{ top: `${layoutTop + height}px`, zIndex: 45 }}
+                    >
+                        <span className={`absolute -bottom-5 left-1 px-1.5 py-0.5 rounded text-[10px] font-bold shadow-md font-mono tracking-wider transition-transform ${isResizing === 'bottom' ? 'bg-emerald-600 text-white scale-105 ring-2 ring-emerald-400' : 'bg-emerald-600 text-white'}`}>
+                            {endTimeStr}
+                        </span>
+                    </div>
+                </>
             )}
 
             <div 
                 ref={(node) => {
-                setNodeRef(node);
-                if (node) taskRef.current = node;
-            }}
-            {...attributes}
-            {...listeners}
-            onPointerDown={(e) => {
-                listeners?.onPointerDown?.(e);
-            }}
-            onClick={(e) => {
-                e.stopPropagation();
-                if (isSelected) {
-                    // Substitueix el doble-clic per a mòbils: un segon clic edita la tasca
+                    setNodeRef(node);
+                    if (node) taskRef.current = node;
+                }}
+                {...attributes}
+                {...listeners}
+                onPointerDown={(e) => {
+                    listeners?.onPointerDown?.(e);
+                }}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (hasResizedRef.current || isResizingRef.current || wasDraggingRef.current || isDragging) {
+                        hasResizedRef.current = false;
+                        isResizingRef.current = false;
+                        wasDraggingRef.current = false;
+                        return;
+                    }
+                    if (window.innerWidth < 768 && isSelected) {
+                        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                        return;
+                    }
+                    setIsSelected(true);
+                    window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
+                }}
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+                }}
+                onDoubleClick={(e) => {
+                    e.stopPropagation();
                     window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
-                    return;
-                }
-                setIsSelected(true);
-                window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
-            }}
-            onContextMenu={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
-            }}
-            onDoubleClick={(e) => {
-                e.stopPropagation();
-                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
-            }}
-            className={`absolute left-1 right-1 border overflow-hidden backdrop-blur-xl flex flex-col group
-                ${isDragging || isResizing ? '' : 'transition-[box-shadow,opacity,transform] duration-200'}
-                bg-white/[0.02] hover:bg-white/[0.05] shadow-[inset_0_1px_3px_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing
-                ${isSelected ? 'border-white/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3),0_0_30px_rgba(255,255,255,0.1)]' : 'border-white/[0.05]'}
-                ${isResizing ? 'z-30 shadow-[0_30px_60px_rgba(0,0,0,0.6)] opacity-95 scale-[1.03]' : 'hover:z-20 hover:shadow-[inset_0_1px_3px_rgba(255,255,255,0.2),0_15px_50px_rgba(0,0,0,0.5)]'}
-                ${isDragging ? 'shadow-[0_30px_60px_rgba(0,0,0,0.6)] z-50 opacity-90 scale-[1.04] cursor-grabbing pointer-events-none' : ''}
-                ${radiusClass}
-            `}
-            style={{
-                top: `${layoutTop}px`,
-                height: `${height}px`,
-                zIndex: isResizing || isDragging || isSelected ? 30 : 10,
-                ...(transform ? { transform: `translate3d(${snappedX}px, ${snappedY}px, 0)` } : {})
-            }}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
-        >
-            {/* Subtle Gradient background matching accent color */}
-            <div 
-                className={`absolute inset-0 opacity-[0.15] mix-blend-plus-lighter ${accentColorClass}`} 
-                style={subjectColor ? { backgroundColor: subjectColor.primary } : undefined}
-            />
-            
-            {/* Color Accent Indicator */}
-            <div 
-                className={`absolute top-0 bottom-0 left-0 w-[3px] ${accentColorClass} shadow-[0_0_20px_currentColor] opacity-100`} 
-                style={accentStyle}
-            />
-
-            {/* Top Resize Handle */}
-            {!isContinuingFromPrev && (
+                }}
+                className={`absolute left-1 right-1 border overflow-hidden flex flex-col group
+                    ${isDragging
+                        ? isAltPressed
+                            ? 'opacity-70 pointer-events-none backdrop-blur-md'
+                            : 'opacity-25 border-dashed border-white/20 bg-slate-900/30 pointer-events-none'
+                        : 'backdrop-blur-xl'
+                    }
+                    ${isDragging || isResizing ? '' : 'transition-[box-shadow,opacity] duration-200'}
+                    ${isDragging ? '' : 'bg-white/[0.02] hover:bg-white/[0.05] shadow-[inset_0_1px_3px_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.3)] cursor-grab active:cursor-grabbing'}
+                    ${isSelected ? 'border-white/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3),0_0_30px_rgba(255,255,255,0.1)]' : 'border-white/[0.05]'}
+                    ${isResizing ? 'z-40 border-emerald-400/80 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_20px_rgba(52,211,153,0.2)]' : isDragging ? '' : 'hover:z-20 hover:shadow-[inset_0_1px_3px_rgba(255,255,255,0.2),0_15px_50px_rgba(0,0,0,0.5)]'}
+                    ${radiusClass}
+                `}
+                style={{
+                    top: `${layoutTop}px`,
+                    height: `${height}px`,
+                    zIndex: isDragging ? 5 : isResizing ? 40 : isSelected ? 30 : 10
+                }}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+            >
+                {/* Subtle Gradient background matching accent color */}
                 <div 
-                    className={`absolute top-0 left-0 right-0 h-5 max-md:h-10 max-md:-translate-y-2.5 cursor-ns-resize z-20 flex justify-center pt-[2px] md:pt-[3px] group/handle transition-colors ${isSelected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.05]'}`}
-                    style={{ touchAction: 'none' }}
-                    onPointerDown={handlePointerDown('top')}
-                >
-                    <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition duration-200" />
-                </div>
-            )}
+                    className={`absolute inset-0 opacity-[0.15] mix-blend-plus-lighter ${accentColorClass}`} 
+                    style={subjectColor ? { backgroundColor: subjectColor.primary } : undefined}
+                />
+                
+                {/* Color Accent Indicator */}
+                <div 
+                    className={`absolute top-0 bottom-0 left-0 w-[3px] ${accentColorClass} shadow-[0_0_20px_currentColor] opacity-100`} 
+                    style={accentStyle}
+                />
 
-            <div className={`pl-3 pr-2 flex flex-col h-full pointer-events-none select-none overflow-hidden ${height < 40 ? 'py-0.5' : 'py-2'}`}>
-                {height >= 40 && (
-                    <div className="flex items-center gap-1.5 opacity-60 mb-0.5 pr-4 shrink-0">
-                        <span className="text-[9px] font-bold tracking-[0.1em] text-slate-300">{startTimeStr} - {endTimeStr}</span>
+                {/* Top Resize Handle */}
+                {!isContinuingFromPrev && (
+                    <div 
+                        className={`absolute top-0 left-0 right-0 h-5 max-md:h-10 max-md:-translate-y-2.5 cursor-ns-resize z-20 flex justify-center pt-[2px] md:pt-[3px] group/handle transition-colors ${isSelected || isResizing === 'top' ? 'bg-white/[0.08]' : 'hover:bg-white/[0.05]'}`}
+                        style={{ touchAction: 'none' }}
+                        onPointerDown={handlePointerDown('top')}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}
+                    >
+                        <div className={`w-6 h-[3px] rounded-full transition duration-200 ${isResizing === 'top' ? 'bg-emerald-400 scale-x-150 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-white/40 group-hover/handle:bg-white/80 group-hover/handle:scale-x-150'}`} />
                     </div>
                 )}
-                
-                <div 
-                    className={`font-bold leading-tight text-slate-200 pointer-events-auto shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
-                >
-                    {task.title || 'Nova Tasca'}
+
+                <div className={`pl-3 pr-2 flex flex-col h-full pointer-events-none select-none overflow-hidden ${height < 40 ? 'py-0.5' : 'py-2'}`}>
+                    {height >= 40 && (
+                        <div className="flex items-center justify-between gap-1 mb-0.5 pr-2 shrink-0">
+                            <span className={`text-[9px] font-bold font-mono tracking-wider ${isResizing ? 'text-emerald-300' : 'text-slate-300'}`}>
+                                {startTimeStr} - {endTimeStr}
+                            </span>
+                            {isResizing && (
+                                <span className="text-[8px] uppercase tracking-wider bg-emerald-500/25 border border-emerald-400/40 px-1 py-0.2 rounded text-emerald-200 font-bold font-mono">
+                                    Snap 5m
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    
+                    <div 
+                        className={`font-bold leading-tight text-slate-200 pointer-events-auto shrink-0 ${height < 30 ? 'text-[9px] truncate' : 'text-[12px] line-clamp-3'}`}
+                    >
+                        {task.title || 'Nova Tasca'}
+                    </div>
                 </div>
-            </div>
 
                 {/* Bottom Resize Handle */}
                 {!isContinuingToNext && (
                     <div 
-                        className={`absolute bottom-0 left-0 right-0 h-5 max-md:h-10 max-md:translate-y-2.5 cursor-ns-resize z-20 flex justify-center pb-[2px] md:pb-[3px] items-end group/handle transition-colors ${isSelected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.05]'}`}
+                        className={`absolute bottom-0 left-0 right-0 h-5 max-md:h-10 max-md:translate-y-2.5 cursor-ns-resize z-20 flex justify-center pb-[2px] md:pb-[3px] items-end group/handle transition-colors ${isSelected || isResizing === 'bottom' ? 'bg-white/[0.08]' : 'hover:bg-white/[0.05]'}`}
                         style={{ touchAction: 'none' }}
                         onPointerDown={handlePointerDown('bottom')}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}
                     >
-                        <div className="w-6 h-[3px] bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-x-150 transition duration-200" />
+                        <div className={`w-6 h-[3px] rounded-full transition duration-200 ${isResizing === 'bottom' ? 'bg-emerald-400 scale-x-150 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-white/40 group-hover/handle:bg-white/80 group-hover/handle:scale-x-150'}`} />
                     </div>
                 )}
             </div>
@@ -376,9 +402,10 @@ const CurrentTimeLine = () => {
 };
 
 const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) => {
-    const { addTask, updateTask } = useTasks(useShallow(state => ({
+    const { addTask, updateTask, subjects } = useTasks(useShallow(state => ({
         addTask: state.addTask,
-        updateTask: state.updateTask
+        updateTask: state.updateTask,
+        subjects: state.subjects
     })));
     const dateStr = format(day, 'yyyy-MM-dd');
     
@@ -386,6 +413,69 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
         id: dateStr,
         data: { type: 'DateCell', date: dateStr }
     });
+
+    const { active } = useDndContext();
+    const colRef = React.useRef<HTMLDivElement>(null);
+    const [dragY, setDragY] = React.useState<number | null>(null);
+
+    const setRefs = React.useCallback((node: HTMLDivElement | null) => {
+        setNodeRef(node);
+        colRef.current = node;
+    }, [setNodeRef]);
+
+    useDndMonitor({
+        onDragMove(event) {
+            if (event.over?.id === dateStr && colRef.current) {
+                const colRect = colRef.current.getBoundingClientRect();
+                const translated = event.active.rect.current.translated;
+                if (translated) {
+                    const pieceOffsetMinutes = (event.active.data.current?.pieceOffsetMinutes as number) || 0;
+                    const relativeY = translated.top - colRect.top;
+                    const snapped = Math.max(0, Math.min(23 * 60, Math.round((relativeY - pieceOffsetMinutes) / 5) * 5));
+                    setDragY(prev => (prev === snapped ? prev : snapped));
+                }
+            } else if (dragY !== null) {
+                setDragY(null);
+            }
+        },
+        onDragEnd() {
+            setDragY(null);
+        },
+        onDragCancel() {
+            setDragY(null);
+        }
+    });
+
+    const ghostPosition = React.useMemo(() => {
+        if (!isOver || dragY === null || !active) return null;
+
+        const task = active.data.current?.task as Task | undefined;
+        const duration = task?.estimatedMinutes || 60;
+
+        const startH = Math.floor(dragY / 60);
+        const startM = dragY % 60;
+        const endMinutes = Math.min(24 * 60, dragY + duration);
+        const endH = Math.floor(endMinutes / 60);
+        const endM = endMinutes % 60;
+
+        const startTime = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+        const endTime = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+
+        const taskSubject = task?.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
+        const subjectColor = taskSubject?.colorToken ? getSubjectColor(taskSubject.colorToken) : null;
+        const priorityColors = { HIGH: '#EF4444', MEDIUM: '#F59E0B', LOW: '#10B981' };
+        const accentColor = subjectColor?.primary || (task?.priority ? priorityColors[task.priority as keyof typeof priorityColors] : '#10B981');
+
+        return {
+            top: dragY,
+            height: duration,
+            startTime,
+            endTime,
+            title: task?.title || 'Nova Tasca',
+            accentColor,
+            subjectName: taskSubject?.name
+        };
+    }, [isOver, dragY, active, subjects]);
 
     const handleDoubleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
         // Obtenim posició del clic
@@ -410,15 +500,99 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
         window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
     };
 
+    const isDraggingThisColumn = active ? String(active.id).includes(`::${dateStr}`) : false;
+
     return (
         <div 
-            ref={setNodeRef}
+            ref={setRefs}
             onDoubleClick={handleDoubleClick}
             className={`flex-1 border-r border-white/[0.03] last:border-0 relative transition-colors cursor-crosshair
                 ${isOver ? 'bg-primary/5' : ''}
                 ${isToday(day) ? 'bg-white/[0.015]' : ''}
             `}
+            style={{
+                zIndex: isOver ? 30 : isDraggingThisColumn ? 10 : 1
+            }}
         >
+            {/* Línies guies i targeta de previsualització unificada */}
+            {ghostPosition && (
+                <>
+                    {/* Línia guia superior amb l'hora d'inici */}
+                    <div 
+                        className="absolute left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,1)] pointer-events-none"
+                        style={{ top: `${ghostPosition.top}px`, zIndex: 35 }}
+                    >
+                        <span className="absolute -top-5 left-1 px-1.5 py-0.5 rounded bg-emerald-500 text-[10px] font-bold text-slate-950 shadow-md font-mono tracking-wider">
+                            {ghostPosition.startTime}
+                        </span>
+                    </div>
+
+                    {/* Targeta fantasma unificada d'ajust */}
+                    <div 
+                        className="absolute left-1 right-1 rounded-xl border border-emerald-400/80 bg-[#0d0f17]/95 backdrop-blur-2xl pointer-events-none flex flex-col justify-between p-2 shadow-[0_15px_40px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(52,211,153,0.15)] overflow-hidden"
+                        style={{ 
+                            top: `${ghostPosition.top}px`, 
+                            height: `${ghostPosition.height}px`,
+                            zIndex: 25
+                        }}
+                    >
+                        {/* Fons translúcid suau amb color d'accent */}
+                        <div 
+                            className="absolute inset-0 opacity-[0.15] mix-blend-plus-lighter pointer-events-none"
+                            style={{ backgroundColor: ghostPosition.accentColor }}
+                        />
+
+                        {/* Barra lateral d'accent de 3.5px com a les tasques de calendari */}
+                        <div 
+                            className="absolute top-0 bottom-0 left-0 w-[3.5px] shadow-[0_0_15px_currentColor]"
+                            style={{ backgroundColor: ghostPosition.accentColor, color: ghostPosition.accentColor }}
+                        />
+
+                        {/* Tirador decoratiu superior */}
+                        <div className="w-6 h-[3px] bg-white/40 rounded-full mx-auto shrink-0" />
+
+                        {/* Contingut central */}
+                        <div className="pl-2.5 pr-1 flex flex-col justify-between flex-1 min-w-0 py-0.5">
+                            <div className="flex items-center justify-between text-[9px] font-bold font-mono text-emerald-300/90">
+                                <div className="flex items-center gap-1.5 truncate">
+                                    <span className="tracking-wider">{ghostPosition.startTime} - {ghostPosition.endTime}</span>
+                                    {ghostPosition.subjectName && (
+                                        <span 
+                                            className="text-[8px] font-bold px-1.5 py-0.2 rounded uppercase tracking-wider truncate"
+                                            style={{
+                                                color: ghostPosition.accentColor,
+                                                backgroundColor: 'rgba(255,255,255,0.08)'
+                                            }}
+                                        >
+                                            {ghostPosition.subjectName}
+                                        </span>
+                                    )}
+                                </div>
+                                <span className="text-[8px] uppercase tracking-wider bg-emerald-500/25 border border-emerald-400/40 px-1 py-0.2 rounded text-emerald-200 font-bold shrink-0 ml-1">
+                                    Snap 5m
+                                </span>
+                            </div>
+                            <div className="text-xs font-bold text-white truncate my-auto">
+                                {ghostPosition.title}
+                            </div>
+                        </div>
+
+                        {/* Tirador decoratiu inferior */}
+                        <div className="w-6 h-[3px] bg-white/40 rounded-full mx-auto shrink-0" />
+                    </div>
+
+                    {/* Línia guia inferior amb l'hora de finalització */}
+                    <div 
+                        className="absolute left-0 right-0 h-[2px] bg-emerald-400/90 shadow-[0_0_10px_rgba(52,211,153,0.8)] pointer-events-none"
+                        style={{ top: `${ghostPosition.top + ghostPosition.height}px`, zIndex: 35 }}
+                    >
+                        <span className="absolute -bottom-5 left-1 px-1.5 py-0.5 rounded bg-emerald-600 text-[10px] font-bold text-white shadow-md font-mono tracking-wider">
+                            {ghostPosition.endTime}
+                        </span>
+                    </div>
+                </>
+            )}
+
             {tasks.map(task => (
                 <ResizableTask key={`${task.id}-${dateStr}`} task={task} day={day} updateTask={updateTask} />
             ))}

@@ -104,7 +104,7 @@ const DayCell: React.FC<{ day: Date; isCurrentMonth: boolean; tasks: Task[]; onS
                                 className={`w-1.5 h-1.5 rounded-full ${!subjectColor ? dotColor : ''} shrink-0`} 
                                 style={subjectColor ? { backgroundColor: subjectColor.primary } : undefined}
                             />
-                            <span className="text-[10px] sm:text-[11px] font-medium truncate flex-1 leading-tight tracking-tight text-slate-300">{task.title}</span>
+                            <span className="text-[10px] sm:text-[11px] font-medium truncate flex-1 leading-tight tracking-tight text-slate-300">{task.title || 'Nova Tasca'}</span>
                         </div>
                     );
                 })}

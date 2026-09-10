@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { m as motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { 
     DndContext, 
@@ -20,6 +20,7 @@ import MonthlyGrid from './MonthlyGrid';
 import WeeklyGrid from './WeeklyGrid';
 import YearlyGrid from './YearlyGrid';
 import TaskCard from '../Board/TaskCard';
+import { CalendarDragCard } from './CalendarDragCard';
 import UnscheduledDrawer from '../UnscheduledDrawer';
 import { useTranslation } from 'react-i18next';
 
@@ -36,6 +37,7 @@ const CalendarView: React.FC = () => {
     const [mode, setMode] = useState<CalendarMode>('week');
     const [direction, setDirection] = useState(0);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
+    const [activeId, setActiveId] = useState<string | null>(null);
     const isAltPressed = useDuplicateModifier();
     const [zoomOrigin, setZoomOrigin] = useState({ x: '50%', y: '50%' });
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -63,9 +65,9 @@ const CalendarView: React.FC = () => {
         // Compute zoom origin from click coordinates (Apple Calendar morphing zoom)
         if (clickEvent && containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
-            const x = ((clickEvent.clientX - rect.left) / rect.width) * 100;
-            const y = ((clickEvent.clientY - rect.top) / rect.height) * 100;
-            setZoomOrigin({ x: `${x}%`, y: `${y}%` });
+            const clickX = ((clickEvent.clientX - rect.left) / rect.width) * 100;
+            const clickY = ((clickEvent.clientY - rect.top) / rect.height) * 100;
+            setZoomOrigin({ x: `${Math.round(clickX)}%`, y: `${Math.round(clickY)}%` });
         } else {
             setZoomOrigin({ x: '50%', y: '50%' });
         }
@@ -114,6 +116,7 @@ const CalendarView: React.FC = () => {
 
     const onDragStart = (event: DragStartEvent) => {
         document.body.style.userSelect = 'none';
+        setActiveId(String(event.active.id));
         const task = event.active.data.current?.task as Task | undefined;
         if (task) setActiveTask(task);
     };
@@ -155,15 +158,16 @@ const CalendarView: React.FC = () => {
                     }
                 }
 
+                const estimated = task.estimatedMinutes || 60;
                 if (isAltPressed) {
                     addTask({
                         title: `${task.title} (Còpia)`,
                         description: task.description,
                         status: task.status,
                         priority: task.priority,
-                        dueDate: task.dueDate ? new Date(newDate.getTime() + (task.estimatedMinutes || 60) * 60000).toISOString() : null,
+                        dueDate: task.dueDate ? new Date(newDate.getTime() + estimated * 60000).toISOString() : new Date(newDate.getTime() + estimated * 60000).toISOString(),
                         startDate: newDate.toISOString(),
-                        estimatedMinutes: task.estimatedMinutes,
+                        estimatedMinutes: estimated,
                         source: (task as any).source
                     } as any).then((newTaskId) => {
                         setTimeout(() => {
@@ -171,18 +175,25 @@ const CalendarView: React.FC = () => {
                         }, 50);
                     });
                 } else {
-                    const updates: Partial<Task> = { startDate: newDate.toISOString() };
-                    if (task.dueDate) {
-                        updates.dueDate = new Date(newDate.getTime() + (task.estimatedMinutes || 60) * 60000).toISOString();
-                    }
+                    const updates: Partial<Task> = {
+                        startDate: newDate.toISOString(),
+                        dueDate: task.dueDate ? new Date(newDate.getTime() + estimated * 60000).toISOString() : new Date(newDate.getTime() + estimated * 60000).toISOString()
+                    };
                     updateTask(task.id, updates);
                 }
             }
         }
         setActiveTask(null);
+        setActiveId(null);
     };
 
-    const unplannedTasks = tasks.filter(t => !t.startDate);
+    const onDragCancel = () => {
+        document.body.style.userSelect = '';
+        setActiveTask(null);
+        setActiveId(null);
+    };
+
+    const unplannedTasks = useMemo(() => tasks.filter(t => !t.startDate), [tasks]);
 
     // Apple Calendar morphing zoom — fast start, soft landing
     const APPLE_EASE: [number, number, number, number] = [0.16, 0.85, 0.3, 1];
@@ -213,6 +224,7 @@ const CalendarView: React.FC = () => {
                 collisionDetection={closestCorners}
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
+                onDragCancel={onDragCancel}
                 autoScroll={typeof window !== 'undefined' && window.innerWidth < 768 ? false : true}
             >
                 <div className="flex flex-1 md:gap-4 relative z-10">
@@ -270,8 +282,16 @@ const CalendarView: React.FC = () => {
 
                 {createPortal(
                     <DragOverlay zIndex={1000} dropAnimation={null}>
-                        {activeTask && mode !== 'week' ? (
-                            <TaskCard task={activeTask} />
+                        {activeTask ? (
+                            mode === 'week' ? (
+                                !activeId?.includes('::') ? (
+                                    <CalendarDragCard task={activeTask} />
+                                ) : null
+                            ) : (
+                                <div className="w-72 pointer-events-none cursor-grabbing">
+                                    <TaskCard task={activeTask} isOverlay={true} />
+                                </div>
+                            )
                         ) : null}
                     </DragOverlay>,
                     document.body

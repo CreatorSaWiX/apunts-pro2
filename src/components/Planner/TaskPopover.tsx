@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { useTasks } from '../../contexts/TasksContext';
-import { useShallow } from 'zustand/react/shallow';
 import { Flag, Bookmark, Search } from 'lucide-react';
 import type { TaskPriority } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
@@ -16,20 +15,89 @@ export interface TaskPopoverEventDetail {
     taskId: string;
 }
 
+/**
+ * Configuració estàtica per a les opcions de prioritat en vista mòbil
+ */
+const MOBILE_PRIORITY_OPTIONS: Array<{
+    id: TaskPriority;
+    dotClass: string;
+    selectedClass: string;
+    labelKey: string;
+    fallbackLabel: string;
+}> = [
+    {
+        id: 'HIGH',
+        dotClass: 'bg-red-400',
+        selectedClass: 'bg-red-500/15 border-red-500/30 text-white shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]',
+        labelKey: 'planner.popover.priorityHigh',
+        fallbackLabel: 'Alta'
+    },
+    {
+        id: 'MEDIUM',
+        dotClass: 'bg-amber-400',
+        selectedClass: 'bg-amber-500/15 border-amber-500/30 text-white shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]',
+        labelKey: 'planner.popover.priorityMedium',
+        fallbackLabel: 'Mitjana'
+    },
+    {
+        id: 'LOW',
+        dotClass: 'bg-slate-400',
+        selectedClass: 'bg-slate-500/15 border-slate-500/30 text-white shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]',
+        labelKey: 'planner.popover.priorityLow',
+        fallbackLabel: 'Baixa'
+    }
+];
+
+/**
+ * Configuració estàtica per a les opcions de prioritat en vista escriptori
+ */
+const DESKTOP_PRIORITY_OPTIONS: Array<{
+    id: TaskPriority;
+    selectedClass: string;
+    labelKey: string;
+    fallbackLabel: string;
+}> = [
+    {
+        id: 'LOW',
+        selectedClass: 'text-primary bg-primary/20',
+        labelKey: 'planner.popover.priorityLow',
+        fallbackLabel: 'BAIX'
+    },
+    {
+        id: 'MEDIUM',
+        selectedClass: 'text-amber-400 bg-amber-400/20',
+        labelKey: 'planner.popover.priorityMedium',
+        fallbackLabel: 'MIG'
+    },
+    {
+        id: 'HIGH',
+        selectedClass: 'text-red-400 bg-red-400/20',
+        labelKey: 'planner.popover.priorityHigh',
+        fallbackLabel: 'ALT'
+    }
+];
+
+/**
+ * Finestra emergent (Popover / BottomSheet) d'edició ràpida de tasques
+ */
 const TaskPopover: React.FC = () => {
     const { t } = useTranslation();
-    const { tasks, updateTask, subjects } = useTasks(useShallow(state => ({
-        tasks: state.tasks,
-        updateTask: state.updateTask,
-        subjects: state.subjects
-    })));
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const popoverRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
     const [subjectSearch, setSubjectSearch] = useState('');
 
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const desktopInputRef = useRef<HTMLInputElement>(null);
+    const mobileInputRef = useRef<HTMLInputElement>(null);
+
+    // Subscripcions selectives de Zustand: només subscrivim la tasca activa per evitar re-renderitzats globals
+    const task = useTasks(useCallback((state) => (taskId ? state.tasks.find(t => t.id === taskId) : undefined), [taskId]));
+    const updateTask = useTasks(state => state.updateTask);
+    const subjects = useTasks(state => state.subjects);
+
+    // Detecció de vista mòbil (responsive)
     useEffect(() => {
         setIsMobile(window.innerWidth < 768);
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -37,24 +105,26 @@ const TaskPopover: React.FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const task = tasks.find(t => t.id === taskId);
-
+    // Obertura del popover mitjançant l'esdeveniment global 'open-task-popover'
     useEffect(() => {
         const handleOpen = (e: Event) => {
             const customEvent = e as CustomEvent<TaskPopoverEventDetail>;
             const { x, y, taskId: targetId } = customEvent.detail;
             
-            // Adjust position so it doesn't go off screen (overestimate size)
-            const width = 300;
-            const height = 350;
+            // Càlcul de límits per evitar desbordaments de pantalla
+            const width = 260;
+            const height = 300;
             let finalX = x;
             let finalY = y;
             
             if (x + width > window.innerWidth) finalX = window.innerWidth - width - 10;
             if (y + height > window.innerHeight) finalY = window.innerHeight - height - 10;
+            if (finalX < 10) finalX = 10;
+            if (finalY < 10) finalY = 10;
 
             setPosition({ x: finalX, y: finalY });
             setTaskId(targetId);
+            setSubjectSearch('');
             setIsOpen(true);
         };
 
@@ -62,10 +132,32 @@ const TaskPopover: React.FC = () => {
         return () => window.removeEventListener('open-task-popover', handleOpen);
     }, []);
 
+    // Tancament i assignació de títol per defecte si queda buit
+    const handleClose = useCallback(() => {
+        if (task && !task.title.trim()) {
+            updateTask(task.id, { title: t('planner.task.defaultTitle', 'Nova Tasca') });
+        }
+        setIsOpen(false);
+        setTaskId(null);
+    }, [task, updateTask, t]);
+
+    // Enfocament automàtic a l'input quan s'obre
+    useEffect(() => {
+        if (isOpen && task) {
+            const timer = setTimeout(() => {
+                const input = isMobile ? mobileInputRef.current : desktopInputRef.current;
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }, 60);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, taskId, isMobile, !!task]);
+
+    // Tancament en fer clic fora, prémer Escape o fer scroll
     useEffect(() => {
         if (!isOpen) return;
-
-        const handleClose = () => setIsOpen(false);
 
         const isInsidePortal = (target: Node) => {
             if (target instanceof Element && target.closest('.subject-picker-portal')) return true;
@@ -100,22 +192,36 @@ const TaskPopover: React.FC = () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('scroll', handleScroll, true);
         };
-    }, [isOpen]);
+    }, [isOpen, handleClose]);
+
+    // Filtre d'assignatures per a la vista mòbil memoitzat
+    const filteredSubjects = useMemo(() => {
+        if (!subjects) return [];
+        const query = subjectSearch.trim().toLowerCase();
+        if (!query) return subjects;
+        return subjects.filter(s => s.name.toLowerCase().includes(query));
+    }, [subjects, subjectSearch]);
 
     if (!task) return null;
 
+    // Vista per a dispositius mòbils (BottomSheet)
     if (isMobile) {
-        const filteredSubjects = subjects?.filter(s => s.name.toLowerCase().includes(subjectSearch.toLowerCase())) || [];
-
         return (
-            <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            <BottomSheet isOpen={isOpen} onClose={handleClose}>
                 <div className="flex flex-col gap-6 mt-1">
                     {/* TÍTOL */}
                     <div className="bg-white/[0.02] border border-white/[0.05] rounded-[16px] px-4 py-3.5 shadow-sm">
                         <input 
+                            ref={mobileInputRef}
                             value={task.title}
                             onChange={(e) => updateTask(task.id, { title: e.target.value })}
-                            placeholder={t('planner.popover.titlePlaceholder', "Títol...")}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                                    e.preventDefault();
+                                    handleClose();
+                                }
+                            }}
+                            placeholder={t('planner.popover.titlePlaceholder', 'Títol...')}
                             className="text-[17px] font-semibold bg-transparent border-none outline-none text-white w-full placeholder:text-white/30"
                         />
                     </div>
@@ -139,15 +245,19 @@ const TaskPopover: React.FC = () => {
                         <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                             {/* Sense Assignatura */}
                             <button
+                                type="button"
                                 onClick={() => updateTask(task.id, { subjectId: undefined })}
                                 className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition ${
                                     !task.subjectId 
                                         ? 'bg-white/[0.08] border-white/[0.12]' 
                                         : 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]'
                                 }`}
-                                aria-label="Obrir panell">
+                                aria-label={t('planner.popover.noSubject', 'Sense assignatura')}
+                            >
                                 <div className="w-3 h-3 rounded-full bg-slate-600" />
-                                <span className={`text-[15px] font-medium ${!task.subjectId ? 'text-white' : 'text-slate-300'}`}>Sense Assignatura</span>
+                                <span className={`text-[15px] font-medium ${!task.subjectId ? 'text-white' : 'text-slate-300'}`}>
+                                    {t('planner.popover.noSubject', 'Sense assignatura')}
+                                </span>
                             </button>
 
                             {/* Llista d'assignatures */}
@@ -156,6 +266,7 @@ const TaskPopover: React.FC = () => {
                                 const sColor = getSubjectColor(s.colorToken);
                                 return (
                                     <button
+                                        type="button"
                                         key={s.id}
                                         onClick={() => updateTask(task.id, { subjectId: s.id })}
                                         style={isSelected ? {
@@ -166,7 +277,8 @@ const TaskPopover: React.FC = () => {
                                         className={`flex items-center gap-3.5 p-4 rounded-[14px] border text-left transition ${
                                             !isSelected ? 'bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.04]' : ''
                                         }`}
-                                        aria-label="Obrir panell">
+                                        aria-label={s.name}
+                                    >
                                         <div 
                                             className="w-3 h-3 rounded-full shrink-0" 
                                             style={{
@@ -174,7 +286,9 @@ const TaskPopover: React.FC = () => {
                                                 boxShadow: `0 0 10px rgba(${sColor.primary_rgb}, 0.5)`
                                             }}
                                         />
-                                        <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>{s.name}</span>
+                                        <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                                            {s.name}
+                                        </span>
                                     </button>
                                 );
                             })}
@@ -187,31 +301,24 @@ const TaskPopover: React.FC = () => {
                             {t('planner.filters.priority', 'Prioritat')}
                         </div>
                         <div className="grid grid-cols-3 gap-2.5">
-                            {(['HIGH', 'MEDIUM', 'LOW'] as TaskPriority[]).map((p) => {
-                                const isSelected = task.priority === p;
-                                const colors = {
-                                    HIGH: 'red-400',
-                                    MEDIUM: 'amber-400',
-                                    LOW: 'slate-400'
-                                };
-                                const dotColor = `bg-${colors[p]}`;
-                                const labels = {
-                                    HIGH: 'Alta',
-                                    MEDIUM: 'Mitjana',
-                                    LOW: 'Baixa'
-                                };
+                            {MOBILE_PRIORITY_OPTIONS.map((opt) => {
+                                const isSelected = task.priority === opt.id;
                                 return (
                                     <button
-                                        key={p}
-                                        onClick={() => updateTask(task.id, { priority: p })}
+                                        type="button"
+                                        key={opt.id}
+                                        onClick={() => updateTask(task.id, { priority: opt.id })}
                                         className={`flex flex-col gap-3 p-4 rounded-[16px] border text-left transition ${
                                             isSelected
-                                                ? `bg-${colors[p]}/15 border-${colors[p]}/30 shadow-[inset_0_1px_3px_rgba(255,255,255,0.1)]`
+                                                ? opt.selectedClass
                                                 : 'bg-white/[0.02] border-white/[0.04] hover:bg-white/[0.06]'
                                         }`}
-                                        aria-label="Obrir panell">
-                                        <div className={`w-3 h-3 rounded-full ${dotColor} ${isSelected ? 'shadow-[0_0_12px_currentColor]' : ''}`} />
-                                        <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-400'}`}>{labels[p]}</span>
+                                        aria-label={t(opt.labelKey, opt.fallbackLabel)}
+                                    >
+                                        <div className={`w-3 h-3 rounded-full ${opt.dotClass} ${isSelected ? 'shadow-[0_0_12px_currentColor]' : ''}`} />
+                                        <span className={`text-[15px] font-medium ${isSelected ? 'text-white' : 'text-slate-400'}`}>
+                                            {t(opt.labelKey, opt.fallbackLabel)}
+                                        </span>
                                     </button>
                                 );
                             })}
@@ -222,16 +329,17 @@ const TaskPopover: React.FC = () => {
         );
     }
 
+    // Vista per a escriptori (Popover flotant amb portal a document.body)
     return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div 
                     ref={popoverRef}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 0.8 }}
-                    className="fixed z-[1001] w-[240px] flex flex-col origin-top-left flex flex-col !rounded-[16px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
+                    className="fixed z-[1001] w-[240px] origin-top-left flex flex-col !rounded-[16px] backdrop-blur-xl border border-[var(--glass-border)] border-t-[var(--glass-border-light)] border-l-[var(--glass-border-light)] shadow-[var(--glass-shadow-inner),var(--glass-shadow-outer)] bg-[var(--glass-bg)]"
                     style={{ 
                         left: position.x, 
                         top: position.y,
@@ -241,9 +349,16 @@ const TaskPopover: React.FC = () => {
                     {/* Títol Ràpid */}
                     <div className="p-3 border-b border-white/[0.05]">
                         <input 
+                            ref={desktopInputRef}
                             value={task.title}
                             onChange={(e) => updateTask(task.id, { title: e.target.value })}
-                            placeholder={t('planner.popover.titlePlaceholder', "Títol...")}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                                    e.preventDefault();
+                                    handleClose();
+                                }
+                            }}
+                            placeholder={t('planner.popover.titlePlaceholder', 'Títol...')}
                             className="text-[13px] font-bold bg-transparent border-none outline-none text-white w-full placeholder:text-white/30"
                             autoFocus
                         />
@@ -260,7 +375,7 @@ const TaskPopover: React.FC = () => {
                                 value={task.subjectId}
                                 onChange={(subjectId) => updateTask(task.id, { subjectId: subjectId || undefined })}
                                 className="w-full justify-between py-1.5"
-                                placeholder={t('planner.popover.noSubject', 'Sense Assignatura')}
+                                placeholder={t('planner.popover.noSubject', 'Sense assignatura')}
                             />
                         </div>
 
@@ -270,22 +385,18 @@ const TaskPopover: React.FC = () => {
                             <span>{t('planner.filters.priority', 'Prioritat')}</span>
                         </div>
                         <div className="flex bg-white/[0.02] p-0.5 rounded-lg border border-white/[0.03] mx-1 mb-1">
-                            {(['LOW', 'MEDIUM', 'HIGH'] as TaskPriority[]).map((p) => {
-                                const colors = {
-                                    LOW: 'text-primary bg-primary/20',
-                                    MEDIUM: 'text-amber-400 bg-amber-400/20',
-                                    HIGH: 'text-red-400 bg-red-400/20'
-                                };
-                                const isSelected = task.priority === p;
+                            {DESKTOP_PRIORITY_OPTIONS.map((opt) => {
+                                const isSelected = task.priority === opt.id;
                                 return (
-                                    <button type="button"
-                                        key={p}
-                                        onClick={() => updateTask(task.id, { priority: p })}
+                                    <button 
+                                        type="button"
+                                        key={opt.id}
+                                        onClick={() => updateTask(task.id, { priority: opt.id })}
                                         className={`flex-1 py-1.5 rounded text-[9px] font-bold tracking-wider transition ${
-                                            isSelected ? colors[p] : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                                            isSelected ? opt.selectedClass : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                         }`}
                                     >
-                                        {p === 'LOW' ? t('planner.popover.priorityLow', 'BAIX') : p === 'MEDIUM' ? t('planner.popover.priorityMedium', 'MIG') : t('planner.popover.priorityHigh', 'ALT')}
+                                        {t(opt.labelKey, opt.fallbackLabel)}
                                     </button>
                                 );
                             })}

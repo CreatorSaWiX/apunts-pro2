@@ -112,22 +112,29 @@ const createTasksStore = () =>
         }),
 
         addTask: async (taskData) => {
-            const { user } = get();
+            const { user, tasks, filters } = get();
             if (!user) throw new Error("No user logged in");
-            const [{ db }, { collection, addDoc }] = await Promise.all([
+            const [{ db }, { collection, doc, setDoc }] = await Promise.all([
                 import('../lib/firebase'),
                 import('firebase/firestore')
             ]);
             
-            const newTask = {
+            const tasksRef = collection(db, 'users', user.id, 'tasks');
+            const newDocRef = doc(tasksRef);
+            const newTask: Task = {
                 ...taskData,
+                id: newDocRef.id,
                 userId: user.id,
-                title: taskData.title.trim() === '' ? 'Nova Tasca' : taskData.title,
+                title: taskData.title !== undefined ? taskData.title : 'Nova Tasca',
                 createdAt: new Date().toISOString()
             };
-            const cleanTask = Object.fromEntries(Object.entries(newTask).filter(([_, v]) => v !== undefined));
-            const docRef = await addDoc(collection(db, 'users', user.id, 'tasks'), cleanTask);
-            return docRef.id;
+            const newTasks = [...tasks, newTask];
+            set({ tasks: newTasks, filteredTasks: computeFilteredTasks(newTasks, filters) });
+
+            const { id: _ignore, ...dataToSave } = newTask;
+            const cleanTask = Object.fromEntries(Object.entries(dataToSave).filter(([_, v]) => v !== undefined));
+            await setDoc(newDocRef, cleanTask);
+            return newDocRef.id;
         },
 
         addBatchTasks: async (tasksData) => {

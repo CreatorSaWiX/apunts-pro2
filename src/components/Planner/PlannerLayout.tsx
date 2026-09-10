@@ -68,12 +68,13 @@ const FallbackSpinner = () => (
 
 const PlannerLayout: React.FC = () => {
     const { t } = useTranslation();
-    const { isLoading, error, subjects, filters, tasks } = useTasks(useShallow(state => ({
+    const { isLoading, error, subjects, filters, tasks, addTask } = useTasks(useShallow(state => ({
         isLoading: state.isLoading,
         error: state.error,
         subjects: state.subjects,
         filters: state.filters,
-        tasks: state.tasks
+        tasks: state.tasks,
+        addTask: state.addTask
     })));
     const { defaultPlannerView } = useSettingsStore();
     const [activeTab, setActiveTab] = useState<ViewMode>(defaultPlannerView || 'board');
@@ -134,7 +135,7 @@ const PlannerLayout: React.FC = () => {
 
     useEffect(() => {
         const handlePlannerAction = (e: Event) => {
-            const action = (e as CustomEvent).detail.action;
+            const action = (e as CustomEvent).detail?.action;
             if (['plannerViewWeek', 'plannerViewMonth', 'plannerViewYear'].includes(action)) {
                 if (activeTab !== 'calendar') {
                     setActiveTab('calendar');
@@ -143,18 +144,29 @@ const PlannerLayout: React.FC = () => {
                     });
                 }
             } else if (action === 'plannerCreateTask') {
-                window.dispatchEvent(new CustomEvent('open-task-popover', {
-                    detail: {
-                        x: window.innerWidth / 2,
-                        y: window.innerHeight / 2,
-                        taskId: null
-                    }
-                }));
+                const now = new Date();
+                const due = new Date(now.getTime() + 60 * 60000);
+                addTask({
+                    title: '',
+                    status: 'TODO',
+                    priority: 'LOW',
+                    startDate: now.toISOString(),
+                    dueDate: due.toISOString(),
+                    estimatedMinutes: 60
+                }).then((newTaskId: string) => {
+                    window.dispatchEvent(new CustomEvent('open-task-popover', {
+                        detail: {
+                            x: window.innerWidth / 2,
+                            y: window.innerHeight / 2,
+                            taskId: newTaskId
+                        }
+                    }));
+                });
             }
         };
         window.addEventListener('planner-action', handlePlannerAction);
         return () => window.removeEventListener('planner-action', handlePlannerAction);
-    }, [activeTab]);
+    }, [activeTab, addTask]);
 
     const usedSubjects = useMemo(() => {
         const usedIds = new Set(tasks.map(t => t.subjectId));

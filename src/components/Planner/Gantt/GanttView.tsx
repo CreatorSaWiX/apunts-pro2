@@ -247,6 +247,7 @@ const GanttView: React.FC = () => {
             collisionDetection={closestCorners}
             onDragStart={(e) => setActiveTask(e.active.data.current?.task)}
             onDragEnd={onDragEnd}
+            onDragCancel={() => setActiveTask(null)}
         >
             <div className="flex flex-col h-full bg-[#0B0F19] rounded-2xl overflow-hidden border border-white/[0.05] shadow-2xl relative">
                 
@@ -381,7 +382,11 @@ const GanttView: React.FC = () => {
             
             {createPortal(
                 <DragOverlay zIndex={1000} dropAnimation={null}>
-                    {activeTask ? <TaskCard task={activeTask} /> : null}
+                    {activeTask ? (
+                        <div className="w-72 pointer-events-none cursor-grabbing">
+                            <TaskCard task={activeTask} isOverlay={true} />
+                        </div>
+                    ) : null}
                 </DragOverlay>,
                 document.body
             )}
@@ -501,72 +506,121 @@ const TaskBar: React.FC<{ task: LayoutTask, zoomLevel: number, timelineStart: Da
     const baseColorClass = !subjectColor ? 
         (task.priority === 'HIGH' ? 'bg-red-500' : task.priority === 'MEDIUM' ? 'bg-amber-500' : 'bg-indigo-500') : '';
 
-    return (
-        <div
-            onContextMenu={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
-            }}
-            onMouseDown={(e) => {
-                if (e.button === 0) { // left click only
-                    setDragState({ type: 'move', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth });
-                }
-            }}
-            onTouchStart={(e) => {
-                e.stopPropagation();
-                setDragState({ type: 'move', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false });
-            }}
-            onClick={(e) => {
-                if (wasDraggedRef.current) return;
-                
-                const now = Date.now();
-                if (now - lastTapRef.current < 300) {
-                    window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
-                    lastTapRef.current = 0;
-                } else {
-                    lastTapRef.current = now;
-                }
-            }}
-            className={`absolute h-8 rounded-md flex items-center px-2 group overflow-hidden transition duration-200 ${baseColorClass} border border-white/20 shadow-lg ${dragState ? 'z-40 brightness-110' : 'hover:brightness-110 hover:z-30 cursor-pointer'}`}
-            style={{
-                left: displayLeft,
-                width: displayWidth,
-                top: task.trackIndex * 46 + 32,
-                ...(subjectColor ? { backgroundColor: subjectColor.primary } : {})
-            }}
-            title={`${task.title} \n${format(task.start, 'HH:mm')} - ${format(task.end, 'HH:mm')}`}
-        >
-            {/* Capa de degradat fosc/clar per donar profunditat al color base */}
-            <div className="absolute inset-0 bg-linear-to-br from-white/30 via-transparent to-black/40 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 pointer-events-none mix-blend-overlay" />
+    const currentLeftMins = Math.round(displayLeft / zoomLevel);
+    const currentDurationMins = Math.round(displayWidth / zoomLevel);
+    const currentStartDate = addMinutes(timelineStart, currentLeftMins);
+    const currentEndDate = addMinutes(currentStartDate, currentDurationMins);
+    const startStr = format(currentStartDate, 'HH:mm');
+    const endStr = format(currentEndDate, 'HH:mm');
 
-            {/* Left handle */}
-            {displayWidth >= 12 && (
-                <div 
-                    className="absolute left-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize hover:bg-white/20 z-20 flex items-center justify-start pl-[2px] md:pl-[3px] group/handle"
-                    onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
-                    onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
-                >
-                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition duration-200" />
-                </div>
+    return (
+        <>
+            {/* Línies guies magnètiques en ajustar dates/hores a Timeline */}
+            {dragState && (
+                <>
+                    {/* Línia guia esquerra (inici) */}
+                    <div 
+                        className="absolute w-[2px] bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,1)] pointer-events-none z-50"
+                        style={{
+                            left: `${displayLeft}px`,
+                            top: `${task.trackIndex * 46 + 26}px`,
+                            height: '44px'
+                        }}
+                    >
+                        <span className={`absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[10px] font-bold shadow-md font-mono tracking-wider transition-transform ${dragState.type === 'left' ? 'bg-emerald-500 text-slate-950 scale-105 ring-2 ring-emerald-300' : 'bg-emerald-500 text-slate-950'}`}>
+                            {startStr}
+                        </span>
+                    </div>
+
+                    {/* Línia guia dreta (fi) */}
+                    <div 
+                        className="absolute w-[2px] bg-emerald-400/90 shadow-[0_0_10px_rgba(52,211,153,0.8)] pointer-events-none z-50"
+                        style={{
+                            left: `${displayLeft + displayWidth}px`,
+                            top: `${task.trackIndex * 46 + 26}px`,
+                            height: '44px'
+                        }}
+                    >
+                        <span className={`absolute -bottom-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[10px] font-bold shadow-md font-mono tracking-wider transition-transform ${dragState.type === 'right' ? 'bg-emerald-600 text-white scale-105 ring-2 ring-emerald-400' : 'bg-emerald-600 text-white'}`}>
+                            {endStr}
+                        </span>
+                    </div>
+                </>
             )}
-            
-            {displayWidth > 50 && (
-                <div className="truncate text-[11px] font-bold text-white drop-shadow-md z-10 px-2 max-md:px-4 pointer-events-none select-none tracking-wide">{task.title}</div>
-            )}
-            
-            {/* Right handle */}
-            {displayWidth >= 12 && (
-                <div 
-                    className="absolute right-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize hover:bg-white/20 z-20 flex items-center justify-end pr-[2px] md:pr-[3px] group/handle"
-                    onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
-                    onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
-                >
-                    <div className="w-[3px] h-3 bg-white/40 rounded-full group-hover/handle:bg-white/80 group-hover/handle:scale-y-150 transition duration-200" />
-                </div>
-            )}
-        </div>
+
+            <div
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+                }}
+                onMouseDown={(e) => {
+                    if (e.button === 0) { // left click only
+                        setDragState({ type: 'move', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth });
+                    }
+                }}
+                onTouchStart={(e) => {
+                    e.stopPropagation();
+                    setDragState({ type: 'move', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false });
+                }}
+                onClick={(e) => {
+                    if (wasDraggedRef.current) return;
+                    
+                    const now = Date.now();
+                    if (now - lastTapRef.current < 300) {
+                        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                        lastTapRef.current = 0;
+                    } else {
+                        lastTapRef.current = now;
+                    }
+                }}
+                className={`absolute h-8 rounded-md flex items-center px-2 group overflow-hidden transition duration-200 ${baseColorClass} border ${dragState ? 'border-emerald-400/90 shadow-[0_0_20px_rgba(52,211,153,0.35)] z-40 brightness-110' : 'border-white/20 shadow-lg hover:brightness-110 hover:z-30 cursor-pointer'}`}
+                style={{
+                    left: displayLeft,
+                    width: displayWidth,
+                    top: task.trackIndex * 46 + 32,
+                    ...(subjectColor ? { backgroundColor: subjectColor.primary } : {})
+                }}
+                title={`${task.title} \n${format(task.start, 'HH:mm')} - ${format(task.end, 'HH:mm')}`}
+            >
+                {/* Capa de degradat fosc/clar per donar profunditat al color base */}
+                <div className="absolute inset-0 bg-linear-to-br from-white/30 via-transparent to-black/40 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20 pointer-events-none mix-blend-overlay" />
+
+                {/* Left handle */}
+                {displayWidth >= 12 && (
+                    <div 
+                        className={`absolute left-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize z-20 flex items-center justify-start pl-[2px] md:pl-[3px] group/handle ${dragState?.type === 'left' ? 'bg-emerald-400/30' : 'hover:bg-white/20'}`}
+                        onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
+                        onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'left', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
+                    >
+                        <div className={`w-[3px] h-3 rounded-full transition duration-200 ${dragState?.type === 'left' ? 'bg-emerald-400 scale-y-150 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-white/40 group-hover/handle:bg-white/80 group-hover/handle:scale-y-150'}`} />
+                    </div>
+                )}
+                
+                {displayWidth > 50 && (
+                    <div className="truncate text-[11px] font-bold text-white drop-shadow-md z-10 px-2 max-md:px-4 pointer-events-none select-none tracking-wide flex items-center gap-1.5">
+                        <span className="truncate">{task.title}</span>
+                        {dragState && (
+                            <span className="text-[8px] uppercase tracking-wider bg-emerald-500/30 border border-emerald-400/50 px-1 py-0.2 rounded text-emerald-200 font-bold font-mono shrink-0">
+                                Snap 5m
+                            </span>
+                        )}
+                    </div>
+                )}
+                
+                {/* Right handle */}
+                {displayWidth >= 12 && (
+                    <div 
+                        className={`absolute right-0 top-0 bottom-0 w-3 max-md:w-6 cursor-col-resize z-20 flex items-center justify-end pr-[2px] md:pr-[3px] group/handle ${dragState?.type === 'right' ? 'bg-emerald-400/30' : 'hover:bg-white/20'}`}
+                        onMouseDown={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.clientX, initialLeft: displayLeft, initialWidth: displayWidth }); }}
+                        onTouchStart={(e) => { e.stopPropagation(); setDragState({ type: 'right', initialX: e.touches[0].clientX, initialLeft: displayLeft, initialWidth: displayWidth, isTouch: true, touchStartY: e.touches[0].clientY, hasMoved: false }); }}
+                    >
+                        <div className={`w-[3px] h-3 rounded-full transition duration-200 ${dragState?.type === 'right' ? 'bg-emerald-400 scale-y-150 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-white/40 group-hover/handle:bg-white/80 group-hover/handle:scale-y-150'}`} />
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
 
