@@ -3,8 +3,8 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import Modal from '../../ui/modals/Modal';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { useShallow } from 'zustand/react/shallow';
-import { CFGS_DEGREES } from '../../../data/cfgs';
-import { GraduationCap, Sparkles, BookOpen, Layers, Plus, ArrowRight } from 'lucide-react';
+import { CFGS_DEGREES, type CFGSDegree } from '../../../data/cfgs';
+import { GraduationCap, Sparkles, BookOpen, Layers, Plus, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface ValidationsModalProps {
@@ -14,7 +14,12 @@ interface ValidationsModalProps {
 
 type Tab = 'cfgs' | 'custom';
 
-const FIB_ACTIVITIES = [
+interface ActivitySuggestion {
+    name: string;
+    credits: number;
+}
+
+const FIB_ACTIVITIES: ActivitySuggestion[] = [
     { name: "Seminaris d'Empresa", credits: 1 },
     { name: "Programa Talent", credits: 2 },
     { name: "Emprenedoria FIB-Esade", credits: 2 },
@@ -22,18 +27,299 @@ const FIB_ACTIVITIES = [
     { name: "Projecte ECTS", credits: 1 }
 ];
 
-// eslint-disable-next-line react-doctor/no-giant-component
-const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
+// Precompute total credits per degree to avoid re-evaluating reduce on each render
+const CFGS_CREDITS_MAP = new Map<string, number>(
+    CFGS_DEGREES.map(c => [c.id, c.modules.reduce((acc, curr) => acc + curr.credits, 0)])
+);
+
+// --- Subcomponents ---
+
+interface SidebarProps {
+    activeTab: Tab;
+    selectedId: string | null;
+    mobileView: 'menu' | 'content';
+    onSelectCustom: () => void;
+    onSelectCFGS: (id: string) => void;
+}
+
+const ValidationsSidebar: React.FC<SidebarProps> = React.memo(({
+    activeTab,
+    selectedId,
+    mobileView,
+    onSelectCustom,
+    onSelectCFGS
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <div className={`w-full md:w-90 border-b md:border-b-0 md:border-r border-white/10 p-6 flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0 ${mobileView === 'menu' ? 'flex flex-1 md:flex-none' : 'hidden md:flex'}`}>
+            <div className="mb-8 shrink-0">
+                <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapValidations.title', 'Convalidacions')}</h3>
+                <p className="text-sm text-slate-400">{t('planner.roadmapValidations.subtitle', 'Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.')}</p>
+            </div>
+
+            <div className="flex-1 flex flex-col gap-6 relative min-h-0">
+                {/* Custom Activities Tab */}
+                <div>
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.otherActivities', 'Altres Activitats')}</h4>
+                    <div className="relative shrink-0">
+                        {activeTab === 'custom' && (
+                            <motion.div
+                                layoutId="active-sidebar-pill"
+                                className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full z-20"
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            />
+                        )}
+                        <button
+                            type="button"
+                            onClick={onSelectCustom}
+                            className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/5' : 'hover:bg-white/[0.02]'}`}
+                            aria-label={t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}
+                        >
+                            <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                            <div className="flex flex-col min-w-0">
+                                <span className={`transition-colors duration-300 font-bold ${activeTab === 'custom' ? 'text-white' : 'text-slate-400'}`}>
+                                    {t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}
+                                </span>
+                                <span className="text-xs text-slate-500 truncate mt-0.5">{t('planner.roadmapValidations.activityExamples', 'Game Jams, Esports, Idiomes')}</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                {/* CFGS List */}
+                <div>
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.cfgs', 'Cicles Formatius (CFGS)')}</h4>
+                    <div className="flex flex-col gap-2">
+                        {CFGS_DEGREES.map(cfgs => {
+                            const isSelected = activeTab === 'cfgs' && selectedId === cfgs.id;
+                            const totalCredits = CFGS_CREDITS_MAP.get(cfgs.id) || 0;
+
+                            return (
+                                <div key={cfgs.id} className="relative shrink-0">
+                                    {isSelected && (
+                                        <motion.div
+                                            layoutId="active-sidebar-pill"
+                                            className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full z-20"
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        />
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => onSelectCFGS(cfgs.id)}
+                                        className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/5' : 'hover:bg-white/[0.02]'}`}
+                                        aria-label={`Seleccionar ${cfgs.title}`}
+                                    >
+                                        <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                                        <div className="flex flex-col min-w-0 flex-1 gap-1">
+                                            <span className={`transition-colors duration-300 font-bold line-clamp-2 text-sm ${isSelected ? 'text-white' : 'text-slate-400'}`}>
+                                                {cfgs.title.split(' (')[0]}
+                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] text-slate-500 font-bold border border-white/10 px-1.5 py-px rounded uppercase">
+                                                    {cfgs.title.includes('LOE') ? 'LOE' : 'LOGSE'}
+                                                </span>
+                                                <span className="text-[10px] text-slate-500 font-bold">
+                                                    {totalCredits} ECTS
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+});
+ValidationsSidebar.displayName = 'ValidationsSidebar';
+
+const CfgsDetailView: React.FC<{ cfgs: CFGSDegree; totalCredits: number }> = React.memo(({ cfgs, totalCredits }) => {
+    const { t } = useTranslation();
+
+    return (
+        <motion.div
+            key={`cfgs-${cfgs.id}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col h-full"
+        >
+            <div className="mb-6">
+                <h2 className="text-3xl font-black text-white tracking-tight mb-4 leading-tight">{cfgs.title}</h2>
+                <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
+                    {t('planner.roadmapValidations.cfgsDisclaimer', "En aplicar aquesta convalidació, les següents assignatures s'afegiran directament al teu expedient. Es substituirà qualsevol CFGS que ja tinguessis convalidat prèviament.")}
+                </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-8 shrink-0 max-w-sm">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.creditsObtained', 'Crèdits Obtinguts')}</div>
+                    <div className="text-2xl font-black text-white">+{totalCredits} <span className="text-sm text-white/50">ECTS</span></div>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.recognizedModules', 'Mòduls Reconeixements')}</div>
+                    <div className="text-2xl font-black text-white">{cfgs.modules.length}</div>
+                </div>
+            </div>
+
+            <div>
+                <h4 className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider mb-4 opacity-80">
+                    <Layers size={14} className="text-white/70" />
+                    {t('planner.roadmapValidations.validatedSubjects', 'Assignatures Convalidades')}
+                </h4>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pb-4">
+                    {cfgs.modules.map((mod) => (
+                        <div key={mod.name} className="p-4 rounded-xl bg-white/[0.02] border border-white/10 flex flex-col gap-2">
+                            <span className="text-sm font-bold text-slate-200">{mod.name}</span>
+                            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-400">
+                                <BookOpen size={12} /> {mod.credits} ECTS
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </motion.div>
+    );
+});
+CfgsDetailView.displayName = 'CfgsDetailView';
+
+interface CustomActivityProps {
+    customName: string;
+    setCustomName: (val: string) => void;
+    customCredits: number | '';
+    setCustomCredits: (val: number | '') => void;
+}
+
+const CustomActivityForm: React.FC<CustomActivityProps> = React.memo(({
+    customName,
+    setCustomName,
+    customCredits,
+    setCustomCredits
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <motion.div
+            key="custom"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col h-full"
+        >
+            <div className="mb-8">
+                <h2 className="text-3xl font-black text-white tracking-tight mb-4">{t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}</h2>
+                <p className="text-sm text-slate-300 leading-relaxed max-w-2xl mb-6">
+                    {t('planner.roadmapValidations.customDisclaimer', "Afegeix manualment els crèdits reconeguts per activitats extracadèmiques com l'esport, idiomes o representació estudiantil. Aquests s'afegiran com a optatives superades.")}
+                </p>
+                <div className="inline-flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/30">
+                        <Sparkles size={14} className="text-white" />
+                    </div>
+                    <div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.recommendedLimit', 'Límit Recomanat')}</div>
+                        <div className="text-sm font-bold text-white">{t('planner.roadmapValidations.maxEcts', "6 ECTS màxim per l'itinerari")}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-8">
+                <div>
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{t('planner.roadmapValidations.officialSuggestions', 'Suggeriments Oficials FIB')}</h4>
+                    <div className="flex flex-wrap gap-2">
+                        {FIB_ACTIVITIES.map((act) => (
+                            <button
+                                type="button"
+                                key={act.name}
+                                onClick={() => {
+                                    setCustomName(act.name);
+                                    setCustomCredits(act.credits);
+                                }}
+                                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 text-xs font-medium text-slate-300 transition-colors flex items-center gap-2"
+                            >
+                                {act.name}
+                                <span className="text-[10px] text-slate-500 bg-black/40 px-1.5 rounded">{act.credits} cr</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label htmlFor="customName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.activityName', "Nom de l'activitat")}</label>
+                        <input
+                            id="customName"
+                            type="text"
+                            value={customName}
+                            onChange={(e) => setCustomName(e.target.value)}
+                            placeholder="Ex: Delegat d'assignatura"
+                            className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label htmlFor="customCredits" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.creditsEcts', 'Crèdits ECTS')}</label>
+                        <div className="relative">
+                            <input
+                                id="customCredits"
+                                type="number"
+                                min="0.5"
+                                step="0.5"
+                                value={customCredits}
+                                onChange={(e) => setCustomCredits(e.target.value ? Number(e.target.value) : '')}
+                                placeholder="2"
+                                className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-bold pointer-events-none">
+                                ECTS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+});
+CustomActivityForm.displayName = 'CustomActivityForm';
+
+const EmptyCfgsState: React.FC = React.memo(() => {
+    const { t } = useTranslation();
+
+    return (
+        <motion.div
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col items-center justify-center text-center h-full"
+        >
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+                <GraduationCap size={24} className="text-slate-500" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">{t('planner.roadmapValidations.selectCycle', 'Selecciona un cicle')}</h3>
+            <p className="text-sm text-slate-400 max-w-xs">
+                {t('planner.roadmapValidations.selectCycleDesc', "Tria un Cicle Formatiu per veure quines assignatures se't convalidaran automàticament.")}
+            </p>
+        </motion.div>
+    );
+});
+EmptyCfgsState.displayName = 'EmptyCfgsState';
+
+// --- Main Inner Content (Mounts only when modal is open to ensure clean fresh state) ---
+
+const ValidationsModalContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { t } = useTranslation();
     const { nodes, addCFGSValidations, addCustomValidation } = useRoadmap(useShallow(state => ({
         nodes: state.nodes,
         addCFGSValidations: state.addCFGSValidations,
         addCustomValidation: state.addCustomValidation
     })));
-    const [activeTab, setActiveTab] = useState<Tab>('cfgs');
-    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
-    
-    // Determinar quin CFGS està aplicat actualment mirant els nodes
+
+    // Determine which CFGS is currently applied from nodes
     const currentAppliedCFGSId = useMemo(() => {
         const cfgsNode = nodes.find(n => n.id.startsWith('CFGS_'));
         if (cfgsNode) {
@@ -43,27 +329,15 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
         return null;
     }, [nodes]);
 
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<Tab>('cfgs');
+    const [selectedId, setSelectedId] = useState<string | null>(() => currentAppliedCFGSId);
+    const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
     const [customName, setCustomName] = useState('');
     const [customCredits, setCustomCredits] = useState<number | ''>('');
 
-    // Auto-seleccionar el CFGS actual en obrir el modal
-    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
-    React.useEffect(() => {
-        if (isOpen) {
-            if (activeTab === 'cfgs' && currentAppliedCFGSId && !selectedId) {
-                setSelectedId(currentAppliedCFGSId);
-            }
-            setMobileView('menu');
-        } else {
-            // Reset state when closed
-            setSelectedId(null);
-            setActiveTab('cfgs');
-            setCustomName('');
-            setCustomCredits('');
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, currentAppliedCFGSId]);
+    const selectedCFGS = useMemo(() => CFGS_DEGREES.find(c => c.id === selectedId), [selectedId]);
+    const totalCFGSCredits = selectedId ? (CFGS_CREDITS_MAP.get(selectedId) || 0) : 0;
+    const isCurrentlyApplied = activeTab === 'cfgs' && selectedId === currentAppliedCFGSId;
 
     const handleApplyCFGS = () => {
         if (selectedId && selectedId !== currentAppliedCFGSId) {
@@ -79,13 +353,83 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
         }
     };
 
-    const selectedCFGS = useMemo(() => CFGS_DEGREES.find(c => c.id === selectedId), [selectedId]);
-    const totalCFGSCredits = selectedCFGS 
-        ? selectedCFGS.modules.reduce((acc, curr) => acc + curr.credits, 0) 
-        : 0;
+    return (
+        <div className="flex flex-col md:flex-row flex-1 w-full h-full relative overflow-hidden">
+            <ValidationsSidebar
+                activeTab={activeTab}
+                selectedId={selectedId}
+                mobileView={mobileView}
+                onSelectCustom={() => {
+                    setActiveTab('custom');
+                    setMobileView('content');
+                }}
+                onSelectCFGS={(id) => {
+                    setActiveTab('cfgs');
+                    setSelectedId(id);
+                    setMobileView('content');
+                }}
+            />
 
-    const isCurrentlyApplied = activeTab === 'cfgs' && selectedId === currentAppliedCFGSId;
+            {/* Right Column: Main Content */}
+            <div className={`flex-1 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-8 flex-col z-10 relative min-h-0 h-full ${mobileView === 'content' ? 'flex' : 'hidden md:flex'}`}>
+                {/* Mobile Back Button */}
+                <button
+                    type="button"
+                    onClick={() => setMobileView('menu')}
+                    className="md:hidden shrink-0 self-start mb-6 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors"
+                >
+                    <ChevronLeft size={16} strokeWidth={3} />
+                    {t('common.back', 'Tornar')}
+                </button>
 
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 min-h-0">
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'cfgs' && selectedId && selectedCFGS ? (
+                            <CfgsDetailView cfgs={selectedCFGS} totalCredits={totalCFGSCredits} />
+                        ) : activeTab === 'custom' ? (
+                            <CustomActivityForm
+                                customName={customName}
+                                setCustomName={setCustomName}
+                                customCredits={customCredits}
+                                setCustomCredits={setCustomCredits}
+                            />
+                        ) : (
+                            <EmptyCfgsState />
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* Footer Actions */}
+                {((activeTab === 'cfgs' && selectedId) || activeTab === 'custom') && (
+                    <div className="pt-4 border-t border-white/10 flex justify-end shrink-0 pl-2">
+                        <button
+                            type="button"
+                            onClick={activeTab === 'cfgs' ? handleApplyCFGS : handleApplyCustom}
+                            disabled={(activeTab === 'custom' && (!customName || !customCredits)) || isCurrentlyApplied}
+                            className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition disabled:cursor-not-allowed ${
+                                isCurrentlyApplied
+                                    ? 'bg-white/10 text-white opacity-50 shadow-none'
+                                    : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                            }`}
+                            aria-label={activeTab === 'cfgs' ? (isCurrentlyApplied ? t('planner.roadmapValidations.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapValidations.applyCredits', 'Aplicar {{credits}} ECTS', { credits: totalCFGSCredits })) : t('planner.roadmapValidations.addToRecord', "Afegir a l'expedient")}
+                        >
+                            {activeTab === 'cfgs'
+                                ? (isCurrentlyApplied
+                                    ? t('planner.roadmapValidations.alreadySelected', 'Ja Seleccionada')
+                                    : t('planner.roadmapValidations.applyCredits', 'Aplicar {{credits}} ECTS', { credits: totalCFGSCredits }))
+                                : t('planner.roadmapValidations.addToRecord', "Afegir a l'expedient")}
+                            {!isCurrentlyApplied && (activeTab === 'custom' ? <Plus size={18} /> : <ArrowRight size={18} />)}
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+// --- Modal Container Component ---
+
+const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -94,262 +438,7 @@ const ValidationsModal: React.FC<ValidationsModalProps> = ({ isOpen, onClose }) 
             className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
             fullScreenOnMobile
         >
-            <div className="flex flex-col md:flex-row flex-1 w-full h-full relative overflow-hidden">
-                
-                {/* No background gradient to match ExperienceSelectorModal */}
-
-                {/* Left Column: Sidebar List */}
-                <div className={`w-full md:w-90 border-b md:border-b-0 md:border-r border-white/10 p-6 flex-col z-10 bg-[#020617]/40 overflow-y-auto custom-scrollbar min-h-0 shrink-0 ${mobileView === 'menu' ? 'flex flex-1 md:flex-none' : 'hidden md:flex'}`}>
-                    <div className="mb-8 shrink-0">
-                        <h3 className="text-2xl font-bold text-white mb-2">{t('planner.roadmapValidations.title', 'Convalidacions')}</h3>
-                        <p className="text-sm text-slate-400">{t('planner.roadmapValidations.subtitle', 'Afegeix crèdits a la teva motxilla a través de cicles formatius o activitats extraescolars.')}</p>
-                    </div>
-
-                    <div className="flex-1 flex flex-col gap-6 relative min-h-0">
-                        
-                        {/* Custom Activities Tab */}
-                        <div>
-                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.otherActivities', 'Altres Activitats')}</h4>
-                            <div className="relative shrink-0">
-                                {activeTab === 'custom' && (
-                                    <motion.div
-                                        layoutId="active-sidebar-pill"
-                                        className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full z-20"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-                                <button
-                                    type="button"
-                                    onClick={() => { setActiveTab('custom'); setMobileView('content'); }}
-                                    className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group ${activeTab === 'custom' ? 'bg-white/4' : 'hover:bg-white/2'}`}
-                                    aria-label="Obrir panell">
-                                    <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${activeTab === 'custom' ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
-                                    <div className="flex flex-col min-w-0">
-                                        <span className={`transition-colors duration-300 font-bold ${activeTab === 'custom' ? 'text-white' : 'text-slate-400'}`}>
-                                            {t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}
-                                        </span>
-                                        <span className="text-xs text-slate-500 truncate mt-0.5">{t('planner.roadmapValidations.activityExamples', 'Game Jams, Esports, Idiomes')}</span>
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* CFGS List */}
-                        <div>
-                            <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 pl-2">{t('planner.roadmapValidations.cfgs', 'Cicles Formatius (CFGS)')}</h4>
-                            <div className="flex flex-col gap-2">
-                                {CFGS_DEGREES.map(cfgs => {
-                                    const isSelected = activeTab === 'cfgs' && selectedId === cfgs.id;
-                                    const totalCredits = cfgs.modules.reduce((acc, curr) => acc + curr.credits, 0);
-
-                                    return (
-                                        <div key={cfgs.id} className="relative shrink-0">
-                                            {isSelected && (
-                                                <motion.div
-                                                    layoutId="active-sidebar-pill"
-                                                    className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-white rounded-r-full z-20"
-                                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                                />
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={() => { setActiveTab('cfgs'); setSelectedId(cfgs.id); setMobileView('content'); }}
-                                                className={`w-full relative z-10 text-left px-5 py-4 text-base font-medium rounded-2xl transition-colors flex items-center gap-4 group pr-4 ${isSelected ? 'bg-white/4' : 'hover:bg-white/2'}`}
-                                                aria-label="Obrir panell">
-                                                <div className={`w-2 h-2 rounded-full transition duration-300 shrink-0 ${isSelected ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
-                                                <div className="flex flex-col min-w-0 flex-1 gap-1">
-                                                    <span className={`transition-colors duration-300 font-bold line-clamp-2 text-sm ${isSelected ? 'text-white' : 'text-slate-400'}`}>
-                                                        {cfgs.title.split(' (')[0]}
-                                                    </span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[10px] text-slate-500 font-bold border border-white/10 px-1.5 py-px rounded uppercase">
-                                                            {cfgs.title.includes('LOE') ? 'LOE' : 'LOGSE'}
-                                                        </span>
-                                                        <span className="text-[10px] text-slate-500 font-bold">
-                                                            {totalCredits} ECTS
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* Right Column: Main Content */}
-                <div className={`flex-1 py-6 md:py-8 pr-6 md:pr-8 pl-4 md:pl-8 flex-col z-10 relative min-h-0 h-full ${mobileView === 'content' ? 'flex' : 'hidden md:flex'}`}>
-                    
-                    {/* Mobile Back Button */}
-                    <button type="button" onClick={() => setMobileView('menu')} className="md:hidden shrink-0 self-start mb-6 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                        {t('common.back', 'Tornar')}
-                    </button>
-
-                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 min-h-0">
-                        <AnimatePresence mode="wait">
-                            {activeTab === 'cfgs' && selectedId && selectedCFGS ? (
-                                <motion.div
-                                    key={`cfgs-${selectedId}`}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="flex flex-col h-full"
-                                >
-                                    <div className="mb-6">
-                                        <h2 className="text-3xl font-black text-white tracking-tight mb-4 leading-tight">{selectedCFGS.title}</h2>
-                                        <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
-                                            {t('planner.roadmapValidations.cfgsDisclaimer', 'En aplicar aquesta convalidació, les següents assignatures s\'afegiran directament al teu expedient. Es substituirà qualsevol CFGS que ja tinguessis convalidat prèviament.')}
-                                        </p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4 mb-8 shrink-0 max-w-sm">
-                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.creditsObtained', 'Crèdits Obtinguts')}</div>
-                                            <div className="text-2xl font-black text-white">+{totalCFGSCredits} <span className="text-sm text-white/50">ECTS</span></div>
-                                        </div>
-                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t('planner.roadmapValidations.recognizedModules', 'Mòduls Reconeixements')}</div>
-                                            <div className="text-2xl font-black text-white">{selectedCFGS.modules.length}</div>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <h4 className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider mb-4 opacity-80">
-                                            <Layers size={14} className="text-white/70" />
-                                            {t('planner.roadmapValidations.validatedSubjects', 'Assignatures Convalidades')}
-                                        </h4>
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pb-4">
-                                            {selectedCFGS.modules.map((mod) => (
-                                                <div key={mod.name} className="p-4 rounded-xl bg-white/2 border border-white/10 flex flex-col gap-2">
-                                                    <span className="text-sm font-bold text-slate-200">{mod.name}</span>
-                                                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-400">
-                                                        <BookOpen size={12} /> {mod.credits} ECTS
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ) : activeTab === 'custom' ? (
-                                <motion.div
-                                    key="custom"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="flex flex-col h-full"
-                                >
-                                    <div className="mb-8">
-                                        <h2 className="text-3xl font-black text-white tracking-tight mb-4">{t('planner.roadmapValidations.universityActivities', 'Activitats Universitàries')}</h2>
-                                        <p className="text-sm text-slate-300 leading-relaxed max-w-2xl mb-6">
-                                            {t('planner.roadmapValidations.customDisclaimer', 'Afegeix manualment els crèdits reconeguts per activitats extracadèmiques com l\'esport, idiomes o representació estudiantil. Aquests s\'afegiran com a optatives superades.')}
-                                        </p>
-                                        <div className="inline-flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/30">
-                                                <Sparkles size={14} className="text-white" />
-                                            </div>
-                                            <div>
-                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.recommendedLimit', 'Límit Recomanat')}</div>
-                                                <div className="text-sm font-bold text-white">{t('planner.roadmapValidations.maxEcts', '6 ECTS màxim per l\'itinerari')}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-8">
-                                        <div>
-                                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">{t('planner.roadmapValidations.officialSuggestions', 'Suggeriments Oficials FIB')}</h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {FIB_ACTIVITIES.map((act) => (
-                                                    <button type="button"
-                                                        key={act.name}
-                                                        onClick={() => {
-                                                            setCustomName(act.name);
-                                                            setCustomCredits(act.credits);
-                                                        }}
-                                                        className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 text-xs font-medium text-slate-300 transition-colors flex items-center gap-2"
-                                                    >
-                                                        {act.name}
-                                                        <span className="text-[10px] text-slate-500 bg-black/40 px-1.5 rounded">{act.credits} cr</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label htmlFor="customName" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.activityName', 'Nom de l\'activitat')}</label>
-                                                <input 
-                                                    id="customName"
-                                                    type="text"
-                                                    value={customName}
-                                                    onChange={(e) => setCustomName(e.target.value)}
-                                                    placeholder="Ex: Delegat d'assignatura"
-                                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition"
-                                                />
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label htmlFor="customCredits" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('planner.roadmapValidations.creditsEcts', 'Crèdits ECTS')}</label>
-                                                <div className="relative">
-                                                    <input 
-                                                        id="customCredits"
-                                                        type="number"
-                                                        min="0.5"
-                                                        step="0.5"
-                                                        value={customCredits}
-                                                        onChange={(e) => setCustomCredits(e.target.value ? Number(e.target.value) : '')}
-                                                        placeholder="2"
-                                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/20 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                    />
-                                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-bold pointer-events-none">
-                                                        ECTS
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </motion.div>
-                            ) : (
-                                <motion.div 
-                                    key="empty"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="flex-1 flex flex-col items-center justify-center text-center h-full"
-                                >
-                                    <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                                        <GraduationCap size={24} className="text-slate-500" />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">{t('planner.roadmapValidations.selectCycle', 'Selecciona un cicle')}</h3>
-                                    <p className="text-sm text-slate-400 max-w-xs">
-                                        {t('planner.roadmapValidations.selectCycleDesc', 'Tria un Cicle Formatiu per veure quines assignatures se\'t convalidaran automàticament.')}
-                                    </p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-
-                    {/* Footer Actions */}
-                    {(activeTab === 'cfgs' && selectedId) || (activeTab === 'custom') ? (
-                        <div className="pt-4 border-t border-white/10 flex justify-end shrink-0 pl-2">
-                            <button type="button"
-                                onClick={activeTab === 'cfgs' ? handleApplyCFGS : handleApplyCustom}
-                                disabled={(activeTab === 'custom' && (!customName || !customCredits)) || isCurrentlyApplied}
-                                className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition disabled:cursor-not-allowed ${isCurrentlyApplied ? 'bg-white/10 text-white opacity-50 shadow-none' : 'bg-white text-black hover:scale-105 active:scale-95 disabled:opacity-50 shadow-[0_0_15px_rgba(255,255,255,0.2)]'}`}
-                             aria-label="Botó interactiu">
-                                {activeTab === 'cfgs' ? (isCurrentlyApplied ? t('planner.roadmapValidations.alreadySelected', 'Ja Seleccionada') : t('planner.roadmapValidations.applyCredits', 'Aplicar {{credits}} ECTS', { credits: totalCFGSCredits })) : t('planner.roadmapValidations.addToRecord', 'Afegir a l\'expedient')}
-                                {!isCurrentlyApplied && (activeTab === 'custom' ? <Plus size={18} /> : <ArrowRight size={18} />)}
-                            </button>
-                        </div>
-                    ) : null}
-                </div>
-            </div>
+            {isOpen && <ValidationsModalContent onClose={onClose} />}
         </Modal>
     );
 };

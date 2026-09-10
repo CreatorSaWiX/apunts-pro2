@@ -4,7 +4,6 @@ import { RefreshCw, GitCommitVertical } from 'lucide-react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-// import { Link } from 'react-router-dom';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {

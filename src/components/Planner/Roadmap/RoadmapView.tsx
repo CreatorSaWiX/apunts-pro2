@@ -2,7 +2,8 @@ import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react'
 import { ReactFlow, Panel, Background, BackgroundVariant, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useRoadmap, RoadmapProvider, TargetGradeProvider } from '../../../contexts/RoadmapContext';
-import type { SubjectNodeData } from '../../../contexts/RoadmapContext';
+import type { SubjectNodeData, DrawingStroke } from '../../../contexts/RoadmapContext';
+import type { Node } from '@xyflow/react';
 
 import SubjectNode from './Nodes/SubjectNode';
 import SubjectContextMenu from './SubjectContextMenu';
@@ -11,10 +12,28 @@ import SubjectDetailsModal from './SubjectDetailsModal';
 import RoadmapAIPromptBar from './RoadmapAIPromptBar';
 import Spinner from '../../ui/Spinner';
 
-import { Save, Plus, GraduationCap, ZoomIn, ZoomOut, Maximize, Sparkles, Award, Palette, Trash2, Undo2, Redo2, X, Type, StickyNote, MoreHorizontal, CalendarDays, Target } from 'lucide-react';
+import {
+    Save,
+    Plus,
+    GraduationCap,
+    Sparkles,
+    Award,
+    Palette,
+    Trash2,
+    Undo2,
+    Redo2,
+    X,
+    Type,
+    StickyNote,
+    MoreHorizontal,
+    CalendarDays
+} from 'lucide-react';
 import { specializations } from '../../../data/curriculum';
 import { m as motion, AnimatePresence, useIsPresent } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+
+import CustomControls from './CustomControls';
+import RoadmapStatsWidget from './RoadmapStatsWidget';
 
 import { SpecializationModal } from './SpecializationModal';
 import ExperienceSelectorModal from './ExperienceSelectorModal';
@@ -22,7 +41,7 @@ import ValidationsModal from './ValidationsModal';
 import TextNode from './Nodes/TextNode';
 import PostItNode from './Nodes/PostItNode';
 import DrawLayer from './DrawLayer';
-import { DrawProvider, useDrawContext } from '../../../contexts/DrawContext';
+import { DrawProvider, useDrawContext, type Stroke } from '../../../contexts/DrawContext';
 import { useShallow } from 'zustand/react/shallow';
 import { useCanvasShortcuts } from '../../../hooks/useCanvasShortcuts';
 import LiquidPanel from '../../ui/glass/LiquidPanel';
@@ -47,53 +66,42 @@ const DEFAULT_EDGE_OPTIONS = {
     style: { stroke: 'rgba(56, 189, 248, 0.4)', strokeWidth: 2 }
 };
 
-// Custom Zoom Controls Component
-const CustomControls = () => {
-    const { t } = useTranslation();
-    const { zoomIn, zoomOut, fitView } = useReactFlow();
-    return (
-        <Panel position="bottom-left" className="m-6 z-40 opacity-30 hover:opacity-100 transition-opacity duration-300 hidden lg:block">
-            <LiquidPanel className="flex flex-col gap-2 p-2">
-                <button
-                    type="button"
-                    onClick={() => zoomIn({ duration: 400 })}
-                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
-                    title={t('roadmapView.zoomIn', 'Zoom In')}
-                    aria-label="Acció ZoomIn">
-                    <ZoomIn size={18} strokeWidth={2.5} />
-                </button>
-                <div className="w-full h-px bg-white/5" />
-                <button
-                    type="button"
-                    onClick={() => zoomOut({ duration: 400 })}
-                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
-                    title={t('roadmapView.zoomOut', 'Zoom Out')}
-                    aria-label="Acció ZoomOut">
-                    <ZoomOut size={18} strokeWidth={2.5} />
-                </button>
-                <div className="w-full h-px bg-white/5" />
-                <button
-                    type="button"
-                    onClick={() => fitView({ padding: 0.2, duration: 800 })}
-                    className="p-2.5 text-slate-400 hover:text-sky-400 hover:bg-white/5 rounded-xl transition hover:scale-110 active:scale-95"
-                    title={t('roadmapView.fitView', 'Fit View')}
-                    aria-label="Acció Maximize">
-                    <Maximize size={18} strokeWidth={2.5} />
-                </button>
-            </LiquidPanel>
-        </Panel>
-    );
-};
+const DRAW_PALETTE = [
+    { color: '#ef4444', labelKey: 'canvas.colors.red', fallback: 'Vermell', bg: 'bg-red-500', shadow: 'rgba(239,68,68,0.5)' },
+    { color: '#3b82f6', labelKey: 'canvas.colors.blue', fallback: 'Blau', bg: 'bg-blue-500', shadow: 'rgba(59,130,246,0.5)' },
+    { color: '#eab308', labelKey: 'canvas.colors.yellow', fallback: 'Groc', bg: 'bg-yellow-500', shadow: 'rgba(234,179,8,0.5)' },
+    { color: '#a855f7', labelKey: 'canvas.colors.purple', fallback: 'Lila', bg: 'bg-purple-500', shadow: 'rgba(168,85,247,0.5)' }
+];
 
+// --- Main Inner Component ---
 
-interface RoadmapViewProps {
+export interface RoadmapViewProps {
     isOpenAI?: boolean;
     onCloseAI?: () => void;
 }
 
 const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onCloseAI = () => { } }) => {
     const { t } = useTranslation();
-    const { nodes, edges, onNodesChange, onEdgesChange, onConnect, saveRoadmap, isLoading, canStartMaster, totalPassedECTS, setSpecialization, averageGrade, initialStrokes, addAnnotationNode, targetGrade, setTargetGrade, requiredAverageGrade } = useRoadmap(useShallow(state => ({
+    const {
+        nodes,
+        edges,
+        onNodesChange,
+        onEdgesChange,
+        onConnect,
+        saveRoadmap,
+        isLoading,
+        canStartMaster,
+        totalPassedECTS,
+        totalPlannedECTS,
+        setSpecialization,
+        averageGrade,
+        initialStrokes,
+        addAnnotationNode,
+        addSubjectNode,
+        targetGrade,
+        setTargetGrade,
+        requiredAverageGrade
+    } = useRoadmap(useShallow(state => ({
         nodes: state.nodes,
         edges: state.edges,
         onNodesChange: state.onNodesChange,
@@ -103,15 +111,30 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         isLoading: state.isLoading,
         canStartMaster: state.canStartMaster,
         totalPassedECTS: state.totalPassedECTS,
+        totalPlannedECTS: state.totalPlannedECTS,
         setSpecialization: state.setSpecialization,
         averageGrade: state.averageGrade,
         initialStrokes: state.initialStrokes,
         addAnnotationNode: state.addAnnotationNode,
+        addSubjectNode: state.addSubjectNode,
         targetGrade: state.targetGrade,
         setTargetGrade: state.setTargetGrade,
         requiredAverageGrade: state.requiredAverageGrade
     })));
-    const { isDrawMode, setIsDrawMode, currentColor, setCurrentColor, clearStrokes, undoStroke, redoStroke, canUndo, canRedo, strokes, setStrokes } = useDrawContext(useShallow(state => ({
+
+    const {
+        isDrawMode,
+        setIsDrawMode,
+        currentColor,
+        setCurrentColor,
+        clearStrokes,
+        undoStroke,
+        redoStroke,
+        canUndo,
+        canRedo,
+        strokes,
+        setStrokes
+    } = useDrawContext(useShallow(state => ({
         isDrawMode: state.isDrawMode,
         setIsDrawMode: state.setIsDrawMode,
         currentColor: state.currentColor,
@@ -124,6 +147,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         strokes: state.strokes,
         setStrokes: state.setStrokes
     })));
+
     const reactFlowInstance = useReactFlow();
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -138,9 +162,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const isPresent = useIsPresent();
     const [shouldRender, setShouldRender] = useState(true);
-    // Derived flag: true during the exit animation. Used to strip interactive
-    // features and skip heavy sub-trees so the main thread stays free for
-    // the CSS/JS exit transition (opacity+transform).
+
     const isExiting = !isPresent;
 
     useCanvasShortcuts({ enabled: isDrawMode && !isExiting, onClose: () => setIsDrawMode(false) });
@@ -156,31 +178,41 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
 
     useEffect(() => {
         if (initialStrokes && initialStrokes.length > 0) {
-            setStrokes(initialStrokes as any);
+            const formattedStrokes: Stroke[] = initialStrokes.map(s => ({
+                id: s.id || Math.random().toString(),
+                points: s.points.map(p => ({ x: p.x, y: p.y })),
+                color: s.color || '#ef4444',
+                width: typeof s.width === 'number' ? s.width : (typeof s.size === 'number' ? s.size : 3)
+            }));
+            setStrokes(formattedStrokes);
         }
     }, [initialStrokes, setStrokes]);
 
     // Dispatch event to hide main navigation when draw mode is active
     useEffect(() => {
         window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: isDrawMode }));
-        return () => { window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false })); };
+        return () => {
+            window.dispatchEvent(new CustomEvent('apunts_canvas_active', { detail: false }));
+        };
     }, [isDrawMode]);
 
     // WeakMap structural sharing: during drag, applyNodeChanges only creates
     // new references for moved nodes (~1 per frame). We cache the typed version
     // keyed by the source node reference, reusing unchanged nodes and reducing
     // object allocations from O(n) to O(changed) per frame.
-    // WeakMap entries auto-GC when source nodes are dereferenced.
     const typedNodesCacheRef = useRef(new WeakMap<object, (typeof nodes)[number]>());
     const typedNodes = useMemo(() => {
         const cache = typedNodesCacheRef.current;
         return nodes.map(n => {
             const cached = cache.get(n);
             if (cached) return cached;
-            const dataType = n.data.type as string;
-            const resolvedType = dataType === 'text' ? 'textNode'
-                : dataType === 'postit' ? 'postItNode'
-                : (dataType === 'mobility' || dataType === 'internship' || dataType === 'tfg' || dataType === 'tfm') ? dataType
+            const dataType = (n.data as Record<string, unknown>)?.type as string;
+            const resolvedType = dataType === 'text'
+                ? 'textNode'
+                : dataType === 'postit'
+                ? 'postItNode'
+                : (dataType === 'mobility' || dataType === 'internship' || dataType === 'tfg' || dataType === 'tfm')
+                ? dataType
                 : 'subjectNode';
             const typed = { ...n, type: resolvedType };
             cache.set(n, typed);
@@ -188,9 +220,10 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         });
     }, [nodes]);
 
-    const onNodeClick = useCallback((event: React.MouseEvent, node: any) => {
+    const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
         setSelectedNodeId(node.id);
-        if (node.data?.type === 'text' || node.data?.type === 'postit') {
+        const nodeType = (node.data as Record<string, unknown>)?.type;
+        if (nodeType === 'text' || nodeType === 'postit') {
             return;
         }
         setMenuPosition({ x: event.clientX, y: event.clientY });
@@ -198,14 +231,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     }, []);
 
     // Only scan nodes when the context menu is actually visible.
-    // Previously this ran O(n) find() on every drag frame even with no menu open.
     const selectedNodeData = useMemo(() => {
         if (!selectedNodeId || !isMenuOpen) return null;
         const node = nodes.find(n => n.id === selectedNodeId);
-        return node ? node.data as SubjectNodeData : null;
+        return node ? (node.data as unknown as SubjectNodeData) : null;
     }, [selectedNodeId, nodes, isMenuOpen]);
 
-    const currentSpecNode = useMemo(() => nodes.find(n => n.data.type === 'specialization'), [nodes]);
+    const currentSpecNode = useMemo(() => nodes.find(n => (n.data as Record<string, unknown>)?.type === 'specialization'), [nodes]);
     const currentSpec = useMemo(() => {
         if (!currentSpecNode) return null;
         return specializations.find(s => s.mandatory.includes(currentSpecNode.id));
@@ -214,7 +246,14 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const handleSave = useCallback(async () => {
         setIsSaving(true);
         try {
-            await saveRoadmap(strokes as any);
+            const strokesToSave: DrawingStroke[] = strokes.map(s => ({
+                id: s.id,
+                points: s.points,
+                color: s.color,
+                size: s.width,
+                width: s.width
+            }));
+            await saveRoadmap(strokesToSave);
         } catch (err) {
             console.error("Failed to save", err);
         } finally {
@@ -228,10 +267,19 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
         setIsDrawMode(false);
     }, [reactFlowInstance, addAnnotationNode, setIsDrawMode]);
 
-    // Planned ECTS calculation moved here to respect Rules of Hooks
-    const totalPlannedECTS = useMemo(() => nodes.reduce((sum, n) => sum + (n.data.credits || 0), 0), [nodes]);
+    const handleAISubjectAdd = useCallback((abbr: string, type?: string) => {
+        addSubjectNode(abbr, (type as SubjectNodeData['type']) || 'optional');
+    }, [addSubjectNode]);
 
-    if (!shouldRender) return null; // Unmount heavy ReactFlow after exit transition to prevent FPS drop
+    const handleCloseContextMenu = useCallback(() => setIsMenuOpen(false), []);
+    const handleOpenDetails = useCallback(() => setIsDetailsOpen(true), []);
+    const handleCloseDetails = useCallback(() => setIsDetailsOpen(false), []);
+    const handleCloseSearch = useCallback(() => setIsSearchModalOpen(false), []);
+    const handleCloseExperience = useCallback(() => setIsExperienceModalOpen(false), []);
+    const handleCloseValidations = useCallback(() => setIsValidationsModalOpen(false), []);
+    const handleCloseSpec = useCallback(() => setIsSpecMenuOpen(false), []);
+
+    if (!shouldRender) return null;
 
     if (isLoading) {
         return (
@@ -240,28 +288,25 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     <div className="absolute inset-0 bg-sky-500/20 blur-xl rounded-full" />
                     <Spinner size="xl" variant="sky" className="relative z-10" />
                 </div>
-                <span className="mt-6 text-sky-400/80 font-mono text-xs tracking-[0.3em] uppercase animate-pulse">{t('roadmapView.startingSystems', 'Iniciant Sistemes...')}</span>
+                <span className="mt-6 text-sky-400/80 font-mono text-xs tracking-[0.3em] uppercase animate-pulse">
+                    {t('roadmapView.startingSystems', 'Iniciant Sistemes...')}
+                </span>
             </div>
         );
     }
 
-    // Circular Progress Calculation
-    const radius = 22;
-    const circumference = 2 * Math.PI * radius;
-
-    // ECTS calculation
-    const percentage = Math.min(totalPassedECTS / 240, 1);
-    const strokeDashoffset = circumference - percentage * circumference;
-
-    // Planned ECTS calculation variables
-    const plannedPercentage = Math.min(totalPlannedECTS / 240, 1);
-    const plannedStrokeDashoffset = circumference - plannedPercentage * circumference;
-
     return (
         <div className="w-full h-full relative bg-[#09090b] overflow-hidden flex">
-
             {/* Animated Sci-Fi Grid Overlay */}
-            <div className="absolute inset-0 pointer-events-none z-0 opacity-30" style={{ backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)', backgroundSize: '60px 60px', maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)' }} />
+            <div
+                className="absolute inset-0 pointer-events-none z-0 opacity-30"
+                style={{
+                    backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)',
+                    backgroundSize: '60px 60px',
+                    maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)'
+                }}
+            />
 
             {/* Radial Gradient Focus Overlay */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06)_0%,rgba(9,9,11,0.6)_60%,rgba(9,9,11,1)_100%)] pointer-events-none z-0" />
@@ -297,409 +342,256 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     </ReactFlow>
                 </TargetGradeProvider>
 
-                {/* During exit animation, strip all interactive overlays to keep
-                    the main thread free. Only the ReactFlow canvas remains visible
-                    while the parent motion.div fades it out. */}
-                {!isExiting && (<>
-                {/* ECTS Circular Glass Widget Bottom Right (Spatial UI) */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="absolute bottom-6 right-6 z-40 hidden lg:flex flex-col items-end gap-3 pointer-events-none"
-                >
-                    <div className="bg-slate-900/95 border border-white/10 rounded-3xl p-3 flex flex-col gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto" style={{ transform: 'translateZ(0)' }}>
+                {!isExiting && (
+                    <>
+                        <RoadmapStatsWidget
+                            averageGrade={averageGrade}
+                            targetGrade={targetGrade}
+                            requiredAverageGrade={requiredAverageGrade}
+                            setTargetGrade={setTargetGrade}
+                            totalPassedECTS={totalPassedECTS}
+                            totalPlannedECTS={totalPlannedECTS}
+                            canStartMaster={canStartMaster}
+                            onSave={handleSave}
+                        />
 
-                        {/* Nota Mitjana Widget */}
-                        <div className="flex items-center gap-4 px-2 py-1">
-                            <div className="relative w-[50px] h-[50px] flex items-center justify-center rounded-full bg-linear-to-br from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/30 shadow-[inset_0_0_20px_rgba(217,70,239,0.3),0_0_15px_rgba(217,70,239,0.2)]">
-                                <span className="text-[15px] font-black text-white drop-shadow-[0_0_8px_rgba(217,70,239,0.8)] tracking-tight">
-                                    {averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}
-                                </span>
-                            </div>
-                            <div className="flex flex-col pr-4">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.averageGrade', 'Mitjana Ponderada')}</span>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-xl font-black text-white tracking-tight">{averageGrade !== null ? averageGrade.toFixed(2) : '-.--'}</span>
-                                        <span className="text-xs font-medium text-slate-500">/10</span>
-                                    </div>
-                                    
-                                    {/* Target Input */}
-                                    <div className="flex items-center bg-white/5 hover:bg-white/10 transition-colors rounded-lg px-2 py-1 border border-white/5 relative group">
-                                        <Target size={12} className={`mr-1.5 transition-colors ${targetGrade !== null ? (requiredAverageGrade !== null && requiredAverageGrade > 10 ? 'text-red-400' : 'text-amber-400') : 'text-slate-500'}`} />
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="10"
-                                            step="0.1"
-                                            value={targetGrade !== null ? targetGrade : ''}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                if (val === '') { setTargetGrade(null); return; }
-                                                const num = parseFloat(val);
-                                                if (!isNaN(num) && num >= 0 && num <= 10) setTargetGrade(num);
-                                            }}
-                                            placeholder="Obj."
-                                            title={t('roadmapView.targetGradeInput', 'Escriu la nota objectiu a la que vols arribar')}
-                                            className="w-8 bg-transparent text-sm font-bold text-slate-300 hover:text-white focus:text-white tracking-tight outline-none placeholder-slate-600 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                            onBlur={() => handleSave()}
-                                            onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
-                                        />
-                                        
-                                        {/* Required Indicator (absolute below input) */}
-                                        <AnimatePresence>
-                                            {targetGrade !== null && requiredAverageGrade !== null && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 5 }}
-                                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap z-50 pointer-events-none"
+                        {/* Floating Dock Action Buttons Bottom Center */}
+                        <LiquidToolbar delay={0.3} className={isDrawMode ? "landscape:hidden lg:landscape:flex" : "hidden sm:flex"}>
+                            {isDrawMode ? [
+                                <motion.div layout key="color-selector" className="relative">
+                                    <LiquidToolbarButton
+                                        onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
+                                        active={false}
+                                        title={t('canvas.colors.select', 'Seleccionar Color')}
+                                    >
+                                        <div className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
+                                    </LiquidToolbarButton>
+
+                                    <AnimatePresence>
+                                        {isColorMenuOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute bottom-full mb-4 left-0 origin-bottom-left flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
+                                            >
+                                                <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+
+                                                <div className="relative z-10 flex gap-1 px-1">
+                                                    {DRAW_PALETTE.map((p) => (
+                                                        <button
+                                                            type="button"
+                                                            key={p.color}
+                                                            onClick={() => { setCurrentColor(p.color); setIsColorMenuOpen(false); }}
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === p.color ? 'bg-white/10 scale-110' : ''}`}
+                                                            title={t(p.labelKey, p.fallback)}
+                                                            aria-label={t(p.labelKey, p.fallback)}
+                                                        >
+                                                            <div className={`w-5 h-5 rounded-full ${p.bg}`} style={{ boxShadow: `0 0 8px ${p.shadow}` }} />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>,
+
+                                <motion.div layout key="sep-1" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <LiquidToolbarButton key="add-text" onClick={() => handleAddAnnotation('text')} title={t('roadmapView.addText', 'Afegir Text')}>
+                                    <Type size={16} />
+                                </LiquidToolbarButton>,
+
+                                <LiquidToolbarButton key="add-postit" onClick={() => handleAddAnnotation('postit')} title={t('roadmapView.addPostit', 'Afegir Post-it')}>
+                                    <StickyNote size={16} />
+                                </LiquidToolbarButton>,
+
+                                <motion.div layout key="sep-2" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <LiquidToolbarButton
+                                    key="undo"
+                                    onClick={undoStroke}
+                                    title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}
+                                    disabled={!canUndo}
+                                    className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
+                                >
+                                    <Undo2 size={16} />
+                                </LiquidToolbarButton>,
+
+                                <LiquidToolbarButton
+                                    key="redo"
+                                    onClick={redoStroke}
+                                    title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}
+                                    disabled={!canRedo}
+                                    className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
+                                >
+                                    <Redo2 size={16} />
+                                </LiquidToolbarButton>,
+
+                                <LiquidToolbarButton
+                                    key="clear"
+                                    onClick={() => { if (window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) clearStrokes(); }}
+                                    title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')}
+                                    className="hover:text-rose-400"
+                                >
+                                    <Trash2 size={16} />
+                                </LiquidToolbarButton>,
+
+                                <motion.div layout key="sep-3" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <LiquidToolbarButton key="exit-draw" onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
+                                    <X size={16} />
+                                    <span className="hidden sm:inline font-bold">{t('roadmapView.exit', 'Sortir')}</span>
+                                </LiquidToolbarButton>
+                            ] : [
+                                <motion.div layout key="spec-selector" className="relative">
+                                    <LiquidToolbarButton
+                                        onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
+                                    >
+                                        <GraduationCap size={16} />
+                                        <span className="hidden sm:inline">
+                                            {currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat')}
+                                        </span>
+                                        <span className="sm:hidden">
+                                            {currentSpec ? currentSpec.name.substring(0, 6) + '.' : t('roadmapView.specializationShort', 'Espec.')}
+                                        </span>
+                                    </LiquidToolbarButton>
+                                </motion.div>,
+
+                                <motion.div layout key="sep-4" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <LiquidToolbarButton
+                                    key="add-optativa"
+                                    onClick={() => setIsSearchModalOpen(true)}
+                                >
+                                    <Plus size={16} />
+                                    <span className="hidden sm:inline">{t('roadmapView.elective', 'Optativa')}</span>
+                                    <span className="sm:hidden">{t('roadmapView.electiveShort', 'Opt.')}</span>
+                                </LiquidToolbarButton>,
+
+                                <motion.div layout key="sep-5" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <LiquidToolbarButton
+                                    key="draw-mode"
+                                    onClick={() => setIsDrawMode(true)}
+                                >
+                                    <Palette size={16} />
+                                    <span className="hidden sm:inline font-medium">{t('roadmapView.draw', 'Dibuixar')}</span>
+                                    <span className="sm:hidden font-medium">{t('roadmapView.drawShort', 'Dib.')}</span>
+                                </LiquidToolbarButton>,
+
+                                <motion.div layout key="sep-6" className="w-px h-6 bg-white/10 mx-1" />,
+
+                                <motion.div layout key="more-actions" className="relative">
+                                    <LiquidToolbarButton
+                                        onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                                        active={isMoreMenuOpen}
+                                    >
+                                        <MoreHorizontal size={16} />
+                                        <span className="hidden sm:inline font-medium">{t('roadmapView.more', 'Més')}</span>
+                                    </LiquidToolbarButton>
+
+                                    <AnimatePresence>
+                                        {isMoreMenuOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex flex-col gap-1 p-2 min-w-[200px] pointer-events-auto"
+                                            >
+                                                <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }}
+                                                    className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium"
                                                 >
-                                                    <span className={`text-[9px] font-bold px-1.5 py-1 rounded-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] flex items-center gap-1 backdrop-blur-md ${
-                                                        requiredAverageGrade > 10 ? 'text-red-400 bg-red-950/90 border border-red-500/30' :
-                                                        requiredAverageGrade > 8 ? 'text-amber-400 bg-amber-950/90 border border-amber-500/30' :
-                                                        requiredAverageGrade <= 5 ? 'text-emerald-400 bg-emerald-950/90 border border-emerald-500/30' :
-                                                        'text-sky-400 bg-sky-950/90 border border-sky-500/30'
-                                                    }`}>
-                                                        {requiredAverageGrade > 10 ? '⚠ Impossible' :
-                                                         requiredAverageGrade <= 5 ? '✓ Garantit' :
-                                                         `Cal: ${requiredAverageGrade.toFixed(2)}`}
-                                                    </span>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                                    <Sparkles size={16} className="text-white" />
+                                                    {t('roadmapView.addExperience', 'Afegir Experiència')}
+                                                </button>
 
-                        <div className="w-full h-px bg-white/5 rounded-full" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }}
+                                                    className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium"
+                                                >
+                                                    <Award size={16} className="text-white" />
+                                                    {t('roadmapView.validations', 'Convalidacions')}
+                                                </button>
 
-                        {/* ECTS Widget */}
-                        <div className="flex items-center gap-4 px-2 py-1">
-                            <div className="relative w-[50px] h-[50px] flex items-center justify-center">
-                                {/* Background Circle */}
-                                <svg className="w-full h-full transform -rotate-90 absolute inset-0">
-                                    <circle cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" className="text-slate-800" />
-                                    <circle
-                                        cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent"
-                                        strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
-                                        strokeLinecap="round"
-                                        className="text-sky-500 transition duration-1000 ease-out drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]"
-                                    />
-                                </svg>
-                                <span className="text-[10px] font-bold text-sky-400 mt-0.5">{Math.round(percentage * 100)}%</span>
-                            </div>
-                            <div className="flex flex-col pr-6">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.passedECTS', 'Crèdits Aprovats')}</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-xl font-black text-white tracking-tight">{totalPassedECTS}</span>
-                                    <span className="text-xs font-medium text-slate-500">/240</span>
-                                </div>
-                            </div>
-                        </div>
+                                                <a
+                                                    href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsMoreMenuOpen(false)}
+                                                    className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium"
+                                                >
+                                                    <CalendarDays size={16} className="text-white" />
+                                                    {t('roadmapView.schedulePlanner', 'Planificador horaris')}
+                                                </a>
 
-                        <div className="w-full h-px bg-white/5 rounded-full" />
+                                                <div className="h-px bg-white/10 my-1 relative z-10" />
 
-                        {/* Planned ECTS Widget */}
-                        <div className="flex items-center gap-4 px-2 py-1">
-                            <div className="relative w-[50px] h-[50px] flex items-center justify-center">
-                                {/* Background Circle */}
-                                <svg className="w-full h-full transform -rotate-90 absolute inset-0">
-                                    <circle cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent" className="text-slate-800" />
-                                    <circle
-                                        cx="25" cy="25" r={radius} stroke="currentColor" strokeWidth="4" fill="transparent"
-                                        strokeDasharray={circumference} strokeDashoffset={plannedStrokeDashoffset}
-                                        strokeLinecap="round"
-                                        className="text-violet-500 transition duration-1000 ease-out drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]"
-                                    />
-                                </svg>
-                                <span className="text-[10px] font-bold text-violet-400 mt-0.5">{Math.round(plannedPercentage * 100)}%</span>
-                            </div>
-                            <div className="flex flex-col pr-6">
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-0.5">{t('roadmapView.plannedECTS', 'Crèdits Planificats')}</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-xl font-black text-white tracking-tight">{totalPlannedECTS}</span>
-                                    <span className="text-xs font-medium text-slate-500">/240</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { handleSave(); setIsMoreMenuOpen(false); }}
+                                                    disabled={isSaving}
+                                                    className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium"
+                                                >
+                                                    {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} className="text-white" />}
+                                                    {isSaving ? t('roadmapView.saving', 'Guardant...') : t('roadmapView.saveRoadmap', 'Guardar Roadmap')}
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            ]}
+                        </LiquidToolbar>
 
-                    <AnimatePresence>
-                        {canStartMaster && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                className="bg-orange-500/10 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-3 flex items-center gap-3 shadow-[0_0_20px_rgba(249,115,22,0.15)] relative overflow-hidden pointer-events-auto"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 animate-[shine_3s_infinite]" />
-                                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center shrink-0 border border-orange-500/30">
-                                    <GraduationCap size={16} className="text-orange-400" />
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-mono text-orange-400/80 uppercase tracking-widest">{t('roadmapView.masterReady', 'Master Ready')}</span>
-                                    <span className="text-xs font-bold text-orange-200">{t('roadmapView.parsRequirements', 'Requisits PARS Assolits')}</span>
-                                </div>
-                            </motion.div>
+                        {/* FAB Menu for Mobile (Main Menu only) */}
+                        {!isDrawMode && (
+                            <FabMenu
+                                className="bottom-24 right-6"
+                                mainIcon={<Plus size={24} />}
+                                actions={[
+                                    { id: 'spec', label: currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat'), icon: <GraduationCap size={20} />, onClick: () => setIsSpecMenuOpen(true) },
+                                    { id: 'elective', label: t('roadmapView.elective', 'Optativa'), icon: <Plus size={20} />, onClick: () => setIsSearchModalOpen(true) },
+                                    { id: 'experience', label: t('roadmapView.addExperience', 'Afegir Experiència'), icon: <Sparkles size={20} />, onClick: () => setIsExperienceModalOpen(true) },
+                                    { id: 'validations', label: t('roadmapView.validations', 'Convalidacions'), icon: <Award size={20} />, onClick: () => setIsValidationsModalOpen(true) },
+                                    { id: 'schedule', label: t('roadmapView.schedulePlanner', 'Planificador horaris'), icon: <CalendarDays size={20} />, onClick: () => window.open('https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris', '_blank') },
+                                    { id: 'save', label: t('roadmapView.saveRoadmap', 'Guardar'), icon: <Save size={20} />, onClick: handleSave },
+                                    { id: 'draw', label: t('roadmapView.draw', 'Dibuixar'), icon: <Palette size={20} />, onClick: () => setIsDrawMode(true) }
+                                ]}
+                            />
                         )}
-                    </AnimatePresence>
-                </motion.div>
-
-                {/* Floating Dock Action Buttons Bottom Center */}
-                <LiquidToolbar delay={0.3} className={isDrawMode ? "landscape:hidden lg:landscape:flex" : "hidden sm:flex"}>
-                    {isDrawMode ? [
-                        <motion.div layout key="color-selector" className="relative">
-                            <LiquidToolbarButton
-                                onClick={() => setIsColorMenuOpen(!isColorMenuOpen)}
-                                active={false}
-                                title={t('canvas.colors.select', 'Seleccionar Color')}
-                            >
-                                <div className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: currentColor, boxShadow: `0 0 12px ${currentColor}80` }} />
-                            </LiquidToolbarButton>
-
-                            <AnimatePresence>
-                                {isColorMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="absolute bottom-full mb-4 left-0 origin-bottom-left flex gap-1 p-2 rounded-[2rem] pointer-events-auto"
-                                    >
-                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
-                                        
-                                        <div className="relative z-10 flex gap-1 px-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => { setCurrentColor('#ef4444'); setIsColorMenuOpen(false); }}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#ef4444' ? 'bg-white/10 scale-110' : ''}`}
-                                                title={t('canvas.colors.red', 'Vermell')}
-                                                aria-label="Obrir panell">
-                                                <div className="w-5 h-5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => { setCurrentColor('#3b82f6'); setIsColorMenuOpen(false); }}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#3b82f6' ? 'bg-white/10 scale-110' : ''}`}
-                                                title={t('canvas.colors.blue', 'Blau')}
-                                                aria-label="Obrir panell">
-                                                <div className="w-5 h-5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => { setCurrentColor('#eab308'); setIsColorMenuOpen(false); }}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#eab308' ? 'bg-white/10 scale-110' : ''}`}
-                                                title={t('canvas.colors.yellow', 'Groc')}
-                                                aria-label="Obrir panell">
-                                                <div className="w-5 h-5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => { setCurrentColor('#a855f7'); setIsColorMenuOpen(false); }}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition ${currentColor === '#a855f7' ? 'bg-white/10 scale-110' : ''}`}
-                                                title={t('canvas.colors.purple', 'Lila')}
-                                                aria-label="Obrir panell">
-                                                <div className="w-5 h-5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </motion.div>,
-
-                        <motion.div layout key="sep-1" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        <LiquidToolbarButton key="add-text" onClick={() => handleAddAnnotation('text')} title={t('roadmapView.addText', 'Afegir Text')}>
-                            <Type size={16} />
-                        </LiquidToolbarButton>,
-
-                        <LiquidToolbarButton key="add-postit" onClick={() => handleAddAnnotation('postit')} title={t('roadmapView.addPostit', 'Afegir Post-it')}>
-                            <StickyNote size={16} />
-                        </LiquidToolbarButton>,
-
-                        <motion.div layout key="sep-2" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        <LiquidToolbarButton key="undo"
-                            onClick={undoStroke}
-                            title={t('canvas.actions.undo', 'Desfer (Ctrl+Z)')}
-                            disabled={!canUndo}
-                            className={!canUndo ? 'opacity-50 cursor-not-allowed' : ''}
-                        >
-                            <Undo2 size={16} />
-                        </LiquidToolbarButton>,
-
-                        <LiquidToolbarButton key="redo"
-                            onClick={redoStroke}
-                            title={t('canvas.actions.redo', 'Refer (Ctrl+Y / Ctrl+Shift+Z)')}
-                            disabled={!canRedo}
-                            className={!canRedo ? 'opacity-50 cursor-not-allowed' : ''}
-                        >
-                            <Redo2 size={16} />
-                        </LiquidToolbarButton>,
-
-                        <LiquidToolbarButton key="clear" onClick={() => { if(window.confirm(t('canvas.confirmClear', 'Vols esborrar tot el llenç?'))) clearStrokes(); }} title={t('canvas.actions.clear', 'Netejar tot el llenç (Shift+Supr)')} className="hover:text-rose-400">
-                            <Trash2 size={16} />
-                        </LiquidToolbarButton>,
-
-                        <motion.div layout key="sep-3" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        <LiquidToolbarButton key="exit-draw" onClick={() => setIsDrawMode(false)} className="text-white hover:text-slate-300">
-                            <X size={16} />
-                            <span className="hidden sm:inline font-bold">{t('roadmapView.exit', 'Sortir')}</span>
-                        </LiquidToolbarButton>
-                    ] : [
-                        /* Tria Especialitat */
-                        <motion.div layout key="spec-selector" className="relative">
-                            <LiquidToolbarButton
-                                onClick={() => setIsSpecMenuOpen(!isSpecMenuOpen)}
-                            >
-                                <GraduationCap size={16} />
-                                <span className="hidden sm:inline">
-                                    {currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat')}
-                                </span>
-                                <span className="sm:hidden">
-                                    {currentSpec ? currentSpec.name.substring(0, 6) + '.' : t('roadmapView.specializationShort', 'Espec.')}
-                                </span>
-                            </LiquidToolbarButton>
-                        </motion.div>,
-
-                        <SpecializationModal
-                            key="spec-modal"
-                            isOpen={isSpecMenuOpen}
-                            onClose={() => setIsSpecMenuOpen(false)}
-                            currentSpecId={currentSpec?.id || null}
-                            onSelect={setSpecialization}
-                        />,
-
-                        <motion.div layout key="sep-4" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        /* Afegir Optativa */
-                        <LiquidToolbarButton key="add-optativa"
-                            onClick={() => setIsSearchModalOpen(true)}
-                        >
-                            <Plus size={16} />
-                            <span className="hidden sm:inline">{t('roadmapView.elective', 'Optativa')}</span>
-                            <span className="sm:hidden">{t('roadmapView.electiveShort', 'Opt.')}</span>
-                        </LiquidToolbarButton>,
-
-                        <motion.div layout key="sep-5" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        /* Dibuixar */
-                        <LiquidToolbarButton key="draw-mode"
-                            onClick={() => setIsDrawMode(true)}
-                        >
-                            <Palette size={16} />
-                            <span className="hidden sm:inline font-medium">{t('roadmapView.draw', 'Dibuixar')}</span>
-                            <span className="sm:hidden font-medium">{t('roadmapView.drawShort', 'Dib.')}</span>
-                        </LiquidToolbarButton>,
-
-                        <motion.div layout key="sep-6" className="w-px h-6 bg-white/10 mx-1" />,
-
-                        /* Més Accions */
-                        <motion.div layout key="more-actions" className="relative">
-                            <LiquidToolbarButton
-                                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-                                active={isMoreMenuOpen}
-                            >
-                                <MoreHorizontal size={16} />
-                                <span className="hidden sm:inline font-medium">{t('roadmapView.more', 'Més')}</span>
-                            </LiquidToolbarButton>
-
-                            <AnimatePresence>
-                                {isMoreMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 flex flex-col gap-1 p-2 min-w-[200px] pointer-events-auto"
-                                    >
-                                        <LiquidPanel className="absolute inset-0 pointer-events-none" variant="darker">{null}</LiquidPanel>
-
-                                        <button type="button" onClick={() => { setIsExperienceModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            <Sparkles size={16} className="text-white" />
-                                            {t('roadmapView.addExperience', 'Afegir Experiència')}
-                                        </button>
-
-                                        <button type="button" onClick={() => { setIsValidationsModalOpen(true); setIsMoreMenuOpen(false); }} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            <Award size={16} className="text-white" />
-                                            {t('roadmapView.validations', 'Convalidacions')}
-                                        </button>
-
-                                        {/* <div className="h-px bg-white/10 my-1 relative z-10" /> */}
-
-                                        <a href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris" target="_blank" rel="noopener noreferrer" onClick={() => setIsMoreMenuOpen(false)} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            <CalendarDays size={16} className="text-white" />
-                                            {t('roadmapView.schedulePlanner', 'Planificador horaris')}
-                                        </a>
-                                        {/*                                         
-                                        <a href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/pla-destudis" target="_blank" rel="noopener noreferrer" onClick={() => setIsMoreMenuOpen(false)} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            <BookOpen size={16} className="text-white" />
-                                            Pla d'estudis
-                                        </a>
-
-                                        <a href="https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/treball-de-fi-de-grau" target="_blank" rel="noopener noreferrer" onClick={() => setIsMoreMenuOpen(false)} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            <GraduationCap size={16} className="text-white" />
-                                            TFG
-                                        </a> */}
-
-                                        <div className="h-px bg-white/10 my-1 relative z-10" />
-
-                                        <button type="button" onClick={() => { handleSave(); setIsMoreMenuOpen(false); }} disabled={isSaving} className="relative z-10 flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/10 text-white transition-colors text-sm font-medium">
-                                            {isSaving ? <Spinner size="sm" variant="white" glow={false} /> : <Save size={16} className="text-white" />}
-                                            {isSaving ? t('roadmapView.saving', 'Guardant...') : t('roadmapView.saveRoadmap', 'Guardar Roadmap')}
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </motion.div>
-                    ]}
-                </LiquidToolbar>
-
-                {/* FAB Menu for Mobile (Main Menu only) */}
-                {!isDrawMode && (
-                    <FabMenu
-                        className="bottom-24 right-6"
-                        mainIcon={<Plus size={24} />}
-                        actions={[
-                            { id: 'spec', label: currentSpec ? currentSpec.name : t('roadmapView.specialization', 'Especialitat'), icon: <GraduationCap size={20} />, onClick: () => setIsSpecMenuOpen(true) },
-                            { id: 'elective', label: t('roadmapView.elective', 'Optativa'), icon: <Plus size={20} />, onClick: () => setIsSearchModalOpen(true) },
-                            { id: 'experience', label: t('roadmapView.addExperience', 'Afegir Experiència'), icon: <Sparkles size={20} />, onClick: () => setIsExperienceModalOpen(true) },
-                            { id: 'validations', label: t('roadmapView.validations', 'Convalidacions'), icon: <Award size={20} />, onClick: () => setIsValidationsModalOpen(true) },
-                            { id: 'schedule', label: t('roadmapView.schedulePlanner', 'Planificador horaris'), icon: <CalendarDays size={20} />, onClick: () => window.open('https://www.fib.upc.edu/ca/graus/grau-en-enginyeria-informatica/horaris', '_blank') },
-                            { id: 'save', label: t('roadmapView.saveRoadmap', 'Guardar'), icon: <Save size={20} />, onClick: handleSave },
-                            { id: 'draw', label: t('roadmapView.draw', 'Dibuixar'), icon: <Palette size={20} />, onClick: () => setIsDrawMode(true) }
-                        ]}
-                    />
+                    </>
                 )}
-                </>)}
             </div>
 
             <SubjectContextMenu
                 isOpen={isMenuOpen}
-                onClose={() => setIsMenuOpen(false)}
+                onClose={handleCloseContextMenu}
                 nodeId={selectedNodeId}
                 nodeData={selectedNodeData}
                 position={menuPosition}
-                onOpenDetails={() => setIsDetailsOpen(true)}
+                onOpenDetails={handleOpenDetails}
             />
 
             {/* True lazy-mount: components only instantiate when opened, eliminating
-                idle zustand subscriptions, cascading useMemo chains (SubjectSearchModal
-                runs 3 O(n) memos per drag frame when mounted), and background DOM. */}
+                idle zustand subscriptions, cascading useMemo chains, and background DOM. */}
             {isSearchModalOpen && (
                 <SubjectSearchModal
                     isOpen={isSearchModalOpen}
-                    onClose={() => setIsSearchModalOpen(false)}
+                    onClose={handleCloseSearch}
                 />
             )}
 
             {isDetailsOpen && (
                 <SubjectDetailsModal
                     isOpen={isDetailsOpen}
-                    onClose={() => setIsDetailsOpen(false)}
+                    onClose={handleCloseDetails}
                     subjectId={selectedNodeId}
                 />
             )}
@@ -707,14 +599,23 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
             {isExperienceModalOpen && (
                 <ExperienceSelectorModal
                     isOpen={isExperienceModalOpen}
-                    onClose={() => setIsExperienceModalOpen(false)}
+                    onClose={handleCloseExperience}
                 />
             )}
 
             {isValidationsModalOpen && (
                 <ValidationsModal
                     isOpen={isValidationsModalOpen}
-                    onClose={() => setIsValidationsModalOpen(false)}
+                    onClose={handleCloseValidations}
+                />
+            )}
+
+            {isSpecMenuOpen && (
+                <SpecializationModal
+                    isOpen={isSpecMenuOpen}
+                    onClose={handleCloseSpec}
+                    currentSpecId={currentSpec?.id || null}
+                    onSelect={setSpecialization}
                 />
             )}
 
@@ -722,15 +623,15 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                 <RoadmapAIPromptBar
                     isOpen={isOpenAI}
                     onClose={onCloseAI}
-                    nodes={nodes as any}
-                    addSubjectNode={() => {}}
+                    nodes={nodes}
+                    addSubjectNode={handleAISubjectAdd}
                 />
             )}
         </div>
     );
 };
 
-const RoadmapView: React.FC<RoadmapViewProps> = (props) => (
+export const RoadmapView: React.FC<RoadmapViewProps> = (props) => (
     <RoadmapProvider>
         <ReactFlowProvider>
             <DrawProvider>
@@ -741,3 +642,4 @@ const RoadmapView: React.FC<RoadmapViewProps> = (props) => (
 );
 
 export default RoadmapView;
+

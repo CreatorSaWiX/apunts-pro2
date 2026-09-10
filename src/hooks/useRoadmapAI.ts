@@ -278,6 +278,15 @@ export const useRoadmapAI = (
         }
     };
 
+    const handleStop = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+        }
+        setIsGenerating(false);
+        setStreamPhase('done');
+    };
+
     return {
         messages,
         setMessages,
@@ -288,6 +297,7 @@ export const useRoadmapAI = (
         attachedFile,
         setAttachedFile,
         processFile,
-        handleGenerate
+        handleGenerate,
+        handleStop
     };
 };

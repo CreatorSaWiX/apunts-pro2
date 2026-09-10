@@ -36,7 +36,7 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
     const handleEraseEvent = useCallback((e: React.PointerEvent<SVGGElement>) => {
         if (currentTool !== 'eraser') return;
         const target = e.target as SVGElement;
-        const strokeId = target.dataset?.id;
+        const strokeId = target.dataset?.id || target.getAttribute('data-id');
         if (!strokeId) return;
         if (e.type === 'pointerdown') {
             e.stopPropagation();
@@ -71,8 +71,9 @@ const MemoizedCompletedStrokes = React.memo(({ strokes, currentTool, removeStrok
         </g>
     );
 });
+MemoizedCompletedStrokes.displayName = 'MemoizedCompletedStrokes';
 
-const DrawLayer: React.FC = () => {
+const DrawLayer: React.FC = React.memo(() => {
     const { x, y, zoom } = useViewport();
     const { isDrawMode, currentTool, currentColor, currentWidth, strokes, addStroke, removeStroke } = useDrawContext(useShallow(state => ({
         isDrawMode: state.isDrawMode,
@@ -111,31 +112,35 @@ const DrawLayer: React.FC = () => {
     }, []); // Stable — reads viewport from ref at event time
 
     const handlePointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
-        const { isDrawMode, currentTool, currentColor, currentWidth } = drawStateRef.current;
-        if (!isDrawMode || currentTool !== 'pen') return;
+        const { isDrawMode: refDrawMode, currentTool: refTool, currentColor: refColor, currentWidth: refWidth } = drawStateRef.current;
+        if (!refDrawMode || refTool !== 'pen') return;
         e.preventDefault();
-        e.currentTarget.setPointerCapture(e.pointerId);
+        try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+            // Safe fallback if pointer capture fails
+        }
         
         const coords = getMouseCoords(e);
         currentStrokeRef.current = {
             id: Date.now().toString(),
             points: [coords],
-            color: currentColor,
-            width: currentWidth
+            color: refColor,
+            width: refWidth
         };
         
         // Direct DOM manipulation for the active stroke — zero React re-renders during drawing
         if (currentPathRef.current) {
             currentPathRef.current.setAttribute('d', `M ${coords.x} ${coords.y}`);
-            currentPathRef.current.setAttribute('stroke', currentColor);
-            currentPathRef.current.setAttribute('stroke-width', String(currentWidth));
+            currentPathRef.current.setAttribute('stroke', refColor);
+            currentPathRef.current.setAttribute('stroke-width', String(refWidth));
             currentPathRef.current.style.display = '';
         }
     }, [getMouseCoords]); // Stable — reads draw state from ref
 
     const handlePointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
-        const { isDrawMode, currentTool } = drawStateRef.current;
-        if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
+        const { isDrawMode: refDrawMode, currentTool: refTool } = drawStateRef.current;
+        if (!refDrawMode || refTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
         
         const coords = getMouseCoords(e);
@@ -150,10 +155,16 @@ const DrawLayer: React.FC = () => {
     }, [getMouseCoords]); // Stable
 
     const handlePointerUp = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
-        const { isDrawMode, currentTool } = drawStateRef.current;
-        if (!isDrawMode || currentTool !== 'pen' || !currentStrokeRef.current) return;
+        const { isDrawMode: refDrawMode, currentTool: refTool } = drawStateRef.current;
+        if (!refDrawMode || refTool !== 'pen' || !currentStrokeRef.current) return;
         e.preventDefault();
-        e.currentTarget.releasePointerCapture(e.pointerId);
+        if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+            try {
+                e.currentTarget.releasePointerCapture(e.pointerId);
+            } catch {
+                // Safe fallback if capture was already lost
+            }
+        }
         
         if (currentStrokeRef.current.points.length > 0) {
             addStroke(currentStrokeRef.current);
@@ -166,6 +177,11 @@ const DrawLayer: React.FC = () => {
             currentPathRef.current.style.display = 'none';
         }
     }, [addStroke]); // Stable — addStroke is a zustand action (stable ref)
+
+    // When not drawing and there are no strokes, don't render empty SVG overlay
+    if (!isDrawMode && strokes.length === 0) {
+        return null;
+    }
 
     return (
         <svg
@@ -192,6 +208,7 @@ const DrawLayer: React.FC = () => {
             </g>
         </svg>
     );
-};
+});
+DrawLayer.displayName = 'DrawLayer';
 
 export default DrawLayer;

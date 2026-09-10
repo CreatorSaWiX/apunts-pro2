@@ -67,6 +67,7 @@ export interface RoadmapState {
     itinerary: ItineraryType;
     isLoading: boolean;
     totalPassedECTS: number;
+    totalPlannedECTS: number;
     canStartMaster: boolean;
     averageGrade: number | null;
     initialStrokes: DrawingStroke[];
@@ -103,6 +104,7 @@ export interface RoadmapState {
 
 const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number | null) => {
     let totalPassedECTS = 0;
+    let totalPlannedECTS = 0;
     let totalGradePoints = 0;
     let totalGradedCredits = 0;
     let gradablePassedPoints = 0;
@@ -110,6 +112,7 @@ const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number
     let gradableRemainingECTS = 0;
 
     nodes.forEach(node => {
+        totalPlannedECTS += (node.data.credits || 0);
         const isPassed = node.data.status === 'passed';
         if (isPassed) {
             totalPassedECTS += node.data.credits;
@@ -139,7 +142,7 @@ const computeDerivedState = (nodes: Node<SubjectNodeData>[], targetGrade: number
         requiredAverageGrade = (targetGrade * totalGradableECTS - gradablePassedPoints) / gradableRemainingECTS;
     }
 
-    return { totalPassedECTS, averageGrade, canStartMaster, requiredAverageGrade };
+    return { totalPassedECTS, totalPlannedECTS, averageGrade, canStartMaster, requiredAverageGrade };
 };
 
 // checkPrerequisites: Fixed-point DAG propagation for prerequisite cascading
@@ -203,6 +206,7 @@ const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
     itinerary: 'GEI_STANDARD',
     isLoading: true,
     totalPassedECTS: 0,
+    totalPlannedECTS: 0,
     canStartMaster: false,
     averageGrade: null,
     initialStrokes: [],

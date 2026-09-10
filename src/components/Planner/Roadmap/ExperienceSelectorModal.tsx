@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
-import { Globe, Briefcase, ChevronRight, Search, ExternalLink } from 'lucide-react';
+import { Globe, Briefcase, ChevronRight, Search, ExternalLink, ChevronLeft } from 'lucide-react';
 import { useRoadmap } from '../../../contexts/RoadmapContext';
 import { useShallow } from 'zustand/react/shallow';
 import Modal from '../../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside';
 
 interface Props {
     isOpen: boolean;
@@ -29,6 +30,33 @@ interface ExperienceDetails {
     role?: string;
 }
 
+// Global cache for universities data
+let cachedUniversities: UniversityItem[] | null = null;
+let universitiesPromise: Promise<UniversityItem[]> | null = null;
+
+function loadUniversities(): Promise<UniversityItem[]> {
+    if (cachedUniversities) return Promise.resolve(cachedUniversities);
+    if (!universitiesPromise) {
+        universitiesPromise = fetch('/data/universities.json')
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                cachedUniversities = data;
+                return data;
+            })
+            .catch(err => {
+                console.error("Error loading universities:", err);
+                universitiesPromise = null;
+                return [];
+            });
+    }
+    return universitiesPromise;
+}
+
+// --- Subcomponents ---
+
 interface SidebarItemProps {
     icon: React.ComponentType<{ size?: number; className?: string }>;
     title: string;
@@ -38,7 +66,7 @@ interface SidebarItemProps {
     colorClass: string;
 }
 
-const SidebarItem = ({
+const SidebarItem = React.memo(({
     icon: Icon,
     title,
     subtitle,
@@ -47,10 +75,10 @@ const SidebarItem = ({
     colorClass
 }: SidebarItemProps) => {
     return (
-        <button type="button"
+        <button
+            type="button"
             onClick={onClick}
-            className={`relative w-full flex items-center gap-4 p-4 rounded-2xl text-left transition duration-300 group overflow-hidden
-                ${active ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
+            className={`relative w-full flex items-center gap-4 p-4 rounded-2xl text-left transition duration-300 group overflow-hidden ${active ? 'bg-white/[0.04]' : 'hover:bg-white/[0.02]'}`}
         >
             {active && (
                 <motion.div
@@ -60,9 +88,7 @@ const SidebarItem = ({
                 />
             )}
 
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300
-                ${active ? colorClass : 'bg-white/[0.03] text-slate-400 group-hover:text-slate-300'}`}
-            >
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${active ? colorClass : 'bg-white/[0.03] text-slate-400 group-hover:text-slate-300'}`}>
                 <Icon size={20} className={active ? 'drop-shadow-[0_0_8px_currentColor]' : ''} />
             </div>
 
@@ -74,7 +100,8 @@ const SidebarItem = ({
             </div>
         </button>
     );
-};
+});
+SidebarItem.displayName = 'SidebarItem';
 
 interface PremiumInputProps {
     label: string;
@@ -85,7 +112,7 @@ interface PremiumInputProps {
     helpLink?: string;
 }
 
-const PremiumInput = ({ label, type = "text", value, onChange, placeholder, helpLink }: PremiumInputProps) => {
+const PremiumInput = React.memo(({ label, type = "text", value, onChange, placeholder, helpLink }: PremiumInputProps) => {
     return (
         <div className="group relative">
             <div className="flex justify-between items-center mb-2">
@@ -109,7 +136,8 @@ const PremiumInput = ({ label, type = "text", value, onChange, placeholder, help
             </div>
         </div>
     );
-};
+});
+PremiumInput.displayName = 'PremiumInput';
 
 interface PremiumSelectProps {
     label: string;
@@ -119,11 +147,14 @@ interface PremiumSelectProps {
     helpLink?: string;
 }
 
-const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: PremiumSelectProps) => {
+const PremiumSelect = React.memo(({ label, value, onChange, options = [], helpLink }: PremiumSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const selectRef = useRef<HTMLDivElement>(null);
+    const handleClose = useCallback(() => setIsOpen(false), []);
+    useOnClickOutside(selectRef, handleClose);
 
     return (
-        <div className="group relative">
+        <div className="group relative" ref={selectRef}>
             <div className="flex justify-between items-center mb-2">
                 <label className="block text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400 group-focus-within:text-sky-400 transition-colors">{label}</label>
                 {helpLink && (
@@ -144,38 +175,36 @@ const PremiumSelect = ({ label, value, onChange, options = [], helpLink }: Premi
 
                 <AnimatePresence>
                     {isOpen && (
-                        <>
-                            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.15 }}
-                                className="absolute z-50 w-full mt-2 bg-[#0F172A]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden"
-                            >
-                                <div className="flex flex-col">
-                                    {options.map((opt: string) => (
-                                        <button
-                                            key={opt}
-                                            type="button"
-                                            onClick={() => {
-                                                onChange({ target: { value: opt } });
-                                                setIsOpen(false);
-                                            }}
-                                            className={`w-full text-left px-4 py-3 text-sm transition-colors ${value === opt ? 'bg-sky-500/10 text-sky-400 font-medium' : 'text-slate-300 hover:bg-white/5 hover:text-white'} first:rounded-t-xl last:rounded-b-xl`}
-                                        >
-                                            {opt}
-                                        </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        </>
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute z-50 w-full mt-2 bg-[#0F172A]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden"
+                        >
+                            <div className="flex flex-col">
+                                {options.map((opt: string) => (
+                                    <button
+                                        key={opt}
+                                        type="button"
+                                        onClick={() => {
+                                            onChange({ target: { value: opt } });
+                                            setIsOpen(false);
+                                        }}
+                                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${value === opt ? 'bg-sky-500/10 text-sky-400 font-medium' : 'text-slate-300 hover:bg-white/5 hover:text-white'} first:rounded-t-xl last:rounded-b-xl`}
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                        </motion.div>
                     )}
                 </AnimatePresence>
             </div>
         </div>
     );
-};
+});
+PremiumSelect.displayName = 'PremiumSelect';
 
 interface PremiumComboboxProps {
     label: string;
@@ -185,27 +214,25 @@ interface PremiumComboboxProps {
     options: UniversityItem[];
 }
 
-const PremiumCombobox = ({ label, value, onChange, placeholder, options }: PremiumComboboxProps) => {
+const PremiumCombobox = React.memo(({ label, value, onChange, placeholder, options }: PremiumComboboxProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const handleClose = useCallback(() => setIsOpen(false), []);
+    useOnClickOutside(wrapperRef, handleClose);
 
-    const filteredOptions = options.filter((opt) =>
-        opt.name.toLowerCase().includes(query.toLowerCase()) ||
-        opt.country.toLowerCase().includes(query.toLowerCase())
+    const filteredOptions = useMemo(() => {
+        const q = query.toLowerCase();
+        return options.filter((opt) =>
+            opt.name.toLowerCase().includes(q) ||
+            opt.country.toLowerCase().includes(q)
+        );
+    }, [options, query]);
+
+    const selectedOption = useMemo(
+        () => options.find((opt) => opt.name === value),
+        [options, value]
     );
-
-    const selectedOption = options.find((opt) => opt.name === value);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     return (
         <div className="group relative" ref={wrapperRef}>
@@ -267,7 +294,7 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: Premi
                                             <div className="flex items-center gap-2 mt-0.5">
                                                 <span className="text-[10px] text-slate-400">{opt.country}</span>
                                                 {opt.program && (
-                                                    <span className="text-[9px] px-1.5 py-0.2 bg-white/5 text-slate-400 rounded border border-white/5">
+                                                    <span className="text-[9px] px-1.5 py-0.5 bg-white/5 text-slate-400 rounded border border-white/5">
                                                         {opt.program}
                                                     </span>
                                                 )}
@@ -282,40 +309,143 @@ const PremiumCombobox = ({ label, value, onChange, placeholder, options }: Premi
             </div>
         </div>
     );
+});
+PremiumCombobox.displayName = 'PremiumCombobox';
+
+interface MobilityFormProps {
+    details: ExperienceDetails;
+    setDetails: React.Dispatch<React.SetStateAction<ExperienceDetails>>;
+    universities: UniversityItem[];
+}
+
+const MobilityForm: React.FC<MobilityFormProps> = ({ details, setDetails, universities }) => {
+    const { t } = useTranslation();
+    const selectedUni = universities.find(u => u.name === details.destination);
+
+    return (
+        <>
+            <div className="mb-10">
+                <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internationalStayTitle', 'Estada internacional')}</h3>
+                <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internationalStayDesc', 'Afegeix el teu intercanvi Erasmus+, SICUE o altres programes internacionals.')}</p>
+            </div>
+
+            <div className="space-y-6">
+                <div>
+                    <PremiumCombobox
+                        label={t('planner.roadmapExperienceSelector.universityDest', 'Universitat / Destí')}
+                        placeholder={t('planner.roadmapExperienceSelector.searchPlaceholder', 'Cerca per nom o país...')}
+                        options={universities}
+                        value={details.destination || ''}
+                        onChange={(val: string, program?: string) => {
+                            setDetails(prev => ({
+                                ...prev,
+                                destination: val,
+                                ...(program ? { program } : {})
+                            }));
+                        }}
+                    />
+                    {selectedUni && (selectedUni.webLink || selectedUni.docLink) && (
+                        <div className="flex gap-4 mt-3 ml-1">
+                            {selectedUni.webLink && (
+                                <a href={selectedUni.webLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1.5 font-bold transition-colors">
+                                    <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.officialWeb', 'Lloc Web Oficial')}
+                                </a>
+                            )}
+                            {selectedUni.docLink && (
+                                <a href={selectedUni.docLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1.5 font-bold transition-colors">
+                                    <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.downloadDoc', 'Descarrega Documentació')}
+                                </a>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                    <PremiumSelect
+                        label={t('planner.roadmapExperienceSelector.program', 'Programa')}
+                        options={['Erasmus+', 'SICUE', 'Amèrica Llatina', 'UNITECH', 'Doble Titulació', "Mobilitat fora d'Europa"]}
+                        value={details.program || 'Erasmus+'}
+                        onChange={(e) => setDetails(prev => ({ ...prev, program: e.target.value }))}
+                    />
+                    <PremiumInput
+                        label={t('planner.roadmapExperienceSelector.creditsEcts', 'Crèdits (ECTS)')}
+                        type="number"
+                        placeholder="30"
+                        value={details.credits || ''}
+                        onChange={(e) => setDetails(prev => ({ ...prev, credits: parseInt(e.target.value, 10) || 0 }))}
+                    />
+                </div>
+            </div>
+        </>
+    );
 };
 
-let cachedUniversities: UniversityItem[] | null = null;
+interface InternshipFormProps {
+    details: ExperienceDetails;
+    setDetails: React.Dispatch<React.SetStateAction<ExperienceDetails>>;
+}
 
-const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
+const InternshipForm: React.FC<InternshipFormProps> = ({ details, setDetails }) => {
+    const { t } = useTranslation();
+
+    return (
+        <>
+            <div className="mb-10">
+                <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internshipTitle', 'Pràctiques empresa')}</h3>
+                <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internshipDesc', 'Afegeix pràctiques curriculars o extracurriculars al teu expedient.')}</p>
+            </div>
+
+            <div className="space-y-6">
+                <PremiumInput
+                    label={t('planner.roadmapExperienceSelector.company', 'Empresa')}
+                    placeholder={t('planner.roadmapExperienceSelector.companyPlaceholder', 'Ex: Google, inLab FIB, etc.')}
+                    value={details.company || ''}
+                    onChange={(e) => setDetails(prev => ({ ...prev, company: e.target.value }))}
+                />
+
+                <PremiumInput
+                    label={t('planner.roadmapExperienceSelector.role', 'Rol / Posició')}
+                    placeholder={t('planner.roadmapExperienceSelector.rolePlaceholder', 'Ex: Software Engineer Intern')}
+                    value={details.role || ''}
+                    onChange={(e) => setDetails(prev => ({ ...prev, role: e.target.value }))}
+                />
+
+                <PremiumInput
+                    label={t('planner.roadmapExperienceSelector.recognitionCredits', 'Crèdits Reconeixement (ECTS)')}
+                    type="number"
+                    placeholder="12"
+                    value={details.credits || ''}
+                    onChange={(e) => setDetails(prev => ({ ...prev, credits: parseInt(e.target.value, 10) || 0 }))}
+                />
+            </div>
+        </>
+    );
+};
+
+// --- Modal Content Inner Component ---
+
+const ExperienceSelectorModalContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { t } = useTranslation();
     const { addExperienceNode } = useRoadmap(useShallow(state => ({
         addExperienceNode: state.addExperienceNode
     })));
+
     const [selectedType, setSelectedType] = useState<ExpType>('mobility');
-    const [details, setDetails] = useState<ExperienceDetails>({});
+    const [details, setDetails] = useState<ExperienceDetails>({ program: 'Erasmus+' });
     const [universities, setUniversities] = useState<UniversityItem[]>(cachedUniversities || []);
     const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu');
 
     useEffect(() => {
-        if (!cachedUniversities) {
-            fetch('/data/universities.json')
-                .then(res => res.json())
-                .then(data => {
-                    cachedUniversities = data;
-                    setUniversities(data);
-                })
-                .catch(err => console.error("Error loading universities:", err));
-        }
+        let ignore = false;
+        loadUniversities().then(data => {
+            if (!ignore) {
+                setUniversities(data);
+            }
+        });
+        return () => {
+            ignore = true;
+        };
     }, []);
-
-    // Reset state when opening/closing
-    useEffect(() => {
-        if (isOpen) {
-            setSelectedType('mobility');
-            setDetails({ program: 'Erasmus+' });
-            setMobileView('menu');
-        }
-    }, [isOpen]);
 
     const handleTabChange = (type: ExpType) => {
         setSelectedType(type);
@@ -329,170 +459,104 @@ const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="5xl" fullScreenOnMobile className="bg-[#0F172A]/80 border-white/10 shadow-2xl backdrop-blur-3xl backdrop-saturate-150">
-            <Modal.Layout>
-                {/* SIDEBAR */}
-                <Modal.Sidebar className={mobileView === 'menu' ? 'flex flex-1 md:flex-none !w-full md:!w-72' : 'hidden md:flex'}>
-                    <Modal.Header>
-                        <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                            {t('planner.roadmapExperienceSelector.addBlock', 'Afegir Bloc')}
-                        </h2>
-                        <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">{t('planner.roadmapExperienceSelector.configureSubtitle', 'Configura estades, pràctiques o projectes per al teu roadmap.')}</p>
-                    </Modal.Header>
+        <Modal.Layout>
+            {/* SIDEBAR */}
+            <Modal.Sidebar className={mobileView === 'menu' ? 'flex flex-1 md:flex-none !w-full md:!w-72' : 'hidden md:flex'}>
+                <Modal.Header>
+                    <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                        {t('planner.roadmapExperienceSelector.addBlock', 'Afegir Bloc')}
+                    </h2>
+                    <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">{t('planner.roadmapExperienceSelector.configureSubtitle', 'Configura estades, pràctiques o projectes per al teu roadmap.')}</p>
+                </Modal.Header>
 
-                    <div className="flex-1 px-4 py-2 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
-                        <SidebarItem
-                            icon={Globe}
-                            title={t('planner.roadmapExperienceSelector.mobility', 'Mobilitat')}
-                            subtitle={t('planner.roadmapExperienceSelector.internationalStays', 'Estades Internacionals')}
-                            active={selectedType === 'mobility'}
-                            onClick={() => handleTabChange('mobility')}
-                            colorClass="bg-amber-500/10 text-amber-400"
-                        />
-                        <SidebarItem
-                            icon={Briefcase}
-                            title={t('planner.roadmapExperienceSelector.internship', 'Pràctiques')}
-                            subtitle={t('planner.roadmapExperienceSelector.companyExperience', 'Experiència en Empresa')}
-                            active={selectedType === 'internship'}
-                            onClick={() => handleTabChange('internship')}
-                            colorClass="bg-teal-500/10 text-teal-400"
-                        />
-                    </div>
-                </Modal.Sidebar>
-
-                {/* CONTENT (Detail) */}
-                <div className={`flex-1 flex-col relative bg-transparent overflow-hidden ${mobileView === 'content' ? 'flex' : 'hidden md:flex'}`}>
-                    {/* Dynamic Content Area */}
-                    <Modal.Body className="p-8 sm:p-12">
-                        {/* Mobile Back Button */}
-                        <button type="button" onClick={() => setMobileView('menu')} className="md:hidden self-start mb-6 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                            {t('common.back', 'Tornar')}
-                        </button>
-
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={selectedType}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3 }}
-                                className="max-w-xl mx-auto flex flex-col w-full"
-                            >
-
-                                {selectedType === 'mobility' && (
-                                    <>
-                                        <div className="mb-10">
-                                            <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internationalStayTitle', 'Estada internacional')}</h3>
-                                            <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internationalStayDesc', 'Afegeix el teu intercanvi Erasmus+, SICUE o altres programes internacionals.')}</p>
-                                        </div>
-
-                                        <div className="space-y-6">
-                                            <div>
-                                                <PremiumCombobox
-                                                    label={t('planner.roadmapExperienceSelector.universityDest', 'Universitat / Destí')}
-                                                    placeholder={t('planner.roadmapExperienceSelector.searchPlaceholder', 'Cerca per nom o país...')}
-                                                    options={universities}
-                                                    value={details.destination || ''}
-                                                    onChange={(val: string, program?: string) => {
-                                                        setDetails({
-                                                            ...details,
-                                                            destination: val,
-                                                            ...(program ? { program } : {})
-                                                        });
-                                                    }}
-                                                />
-                                                {(() => {
-                                                    const selectedUni = universities.find(u => u.name === details.destination);
-                                                    if (!selectedUni || (!selectedUni.webLink && !selectedUni.docLink)) return null;
-                                                    return (
-                                                        <div className="flex gap-4 mt-3 ml-1">
-                                                            {selectedUni.webLink && (
-                                                                <a href={selectedUni.webLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1.5 font-bold transition-colors">
-                                                                    <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.officialWeb', 'Lloc Web Oficial')}
-                                                                </a>
-                                                            )}
-                                                            {selectedUni.docLink && (
-                                                                <a href={selectedUni.docLink} target="_blank" rel="noopener noreferrer" className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1.5 font-bold transition-colors">
-                                                                    <ExternalLink size={12} /> {t('planner.roadmapExperienceSelector.downloadDoc', 'Descarrega Documentació')}
-                                                                </a>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })()}
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <PremiumSelect
-                                                    label={t('planner.roadmapExperienceSelector.program', 'Programa')}
-                                                    options={['Erasmus+', 'SICUE', 'Amèrica Llatina', 'UNITECH', 'Doble Titulació', "Mobilitat fora d'Europa"]}
-                                                    value={details.program || 'Erasmus+'}
-                                                    onChange={(e) => setDetails({ ...details, program: e.target.value })}
-                                                />
-                                                <PremiumInput
-                                                    label={t('planner.roadmapExperienceSelector.creditsEcts', 'Crèdits (ECTS)')}
-                                                    type="number"
-                                                    placeholder="30"
-                                                    value={details.credits || ''}
-                                                    onChange={(e) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
-                                                />
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-
-                                {selectedType === 'internship' && (
-                                    <>
-                                        <div className="mb-10">
-                                            <h3 className="text-3xl font-black text-white tracking-tight mb-2">{t('planner.roadmapExperienceSelector.internshipTitle', 'Pràctiques empresa')}</h3>
-                                            <p className="text-slate-400 text-sm">{t('planner.roadmapExperienceSelector.internshipDesc', 'Afegeix pràctiques curriculars o extracurriculars al teu expedient.')}</p>
-                                        </div>
-
-                                        <div className="space-y-6">
-                                            <PremiumInput
-                                                label={t('planner.roadmapExperienceSelector.company', 'Empresa')}
-                                                placeholder={t('planner.roadmapExperienceSelector.companyPlaceholder', 'Ex: Google, inLab FIB, etc.')}
-                                                value={details.company || ''}
-                                                onChange={(e) => setDetails({ ...details, company: e.target.value })}
-                                            />
-
-                                            <PremiumInput
-                                                label={t('planner.roadmapExperienceSelector.role', 'Rol / Posició')}
-                                                placeholder={t('planner.roadmapExperienceSelector.rolePlaceholder', 'Ex: Software Engineer Intern')}
-                                                value={details.role || ''}
-                                                onChange={(e) => setDetails({ ...details, role: e.target.value })}
-                                            />
-
-                                            <PremiumInput
-                                                label={t('planner.roadmapExperienceSelector.recognitionCredits', 'Crèdits Reconeixement (ECTS)')}
-                                                type="number"
-                                                placeholder="12"
-                                                value={details.credits || ''}
-                                                onChange={(e) => setDetails({ ...details, credits: parseInt(e.target.value) || 0 })}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-
-                                {/* Action Button Footer */}
-                                <div className="pt-8 flex justify-end w-full">
-                                    <button type="button"
-                                        onClick={handleAdd}
-                                        className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
-                                    >
-                                        <span>{t('planner.roadmapExperienceSelector.addToRoadmap', 'Afegeix al Roadmap')}</span>
-                                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-
-                                        {/* Button Glow */}
-                                        <div className="absolute inset-0 rounded-2xl bg-white/20 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    </button>
-                                </div>
-
-                            </motion.div>
-                        </AnimatePresence>
-                    </Modal.Body>
+                <div className="flex-1 px-4 py-2 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+                    <SidebarItem
+                        icon={Globe}
+                        title={t('planner.roadmapExperienceSelector.mobility', 'Mobilitat')}
+                        subtitle={t('planner.roadmapExperienceSelector.internationalStays', 'Estades Internacionals')}
+                        active={selectedType === 'mobility'}
+                        onClick={() => handleTabChange('mobility')}
+                        colorClass="bg-amber-500/10 text-amber-400"
+                    />
+                    <SidebarItem
+                        icon={Briefcase}
+                        title={t('planner.roadmapExperienceSelector.internship', 'Pràctiques')}
+                        subtitle={t('planner.roadmapExperienceSelector.companyExperience', 'Experiència en Empresa')}
+                        active={selectedType === 'internship'}
+                        onClick={() => handleTabChange('internship')}
+                        colorClass="bg-teal-500/10 text-teal-400"
+                    />
                 </div>
-            </Modal.Layout>
+            </Modal.Sidebar>
+
+            {/* CONTENT (Detail) */}
+            <div className={`flex-1 flex-col relative bg-transparent overflow-hidden ${mobileView === 'content' ? 'flex' : 'hidden md:flex'}`}>
+                {/* Dynamic Content Area */}
+                <Modal.Body className="p-8 sm:p-12">
+                    {/* Mobile Back Button */}
+                    <button
+                        type="button"
+                        onClick={() => setMobileView('menu')}
+                        className="md:hidden self-start mb-6 flex items-center gap-2 text-white font-bold hover:text-slate-300 transition-colors"
+                    >
+                        <ChevronLeft size={16} strokeWidth={3} />
+                        {t('common.back', 'Tornar')}
+                    </button>
+
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={selectedType}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="max-w-xl mx-auto flex flex-col w-full"
+                        >
+                            {selectedType === 'mobility' ? (
+                                <MobilityForm
+                                    details={details}
+                                    setDetails={setDetails}
+                                    universities={universities}
+                                />
+                            ) : (
+                                <InternshipForm
+                                    details={details}
+                                    setDetails={setDetails}
+                                />
+                            )}
+
+                            {/* Action Button Footer */}
+                            <div className="pt-8 flex justify-end w-full">
+                                <button
+                                    type="button"
+                                    onClick={handleAdd}
+                                    className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-slate-900 rounded-2xl font-bold hover:bg-slate-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+                                >
+                                    <span>{t('planner.roadmapExperienceSelector.addToRoadmap', 'Afegeix al Roadmap')}</span>
+                                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                    <div className="absolute inset-0 rounded-2xl bg-white/20 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </Modal.Body>
+            </div>
+        </Modal.Layout>
+    );
+};
+
+// --- Main Modal Component ---
+
+const ExperienceSelectorModal: React.FC<Props> = ({ isOpen, onClose }) => {
+    return (
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size="5xl"
+            fullScreenOnMobile
+            className="bg-(--glass-bg-darker) border border-(--glass-border) shadow-2xl rounded-4xl overflow-hidden backdrop-blur-3xl backdrop-saturate-150"
+        >
+            {isOpen && <ExperienceSelectorModalContent onClose={onClose} />}
         </Modal>
     );
 };

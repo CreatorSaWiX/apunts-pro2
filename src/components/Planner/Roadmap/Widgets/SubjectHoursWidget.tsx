@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { m as motion } from 'framer-motion';
-
+import Spinner from '../../../ui/Spinner';
 
 interface SubjectHourItem {
     type?: string;
@@ -17,24 +17,60 @@ interface SubjectHoursWidgetProps {
     subjectId: string;
 }
 
+const HOUR_COLORS = [
+    '#0ea5e9', // sky-500
+    '#10b981', // emerald-500
+    '#d946ef', // fuchsia-500
+    '#f59e0b', // amber-500
+    '#6366f1'  // indigo-500
+] as const;
+
+// Module-level in-memory cache with TTL (30 min) to prevent redundant HTTP requests across widgets
+const CACHE_TTL_MS = 30 * 60 * 1000;
+const hoursCache = new Map<string, { data: SubjectHoursData; timestamp: number }>();
+
+function getCachedHours(key: string): SubjectHoursData | null {
+    const entry = hoursCache.get(key);
+    if (!entry) return null;
+    if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+        hoursCache.delete(key);
+        return null;
+    }
+    return entry.data;
+}
+
 const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) => {
-    const [data, setData] = useState<SubjectHoursData | null>(null);
-    const [loading, setLoading] = useState(true);
+    const cleanId = subjectId ? subjectId.trim().toUpperCase() : '';
+    const cached = cleanId ? getCachedHours(cleanId) : null;
+    const [data, setData] = useState<SubjectHoursData | null>(() => cached);
+    const [loading, setLoading] = useState<boolean>(Boolean(cleanId && !cached));
 
     useEffect(() => {
-        if (!subjectId) return;
+        if (!cleanId) {
+            setData(null);
+            setLoading(false);
+            return;
+        }
+
+        const currentCached = getCachedHours(cleanId);
+        if (currentCached) {
+            setData(currentCached);
+            setLoading(false);
+            return;
+        }
 
         let ignore = false;
+        setData(null);
         setLoading(true);
-        const cleanId = subjectId.trim().toUpperCase();
 
         fetch(`/data/subjects/${cleanId}.json`)
             .then(res => {
                 if (!res.ok) throw new Error('Not found');
                 return res.json();
             })
-            .then(json => {
+            .then((json: SubjectHoursData) => {
                 if (!ignore) {
+                    hoursCache.set(cleanId, { data: json, timestamp: Date.now() });
                     setData(json);
                     setLoading(false);
                 }
@@ -46,21 +82,28 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
                     setLoading(false);
                 }
             });
-            
+
         return () => {
             ignore = true;
         };
-    }, [subjectId]);
+    }, [cleanId]);
+
+    const maxHours = useMemo(() => {
+        if (!data?.hours || data.hours.length === 0) return 10;
+        return Math.max(...data.hours.map((h) => h.value), 10);
+    }, [data?.hours]);
+
+    if (!cleanId) return null;
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-6 bg-slate-900/30 border border-white/5 rounded-2xl animate-pulse my-4">
-                <div className="w-6 h-6 border-2 border-sky-500/50 border-t-sky-500 rounded-full animate-spin" />
+            <div className="flex items-center justify-center p-6 bg-slate-900/30 border border-white/5 rounded-2xl my-4">
+                <Spinner size="sm" variant="sky" />
             </div>
         );
     }
 
-    if (!data || !data.hours || data.hours.length === 0) {
+    if (!data?.hours || data.hours.length === 0) {
         return null;
     }
 
@@ -68,15 +111,7 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
         <div className="my-6 flex justify-center w-full">
             <div className="flex flex-wrap justify-center gap-6">
                 {data.hours.map((hour: SubjectHourItem, i: number) => {
-                    const colors = [
-                        '#0ea5e9', // sky-500
-                        '#10b981', // emerald-500
-                        '#d946ef', // fuchsia-500
-                        '#f59e0b', // amber-500
-                        '#6366f1'  // indigo-500
-                    ];
-                    const color = colors[i % colors.length];
-                    const maxHours = Math.max(...(data.hours?.map((h: SubjectHourItem) => h.value) || [10]), 10);
+                    const color = HOUR_COLORS[i % HOUR_COLORS.length];
                     const percentage = Math.min((hour.value / maxHours) * 100, 100) || 0;
 
                     return (
@@ -128,4 +163,6 @@ const SubjectHoursWidget: React.FC<SubjectHoursWidgetProps> = ({ subjectId }) =>
     );
 };
 
-export default SubjectHoursWidget;
+SubjectHoursWidget.displayName = 'SubjectHoursWidget';
+
+export default React.memo(SubjectHoursWidget);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { m as motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -12,30 +12,34 @@ interface SubjectEvaluationWidgetProps {
     dataString: string;
 }
 
+const THEME_COLORS = [
+    { gradient: 'from-sky-400 to-blue-600', shadow: 'rgba(56, 189, 248, 0.5)', solid: '#38bdf8' },
+    { gradient: 'from-emerald-400 to-green-600', shadow: 'rgba(52, 211, 153, 0.5)', solid: '#34d399' },
+    { gradient: 'from-fuchsia-400 to-purple-600', shadow: 'rgba(232, 121, 249, 0.5)', solid: '#e879f9' },
+    { gradient: 'from-amber-400 to-orange-600', shadow: 'rgba(251, 191, 36, 0.5)', solid: '#fbbf24' },
+    { gradient: 'from-rose-400 to-red-600', shadow: 'rgba(251, 113, 133, 0.5)', solid: '#fb7185' }
+] as const;
+
 const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataString }) => {
     const { t } = useTranslation();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    let items: EvaluationItem[] = [];
 
-    try {
-        items = JSON.parse(dataString);
-    } catch (e) {
-        console.error("Failed to parse evaluation data", e);
-        return null;
-    }
+    const { items, validTotal } = useMemo(() => {
+        try {
+            const parsed = JSON.parse(dataString);
+            const list: EvaluationItem[] = Array.isArray(parsed) ? parsed : [];
+            const total = list.reduce((acc, item) => acc + (item.weight || 0), 0);
+            return {
+                items: list,
+                validTotal: total > 0 ? total : 100
+            };
+        } catch (e) {
+            console.error("Failed to parse evaluation data", e);
+            return { items: [], validTotal: 100 };
+        }
+    }, [dataString]);
 
-    if (!items || items.length === 0) return null;
-
-    const totalWeight = items.reduce((acc, item) => acc + item.weight, 0);
-    const validTotal = totalWeight > 0 ? totalWeight : 100;
-
-    const themeColors = [
-        { gradient: 'from-sky-400 to-blue-600', shadow: 'rgba(56, 189, 248, 0.5)', solid: '#38bdf8' },
-        { gradient: 'from-emerald-400 to-green-600', shadow: 'rgba(52, 211, 153, 0.5)', solid: '#34d399' },
-        { gradient: 'from-fuchsia-400 to-purple-600', shadow: 'rgba(232, 121, 249, 0.5)', solid: '#e879f9' },
-        { gradient: 'from-amber-400 to-orange-600', shadow: 'rgba(251, 191, 36, 0.5)', solid: '#fbbf24' },
-        { gradient: 'from-rose-400 to-red-600', shadow: 'rgba(251, 113, 133, 0.5)', solid: '#fb7185' }
-    ];
+    if (items.length === 0) return null;
 
     return (
         <div className="my-8 flex flex-col gap-6 w-full bg-slate-900/30 p-6 rounded-3xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
@@ -47,7 +51,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
             {/* Stacked Bar */}
             <div className="relative h-6 w-full bg-slate-950/50 rounded-full overflow-hidden border border-white/5 flex shadow-inner cursor-crosshair">
                 {items.map((item, i) => {
-                    const theme = themeColors[i % themeColors.length];
+                    const theme = THEME_COLORS[i % THEME_COLORS.length];
                     const percentage = (item.weight / validTotal) * 100;
 
                     return (
@@ -81,7 +85,7 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
             {/* Legends */}
             <div className="flex flex-wrap gap-4 mt-2">
                 {items.map((item, i) => {
-                    const theme = themeColors[i % themeColors.length];
+                    const theme = THEME_COLORS[i % THEME_COLORS.length];
                     const isHovered = hoveredIndex === i;
 
                     return (
@@ -111,4 +115,6 @@ const SubjectEvaluationWidget: React.FC<SubjectEvaluationWidgetProps> = ({ dataS
     );
 };
 
-export default SubjectEvaluationWidget;
+SubjectEvaluationWidget.displayName = 'SubjectEvaluationWidget';
+
+export default React.memo(SubjectEvaluationWidget);
