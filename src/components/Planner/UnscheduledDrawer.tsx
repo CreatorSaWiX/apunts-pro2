@@ -5,7 +5,6 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import type { Task, TaskPriority, Subject } from '../../types/tasks';
 import { useTranslation } from 'react-i18next';
 import { useTasks } from '../../contexts/TasksContext';
-import { useShallow } from 'zustand/react/shallow';
 import { getSubjectColor } from '../../stores/useSubjectStore';
 
 interface UnscheduledDrawerProps {
@@ -117,11 +116,7 @@ const UnscheduledDrawer: React.FC<UnscheduledDrawerProps> = ({ tasks }) => {
     const drawerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    const { subjects } = useTasks(
-        useShallow(state => ({
-            subjects: state.subjects
-        }))
-    );
+    const subjects = useTasks(state => state.subjects);
 
     // Diccionari O(1) d'assignatures per evitar cerques lineals repetides
     const subjectsMap = useMemo(() => {

@@ -1,42 +1,64 @@
-import React from 'react';
-import type { Task } from '../../../types/tasks';
+import React, { useMemo, useCallback } from 'react';
+import type { Task, TaskPriority } from '../../../types/tasks';
 import { useTasks } from '../../../contexts/TasksContext';
-import { useShallow } from 'zustand/react/shallow';
 import { getSubjectColor } from '../../../stores/useSubjectStore';
 
 interface CalendarDragCardProps {
     task: Task;
 }
 
+const PRIORITY_ACCENT_COLORS: Record<TaskPriority, string> = {
+    HIGH: '#EF4444',
+    MEDIUM: '#F59E0B',
+    LOW: '#10B981'
+};
+
+const DEFAULT_ACCENT_COLOR = '#10B981';
+
+/**
+ * Formatador pur del temps estimat de la tasca en minuts o hores
+ */
+function formatDuration(minutes?: number): string {
+    const mins = minutes && minutes > 0 ? minutes : 60;
+    if (mins < 60) return `${mins}m`;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+/**
+ * Targeta visual d'arrossegament (Drag Overlay) que acompanya el cursor
+ * quan s'arrossega una tasca des del calaix de tasques pendents cap al calendari.
+ */
 export const CalendarDragCard: React.FC<CalendarDragCardProps> = React.memo(({ task }) => {
-    const { subjects } = useTasks(
-        useShallow(state => ({
-            subjects: state.subjects
-        }))
+    // Selector granular O(1): només recupera l'assignatura d'aquesta tasca concreta sense subscriure tot l'array
+    const taskSubject = useTasks(
+        useCallback(
+            state => (task.subjectId ? state.subjects.find(s => s.id === task.subjectId) : undefined),
+            [task.subjectId]
+        )
     );
 
-    const taskSubject = task.subjectId ? subjects?.find(s => s.id === task.subjectId) : null;
-    const subjectColor = taskSubject?.colorToken ? getSubjectColor(taskSubject.colorToken) : null;
+    const subjectColor = useMemo(() => {
+        return taskSubject?.colorToken ? getSubjectColor(taskSubject.colorToken) : null;
+    }, [taskSubject]);
 
-    const priorityColor =
-        task.priority === 'HIGH' ? '#EF4444' :
-        task.priority === 'MEDIUM' ? '#F59E0B' : '#10B981';
-
+    const priorityColor = PRIORITY_ACCENT_COLORS[task.priority] || DEFAULT_ACCENT_COLOR;
     const accentColor = subjectColor?.primary || priorityColor;
-    const durationMins = task.estimatedMinutes || 60;
-    const durationLabel = durationMins >= 60
-        ? `${Math.floor(durationMins / 60)}h${durationMins % 60 ? ` ${durationMins % 60}m` : ''}`
-        : `${durationMins}m`;
+    const durationLabel = useMemo(() => formatDuration(task.estimatedMinutes), [task.estimatedMinutes]);
 
     return (
-        <div className="w-48 h-[60px] relative rounded-xl border border-white/20 bg-[#111115]/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col justify-between p-2 pointer-events-none select-none rotate-2 scale-105 cursor-grabbing">
+        <div 
+            aria-hidden="true"
+            className="w-48 h-[60px] relative rounded-xl border border-white/20 bg-[#111115]/95 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col justify-between p-2 pointer-events-none select-none rotate-2 scale-105 cursor-grabbing"
+        >
             {/* Fons translúcid suau amb el color de l'assignatura */}
             <div
                 className="absolute inset-0 opacity-[0.15] mix-blend-plus-lighter pointer-events-none"
                 style={{ backgroundColor: accentColor }}
             />
 
-            {/* Barra d'accent lateral de 3.5px com a les tasques de calendari */}
+            {/* Barra d'accent lateral de 3.5px coherent amb les targetes del calendari */}
             <div
                 className="absolute top-0 bottom-0 left-0 w-[3.5px] shadow-[0_0_15px_currentColor]"
                 style={{ backgroundColor: accentColor, color: accentColor }}
@@ -52,7 +74,7 @@ export const CalendarDragCard: React.FC<CalendarDragCardProps> = React.memo(({ t
                     </span>
                     {taskSubject && (
                         <span
-                            className="text-[8px] font-bold px-1.5 py-0.2 rounded uppercase tracking-wider"
+                            className="text-[8px] font-bold px-1.5 py-0.2 rounded uppercase tracking-wider truncate max-w-[100px]"
                             style={{
                                 color: accentColor,
                                 backgroundColor: `rgba(${subjectColor?.primary_rgb || '16,185,129'}, 0.15)`

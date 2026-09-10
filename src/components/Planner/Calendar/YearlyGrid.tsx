@@ -1,72 +1,158 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { flushSync } from 'react-dom';
-import { format, getDay, getDaysInMonth, isSameDay } from 'date-fns';
-import { ca } from 'date-fns/locale';
-import { m as motion } from 'framer-motion';
+import { format } from 'date-fns';
 import type { Task } from '../../../types/tasks';
 
 interface YearlyGridProps {
     currentDate: Date;
     tasks: Task[];
     onSelectMonth: (date: Date, clickEvent?: React.MouseEvent) => void;
-    deferBuffers?: boolean;
 }
 
-const MiniMonth: React.FC<{ monthDate: Date; tasks: Task[]; onClick: (e: React.MouseEvent) => void }> = ({ monthDate, tasks, onClick }) => {
-    const daysInMonth = getDaysInMonth(monthDate);
-    // getDay returns 0 for Sunday. We want Monday=0
-    let firstDayIndex = getDay(new Date(monthDate.getFullYear(), monthDate.getMonth(), 1)) - 1;
-    if (firstDayIndex === -1) firstDayIndex = 6; // Sunday
+interface MiniMonthProps {
+    monthDate: Date;
+    scheduledDatesSet: Set<string>;
+    todayStr: string;
+    onClick: (e: React.MouseEvent) => void;
+}
 
+const MONTH_NAMES_CA = ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'];
+const FULL_MONTH_NAMES_CA = [
+    'gener', 'febrer', 'març', 'abril', 'maig', 'juny',
+    'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'
+];
+
+interface MonthMeta {
+    daysInMonth: number;
+    firstDayIndex: number;
+    monthKey: string;
+    monthName: string;
+    fullMonthLabel: string;
+    daysArray: number[];
+    blanksArray: number[];
+}
+
+const monthMetaCache = new Map<string, MonthMeta>();
+
+function getMonthMeta(year: number, month: number): MonthMeta {
+    const key = `${year}-${month}`;
+    const cached = monthMetaCache.get(key);
+    if (cached) return cached;
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dayOfWeek = new Date(year, month, 1).getDay(); // 0 for Sunday
+    const firstDayIndex = (dayOfWeek + 6) % 7; // Monday = 0
+    const mStr = month < 9 ? `0${month + 1}` : `${month + 1}`;
+    const monthKey = `${year}-${mStr}`;
+    const monthName = MONTH_NAMES_CA[month] || '';
+    const fullMonthLabel = `${FULL_MONTH_NAMES_CA[month] || ''} ${year}`;
     const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     const blanksArray = Array.from({ length: firstDayIndex }, (_, i) => i);
 
+    const meta: MonthMeta = {
+        daysInMonth,
+        firstDayIndex,
+        monthKey,
+        monthName,
+        fullMonthLabel,
+        daysArray,
+        blanksArray
+    };
+    monthMetaCache.set(key, meta);
+    return meta;
+}
+
+const MiniMonth: React.FC<MiniMonthProps> = React.memo(({ 
+    monthDate, 
+    scheduledDatesSet, 
+    todayStr, 
+    onClick 
+}) => {
+    const year = monthDate.getFullYear();
+    const month = monthDate.getMonth();
+    const meta = getMonthMeta(year, month);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick(e as unknown as React.MouseEvent);
+        }
+    }, [onClick]);
+
     return (
         <div 
+            role="button"
+            tabIndex={0}
+            aria-label={meta.fullMonthLabel}
             onClick={onClick}
-            className="flex flex-col cursor-pointer group p-2.5 -m-2.5 rounded-[24px] transition duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border border-transparent hover:bg-white/[0.04] hover:backdrop-blur-lg hover:border-white/[0.08] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] hover:-translate-y-1.5 relative"
+            onKeyDown={handleKeyDown}
+            className="flex flex-col cursor-pointer group p-2.5 -m-2.5 rounded-[24px] transition-colors duration-200 border border-transparent hover:bg-white/[0.05] hover:border-white/[0.08] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] hover:-translate-y-1.5 relative outline-none focus-visible:ring-2 focus-visible:ring-white/20"
         >
             <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out bg-[radial-gradient(120%_120%_at_50%_0%,_rgba(255,255,255,0.08)_0%,_transparent_100%)]"></div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out bg-[radial-gradient(120%_120%_at_50%_0%,_rgba(255,255,255,0.08)_0%,_transparent_100%)]" />
             </div>
             
             <h3 
-                className="text-lg font-bold text-slate-400 mb-2 capitalize transition duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:text-white group-hover:translate-x-1 relative z-10"
+                className="text-lg font-bold text-slate-400 mb-2 capitalize transition duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:text-white group-hover:translate-x-1 relative z-10"
             >
-                {format(monthDate, 'MMM', { locale: ca })}
+                {meta.monthName}
             </h3>
             
             <div className="grid grid-cols-7 gap-y-1.5 gap-x-0.5">
                 {/* Blanks */}
-                {blanksArray.map(b => (
-                    <div key={`blank-${b}`} className="aspect-square"></div>
+                {meta.blanksArray.map(b => (
+                    <div key={`blank-${b}`} className="aspect-square" aria-hidden="true" />
                 ))}
                 
                 {/* Days */}
-                {daysArray.map(day => {
-                    const currentDayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
-                    const hasTasks = tasks.some(t => t.startDate && isSameDay(new Date(t.startDate), currentDayDate));
-                    const isToday = isSameDay(currentDayDate, new Date());
+                {meta.daysArray.map(day => {
+                    const dayStr = day < 10 ? `0${day}` : `${day}`;
+                    const dateKey = `${meta.monthKey}-${dayStr}`;
+                    const hasTasks = scheduledDatesSet.has(dateKey);
+                    const isCurrentDay = dateKey === todayStr;
                     
                     return (
-                        <div key={day} className={`aspect-square flex items-center justify-center relative rounded-full transition-[transform,background-color,box-shadow,color] duration-300 ${isToday ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)] scale-110' : hasTasks ? 'bg-white/10 text-white font-bold shadow-[inset_0_1px_3px_rgba(255,255,255,0.2)]' : 'text-slate-500 group-hover:text-slate-300'}`}>
-                            <span className={`text-[11px] sm:text-[10px] z-10 ${isToday ? '' : 'opacity-90'}`}>{day}</span>
+                        <div 
+                            key={day} 
+                            className={`aspect-square flex items-center justify-center relative rounded-full ${
+                                isCurrentDay 
+                                    ? 'bg-white text-slate-900 font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)] scale-110' 
+                                    : hasTasks 
+                                        ? 'bg-white/10 text-white font-bold shadow-[inset_0_1px_3px_rgba(255,255,255,0.2)]' 
+                                        : 'text-slate-500 group-hover:text-slate-300'
+                            }`}
+                        >
+                            <span className={`text-[11px] sm:text-[10px] z-10 ${isCurrentDay ? '' : 'opacity-90'}`}>{day}</span>
                         </div>
                     );
                 })}
             </div>
         </div>
     );
-};
+});
 
-const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: Date, clickEvent?: React.MouseEvent) => void }> = ({ year, tasks, onSelectMonth }) => {
-    const months = Array.from({ length: 12 }).map((_, i) => new Date(year, i, 1));
+MiniMonth.displayName = 'MiniMonth';
+
+interface YearBlockProps {
+    year: number;
+    scheduledDatesSet: Set<string>;
+    todayStr: string;
+    onSelectMonth: (date: Date, clickEvent?: React.MouseEvent) => void;
+}
+
+const YearBlock: React.FC<YearBlockProps> = React.memo(({ 
+    year, 
+    scheduledDatesSet, 
+    todayStr, 
+    onSelectMonth 
+}) => {
+    const months = useMemo(() => Array.from({ length: 12 }, (_, i) => new Date(year, i, 1)), [year]);
     
     return (
         <div id={`year-${year}`} className="flex flex-col mb-16 relative">
             {/* Year Header - Clean SOTY editorial style in the normal document flow for all screens */}
             <h2 
-                className="text-[60px] sm:text-[80px] md:text-[100px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 tracking-tighter mb-8 md:mb-12 pl-2 drop-shadow-lg"
+                className="text-[60px] sm:text-[80px] md:text-[100px] leading-none font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 tracking-tighter mb-8 md:mb-12 pl-2 drop-shadow-lg select-none"
             >
                 {year}
             </h2>
@@ -76,58 +162,69 @@ const YearBlock: React.FC<{ year: number; tasks: Task[]; onSelectMonth: (date: D
                     <MiniMonth 
                         key={monthDate.toISOString()} 
                         monthDate={monthDate} 
-                        tasks={tasks} 
+                        scheduledDatesSet={scheduledDatesSet}
+                        todayStr={todayStr}
                         onClick={(e) => onSelectMonth(monthDate, e)} 
                     />
                 ))}
             </div>
         </div>
     );
-};
+});
 
-const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMonth, deferBuffers }) => {
-    const [baseYear, setBaseYear] = useState(() => currentDate.getFullYear());
-    const [visibleYear, setVisibleYear] = useState(() => currentDate.getFullYear());
+YearBlock.displayName = 'YearBlock';
+
+const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMonth }) => {
+    const currentYear = currentDate.getFullYear();
+    const [baseYear, setBaseYear] = useState(currentYear);
     
-    // During transitions: 3 years to prevent visual pop-in. After: 11 years for infinite scroll.
-    const yearsToRender = deferBuffers
-        ? [currentDate.getFullYear() - 1, currentDate.getFullYear(), currentDate.getFullYear() + 1]
-        : Array.from({ length: 11 }).map((_, i) => baseYear + (i - 5));
+    // Conjunt Set<string> O(1) de dates amb tasques planificades ('yyyy-MM-dd')
+    const scheduledDatesSet = useMemo(() => {
+        const set = new Set<string>();
+        for (let i = 0; i < tasks.length; i++) {
+            const startDate = tasks[i].startDate;
+            if (!startDate) continue;
+            const d = new Date(startDate);
+            if (isNaN(d.getTime())) continue;
+            set.add(format(d, 'yyyy-MM-dd'));
+        }
+        return set;
+    }, [tasks]);
+
+    const todayStr = useMemo(() => format(new Date(), 'yyyy-MM-dd'), []);
+
+    // Buffer constant de 5 anys (-2 a +2): càrrega instantània i zero re-renderitzats post-animació
+    const yearsToRender = useMemo(() => {
+        return [-2, -1, 0, 1, 2].map(offset => baseYear + offset);
+    }, [baseYear]);
     
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const isProgrammaticScrollRef = useRef(false);
 
-    // Initial scroll to center on load, when currentDate prop changes, or buffer restoration
+    // Centrat inicial en l'any seleccionat (sense cicles innecessaris)
     useLayoutEffect(() => {
-        setBaseYear(currentDate.getFullYear());
-        setVisibleYear(currentDate.getFullYear());
-        
-        if (scrollContainerRef.current) {
-            const el = document.getElementById(`year-${currentDate.getFullYear()}`);
-            if (el) scrollContainerRef.current.scrollTop = el.offsetTop - 60;
+        if (baseYear !== currentYear) {
+            setBaseYear(currentYear);
         }
-    }, [currentDate, deferBuffers]);
-
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        if (deferBuffers) return;
-        const target = e.currentTarget;
-
-        // Update visible year for mobile header
-        const yearElements = yearsToRender.map(y => document.getElementById(`year-${y}`));
-        let currentVisYear = visibleYear;
-        for (const el of yearElements) {
-            // If the element's top is roughly visible
-            if (el && el.offsetTop <= target.scrollTop + 150) {
-                currentVisYear = parseInt(el.id.replace('year-', ''));
+        if (scrollContainerRef.current) {
+            const el = document.getElementById(`year-${currentYear}`);
+            if (el) {
+                isProgrammaticScrollRef.current = true;
+                scrollContainerRef.current.scrollTop = el.offsetTop - 60;
+                setTimeout(() => {
+                    isProgrammaticScrollRef.current = false;
+                }, 50);
             }
         }
-        if (currentVisYear !== visibleYear) {
-            setVisibleYear(currentVisYear);
-        }
+    }, [currentYear]);
 
-        // Infinite scroll logic
-        // If scrolling near top (within ~3 years)
-        if (target.scrollTop < 1500) {
-            const pivotId = `year-${yearsToRender[5]}`; // center year
+    const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+        if (isProgrammaticScrollRef.current) return;
+        const target = e.currentTarget;
+
+        // Llindar segur a prop dels límits de la llista (250px)
+        if (target.scrollTop < 250) {
+            const pivotId = `year-${baseYear}`;
             const pivotEl = document.getElementById(pivotId);
             const oldOffset = pivotEl ? pivotEl.offsetTop : 0;
             
@@ -140,9 +237,8 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
                 target.scrollTop += (newPivotEl.offsetTop - oldOffset);
             }
         }
-        // If scrolling near bottom
-        else if (target.scrollTop > target.scrollHeight - target.clientHeight - 1500) {
-            const pivotId = `year-${yearsToRender[5]}`; // center year
+        else if (target.scrollTop > target.scrollHeight - target.clientHeight - 250) {
+            const pivotId = `year-${baseYear}`;
             const pivotEl = document.getElementById(pivotId);
             const oldOffset = pivotEl ? pivotEl.offsetTop : 0;
             
@@ -155,11 +251,10 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
                 target.scrollTop += (newPivotEl.offsetTop - oldOffset);
             }
         }
-    };
+    }, [baseYear]);
 
     return (
         <div className="flex flex-col h-full relative">
-
             <div 
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
@@ -169,7 +264,8 @@ const YearlyGrid: React.FC<YearlyGridProps> = ({ currentDate, tasks, onSelectMon
                     <YearBlock 
                         key={year} 
                         year={year} 
-                        tasks={tasks} 
+                        scheduledDatesSet={scheduledDatesSet}
+                        todayStr={todayStr}
                         onSelectMonth={onSelectMonth} 
                     />
                 ))}

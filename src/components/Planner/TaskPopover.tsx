@@ -9,11 +9,7 @@ import SubjectPicker from './SubjectPicker';
 import BottomSheet from '../ui/mobile/BottomSheet';
 import { getSubjectColor } from '../../stores/useSubjectStore';
 
-export interface TaskPopoverEventDetail {
-    x: number;
-    y: number;
-    taskId: string;
-}
+import { getClampedCoordinates, type TaskPopoverEventDetail } from './plannerEvents';
 
 /**
  * Configuració estàtica per a les opcions de prioritat en vista mòbil
@@ -84,6 +80,7 @@ const TaskPopover: React.FC = () => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [taskId, setTaskId] = useState<string | null>(null);
+    const [localTitle, setLocalTitle] = useState('');
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isMobile, setIsMobile] = useState(false);
     const [subjectSearch, setSubjectSearch] = useState('');
@@ -91,11 +88,12 @@ const TaskPopover: React.FC = () => {
     const popoverRef = useRef<HTMLDivElement>(null);
     const desktopInputRef = useRef<HTMLInputElement>(null);
     const mobileInputRef = useRef<HTMLInputElement>(null);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Subscripcions selectives de Zustand: només subscrivim la tasca activa per evitar re-renderitzats globals
+    // Subscripcions selectives de Zustand: només subscrivim quan el popover està obert
     const task = useTasks(useCallback((state) => (taskId ? state.tasks.find(t => t.id === taskId) : undefined), [taskId]));
     const updateTask = useTasks(state => state.updateTask);
-    const subjects = useTasks(state => state.subjects);
+    const subjects = useTasks(useCallback(state => (taskId ? state.subjects : undefined), [taskId]));
 
     // Detecció de vista mòbil (responsive)
     useEffect(() => {
@@ -105,24 +103,22 @@ const TaskPopover: React.FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // Sincronitzar el títol local quan es carrega la tasca
+    useEffect(() => {
+        if (task) {
+            setLocalTitle(task.title);
+        }
+    }, [task?.id]);
+
     // Obertura del popover mitjançant l'esdeveniment global 'open-task-popover'
     useEffect(() => {
         const handleOpen = (e: Event) => {
             const customEvent = e as CustomEvent<TaskPopoverEventDetail>;
             const { x, y, taskId: targetId } = customEvent.detail;
             
-            // Càlcul de límits per evitar desbordaments de pantalla
-            const width = 260;
-            const height = 300;
-            let finalX = x;
-            let finalY = y;
-            
-            if (x + width > window.innerWidth) finalX = window.innerWidth - width - 10;
-            if (y + height > window.innerHeight) finalY = window.innerHeight - height - 10;
-            if (finalX < 10) finalX = 10;
-            if (finalY < 10) finalY = 10;
+            const coords = getClampedCoordinates(x, y, 260, 300, 10);
 
-            setPosition({ x: finalX, y: finalY });
+            setPosition(coords);
             setTaskId(targetId);
             setSubjectSearch('');
             setIsOpen(true);
@@ -132,14 +128,36 @@ const TaskPopover: React.FC = () => {
         return () => window.removeEventListener('open-task-popover', handleOpen);
     }, []);
 
-    // Tancament i assignació de títol per defecte si queda buit
-    const handleClose = useCallback(() => {
-        if (task && !task.title.trim()) {
-            updateTask(task.id, { title: t('planner.task.defaultTitle', 'Nova Tasca') });
+    // Guardar el títol de forma definitiva a la store i Firestore
+    const commitTitle = useCallback((titleToCommit: string) => {
+        if (!task) return;
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+            debounceTimerRef.current = null;
         }
+        const finalTitle = titleToCommit.trim() || t('planner.task.defaultTitle', 'Nova Tasca');
+        if (finalTitle !== task.title) {
+            updateTask(task.id, { title: finalTitle });
+        }
+    }, [task, updateTask, t]);
+
+    // Modificació de títol amb debounce per evitar desenes de peticions de xarxa a Firestore per segon
+    const handleTitleChange = useCallback((newTitle: string) => {
+        setLocalTitle(newTitle);
+        if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = setTimeout(() => {
+            if (task) {
+                updateTask(task.id, { title: newTitle });
+            }
+        }, 400);
+    }, [task, updateTask]);
+
+    // Tancament i persistència garantida del títol
+    const handleClose = useCallback(() => {
+        commitTitle(localTitle);
         setIsOpen(false);
         setTaskId(null);
-    }, [task, updateTask, t]);
+    }, [commitTitle, localTitle]);
 
     // Enfocament automàtic a l'input quan s'obre
     useEffect(() => {
@@ -213,8 +231,9 @@ const TaskPopover: React.FC = () => {
                     <div className="bg-white/[0.02] border border-white/[0.05] rounded-[16px] px-4 py-3.5 shadow-sm">
                         <input 
                             ref={mobileInputRef}
-                            value={task.title}
-                            onChange={(e) => updateTask(task.id, { title: e.target.value })}
+                            value={localTitle}
+                            onChange={(e) => handleTitleChange(e.target.value)}
+                            onBlur={() => commitTitle(localTitle)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                                     e.preventDefault();
@@ -350,8 +369,9 @@ const TaskPopover: React.FC = () => {
                     <div className="p-3 border-b border-white/[0.05]">
                         <input 
                             ref={desktopInputRef}
-                            value={task.title}
-                            onChange={(e) => updateTask(task.id, { title: e.target.value })}
+                            value={localTitle}
+                            onChange={(e) => handleTitleChange(e.target.value)}
+                            onBlur={() => commitTitle(localTitle)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                                     e.preventDefault();
@@ -374,7 +394,7 @@ const TaskPopover: React.FC = () => {
                             <SubjectPicker
                                 value={task.subjectId}
                                 onChange={(subjectId) => updateTask(task.id, { subjectId: subjectId || undefined })}
-                                className="w-full justify-between py-1.5"
+                                className="w-full justify-start py-1.5 px-2.5"
                                 placeholder={t('planner.popover.noSubject', 'Sense assignatura')}
                             />
                         </div>

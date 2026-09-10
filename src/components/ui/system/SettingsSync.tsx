@@ -41,6 +41,8 @@ const DEFAULT_SETTINGS = {
         plannerPriorityMedium: { key: '2', meta: false },
         plannerPriorityHigh: { key: '3', meta: false },
         plannerDuplicateModifier: { key: 'Alt', meta: false },
+        plannerUndo: { key: 'z', meta: true },
+        plannerRedo: { key: 'y', meta: true },
         canvasPen: { key: 'p', meta: false },
         canvasEraser: { key: 'e', meta: false },
         canvasPan: { key: 'h', meta: false },

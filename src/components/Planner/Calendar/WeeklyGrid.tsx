@@ -4,23 +4,24 @@ import { useDroppable, useDraggable, useDndContext, useDndMonitor } from '@dnd-k
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, addDays, subDays } from 'date-fns';
 import { ca } from 'date-fns/locale';
 import type { Task } from '../../../types/tasks';
-import { m as motion } from 'framer-motion';
 import { useTasks } from '../../../contexts/TasksContext';
-import { useShallow } from 'zustand/react/shallow';
 import { useDuplicateModifier } from '../../../hooks/useDuplicateModifier';
 import NavigationPill from '../../ui/NavigationPill';
 import { getSubjectColor } from '../../../stores/useSubjectStore';
+import {
+    dispatchOpenTaskPopover,
+    dispatchOpenTaskContextMenu,
+    dispatchPlannerAction,
+    dispatchTaskSelected
+} from '../plannerEvents';
 
 interface WeeklyGridProps {
     currentDate: Date;
     tasks: Task[];
-    deferBuffers?: boolean;
 }
 
-const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, updates: Partial<Task>) => void }> = ({ task, day, updateTask }) => {
-    const { deleteTask } = useTasks(useShallow(state => ({
-        deleteTask: state.deleteTask
-    })));
+const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, updates: Partial<Task>) => void }> = React.memo(({ task, day, updateTask }) => {
+    const deleteTask = useTasks(state => state.deleteTask);
     
     const taskStart = new Date(task.startDate!);
     const taskEnd = task.dueDate ? new Date(task.dueDate) : new Date(taskStart.getTime() + (task.estimatedMinutes || 60) * 60000);
@@ -88,7 +89,11 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                 deleteTask(task.id);
             } else if (action === 'plannerEditTask') {
                 const rect = taskRef.current?.getBoundingClientRect();
-                window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: rect ? rect.left + rect.width / 2 : window.innerWidth / 2, y: rect ? rect.top + rect.height / 2 : window.innerHeight / 2, taskId: task.id } }));
+                dispatchOpenTaskPopover({
+                    x: rect ? rect.left + rect.width / 2 : window.innerWidth / 2,
+                    y: rect ? rect.top + rect.height / 2 : window.innerHeight / 2,
+                    taskId: task.id
+                });
             } else if (action === 'plannerPriorityLow') {
                 updateTask(task.id, { priority: 'LOW' });
             } else if (action === 'plannerPriorityMedium') {
@@ -222,10 +227,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
         LOW: 'bg-primary'
     };
     
-    const { subjects } = useTasks(useShallow(state => ({
-        subjects: state.subjects
-    })));
-    const taskSubject = subjects.find(s => s.id === task.subjectId);
+    const taskSubject = useTasks(state => 
+        task.subjectId ? state.subjects.find(s => s.id === task.subjectId) : undefined
+    );
     const subjectColor = taskSubject ? getSubjectColor(taskSubject.colorToken) : null;
     const accentColorClass = !subjectColor ? (priorityColors[task.priority as keyof typeof priorityColors] || priorityColors.LOW) : '';
     const accentStyle = subjectColor ? { backgroundColor: subjectColor.primary, color: subjectColor.primary } : undefined;
@@ -276,20 +280,20 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
                         return;
                     }
                     if (window.innerWidth < 768 && isSelected) {
-                        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                        dispatchOpenTaskPopover({ x: e.clientX, y: e.clientY, taskId: task.id });
                         return;
                     }
                     setIsSelected(true);
-                    window.dispatchEvent(new CustomEvent('task-selected', { detail: task.id }));
+                    dispatchTaskSelected(task.id);
                 }}
                 onContextMenu={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.dispatchEvent(new CustomEvent('open-task-context-menu', { detail: { x: e.clientX, y: e.clientY, task } }));
+                    dispatchOpenTaskContextMenu({ x: e.clientX, y: e.clientY, task });
                 }}
                 onDoubleClick={(e) => {
                     e.stopPropagation();
-                    window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: task.id } }));
+                    dispatchOpenTaskPopover({ x: e.clientX, y: e.clientY, taskId: task.id });
                 }}
                 className={`absolute left-1 right-1 border overflow-hidden flex flex-col group
                     ${isDragging
@@ -378,7 +382,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
             </div>
         </>
     );
-};
+});
+
+ResizableTask.displayName = 'ResizableTask';
 
 const CurrentTimeLine = () => {
     const [now, setNow] = React.useState(new Date());
@@ -401,12 +407,10 @@ const CurrentTimeLine = () => {
     );
 };
 
-const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) => {
-    const { addTask, updateTask, subjects } = useTasks(useShallow(state => ({
-        addTask: state.addTask,
-        updateTask: state.updateTask,
-        subjects: state.subjects
-    })));
+const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = React.memo(({ day, tasks }) => {
+    const addTask = useTasks(state => state.addTask);
+    const updateTask = useTasks(state => state.updateTask);
+    const subjects = useTasks(state => state.subjects);
     const dateStr = format(day, 'yyyy-MM-dd');
     
     const { setNodeRef, isOver } = useDroppable({
@@ -497,7 +501,7 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
             startDate: newTaskDate.toISOString(),
             estimatedMinutes
         });
-        window.dispatchEvent(new CustomEvent('open-task-popover', { detail: { x: e.clientX, y: e.clientY, taskId: id } }));
+        dispatchOpenTaskPopover({ x: e.clientX, y: e.clientY, taskId: id });
     };
 
     const isDraggingThisColumn = active ? String(active.id).includes(`::${dateStr}`) : false;
@@ -598,9 +602,11 @@ const TimeDayColumn: React.FC<{ day: Date; tasks: Task[] }> = ({ day, tasks }) =
             ))}
         </div>
     );
-};
+});
 
-const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffers }) => {
+TimeDayColumn.displayName = 'TimeDayColumn';
+
+const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
     const { active } = useDndContext();
     const isDraggingContext = !!active;
 
@@ -616,16 +622,12 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
         return 140;
     });
 
+    // Buffer constant de 5 setmanes (35 dies): estable, fluid i sense re-renderitzats mid-animació
     const days = useMemo(() => {
-        if (deferBuffers) {
-            // During animation: 3 weeks (21 days) to prevent pop-in
-            return eachDayOfInterval({ start: subDays(baseDate, 7), end: addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 7) });
-        }
-        // After animation: 9 weeks buffer for infinite scroll
-        const startDate = subDays(baseDate, 28);
-        const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 28);
+        const startDate = subDays(baseDate, 14);
+        const endDate = addDays(endOfWeek(baseDate, { weekStartsOn: 1 }), 14);
         return eachDayOfInterval({ start: startDate, end: endDate });
-    }, [baseDate, deferBuffers]);
+    }, [baseDate]);
     
     // O(1) Pre-càlcul per agrupar tasques per dia i evitar el lag en el renderitzat
     const tasksByDay = useMemo(() => {
@@ -664,7 +666,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
         return () => window.removeEventListener('resize', updateWidth);
     }, []);
 
-    // Auto-scroll to current time and current day on load, mode change, or buffer restoration
+    // Auto-scroll a l'hora i dia actuals
     useLayoutEffect(() => {
         setBaseDate(startOfWeek(currentDate, { weekStartsOn: 1 }));
         if (scrollContainerRef.current) {
@@ -672,40 +674,37 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
             const clientWidth = container.clientWidth;
             const clientHeight = container.clientHeight;
             
-            // Vertical scroll: center the current time
+            // Scroll vertical: centrar l'hora actual
             const now = new Date();
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
             container.scrollTop = Math.max(0, currentMinutes - clientHeight / 2);
             
-            // Horizontal scroll: Target the current day accurately
+            // Scroll horitzontal: centrar el dia seleccionat
             const isMobile = window.innerWidth < 768;
             const actualWidth = isMobile ? (clientWidth - 56) : Math.max(140, (clientWidth - 56) / 7);
             const dayOffset = (currentDate.getDay() + 6) % 7;
-            const bufferOffset = deferBuffers ? 7 : 28;
+            const bufferOffset = 14;
             
             if (isMobile) {
-                // Mòbil: scroll exacte a l'inici de la columna del dia (compensat pels 56px fixed)
                 container.scrollLeft = (bufferOffset + dayOffset) * actualWidth;
             } else {
-                // Desktop: centrar el dia a la pantalla
                 container.scrollLeft = (bufferOffset + dayOffset) * actualWidth - (clientWidth - 56) / 2 + actualWidth / 2;
             }
         }
-    }, [currentDate, deferBuffers]);
+    }, [currentDate]);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        if (deferBuffers) return;
         const target = e.currentTarget;
 
-        // If scrolled to within 14 columns of the left edge (2 full weeks buffer)
-        if (target.scrollLeft < 14 * columnWidth) {
+        // Llindar segur: a 7 columnes (1 setmana) de la vora esquerra
+        if (target.scrollLeft < 7 * columnWidth) {
             flushSync(() => {
                 setBaseDate(prev => subDays(prev, 7));
             });
             target.scrollLeft += 7 * columnWidth;
         } 
-        // If scrolled to within 14 columns of the right edge (total width is 63 cols, max scrollLeft is 56. 56 - 14 = 42)
-        else if (target.scrollLeft > 42 * columnWidth) {
+        // Total columnes: 35. 35 - 7 (pantalla) - 7 (vora) = 21
+        else if (target.scrollLeft > 21 * columnWidth) {
             flushSync(() => {
                 setBaseDate(prev => addDays(prev, 7));
             });
@@ -724,7 +723,7 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks, deferBuffer
                     <NavigationPill>
                         <button 
                             type="button"
-                            onClick={() => window.dispatchEvent(new CustomEvent('planner-action', { detail: { action: 'plannerViewMonth' } }))}
+                            onClick={() => dispatchPlannerAction('plannerViewMonth')}
                             className="relative flex items-center justify-center w-11 h-11 transition-colors active:scale-95 text-white hover:text-primary"
                             aria-label="Tornar a la vista mensual"
                         >

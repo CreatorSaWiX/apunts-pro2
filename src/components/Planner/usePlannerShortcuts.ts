@@ -17,7 +17,9 @@ export type PlannerActionId =
     | 'plannerEditTask'
     | 'plannerPriorityLow'
     | 'plannerPriorityMedium'
-    | 'plannerPriorityHigh';
+    | 'plannerPriorityHigh'
+    | 'plannerUndo'
+    | 'plannerRedo';
 
 export interface PlannerActionEventDetail {
     action: PlannerActionId;
@@ -57,7 +59,8 @@ const isTextInputElement = (target: EventTarget | null): boolean => {
  * and emits a decoupled `planner-action` custom event for the active planner views.
  */
 export const usePlannerShortcuts = (): void => {
-    const { shortcuts, isSettingsLoaded } = useSettingsStore();
+    const shortcuts = useSettingsStore(state => state.shortcuts);
+    const isSettingsLoaded = useSettingsStore(state => state.isSettingsLoaded);
 
     useEffect(() => {
         if (!isSettingsLoaded) return;
@@ -79,24 +82,34 @@ export const usePlannerShortcuts = (): void => {
             // Find matching planner action
             let matchedAction: PlannerActionId | null = null;
 
-            for (const [actionId, rawConfig] of Object.entries(shortcuts)) {
-                if (!actionId.startsWith('planner') || NON_EXECUTABLE_SHORTCUTS.has(actionId)) {
-                    continue;
-                }
+            // Direct support for standard Redo: Cmd+Shift+Z (macOS) or Ctrl+Shift+Z (Windows/Linux)
+            if (isMetaPressed && e.shiftKey && keyPressed === 'z') {
+                matchedAction = 'plannerRedo';
+            } else {
+                for (const [actionId, rawConfig] of Object.entries(shortcuts)) {
+                    if (!actionId.startsWith('planner') || NON_EXECUTABLE_SHORTCUTS.has(actionId)) {
+                        continue;
+                    }
 
-                const config = rawConfig as ShortcutConfig;
-                const matchesKey = config.key.toLowerCase() === keyPressed;
-                const matchesMeta = Boolean(config.meta) === isMetaPressed;
+                    const config = rawConfig as ShortcutConfig;
+                    const matchesKey = config.key.toLowerCase() === keyPressed;
+                    const matchesMeta = Boolean(config.meta) === isMetaPressed;
 
-                // When no meta key is required, ensure other modifiers (Alt, Ctrl) are also not pressed
-                // to avoid conflicting with browser or OS-level shortcuts.
-                if (!config.meta && (e.altKey || (IS_MAC && e.ctrlKey))) {
-                    continue;
-                }
+                    // When no meta key is required, ensure other modifiers (Alt, Ctrl) are also not pressed
+                    // to avoid conflicting with browser or OS-level shortcuts.
+                    if (!config.meta && (e.altKey || (IS_MAC && e.ctrlKey))) {
+                        continue;
+                    }
 
-                if (matchesKey && matchesMeta) {
-                    matchedAction = actionId as PlannerActionId;
-                    break;
+                    // For Undo, ensure Shift is NOT pressed so it doesn't clash with Redo
+                    if (actionId === 'plannerUndo' && e.shiftKey) {
+                        continue;
+                    }
+
+                    if (matchesKey && matchesMeta) {
+                        matchedAction = actionId as PlannerActionId;
+                        break;
+                    }
                 }
             }
 

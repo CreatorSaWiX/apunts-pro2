@@ -127,6 +127,8 @@ export const ShortcutsSection = () => {
                 { id: 'plannerNext', label: t('settings.shortcuts.actions.plannerNext', 'Següent (Setmana/Mes/Any)'), default: { key: 'ArrowRight', meta: false } },
                 { id: 'plannerDeleteTask', label: t('settings.shortcuts.actions.plannerDeleteTask', 'Eliminar Tasca'), default: { key: 'Backspace', meta: false } },
                 { id: 'plannerEditTask', label: t('settings.shortcuts.actions.plannerEditTask', 'Editar Tasca'), default: { key: 'Enter', meta: false } },
+                { id: 'plannerUndo', label: t('settings.shortcuts.actions.plannerUndo', 'Desfer Canvi'), default: { key: 'z', meta: true } },
+                { id: 'plannerRedo', label: t('settings.shortcuts.actions.plannerRedo', 'Refer Canvi'), default: { key: 'y', meta: true } },
                 { id: 'plannerDuplicateModifier', label: t('settings.shortcuts.actions.plannerDuplicateModifier', 'Modificador Duplicar (Ratolí)'), default: { key: 'Alt', meta: false } }
             ]
         },

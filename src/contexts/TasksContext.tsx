@@ -13,6 +13,11 @@ export interface TaskFilters {
     dateRange: DateRangeFilter;
 }
 
+export type TaskHistoryAction =
+    | { type: 'UPDATE'; taskId: string; before: Partial<Task>; after: Partial<Task>; title: string }
+    | { type: 'CREATE'; task: Task; title: string }
+    | { type: 'DELETE'; task: Task; title: string };
+
 export interface TasksState {
     tasks: Task[];
     subjects: Subject[];
@@ -21,6 +26,8 @@ export interface TasksState {
     error: string | null;
     user: User | null; // Stored user from AuthContext
     deletedTasks: Task[]; // internal
+    undoStack: TaskHistoryAction[];
+    redoStack: TaskHistoryAction[];
 
     filteredTasks: Task[]; // Derived state
 
@@ -32,9 +39,11 @@ export interface TasksState {
     clearFilters: () => void;
     setUser: (u: User | null) => void;
 
-    addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>) => Promise<string>;
-    updateTask: (taskId: string, updates: Partial<Task>) => Promise<void>;
-    deleteTask: (taskId: string, task?: Task) => Promise<void>;
+    addTask: (task: Omit<Task, 'id' | 'userId' | 'createdAt'>, recordHistory?: boolean) => Promise<string>;
+    updateTask: (taskId: string, updates: Partial<Task>, recordHistory?: boolean) => Promise<void>;
+    deleteTask: (taskId: string, task?: Task, recordHistory?: boolean) => Promise<void>;
+    undo: () => Promise<TaskHistoryAction | null>;
+    redo: () => Promise<TaskHistoryAction | null>;
     undoDelete: () => Promise<void>;
     addBatchTasks: (tasks: Omit<Task, 'id' | 'userId' | 'createdAt'>[]) => Promise<void>;
 }
@@ -85,6 +94,8 @@ const computeFilteredTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
     });
 };
 
+const MAX_HISTORY = 50;
+
 const createTasksStore = () =>
     createStore<TasksState>((set, get) => ({
         tasks: [],
@@ -94,6 +105,8 @@ const createTasksStore = () =>
         error: null,
         user: null,
         deletedTasks: [],
+        undoStack: [],
+        redoStack: [],
         filteredTasks: [],
 
         setTasks: (tasks) => set(state => ({ tasks, filteredTasks: computeFilteredTasks(tasks, state.filters) })),
@@ -111,8 +124,8 @@ const createTasksStore = () =>
             return { filters: newFilters, filteredTasks: computeFilteredTasks(state.tasks, newFilters) };
         }),
 
-        addTask: async (taskData) => {
-            const { user, tasks, filters } = get();
+        addTask: async (taskData, recordHistory = true) => {
+            const { user, tasks, filters, undoStack } = get();
             if (!user) throw new Error("No user logged in");
             const [{ db }, { collection, doc, setDoc }] = await Promise.all([
                 import('../lib/firebase'),
@@ -129,7 +142,25 @@ const createTasksStore = () =>
                 createdAt: new Date().toISOString()
             };
             const newTasks = [...tasks, newTask];
-            set({ tasks: newTasks, filteredTasks: computeFilteredTasks(newTasks, filters) });
+            
+            let newUndoStack = undoStack;
+            let newRedoStack = get().redoStack;
+            if (recordHistory) {
+                const historyAction: TaskHistoryAction = {
+                    type: 'CREATE',
+                    task: newTask,
+                    title: newTask.title || 'Nova Tasca'
+                };
+                newUndoStack = [...undoStack.slice(-(MAX_HISTORY - 1)), historyAction];
+                newRedoStack = [];
+            }
+
+            set({ 
+                tasks: newTasks, 
+                filteredTasks: computeFilteredTasks(newTasks, filters),
+                undoStack: newUndoStack,
+                redoStack: newRedoStack
+            });
 
             const { id: _ignore, ...dataToSave } = newTask;
             const cleanTask = Object.fromEntries(Object.entries(dataToSave).filter(([_, v]) => v !== undefined));
@@ -161,33 +192,88 @@ const createTasksStore = () =>
             await batch.commit();
         },
 
-        updateTask: async (taskId, updates) => {
-            const { user, tasks, filters } = get();
+        updateTask: async (taskId, updates, recordHistory = true) => {
+            const { user, tasks, filters, undoStack } = get();
+            const existing = tasks.find(t => t.id === taskId);
+
+            let hasChanges = false;
+            const before: Partial<Task> = {};
+            const after: Partial<Task> = {};
+
+            if (existing && recordHistory) {
+                for (const [k, v] of Object.entries(updates) as [keyof Task, any][]) {
+                    if (existing[k] !== v) {
+                        (before as any)[k] = existing[k];
+                        (after as any)[k] = v;
+                        hasChanges = true;
+                    }
+                }
+            }
+
             // Optimistic update locally
             const newTasks = tasks.map(t => t.id === taskId ? { ...t, ...updates } : t);
-            set({ tasks: newTasks, filteredTasks: computeFilteredTasks(newTasks, filters) });
+
+            let newUndoStack = undoStack;
+            let newRedoStack = get().redoStack;
+            if (hasChanges && existing && recordHistory) {
+                const historyAction: TaskHistoryAction = {
+                    type: 'UPDATE',
+                    taskId,
+                    before,
+                    after,
+                    title: existing.title || updates.title || 'Tasca'
+                };
+                newUndoStack = [...undoStack.slice(-(MAX_HISTORY - 1)), historyAction];
+                newRedoStack = [];
+            }
+
+            set({ 
+                tasks: newTasks, 
+                filteredTasks: computeFilteredTasks(newTasks, filters),
+                undoStack: newUndoStack,
+                redoStack: newRedoStack
+            });
             
             if (!user) throw new Error("No user logged in");
-            const [{ db }, { doc, updateDoc }] = await Promise.all([
+            const [{ db }, { doc, updateDoc, deleteField }] = await Promise.all([
                 import('../lib/firebase'),
                 import('firebase/firestore')
             ]);
             const taskRef = doc(db, 'users', user.id, 'tasks', taskId);
-            const sanitizedUpdates = Object.fromEntries(
-                Object.entries(updates).filter(([_, v]) => v !== undefined)
-            );
+            const sanitizedUpdates: Record<string, any> = {};
+            for (const [k, v] of Object.entries(updates)) {
+                sanitizedUpdates[k] = v === undefined ? deleteField() : v;
+            }
             await updateDoc(taskRef, sanitizedUpdates);
         },
 
-        deleteTask: async (taskId, task) => {
-            const { user, tasks, deletedTasks, filters } = get();
+        deleteTask: async (taskId, task, recordHistory = true) => {
+            const { user, tasks, deletedTasks, filters, undoStack } = get();
             if (!user) throw new Error("No user logged in");
             
             const found = task || tasks.find(t => t.id === taskId);
             const newTasks = tasks.filter(t => t.id !== taskId);
             const newDeleted = found ? [...deletedTasks, found] : deletedTasks;
+
+            let newUndoStack = undoStack;
+            let newRedoStack = get().redoStack;
+            if (found && recordHistory) {
+                const historyAction: TaskHistoryAction = {
+                    type: 'DELETE',
+                    task: found,
+                    title: found.title || 'Tasca'
+                };
+                newUndoStack = [...undoStack.slice(-(MAX_HISTORY - 1)), historyAction];
+                newRedoStack = [];
+            }
             
-            set({ tasks: newTasks, deletedTasks: newDeleted, filteredTasks: computeFilteredTasks(newTasks, filters) });
+            set({ 
+                tasks: newTasks, 
+                deletedTasks: newDeleted, 
+                filteredTasks: computeFilteredTasks(newTasks, filters),
+                undoStack: newUndoStack,
+                redoStack: newRedoStack
+            });
             
             const [{ db }, { doc, deleteDoc }] = await Promise.all([
                 import('../lib/firebase'),
@@ -196,34 +282,150 @@ const createTasksStore = () =>
             await deleteDoc(doc(db, 'users', user.id, 'tasks', taskId));
         },
 
-        undoDelete: async () => {
-            const { user, deletedTasks } = get();
-            if (!user || deletedTasks.length === 0) return;
-            
-            const lastDeleted = deletedTasks[deletedTasks.length - 1];
-            const newDeleted = deletedTasks.slice(0, -1);
-            set({ deletedTasks: newDeleted });
-            
-            try {
-                const [{ db }, { doc, setDoc }] = await Promise.all([
-                    import('../lib/firebase'),
-                    import('firebase/firestore')
-                ]);
-                await setDoc(doc(db, 'users', user.id, 'tasks', lastDeleted.id), {
-                    userId: lastDeleted.userId,
-                    title: lastDeleted.title,
-                    description: lastDeleted.description,
-                    status: lastDeleted.status,
-                    priority: lastDeleted.priority,
-                    dueDate: lastDeleted.dueDate,
-                    startDate: lastDeleted.startDate,
-                    estimatedMinutes: lastDeleted.estimatedMinutes,
-                    createdAt: lastDeleted.createdAt
+        undo: async () => {
+            const { user, tasks, filters, undoStack, redoStack } = get();
+            if (undoStack.length === 0) return null;
+
+            const action = undoStack[undoStack.length - 1];
+            const newUndoStack = undoStack.slice(0, -1);
+            const newRedoStack = [...redoStack.slice(-(MAX_HISTORY - 1)), action];
+
+            if (action.type === 'UPDATE') {
+                const existing = tasks.find(t => t.id === action.taskId);
+                if (existing) {
+                    const newTasks = tasks.map(t => t.id === action.taskId ? { ...t, ...action.before } : t);
+                    set({
+                        tasks: newTasks,
+                        filteredTasks: computeFilteredTasks(newTasks, filters),
+                        undoStack: newUndoStack,
+                        redoStack: newRedoStack
+                    });
+
+                    if (user) {
+                        const [{ db }, { doc, updateDoc, deleteField }] = await Promise.all([
+                            import('../lib/firebase'),
+                            import('firebase/firestore')
+                        ]);
+                        const taskRef = doc(db, 'users', user.id, 'tasks', action.taskId);
+                        const sanitizedUpdates: Record<string, any> = {};
+                        for (const [k, v] of Object.entries(action.before)) {
+                            sanitizedUpdates[k] = v === undefined ? deleteField() : v;
+                        }
+                        await updateDoc(taskRef, sanitizedUpdates);
+                    }
+                }
+            } else if (action.type === 'CREATE') {
+                const newTasks = tasks.filter(t => t.id !== action.task.id);
+                set({
+                    tasks: newTasks,
+                    filteredTasks: computeFilteredTasks(newTasks, filters),
+                    undoStack: newUndoStack,
+                    redoStack: newRedoStack
                 });
-            } catch (err) {
-                console.error("Error undoing delete:", err);
-                set(s => ({ deletedTasks: [...s.deletedTasks, lastDeleted] })); // put it back on failure
+
+                if (user) {
+                    const [{ db }, { doc, deleteDoc }] = await Promise.all([
+                        import('../lib/firebase'),
+                        import('firebase/firestore')
+                    ]);
+                    await deleteDoc(doc(db, 'users', user.id, 'tasks', action.task.id));
+                }
+            } else if (action.type === 'DELETE') {
+                const newTasks = [...tasks, action.task];
+                set({
+                    tasks: newTasks,
+                    filteredTasks: computeFilteredTasks(newTasks, filters),
+                    undoStack: newUndoStack,
+                    redoStack: newRedoStack
+                });
+
+                if (user) {
+                    const [{ db }, { doc, setDoc }] = await Promise.all([
+                        import('../lib/firebase'),
+                        import('firebase/firestore')
+                    ]);
+                    const { id: _ignore, ...dataToSave } = action.task;
+                    const cleanTask = Object.fromEntries(Object.entries(dataToSave).filter(([_, v]) => v !== undefined));
+                    await setDoc(doc(db, 'users', user.id, 'tasks', action.task.id), cleanTask);
+                }
             }
+
+            return action;
+        },
+
+        redo: async () => {
+            const { user, tasks, filters, undoStack, redoStack } = get();
+            if (redoStack.length === 0) return null;
+
+            const action = redoStack[redoStack.length - 1];
+            const newRedoStack = redoStack.slice(0, -1);
+            const newUndoStack = [...undoStack.slice(-(MAX_HISTORY - 1)), action];
+
+            if (action.type === 'UPDATE') {
+                const existing = tasks.find(t => t.id === action.taskId);
+                if (existing) {
+                    const newTasks = tasks.map(t => t.id === action.taskId ? { ...t, ...action.after } : t);
+                    set({
+                        tasks: newTasks,
+                        filteredTasks: computeFilteredTasks(newTasks, filters),
+                        undoStack: newUndoStack,
+                        redoStack: newRedoStack
+                    });
+
+                    if (user) {
+                        const [{ db }, { doc, updateDoc, deleteField }] = await Promise.all([
+                            import('../lib/firebase'),
+                            import('firebase/firestore')
+                        ]);
+                        const taskRef = doc(db, 'users', user.id, 'tasks', action.taskId);
+                        const sanitizedUpdates: Record<string, any> = {};
+                        for (const [k, v] of Object.entries(action.after)) {
+                            sanitizedUpdates[k] = v === undefined ? deleteField() : v;
+                        }
+                        await updateDoc(taskRef, sanitizedUpdates);
+                    }
+                }
+            } else if (action.type === 'CREATE') {
+                const newTasks = [...tasks, action.task];
+                set({
+                    tasks: newTasks,
+                    filteredTasks: computeFilteredTasks(newTasks, filters),
+                    undoStack: newUndoStack,
+                    redoStack: newRedoStack
+                });
+
+                if (user) {
+                    const [{ db }, { doc, setDoc }] = await Promise.all([
+                        import('../lib/firebase'),
+                        import('firebase/firestore')
+                    ]);
+                    const { id: _ignore, ...dataToSave } = action.task;
+                    const cleanTask = Object.fromEntries(Object.entries(dataToSave).filter(([_, v]) => v !== undefined));
+                    await setDoc(doc(db, 'users', user.id, 'tasks', action.task.id), cleanTask);
+                }
+            } else if (action.type === 'DELETE') {
+                const newTasks = tasks.filter(t => t.id !== action.task.id);
+                set({
+                    tasks: newTasks,
+                    filteredTasks: computeFilteredTasks(newTasks, filters),
+                    undoStack: newUndoStack,
+                    redoStack: newRedoStack
+                });
+
+                if (user) {
+                    const [{ db }, { doc, deleteDoc }] = await Promise.all([
+                        import('../lib/firebase'),
+                        import('firebase/firestore')
+                            ]);
+                    await deleteDoc(doc(db, 'users', user.id, 'tasks', action.task.id));
+                }
+            }
+
+            return action;
+        },
+
+        undoDelete: async () => {
+            await get().undo();
         }
     }));
 
@@ -316,18 +518,6 @@ export const TasksProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         };
     }, [user, store]);
 
-    // Global KeyDown for Undo
-    useEffect(() => {
-        const handleGlobalKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
-                if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
-                e.preventDefault();
-                store.getState().undoDelete();
-            }
-        };
-        window.addEventListener('keydown', handleGlobalKeyDown);
-        return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-    }, [store]);
 
     return (
         <TasksContext.Provider value={store}>
@@ -345,4 +535,12 @@ export function useTasks<T>(selector?: (state: TasksState) => T): T | TasksState
     }
     const defaultSelector = (state: TasksState) => state;
     return useStore(store, selector || (defaultSelector as any));
+}
+
+export function useTasksStore(): TasksStore {
+    const store = useContext(TasksContext);
+    if (!store) {
+        throw new Error('useTasksStore must be used within a TasksProvider');
+    }
+    return store;
 }
