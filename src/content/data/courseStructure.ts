@@ -697,5 +697,27 @@ export const courseStructure: TopicDefinition[] = [
             { id: "M2-T10-Ex10", title: "Exercici 10: Distància mínima a una corba en el espai" },
             { id: "M2-T10-Ex11", title: "Exercici 11: Aplicació d'extrems condicionats (Repartiment d'herència)" }
         ]
+    },
+
+    // --- EDA (Estructures de Dades i Algorismes) ---
+    {
+        id: "eda-tema-1",
+        title: "Tema 1: Use of STL data structures",
+        title_es: "Tema 1: Uso de estructuras de datos de la STL",
+        description: "Exercicis de Jutge sobre l'ús d'estructures de dades de la llibreria estàndard (STL) en C++: map, set, priority_queue, etc.",
+        description_es: "Ejercicios de Jutge sobre el uso de estructuras de datos de la librería estándar (STL) en C++: map, set, priority_queue, etc.",
+        problems: [
+            { id: "P50709", title: "Col·lecció de números" },
+            { id: "P40902", title: "Casino" },
+            { id: "P69781", title: "Pseudo-seqüències de Collatz (2)" },
+            { id: "P84415", title: "La bossa de les paraules" },
+            { id: "P37064", title: "Mediana dinàmica" },
+            { id: "P59282", title: "Mesures estadístiques" },
+            { id: "P69932", title: "La seqüència més llarga" },
+            { id: "P60296", title: "Rol classificatori" },
+            { id: "P60219", title: "Easy game?" },
+            { id: "P62653", title: "Ticket distribution" },
+            { id: "P63584", title: "K-èsim element" }
+        ]
     }
 ];

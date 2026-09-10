@@ -1,7 +1,7 @@
 ---
-title: "Tema 1: test"
-description: "no hi ha descripció"
-readTime: "40s"
+title: "Tema 1: Anàlisi d'Algorismes"
+description: "Eficiència algorísmica, notació asimptòtica (O, Ω, Θ), anàlisi iteratiu i recursiu, Teoremes Mestres, Fibonacci logarítmic i fites inferiors d'ordenació."
+readTime: "20 min"
 order: 1
 draft: false
 ---

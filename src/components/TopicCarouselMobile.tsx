@@ -308,7 +308,7 @@ const CarouselCard = React.memo(({
                                         }}
                                         className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
                                     >
-                                        {subject === 'pro2' ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
+                                        {subject === 'pro2' || subject === 'eda' ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
                                     </motion.div>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 ---
-title: "Tema 1: test"
-description: "no hi ha descripció"
-readTime: "40s"
+title: "Tema 1: Use of STL data structures"
+description: "Uso de estructuras de datos de la STL: map, set, priority_queue, vectores y ejercicios de Jutge."
+readTime: "5 min"
 order: 1
 draft: false
 ---

@@ -112,8 +112,11 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'm2-tema-10-optimitzacio',
         solutions: m2t10Solutions
+    },
+    {
+        topicId: 'eda-tema-1',
+        solutions: []
     }
-
 ];
 
 let topicIndex: Record<string, Solution[]> | null = null;

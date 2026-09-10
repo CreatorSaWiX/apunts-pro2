@@ -15,7 +15,7 @@ export const getCanonicalTitle = (solutionId: string, solutionTitle: string, top
 };
 
 export const isJutgeId = (solutionId?: string, topicId?: string): boolean => {
-    return !!(solutionId && /^[A-Z0-9]{6}$/.test(solutionId) && topicId?.startsWith('pro2-'));
+    return !!(solutionId && /^[A-Z0-9]{6}$/.test(solutionId) && (topicId?.startsWith('pro2-') || topicId?.startsWith('eda-')));
 };
 
 interface SolutionLike {

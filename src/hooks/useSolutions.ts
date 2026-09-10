@@ -53,10 +53,13 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
                         });
                     }));
                 } else {
-                    // HANDLE LEGACY IDs: If we are querying 'pro2-tema-1', we also want to catch 'tema-1'
+                    // HANDLE LEGACY IDs: If we are querying 'pro2-tema-1' or 'eda-tema-1', we also want to catch 'tema-1'
                     const idsToQuery = [topicId];
                     if (topicId.startsWith('pro2-')) {
                         idsToQuery.push(topicId.replace('pro2-', ''));
+                    }
+                    if (topicId.startsWith('eda-')) {
+                        idsToQuery.push(topicId.replace('eda-', ''));
                     }
 
                     const q = query(

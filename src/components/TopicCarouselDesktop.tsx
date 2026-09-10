@@ -540,7 +540,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                                 className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
-                                                    {subject === 'pro2' ? <Terminal size={12} /> : <Calculator size={12} />}
+                                                    {subject === 'pro2' || subject === 'eda' ? <Terminal size={12} /> : <Calculator size={12} />}
                                                 </div>
                                                 <span>{subject === 'm1' ? t('topics.solutions.m1', 'Solucionaris M1') : subject === 'm2' ? t('topics.solutions.m2', 'Solucionaris M2') : (subject === 'pro2' && (topic.slug === 'pro2-tema-1' || topic.slug === 'pro2-tema-2' || topic.slug === 'pro2-tema-9') ? t('topics.solutions.lab', 'Solucionaris Lab') : t('topics.solutions.jutge', 'Solucionaris Jutge'))}</span>
                                             </Link>

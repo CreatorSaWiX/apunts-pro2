@@ -109,7 +109,7 @@ body.player-fullscreen .nav-pill-container {
 /*                        MARKDOWN PROSE CONFIGURATION                        */
 /* -------------------------------------------------------------------------- */
 .prose p {
-  @apply text-justify mt-1 mb-1 leading-snug;
+  @apply text-justify my-4 leading-relaxed;
 }
 
 .prose li {
