@@ -367,43 +367,6 @@ export const ChatBot: React.FC = () => {
               <div className="absolute inset-0 bg-[#020617]/30 backdrop-blur-xl" />
             </div>
 
-            {/* Login gate */}
-            {!user && (
-              <LoginGate aiName={aiName} setIsOpen={setIsOpen} renderAIAvatar={renderAIAvatar} />
-            )}
-
-            {/* Drag overlay */}
-            <AnimatePresence>
-              {isDragging && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-[3000] bg-slate-950/80 backdrop-blur-sm border-2 border-dashed border-slate-500 m-4 rounded-3xl flex flex-col items-center justify-center"
-                >
-                  <UploadCloud size={48} className="text-slate-400 mb-4" />
-                  <p className="text-xl font-medium text-slate-300">
-                    {t('chat.dropToAttach', 'Deixa anar per adjuntar')}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Panell d'Historial */}
-            <AnimatePresence>
-              {showHistory && (
-                <ChatHistoryPanel
-                  chatList={chatList}
-                  currentChatId={currentChatId}
-                  setShowHistory={setShowHistory}
-                  switchChat={switchChat}
-                  renameChat={renameChat}
-                  deleteChat={deleteChat}
-                  startNewChat={startNewChat}
-                />
-              )}
-            </AnimatePresence>
-
             {/* Resizer bar */}
             <div
               role="separator"
@@ -417,112 +380,151 @@ export const ChatBot: React.FC = () => {
               }}
             />
 
-            {/* Capçalera flotant */}
-            <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">
-              <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">
-                {isEmpty ? (aiName || 'Agent') : currentChatTitle}
-              </div>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => startNewChat()}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-                  title={t('chat.newChat', 'Nou Xat')}
-                  aria-label={t('chat.newChat', 'Nou Xat')}
-                >
-                  <Plus size={18} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    fetchChatList().then(setChatList).catch(console.error);
-                    setShowHistory(true);
-                  }}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-                  title={t('chat.history', 'Historial de converses')}
-                  aria-label={t('chat.history', 'Historial de converses')}
-                >
-                  <Clock size={18} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-                  title={t('common.close', 'Tancar')}
-                  aria-label={t('common.close', 'Tancar')}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            {/* Contingut del xat: Estat Buit estil Antigravity o Conversa activa */}
-            {isEmpty ? (
-              <div className="flex-1 flex flex-col justify-between pt-16 pb-4 px-5 md:px-7 max-w-2xl mx-auto w-full overflow-y-auto custom-scrollbar z-0">
-                <div className="flex flex-col my-auto py-6">
-                  <h1 className="text-2xl md:text-3xl font-semibold text-slate-100 mb-6 tracking-tight text-center select-none">
-                    {aiName || 'apunts'}
-                  </h1>
-
-                  {renderChatInputBox()}
-
-                  {recentChats.length > 0 && (
-                    <div className="mt-8 flex flex-col gap-2.5">
-                      {recentChats.map((chat) => (
-                        <button
-                          key={chat.id}
-                          type="button"
-                          onClick={() => switchChat(chat.id)}
-                          className="flex items-center justify-between text-left py-1 text-slate-400 hover:text-slate-200 transition-colors group select-none"
-                        >
-                          <span className="truncate max-w-[80%] text-[13.5px] group-hover:text-slate-100">
-                            {chat.title}
-                          </span>
-                          <span className="text-[12px] text-slate-500 font-mono shrink-0 ml-2">
-                            {formatRelativeTime(chat.updatedAt)}
-                          </span>
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          fetchChatList().then(setChatList).catch(console.error);
-                          setShowHistory(true);
-                        }}
-                        className="text-[13px] text-slate-500 hover:text-slate-300 transition-colors mt-2 text-left w-fit select-none"
-                      >
-                        {t('chat.seeAll', 'Veure tot')}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {renderDisclaimer()}
-              </div>
+            {/* Login gate o contingut del xat */}
+            {!user ? (
+              <LoginGate setIsOpen={setIsOpen} renderAIAvatar={renderAIAvatar} />
             ) : (
               <>
-                {/* Àrea de Missatges */}
-                <div
-                  ref={messagesContainerRef}
-                  className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-52 md:px-6 md:pb-56 space-y-8 custom-scrollbar z-0 flex flex-col"
-                >
-                  <MessagesOnly messages={messages} user={user} renderAIAvatar={renderAIAvatar} />
-                  <ActiveStreamingMessage
-                    streamPhase={streamPhase}
-                    thoughtText={thoughtText}
-                    streamingText={streamingText}
-                    renderAIAvatar={renderAIAvatar}
-                  />
-                  <div ref={messagesEndRef} className="h-8 shrink-0" />
+                {/* Drag overlay */}
+                <AnimatePresence>
+                  {isDragging && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 z-[3000] bg-slate-950/80 backdrop-blur-sm border-2 border-dashed border-slate-500 m-4 rounded-3xl flex flex-col items-center justify-center"
+                    >
+                      <UploadCloud size={48} className="text-slate-400 mb-4" />
+                      <p className="text-xl font-medium text-slate-300">
+                        {t('chat.dropToAttach', 'Deixa anar per adjuntar')}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Panell d'Historial */}
+                <AnimatePresence>
+                  {showHistory && (
+                    <ChatHistoryPanel
+                      chatList={chatList}
+                      currentChatId={currentChatId}
+                      setShowHistory={setShowHistory}
+                      switchChat={switchChat}
+                      renameChat={renameChat}
+                      deleteChat={deleteChat}
+                      startNewChat={startNewChat}
+                    />
+                  )}
+                </AnimatePresence>
+
+                {/* Capçalera flotant */}
+                <div className="absolute top-0 left-0 w-full h-16 px-4 border-b border-white/5 flex justify-between items-center bg-[#020617]/50 backdrop-blur-xl z-10">
+                  <div className="text-sm font-medium text-slate-300 truncate max-w-[55%] ml-2">
+                    {isEmpty ? (aiName || 'Agent') : currentChatTitle}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => startNewChat()}
+                      className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                      title={t('chat.newChat', 'Nou Xat')}
+                      aria-label={t('chat.newChat', 'Nou Xat')}
+                    >
+                      <Plus size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        fetchChatList().then(setChatList).catch(console.error);
+                        setShowHistory(true);
+                      }}
+                      className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                      title={t('chat.history', 'Historial de converses')}
+                      aria-label={t('chat.history', 'Historial de converses')}
+                    >
+                      <Clock size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(false)}
+                      className="p-2 text-slate-500 hover:text-slate-200 rounded-md transition-colors ml-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                      title={t('common.close', 'Tancar')}
+                      aria-label={t('common.close', 'Tancar')}
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Input inferior flotant */}
-                <div className="absolute bottom-0 left-0 w-full p-4 pt-8 bg-gradient-to-t from-[#020617]/90 via-[#020617]/50 to-transparent z-10 pointer-events-none">
-                  <div className="pointer-events-auto">
-                    {renderChatInputBox()}
+                {/* Contingut del xat: Estat Buit estil Antigravity o Conversa activa */}
+                {isEmpty ? (
+                  <div className="flex-1 flex flex-col justify-between pt-16 pb-4 px-5 md:px-7 max-w-2xl mx-auto w-full overflow-y-auto custom-scrollbar z-0">
+                    <div className="flex flex-col my-auto py-6">
+                      <h1 className="text-2xl md:text-3xl font-semibold text-slate-100 mb-6 tracking-tight text-center select-none">
+                        {aiName || 'apunts'}
+                      </h1>
+
+                      {renderChatInputBox()}
+
+                      {recentChats.length > 0 && (
+                        <div className="mt-8 flex flex-col gap-2.5">
+                          {recentChats.map((chat) => (
+                            <button
+                              key={chat.id}
+                              type="button"
+                              onClick={() => switchChat(chat.id)}
+                              className="flex items-center justify-between text-left py-1 text-slate-400 hover:text-slate-200 transition-colors group select-none"
+                            >
+                              <span className="truncate max-w-[80%] text-[13.5px] group-hover:text-slate-100">
+                                {chat.title}
+                              </span>
+                              <span className="text-[12px] text-slate-500 font-mono shrink-0 ml-2">
+                                {formatRelativeTime(chat.updatedAt)}
+                              </span>
+                            </button>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              fetchChatList().then(setChatList).catch(console.error);
+                              setShowHistory(true);
+                            }}
+                            className="text-[13px] text-slate-500 hover:text-slate-300 transition-colors mt-2 text-left w-fit select-none"
+                          >
+                            {t('chat.seeAll', 'Veure tot')}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {renderDisclaimer()}
                   </div>
-                  {renderDisclaimer()}
-                </div>
+                ) : (
+                  <>
+                    {/* Àrea de Missatges */}
+                    <div
+                      ref={messagesContainerRef}
+                      className="absolute inset-0 overflow-y-auto px-4 pt-20 pb-52 md:px-6 md:pb-56 space-y-8 custom-scrollbar z-0 flex flex-col"
+                    >
+                      <MessagesOnly messages={messages} user={user} renderAIAvatar={renderAIAvatar} />
+                      <ActiveStreamingMessage
+                        streamPhase={streamPhase}
+                        thoughtText={thoughtText}
+                        streamingText={streamingText}
+                        renderAIAvatar={renderAIAvatar}
+                      />
+                      <div ref={messagesEndRef} className="h-8 shrink-0" />
+                    </div>
+
+                    {/* Input inferior flotant */}
+                    <div className="absolute bottom-0 left-0 w-full p-4 pt-8 bg-gradient-to-t from-[#020617]/90 via-[#020617]/50 to-transparent z-10 pointer-events-none">
+                      <div className="pointer-events-auto">
+                        {renderChatInputBox()}
+                      </div>
+                      {renderDisclaimer()}
+                    </div>
+                  </>
+                )}
               </>
             )}
           </motion.div>

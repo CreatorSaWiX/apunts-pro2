@@ -10,14 +10,13 @@ interface LoginGateProps {
 }
 
 export const LoginGate: React.FC<LoginGateProps> = React.memo(
-  ({ aiName, setIsOpen, renderAIAvatar }) => {
+  ({ setIsOpen, renderAIAvatar }) => {
     const { t } = useTranslation();
 
     return (
       <div className="absolute inset-0 z-[50] flex flex-col">
         {/* Mini header */}
-        <div className="shrink-0 h-16 px-4 border-b border-white/5 flex items-center justify-between bg-[#020617]/50 backdrop-blur-xl">
-          <span className="text-sm font-medium text-slate-300 ml-2">{aiName}</span>
+        <div className="shrink-0 h-16 px-4 border-b border-white/5 flex items-center justify-end bg-[#020617]/50 backdrop-blur-xl">
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -34,8 +33,7 @@ export const LoginGate: React.FC<LoginGateProps> = React.memo(
             {renderAIAvatar(28, 'text-slate-400')}
           </div>
           <div>
-            <h2 className="text-slate-100 font-semibold text-lg mb-2">{aiName}</h2>
-            <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-wrap">
+            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
               {t(
                 'chat.loginRequired',
                 "L'assistent d'IA és exclusiu per als membres registrats\nInicia sessió per accedir a l'historial i al xat"
