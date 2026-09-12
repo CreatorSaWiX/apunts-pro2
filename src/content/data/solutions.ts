@@ -116,6 +116,22 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'eda-tema-1',
         solutions: []
+    },
+    {
+        topicId: 'eda-tema-2',
+        solutions: []
+    },
+    {
+        topicId: 'eda-tema-3',
+        solutions: []
+    },
+    {
+        topicId: 'eda-tema-4',
+        solutions: []
+    },
+    {
+        topicId: 'eda-final',
+        solutions: []
     }
 ];
 

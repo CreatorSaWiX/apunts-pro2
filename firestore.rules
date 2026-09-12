@@ -2,11 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Funció per comprovar si l'usuari és moderador
+    // Funció per comprovar si l'usuari és moderador o administrador
     function isModerator() {
       return request.auth.uid != null && 
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderador' || 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor');
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor' ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
     }
 
     // Usuaris
@@ -43,6 +44,21 @@ service cloud.firestore {
       allow create: if request.auth.uid != null || request.resource.data.receiverId == 'jV5Y63M77PcqIcOUCpLz76GTYMI3';
     }
 
+    // Funcions de seguretat per a comentaris i respostes
+    function isCommentReactionUpdateOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions']) &&
+             ((!('reactions' in resource.data) || resource.data.reactions == null) ?
+               request.resource.data.reactions.keys().hasOnly([request.auth.uid]) :
+               request.resource.data.reactions.diff(resource.data.reactions).affectedKeys().hasOnly([request.auth.uid]));
+    }
+
+    function isCommentAuthorOrModerator() {
+      return (request.auth.uid == resource.data.userId || isModerator()) && 
+             request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+               'content', 'userAvatar', 'username', 'reactions', 'isDeleted', 'isEdited', 'updatedAt'
+             ]);
+    }
+
     // Solucions i Notificacions: els moderadors fan i desfan la base, tothom ho pot veure
     match /solutions/{solutionId} {
       allow read: if request.auth.uid != null;
@@ -52,15 +68,23 @@ service cloud.firestore {
       match /comments/{commentId} {
         allow read: if request.auth.uid != null;
         allow create: if request.auth.uid != null;
-        allow update: if request.auth.uid != null && request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'userAvatar', 'username', 'reactions']);
+        allow update: if request.auth.uid != null && (
+          isCommentReactionUpdateOnly() ||
+          isCommentAuthorOrModerator()
+        );
         // Només l'autor original o l'administrador pot esborrar els missatges
         allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
       }
     }
 
     match /notifications/{document=**} {
-      allow read, update, delete: if request.auth.uid != null && (resource.data.userId == request.auth.uid || isModerator());
+      allow read: if request.auth.uid != null && (resource.data.userId == request.auth.uid || isModerator());
       allow create: if request.auth.uid != null;
+      allow update, delete: if request.auth.uid != null && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.fromUserId == request.auth.uid || 
+        isModerator()
+      );
     }
 
     // Permisos Globals per Fan-out (CollectionGroup queries)
@@ -89,7 +113,10 @@ service cloud.firestore {
       match /replies/{replyId} {
         allow read: if request.auth.uid != null;
         allow create: if request.auth.uid != null;
-        allow update: if request.auth.uid != null && request.auth.uid == resource.data.userId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['content', 'userAvatar', 'username', 'reactions']);
+        allow update: if request.auth.uid != null && (
+          isCommentReactionUpdateOnly() ||
+          isCommentAuthorOrModerator()
+        );
         allow delete: if request.auth.uid != null && (request.auth.uid == resource.data.userId || isModerator());
       }
     }

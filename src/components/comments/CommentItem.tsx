@@ -1,274 +1,263 @@
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useEffect, memo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
-import { ca } from 'date-fns/locale';
-import { Smile, Trash2, ChevronDown } from 'lucide-react';
+import { ca, es, enUS } from 'date-fns/locale';
+import { Trash2, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { CUSTOM_EMOJIS } from '../../lib/emojis';
+import { CUSTOM_EMOJIS, getCustomEmojiUrl } from '../../lib/emojis';
 import { resolveMediaUrl } from '../../lib/mediaUtils';
+import CommentReactions from './CommentReactions';
+import type { CommentEntity } from '../../types/comments';
 
-const CUSTOM_EMOTES = Object.values(CUSTOM_EMOJIS);
+export type Comment = CommentEntity;
 
-export interface Comment {
-    id: string;
-    userId: string;
-    username: string;
-    userAvatar: string;
-    content: string;
-    createdAt: any;
-    reactions: Record<string, { emoji: string; username: string }>; // userId -> reaction data
-    replyCount: number;
-    replyTo?: {
-        id: string;
-        username: string;
-        content: string;
-    };
-    replies?: Comment[]; // For client-side threading
-}
+const dateLocales: Record<string, any> = { ca, es, en: enUS };
 
-interface CommentItemProps {
-    comment: Comment;
+export interface CommentItemProps {
+    comment: CommentEntity;
     onReact: (commentId: string, emoji: string) => void;
-    onReply: (comment: Comment) => void;
+    onReply: (comment: CommentEntity) => void;
     onDelete?: (commentId: string) => void;
     isReply?: boolean;
+    onNavigateToProfile?: (username: string) => void;
+    forceExpanded?: boolean;
 }
 
-const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: CommentItemProps) => {
+const isGif = (content: string) => {
+    return content.startsWith('https://media.tenor.com') || content.match(/\.(gif|webp|jpg|png)$/i);
+};
+
+const CommentItemComponent = ({
+    comment,
+    onReact,
+    onReply,
+    onDelete,
+    isReply = false,
+    onNavigateToProfile,
+    forceExpanded = false
+}: CommentItemProps) => {
     const { user } = useAuth();
-    const [showReactorTooltip, setShowReactorTooltip] = useState<string | null>(null);
-    const [areRepliesVisible, setAreRepliesVisible] = useState(false);
-    const [showPicker, setShowPicker] = useState(false);
-    const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+    const { i18n } = useTranslation();
+    const [userToggled, setUserToggled] = useState<boolean | null>(null);
 
-    const handleTogglePicker = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!showPicker) {
-            let top = e.clientY + 5;
-            let left = e.clientX + 5;
+    // Automatically unlock and open when a forceExpanded signal arrives
+    useEffect(() => {
+        if (forceExpanded) {
+            setUserToggled(true);
+        }
+    }, [forceExpanded]);
 
-            // Make sure the 288px wide picker doesn't overflow the right edge
-            if (left + 288 > window.innerWidth) {
-                left = window.innerWidth - 300;
-            }
-            if (left < 10) left = 10; // Left bleeding protection
+    const areRepliesVisible = userToggled !== null ? userToggled : (forceExpanded || false);
 
-            // Make sure it doesn't overflow the bottom
-            if (top + 260 > window.innerHeight) {
-                top = e.clientY - 265;
-            }
+    const isCurrentUser = !!user && comment.userId === user.id;
+    const isModerator = user?.role === 'moderador' || user?.role === 'editor' || user?.role === 'admin';
+    const canDelete = !comment.isDeleted && (isCurrentUser || isModerator) && !!onDelete;
 
-            setPickerPosition({ top, left });
-            setShowPicker(true);
-        } else {
-            setShowPicker(false);
+    const authorUsername = isCurrentUser ? user.username || comment.username : comment.username;
+    const authorAvatar = isCurrentUser ? user.avatar || comment.userAvatar : comment.userAvatar;
+
+    const dateLocale = dateLocales[i18n.language] || ca;
+    const formattedDate = comment.createdAt?.toDate
+        ? formatDistanceToNow(comment.createdAt.toDate(), { addSuffix: true, locale: dateLocale })
+        : 'Ara mateix';
+
+    const avatarUrl =
+        resolveMediaUrl(authorAvatar) ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(authorUsername)}&background=random`;
+
+    const handleProfileClick = (e: React.MouseEvent) => {
+        if (onNavigateToProfile) {
+            e.preventDefault();
+            onNavigateToProfile(authorUsername);
         }
     };
 
-    // Group reactions by emoji for display
-    const reactionCounts = Object.entries(comment.reactions || {}).reduce((acc, [, data]) => {
-        if (!acc[data.emoji]) acc[data.emoji] = [];
-        acc[data.emoji].push(data.username);
-        return acc;
-    }, {} as Record<string, string[]>);
-
-    const userReaction = user ? comment.reactions?.[user.id]?.emoji : null;
-
-    // Helper to check if content is a GIF URL
-    const isGif = (content: string) => {
-        return content.startsWith('https://media.tenor.com') || content.match(/\.(gif|webp|jpg|png)$/i);
-    };
-
-    const isCustomEmoji = (emoji: string) => emoji.startsWith('/emojis/');
+    // Replies exist only on root comments (depth 1 social-media pattern)
+    const hasReplies = !isReply && comment.replies && comment.replies.length > 0;
 
     return (
         <div className="flex flex-col">
-            <div
-                className={`flex gap-3 group/comment mt-4`}
-            >
-                {/* Avatar */}
-                <Link to={`/profile/${(user && comment.userId === user.id) ? user.username : comment.username}`} className="shrink-0 hover:opacity-80 transition-opacity">
-                    <img loading="lazy"
-                        src={resolveMediaUrl((user && comment.userId === user.id) ? (user.avatar || comment.userAvatar) : (comment.userAvatar)) || `https://ui-avatars.com/api/?name=${comment.username}&background=random`}
-                        alt={(user && comment.userId === user.id) ? user.username : comment.username}
-                        className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full bg-slate-800 object-cover ring-2 ring-slate-900`}
-                    />
-                </Link>
+            <div className="flex items-start gap-3 group/comment py-1.5">
+                {/* User Avatar */}
+                {comment.isDeleted ? (
+                    <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0">
+                        <span className="text-slate-600 text-xs">✕</span>
+                    </div>
+                ) : (
+                    <Link
+                        to={`/profile/${authorUsername}`}
+                        onClick={handleProfileClick}
+                        className="shrink-0 hover:opacity-85 transition-opacity"
+                    >
+                        <img
+                            loading="lazy"
+                            src={avatarUrl}
+                            alt={authorUsername}
+                            className="w-8 h-8 rounded-full bg-slate-800 object-cover ring-1 ring-white/10"
+                        />
+                    </Link>
+                )}
 
                 {/* Content Body */}
                 <div className="flex-1 min-w-0">
                     {/* Header */}
-                    <div className="flex items-center gap-2 mb-1">
-                        <Link
-                            to={`/profile/${(user && comment.userId === user.id) ? user.username : comment.username}`}
-                            className="font-bold text-slate-200 text-sm hover:underline hover:text-sky-400 transition-colors"
-                        >
-                            {(user && comment.userId === user.id) ? user.username : comment.username}
-                        </Link>
+                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        {comment.isDeleted ? (
+                            <span className="text-xs font-semibold text-slate-500 italic">[Suprimit]</span>
+                        ) : (
+                            <Link
+                                to={`/profile/${authorUsername}`}
+                                onClick={handleProfileClick}
+                                className="font-bold text-slate-200 text-xs sm:text-sm hover:underline hover:text-sky-400 transition-colors"
+                            >
+                                {authorUsername}
+                            </Link>
+                        )}
 
-                        {/* TikTok style "replying to" indicator inside the reply item if it's a nested reply */}
-                        {isReply && comment.replyTo && comment.replyTo.username && (
-                            <span className="flex items-center gap-1 text-slate-500 text-xs">
-                                <span className="text-[10px]">▶</span>
-                                <Link
-                                    to={`/profile/${comment.replyTo.username}`}
-                                    className="font-medium text-slate-400 hover:text-sky-400"
-                                >
-                                    {comment.replyTo.username}
-                                </Link>
+                        {/* Recipient tag */}
+                        {isReply && comment.replyTo && comment.replyTo.username && !comment.isDeleted && (
+                            <span className="text-[11px] text-slate-500 font-medium">
+                                ▶ @{comment.replyTo.username}
                             </span>
                         )}
 
-                        <span className="text-[10px] text-slate-500">
-                            {comment.createdAt?.toDate ? formatDistanceToNow(comment.createdAt.toDate(), { addSuffix: true, locale: ca }) : 'Ara mateix'}
-                        </span>
-                        {user?.id === comment.userId && (
-                            <div className="opacity-0 group-hover/comment:opacity-100 transition-opacity ml-auto">
-                                <button type="button"
-                                    onClick={() => onDelete?.(comment.id)}
-                                    className="p-1 text-slate-500 hover:text-red-400 transition-colors"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
+                        <span className="text-[11px] text-slate-500">{formattedDate}</span>
+
+                        {canDelete && (
+                            <button
+                                type="button"
+                                onClick={() => onDelete?.(comment.id)}
+                                className="opacity-0 group-hover/comment:opacity-100 transition-opacity ml-auto text-slate-500 hover:text-rose-400 p-0.5 cursor-pointer"
+                                title={isModerator && !isCurrentUser ? 'Eliminar com a moderador' : 'Eliminar comentari'}
+                                aria-label="Eliminar comentari"
+                            >
+                                <Trash2 size={13} />
+                            </button>
                         )}
                     </div>
 
-                    {/* Text / Content */}
-                    <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
-                        {isGif(comment.content) ? (
-                            <div className="mt-2 mb-2">
-                                <img loading="lazy"
-                                    src={comment.content}
-                                    alt="GIF"
-                                    className="max-w-[250px] max-h-[250px] w-auto h-auto rounded-lg shadow-sm border border-white/5"
-                                />
-                            </div>
-                        ) : (
-                            <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-950 prose-pre:border prose-pre:border-white/5 prose-code:text-sky-300 prose-code:bg-sky-500/10 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-a:text-sky-400 hover:prose-a:text-sky-300">
-                                <ReactMarkdown 
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                        img: ({ ...props }) => (
-                                            <img loading="lazy"
-                                                {...props} 
-                                                className="inline-block w-6 h-6 m-0 align-text-bottom object-contain" 
-                                            />
-                                        )
-                                    }}
-                                >
-                                    {comment.content ? comment.content.replace(/:([a-zA-Z0-9_]+):/g, (match, name) => CUSTOM_EMOJIS[name] ? `![${name}](${CUSTOM_EMOJIS[name]})` : match) : ''}
-                                </ReactMarkdown>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Reactions & Actions Row */}
-                    <div className="flex flex-wrap items-center gap-3 mt-2">
-                        {/* Simple Reply Button (Text) */}
-                        <button type="button"
-                            onClick={() => onReply(comment)}
-                            className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors"
-                        >
-                            Respondre
-                        </button>
-
-                        {/* Render existing reactions as badges */}
-                        {Object.entries(reactionCounts).map(([emoji, users]) => (
-                            <button type="button"
-                                key={emoji}
-                                onClick={() => user && onReact(comment.id, emoji)}
-                                onMouseEnter={() => setShowReactorTooltip(emoji)}
-                                onMouseLeave={() => setShowReactorTooltip(null)}
-                                className={`
-                                    relative group flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium transition border border-transparent
-                                    ${userReaction === emoji
-                                        ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
-                                        : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:border-slate-700'
-                                    }
-                                `}
-                            >
-                                {isCustomEmoji(emoji) ? (
-                                    <img src={emoji} alt="reaction" loading="lazy" className="w-4 h-4 object-contain" />
-                                ) : (
-                                    <span>{emoji}</span>
-                                )}
-                                <span>{users.length}</span>
-
-                                {/* Tooltip */}
-                                {showReactorTooltip === emoji && (
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 border border-white/10 rounded text-[10px] text-white whitespace-nowrap z-10 pointer-events-none">
-                                        {users.slice(0, 3).join(', ')}
-                                        {users.length > 3 && ` i ${users.length - 3} més`}
-                                    </div>
-                                )}
-                            </button>
-                        ))}
-
-                        {/* Add Reaction Button (Smile Icon) */}
-                        <div className="relative">
-                            <button type="button"
-                                onClick={handleTogglePicker}
-                                className={`text-slate-500 hover:text-sky-400 transition-opacity ${showPicker ? 'opacity-100 text-sky-400' : 'opacity-0 group-hover/comment:opacity-100'}`}
-                                title="Afegir reacció"
-                            >
-                                <Smile size={14} />
-                            </button>
-
-                            {/* Quick Picker Popover - Portal at Document Body */}
-                            {showPicker && createPortal(
-                                <>
-                                    <div
-                                        className="fixed inset-0 z-9990"
-                                        onClick={() => setShowPicker(false)}
+                    {/* Comment Body / Markdown */}
+                    {comment.isDeleted ? (
+                        <p className="text-slate-500 text-xs italic py-0.5">
+                            Aquest comentari ha estat suprimit.
+                        </p>
+                    ) : (
+                        <div className="text-xs sm:text-sm text-slate-300 leading-relaxed break-words">
+                            {isGif(comment.content) ? (
+                                <div className="mt-1 mb-2">
+                                    <img
+                                        loading="lazy"
+                                        src={comment.content}
+                                        alt="GIF"
+                                        className="max-w-[260px] max-h-[220px] w-auto h-auto rounded-xl shadow-lg border border-white/10"
                                     />
-                                    <div
-                                        className="fixed z-10000 p-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl grid grid-cols-6 gap-1 w-72 max-h-64 overflow-y-auto custom-scrollbar overscroll-contain origin-top-left"
-                                        style={{
-                                            top: pickerPosition.top,
-                                            left: pickerPosition.left,
+                                </div>
+                            ) : (
+                                <div className="text-xs sm:text-sm text-slate-200 leading-normal break-words [&_pre]:my-1.5 [&_pre]:p-2 [&_pre]:bg-slate-950 [&_pre]:border [&_pre]:border-white/5 [&_pre]:rounded-lg [&_code]:text-sky-300 [&_code]:bg-sky-500/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_a]:text-sky-400 [&_a]:underline">
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            p: ({ children }) => (
+                                                <p className="m-0 p-0 leading-normal">{children}</p>
+                                            ),
+                                            img: ({ alt, src, ...props }) => {
+                                                const isCustomEmote =
+                                                    (alt && !!getCustomEmojiUrl(alt)) ||
+                                                    (src && (Object.values(CUSTOM_EMOJIS).includes(src) || src.includes('emoji') || src.includes('.png') || src.includes('.PNG') || src.includes('.webp')));
+                                                if (isCustomEmote || !src) {
+                                                    return (
+                                                        <img
+                                                            loading="lazy"
+                                                            src={src}
+                                                            alt={alt || 'emoji'}
+                                                            {...props}
+                                                            className="inline-block w-[1.25em] h-[1.25em] m-0 align-[-0.2em] object-contain select-none"
+                                                        />
+                                                    );
+                                                }
+                                                return (
+                                                    <img
+                                                        loading="lazy"
+                                                        src={src}
+                                                        alt={alt}
+                                                        {...props}
+                                                        className="max-w-full max-h-[360px] w-auto h-auto rounded-xl my-1.5 border border-white/10 shadow-lg object-contain block"
+                                                    />
+                                                );
+                                            },
+                                            a: ({ ...props }) => (
+                                                <a
+                                                    {...props}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-sky-400 hover:underline"
+                                                />
+                                            )
                                         }}
                                     >
-                                        {/* Custom Emotes */}
-                                        {CUSTOM_EMOTES.map(emoji => (
-                                            <button type="button"
-                                                key={emoji}
-                                                onClick={() => {
-                                                    if (user) onReact(comment.id, emoji);
-                                                    setShowPicker(false);
-                                                }}
-                                                className={`p-1 rounded-lg hover:bg-slate-800 transition-transform hover:scale-110 flex items-center justify-center ${userReaction === emoji ? 'bg-sky-500/20' : ''}`}
-                                            >
-                                                <img src={emoji} alt="emoji" className="w-6 h-6 object-contain" loading="lazy" />
-                                            </button>
-                                        ))}
-                                    </div>
-                                </>,
-                                document.body
+                                        {comment.content
+                                            ? comment.content.replace(
+                                                  /:([a-zA-Z0-9_\-\s]+?):/g,
+                                                  (match, name) => {
+                                                      const url = getCustomEmojiUrl(name);
+                                                      return url ? `![${name.trim()}](${url})` : match;
+                                                  }
+                                              )
+                                            : ''}
+                                    </ReactMarkdown>
+                                </div>
                             )}
                         </div>
-                    </div>
+                    )}
+
+                    {/* Footer Actions: Reply button & Reactions */}
+                    {!comment.isDeleted && (
+                        <div className="flex items-center gap-3 mt-1.5">
+                            {user && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setUserToggled(true);
+                                        onReply(comment);
+                                    }}
+                                    className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                                >
+                                    Respondre
+                                </button>
+                            )}
+
+                            <CommentReactions
+                                commentId={comment.id}
+                                reactions={comment.reactions}
+                                currentUserId={user?.id}
+                                onReact={onReact}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* View Replies Toggle (TikTok style) */}
-            {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-12 mt-2">
+            {/* Depth-1 Flat Thread: All replies render directly under the root item */}
+            {hasReplies && (
+                <div className="ml-8 sm:ml-9 mt-1">
                     {!areRepliesVisible ? (
-                        <button type="button"
-                            onClick={() => setAreRepliesVisible(true)}
-                            className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors group"
+                        <button
+                            type="button"
+                            onClick={() => setUserToggled(true)}
+                            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-sky-400 transition-colors cursor-pointer py-1"
                         >
-                            <div className="w-6 h-px bg-slate-700 group-hover:bg-slate-500"></div>
-                            <span>Veure {comment.replies.length} respostes</span>
-                            <ChevronDown size={14} />
+                            <span>
+                                Veure {comment.replies!.length}{' '}
+                                {comment.replies!.length === 1 ? 'resposta' : 'respostes'}
+                            </span>
+                            <ChevronDown size={13} />
                         </button>
                     ) : (
-                        <div className="flex flex-col">
-                            {/* Render Replies */}
-                            {comment.replies.map(reply => (
+                        <div className="flex flex-col space-y-1 mt-1">
+                            {comment.replies!.map((reply) => (
                                 <CommentItem
                                     key={reply.id}
                                     comment={reply}
@@ -276,15 +265,16 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
                                     onReply={onReply}
                                     onDelete={onDelete}
                                     isReply={true}
+                                    onNavigateToProfile={onNavigateToProfile}
                                 />
                             ))}
 
-                            <button type="button"
-                                onClick={() => setAreRepliesVisible(false)}
-                                className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors mt-3 group"
+                            <button
+                                type="button"
+                                onClick={() => setUserToggled(false)}
+                                className="text-xs font-semibold text-slate-500 hover:text-slate-400 transition-colors cursor-pointer py-1 text-left"
                             >
-                                <div className="w-6 h-px bg-slate-700 group-hover:bg-slate-500"></div>
-                                <span>Amagar respostes</span>
+                                Amagar respostes
                             </button>
                         </div>
                     )}
@@ -294,4 +284,5 @@ const CommentItem = ({ comment, onReact, onReply, onDelete, isReply = false }: C
     );
 };
 
+export const CommentItem = memo(CommentItemComponent);
 export default CommentItem;

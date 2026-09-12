@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import parse, { type DOMNode, domToReact } from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import { PublishedCodeBlock } from '../extensions/PublishedCodeBlock';
+import { renderEmojis } from '../../../lib/emojis';
 
 interface HtmlRendererProps {
     content: string;
@@ -12,9 +13,12 @@ export const HtmlRenderer = React.memo(({ content, className = '' }: HtmlRendere
     const parsedContent = useMemo(() => {
         if (!content) return null;
 
+        const contentWithEmojis = renderEmojis(content);
+
         // Sanitize with custom relaxed attributes if needed
-        const sanitizedHtml = DOMPurify.sanitize(content, {
-            ADD_ATTR: ['target', 'rel']
+        const sanitizedHtml = DOMPurify.sanitize(contentWithEmojis, {
+            ADD_TAGS: ['img'],
+            ADD_ATTR: ['target', 'rel', 'src', 'alt', 'loading', 'class']
         });
 
         const options = {
