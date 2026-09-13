@@ -32,19 +32,30 @@ export const tailwindColors: Record<string, { primary: string, primary_rgb: stri
     'rose':    { primary: '#f43f5e', primary_rgb: '244, 63, 94',   accent: '#fb7185', accent_rgb: '251, 113, 133' },
 };
 
+interface SubjectJsonItem {
+    name: string;
+    colorToken?: string;
+}
+
+const subjectsMap = new Map<string, SubjectJsonItem>();
+for (const s of (subjectsData as Array<SubjectJsonItem>)) {
+    if (s && s.name) {
+        subjectsMap.set(s.name.toUpperCase(), s);
+    }
+}
+
 export const getSubjectColor = (colorToken?: string) => {
     const family = colorToken ? colorToken.split('-')[0] : 'sky';
     return tailwindColors[family] || tailwindColors['sky'];
 };
 
 const calculateTheme = (subject: string, customSubjectColors: Record<string, string> = {}): Theme => {
-    const subjectInfo = (subjectsData as Array<{ name: string; colorToken?: string }>).find(
-        (s) => s.name.toUpperCase() === subject.toUpperCase()
-    );
+    const upperSubj = (subject || '').toUpperCase();
+    const subjectInfo = subjectsMap.get(upperSubj);
     
     let colorFamily = 'sky';
-    if (customSubjectColors && customSubjectColors[subject.toUpperCase()]) {
-        colorFamily = customSubjectColors[subject.toUpperCase()];
+    if (customSubjectColors && customSubjectColors[upperSubj]) {
+        colorFamily = customSubjectColors[upperSubj];
     } else if (subjectInfo?.colorToken) {
         colorFamily = subjectInfo.colorToken.split('-')[0];
     }
@@ -54,7 +65,7 @@ const calculateTheme = (subject: string, customSubjectColors: Record<string, str
     return {
         ...colors,
         background: '#0f172a',
-        label: subjectInfo?.name || subject.toUpperCase()
+        label: subjectInfo?.name || upperSubj
     };
 };
 

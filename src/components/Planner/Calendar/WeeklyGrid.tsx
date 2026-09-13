@@ -115,19 +115,22 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSelected, task.id, deleteTask]);
 
+    const isSelectedRef = React.useRef(isSelected);
+    isSelectedRef.current = isSelected;
+
     React.useEffect(() => {
         const handleTaskSelected = (e: Event) => {
             const customEvent = e as CustomEvent;
             if (customEvent.detail === task.id) {
                 setIsSelected(true);
-            } else if (isSelected) {
+            } else if (isSelectedRef.current) {
                 setIsSelected(false);
             }
         };
 
         window.addEventListener('task-selected', handleTaskSelected);
         return () => window.removeEventListener('task-selected', handleTaskSelected);
-    }, [task.id, isSelected]);
+    }, [task.id]);
 
     const handlePointerDown = (type: 'top' | 'bottom') => (e: React.PointerEvent) => {
         e.preventDefault(); // Això evita que l'input perdi el focus (onBlur)
@@ -638,8 +641,9 @@ const WeeklyGrid: React.FC<WeeklyGridProps> = ({ currentDate, tasks }) => {
             const dayEnd = new Date(day);
             dayEnd.setHours(24, 0, 0, 0);
             mapping[day.toISOString()] = tasks.filter(t => {
-                if (!t.startDate) return false;
-                const start = new Date(t.startDate);
+                const effectiveStartStr = t.startDate || t.dueDate;
+                if (!effectiveStartStr) return false;
+                const start = new Date(effectiveStartStr);
                 const end = t.dueDate ? new Date(t.dueDate) : new Date(start.getTime() + (t.estimatedMinutes || 60) * 60000);
                 return start < dayEnd && end > dayStart;
             });

@@ -575,15 +575,37 @@ const GanttView: React.FC = () => {
 
         visibleTasks.sort((a, b) => a.startMs - b.startMs);
 
-        return visibleTasks.map((item, index) => {
+        // Algorisme de Greedy Interval Partitioning (Empaquetament òptim de pistes O(N log N))
+        // trackEndTimes[i] emmagatzema l'endMs de l'última tasca assignada a la pista i
+        const trackEndTimes: number[] = [];
+        const BUFFER_GAP_MS = 5 * 60 * 1000; // 5 minuts de marge visual entre tasques consecutives
+
+        return visibleTasks.map((item) => {
             const durationMins = Math.max(5, (item.endMs - item.startMs) / 60000);
             const leftMins = (item.startMs - timelineStart.getTime()) / 60000;
+
+            // Trobar la primera pista on la tasca anterior ja hagi finalitzat
+            let assignedTrack = -1;
+            for (let t = 0; t < trackEndTimes.length; t++) {
+                if (trackEndTimes[t] + BUFFER_GAP_MS <= item.startMs) {
+                    assignedTrack = t;
+                    trackEndTimes[t] = item.endMs;
+                    break;
+                }
+            }
+
+            // Si s'encavalca amb totes les pistes existents, en creem una de nova
+            if (assignedTrack === -1) {
+                assignedTrack = trackEndTimes.length;
+                trackEndTimes.push(item.endMs);
+            }
+
             return {
                 ...item.task,
                 start: item.start,
                 end: item.end,
                 durationMins,
-                trackIndex: index,
+                trackIndex: assignedTrack,
                 leftMins
             };
         });

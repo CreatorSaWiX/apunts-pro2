@@ -22,10 +22,26 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
     return lastSpace > maxLen * 0.7 ? truncated.substring(0, lastSpace) : truncated;
 }
 
-//Necessitat google search
+// Heurística local O(1) per evitar consumir quota d'API innecessàriament
+const NO_SEARCH_REGEX = /^(hola|bon dia|bona tarda|bona nit|ei|bones|adeu|gr[aà]cies|merci|hello|hi|hey|què és|que es|com es|com funciona|explica'm|resol|demostra|troba|calcula|deriva|integra)\b/i;
+const SEARCH_TRIGGER_REGEX = /\b(qui [eé]s|qui era|qui va ser|coneixes a|not[ií]cia|actualitat|última hora|avui en dia|any 202[4-9]|paper de recerca|arxiv|jutge\.org|fib-upc|novetats?)\b/i;
+
+// Necessitat google search
 async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseEmitFn): Promise<boolean> {
-    await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
     const trimmed = message.trim();
+
+    // 1. Detecció ultraràpida O(1): Prioritat absoluta a paraules clau que requereixen informació externa
+    if (SEARCH_TRIGGER_REGEX.test(trimmed)) {
+        await emit('thought', { text: `i18n:searchDetected\n\n` });
+        return true;
+    }
+    // 2. Filtre de preguntes teòriques o salutacions breus (< 35 caràcters)
+    if (trimmed.length < 35 && NO_SEARCH_REGEX.test(trimmed)) {
+        await emit('thought', { text: `i18n:searchNotNeeded\n\n` });
+        return false;
+    }
+
+    await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
 
     const prompt = `Ets un classificador d'intenció de cerca web per a un assistent d'apunts universitaris.
 
@@ -39,12 +55,12 @@ Respon ÚNICAMENT amb el dígit 1 o 0 (sense cap altre text).
 Dígit:`;
 
     const candidateModels = getLiteModels();
-    const controllers = candidateModels.map(() => new AbortController());
 
-    // Execució en paral·lel de tots els models Lite: el primer que respongui determina el resultat (Promise.any)
-    const promises = candidateModels.map(async (liteModel, index) => {
-        const controller = controllers[index];
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+    // Execució seqüencial amb fallback per protegir la quota (15 RPM)
+    for (let i = 0; i < candidateModels.length; i++) {
+        const liteModel = candidateModels[i];
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
         const thinkingConfig = liteModel.startsWith('gemini-3')
             ? { thinkingLevel: ThinkingLevel.MINIMAL }
             : { thinkingBudget: 0 };
@@ -69,25 +85,20 @@ Dígit:`;
 
             clearTimeout(timeoutId);
             const answer = (response.text || "").trim();
-            if (!answer) throw new Error("Resposta buida");
-            return answer.includes('1');
-        } catch (err) {
-            clearTimeout(timeoutId);
-            throw err;
-        }
-    });
+            if (!answer) continue;
 
-    try {
-        const search = await Promise.any(promises);
-        // Cancelem els altres models en curs per estalviar recursos
-        controllers.forEach(c => c.abort());
-        await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
-        return search;
-    } catch {
-        controllers.forEach(c => c.abort());
-        await emit('thought', { text: `i18n:searchFailed\n\n` });
-        return false;
+            const search = answer.includes('1');
+            await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
+            return search;
+        } catch {
+            clearTimeout(timeoutId);
+            // Provar el següent model disponible
+            continue;
+        }
     }
+
+    await emit('thought', { text: `i18n:searchNotNeeded\n\n` });
+    return false;
 }
 
 interface MemoryAction {

@@ -18,7 +18,7 @@ import Spinner from "../components/ui/Spinner";
 
 const CodeBlock = React.lazy(() => import("../components/ui/editors/CodeBlock"));
 import Callout from "../components/ui/Callout";
-import SimulationPlayer from "../components/ui/players/SimulationPlayer";
+const SimulationPlayer = React.lazy(() => import("../components/ui/players/SimulationPlayer"));
 
 const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/GraphVisualizer"));
 const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
@@ -34,7 +34,7 @@ const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
-import PdfEmbedViewer from "../components/ui/PdfEmbedViewer";
+const PdfEmbedViewer = React.lazy(() => import("../components/ui/PdfEmbedViewer").then(m => ({ default: m.PdfEmbedViewer })));
 const ThreeFallback = () => {
     const { t } = useTranslation();
     return (
@@ -151,7 +151,11 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     },
     // Custom directive for videos: ::videoviz[src="/m2/video.webm" delay="3500"]
     videoviz: (props: MarkdownComponentProps) => {
-        return <SimulationPlayer type="video" {...(props as any)} />;
+        return (
+            <SafeSuspense>
+                <SimulationPlayer type="video" {...(props as any)} />
+            </SafeSuspense>
+        );
     },
     accordion: (props: MarkdownComponentProps) => {
         return (
@@ -173,10 +177,18 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return <Callout {...(props as unknown as React.ComponentProps<typeof Callout>)} />;
     },
     algoviz: (props: MarkdownComponentProps) => {
-        return <SimulationPlayer type="algo" algorithm={props.algorithm as string} />;
+        return (
+            <SafeSuspense>
+                <SimulationPlayer type="algo" algorithm={props.algorithm as string} />
+            </SafeSuspense>
+        );
     },
     oopviz: (props: MarkdownComponentProps) => {
-        return <SimulationPlayer type="oop" simulation={props.simulation as string} />;
+        return (
+            <SafeSuspense>
+                <SimulationPlayer type="oop" simulation={props.simulation as string} />
+            </SafeSuspense>
+        );
     },
     stackviz: () => {
         return (
@@ -242,7 +254,11 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         );
     },
     proofviz: (props: MarkdownComponentProps) => {
-        return <SimulationPlayer type="proof" proofId={props.proof as string} />;
+        return (
+            <SafeSuspense>
+                <SimulationPlayer type="proof" proofId={props.proof as string} />
+            </SafeSuspense>
+        );
     },
     mafs: (props: MarkdownComponentProps) => {
         const { node: _node, ...rest } = props;
@@ -357,7 +373,11 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         const isPdf = type === 'application/pdf' || (typeof data === 'string' && data.toLowerCase().includes('.pdf'));
 
         if (isPdf && data) {
-            return <PdfEmbedViewer data={data} {...props} />;
+            return (
+                <SafeSuspense>
+                    <PdfEmbedViewer data={data} {...props} />
+                </SafeSuspense>
+            );
         }
 
         return <object {...props} />;

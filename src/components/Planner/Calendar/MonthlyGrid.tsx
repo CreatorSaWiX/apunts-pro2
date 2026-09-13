@@ -238,8 +238,9 @@ const MonthlyGrid: React.FC<MonthlyGridProps> = ({ currentDate, tasks, onSelectD
         const map = new Map<string, Task[]>();
         for (let i = 0; i < tasks.length; i++) {
             const task = tasks[i];
-            if (!task.startDate) continue;
-            const d = new Date(task.startDate);
+            const dateStr = task.startDate || task.dueDate;
+            if (!dateStr) continue;
+            const d = new Date(dateStr);
             if (isNaN(d.getTime())) continue;
             const dateKey = format(d, 'yyyy-MM-dd');
             const list = map.get(dateKey);

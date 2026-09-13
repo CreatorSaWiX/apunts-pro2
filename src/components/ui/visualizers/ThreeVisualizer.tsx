@@ -1,50 +1,13 @@
-import React, { useMemo, Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Grid, Stars, Text, Html, Line } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Grid, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import { useIsMobile } from '../../../hooks/useIsMobile';
-import { Mafs, Coordinates, Plot, Theme, LaTeX as MafsLaTeX, Circle, Polygon, MovablePoint, Line as MafsLine, Vector } from "mafs";
-import { InlineMath } from 'react-katex';
 import { InteractionLock } from '../system/InteractionLock';
 import { useInteraction } from '../../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
     type: string;
-}
-
-interface ArrowProps {
-    memoDir: THREE.Vector3;
-    length?: number;
-    color?: number | string | THREE.Color;
-    head?: number;
-    width?: number;
-}
-
-// Helper to avoid thousands of ArrowHelper allocations
-const Arrow = ({ memoDir, length, color, head, width }: ArrowProps) => {
-    const helper = useMemo(() => new THREE.ArrowHelper(memoDir, new THREE.Vector3(0, 0, 0), length, color, head, width), [memoDir, length, color, head, width]);
-    return <primitive object={helper} />;
-}
-
-interface DirectionalCurvePointsProps {
-    a: [number, number] | number[];
-    vx: number;
-    vy: number;
-    f: (x: number, y: number) => number;
-}
-
-// Helper to avoid heavy geometry recalculations every frame
-const DirectionalCurvePoints = ({ a, vx, vy, f }: DirectionalCurvePointsProps) => {
-    const curvePoints = useMemo(() => {
-        return Array.from({ length: 50 }, (_, i) => {
-            const t = (i / 49) * 8 - 4;
-            return new THREE.Vector3(a[0] + t * vx, f(a[0] + t * vx, a[1] + t * vy), a[1] + t * vy);
-        });
-    }, [a, vx, vy, f]);
-
-    return (
-        <Line points={curvePoints} color="#818cf8" lineWidth={3} />
-    );
 }
 
 // Detecció de suport WebGL per a Windows/Linux amb drivers antics
@@ -88,87 +51,6 @@ class ThreeErrorBoundary extends Component<ThreeErrorBoundaryProps, { hasError: 
         return this.props.children;
     }
 }
-
-const FunctionSurface = ({ f, colorScale = 5, showWireframe = false, opacity = 1 }: { f: (x: number, y: number) => number, colorScale?: number, showWireframe?: boolean, opacity?: number }) => {
-    const isMobile = useIsMobile();
-    const size = 10;
-    const segments = isMobile ? 50 : 64;
-
-    const geometry = useMemo(() => {
-        const positions = [];
-        const indices = [];
-        const colors = [];
-
-        const step = size / segments;
-
-        for (let j = 0; j <= segments; j++) {
-            for (let i = 0; i <= segments; i++) {
-                const x = i * step - size / 2;
-                const y = j * step - size / 2;
-                const z = f(x, y);
-                positions.push(x, z, y);
-
-                // Color basat en l'alçada (gradient)
-                const color = new THREE.Color();
-                color.setHSL(0.6 - Math.min(Math.max(z / colorScale, -0.5), 0.5), 0.8, 0.5);
-                colors.push(color.r, color.g, color.b);
-            }
-        }
-
-        for (let j = 0; j < segments; j++) {
-            for (let i = 0; i < segments; i++) {
-                const a = i + (segments + 1) * j;
-                const b = (i + 1) + (segments + 1) * j;
-                const c = i + (segments + 1) * (j + 1);
-                const d = (i + 1) + (segments + 1) * (j + 1);
-
-                indices.push(a, d, b);
-                indices.push(a, c, d);
-            }
-        }
-
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        geo.setIndex(indices);
-        geo.computeVertexNormals();
-        return geo;
-    }, [f, isMobile, colorScale]);
-
-    return (
-        <group>
-            <mesh geometry={geometry}>
-                <meshPhongMaterial
-                    transparent={opacity < 1}
-                    opacity={opacity}
-                    side={THREE.DoubleSide}
-                    shininess={100}
-                    vertexColors
-                />
-            </mesh>
-            {showWireframe && (
-                <mesh geometry={geometry}>
-                    <meshBasicMaterial
-                        color="#ffffff"
-                        wireframe
-                        transparent
-                        opacity={0.15}
-                        side={THREE.DoubleSide}
-                    />
-                </mesh>
-            )}
-        </group>
-    );
-};
-
-const Point = ({ position, color = "white" }: { position: [number, number, number], color?: string }) => (
-    <mesh position={position}>
-        <sphereGeometry args={[0.15, 32, 32]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
-    </mesh>
-);
-
-import { lazy, Suspense } from 'react';
 
 const VisPuntsSella = lazy(() => import('../three/VisPuntsSella'));
 const VisParaboloide = lazy(() => import('../three/VisParaboloide'));

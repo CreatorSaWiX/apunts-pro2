@@ -132,7 +132,9 @@ export function useChatStream() {
     const newMessages: Message[] = [
       ...messages,
       {
-        id: crypto.randomUUID(),
+        id: typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         role: 'user' as const,
         content: userMsg,
         ...(attachedFile
@@ -205,7 +207,9 @@ export function useChatStream() {
         if (done) break;
 
         sseBuffer += decoder.decode(value, { stream: true });
-        const events = sseBuffer.split('\n\n');
+        // Normalització CRLF a LF per a parsers SSE resilients davant de qualsevol proxy HTTP
+        const normalized = sseBuffer.replace(/\r\n/g, '\n');
+        const events = normalized.split('\n\n');
         sseBuffer = events.pop() || '';
 
         for (const eventBlock of events) {

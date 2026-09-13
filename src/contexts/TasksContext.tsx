@@ -72,22 +72,31 @@ const computeFilteredTasks = (tasks: Task[], filters: TaskFilters): Task[] => {
     endOfTerm.setMonth(today.getMonth() + 4);
     const endOfTermTime = endOfTerm.getTime();
 
+    const hasSubjectFilter = filters.subjects.length > 0;
+    const subjectSet = hasSubjectFilter ? new Set(filters.subjects) : null;
+
+    const hasPriorityFilter = filters.priorities.length > 0;
+    const prioritySet = hasPriorityFilter ? new Set(filters.priorities) : null;
+    const isDateFilterActive = filters.dateRange !== 'ALL';
+
     return tasks.filter(task => {
-        if (filters.subjects.length > 0 && (!task.subjectId || !filters.subjects.includes(task.subjectId))) return false;
-        if (filters.priorities.length > 0 && !filters.priorities.includes(task.priority)) return false;
+        if (subjectSet && (!task.subjectId || !subjectSet.has(task.subjectId))) return false;
+        if (prioritySet && !prioritySet.has(task.priority)) return false;
         
-        if (filters.dateRange !== 'ALL') {
-            if (!task.dueDate) return false;
-            const dueTime = new Date(task.dueDate).getTime();
+        if (isDateFilterActive) {
+            const targetDateStr = task.dueDate || task.startDate;
+            if (!targetDateStr) return false;
+            const targetTime = new Date(targetDateStr).getTime();
+            if (Number.isNaN(targetTime)) return false;
             
             if (filters.dateRange === 'TODAY') {
-                if (dueTime > endOfTodayTime) return false;
+                if (targetTime > endOfTodayTime) return false;
             } else if (filters.dateRange === 'THIS_WEEK') {
-                if (dueTime > nextWeekTime) return false;
+                if (targetTime > nextWeekTime) return false;
             } else if (filters.dateRange === 'THIS_MONTH') {
-                if (dueTime > endOfMonth || dueTime < startOfMonth) return false;
+                if (targetTime > endOfMonth || targetTime < startOfMonth) return false;
             } else if (filters.dateRange === 'THIS_TERM') {
-                if (dueTime > endOfTermTime) return false;
+                if (targetTime > endOfTermTime) return false;
             }
         }
         return true;

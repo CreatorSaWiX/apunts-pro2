@@ -71,9 +71,17 @@ export const getGridLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
     // 2. Dibuixar els nodes seqüencials empalmant just després
     // Posem el TFG primer si existeix, després la resta en l'ordre d'inserció
-    const tfgNodes = sequentialNodes.filter(n => n.data.type === 'tfg');
-    const otherSequential = sequentialNodes.filter(n => n.data.type !== 'tfg');
-    const finalSequential = [...tfgNodes, ...otherSequential];
+    const tfgNodes: Node[] = [];
+    const otherSequential: Node[] = [];
+    for (let i = 0; i < sequentialNodes.length; i++) {
+        const n = sequentialNodes[i];
+        if (n.data?.type === 'tfg') {
+            tfgNodes.push(n);
+        } else {
+            otherSequential.push(n);
+        }
+    }
+    const finalSequential = tfgNodes.concat(otherSequential);
 
     finalSequential.forEach(node => {
         if (currentColumnIndex >= NODES_PER_ROW) {

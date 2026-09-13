@@ -82,6 +82,7 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
     const rafId = useRef<number | null>(null);
     
     const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
+    const currentStrokeRef = useRef<Stroke | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
     const getMouseCoords = (e: React.PointerEvent<SVGSVGElement> | MouseEvent) => {
@@ -128,6 +129,10 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDrawMode, x, y, zoom, updateCursor]);
 
+    const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+    const liveBroadcastRaf = useRef<number | null>(null);
+    const pendingLiveBroadcast = useRef<Stroke | null>(null);
+
     const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
         if (!isDrawMode) return;
         updateLocalCursorCSS(e);
@@ -138,12 +143,15 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         e.currentTarget.setPointerCapture(e.pointerId);
         
         const coords = getMouseCoords(e);
-        const newStroke = {
-            id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+        lastPointRef.current = coords;
+        const newStroke: Stroke = {
+            id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
             points: [coords],
             color: currentColor,
             width: currentWidth
         };
+        // Synchronous ref assignment to eliminate race condition with immediate pointermove
+        currentStrokeRef.current = newStroke;
         setCurrentStroke(newStroke);
         broadcastStroke(newStroke);
         updateCursor(coords.x, coords.y);
@@ -153,37 +161,65 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
         if (!isDrawMode) return;
         updateLocalCursorCSS(e);
         
-        if (currentTool !== 'pen' || !currentStroke) return;
+        const activeStroke = currentStrokeRef.current;
+        if (currentTool !== 'pen' || !activeStroke) return;
         
         e.preventDefault();
         
         const coords = getMouseCoords(e);
-        setCurrentStroke((prev: Stroke | null) => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                points: [...prev.points, coords]
-            };
-        });
+
+        // Algorisme de decimació adaptatiu a pantalla: llindar de 2px de pantalla real
+        const lastPt = lastPointRef.current;
+        if (lastPt) {
+            const screenDx = (coords.x - lastPt.x) * zoom;
+            const screenDy = (coords.y - lastPt.y) * zoom;
+            if (screenDx * screenDx + screenDy * screenDy < 4) {
+                updateCursor(coords.x, coords.y);
+                return;
+            }
+        }
+        lastPointRef.current = coords;
+
+        // Acumulació síncrona al ref per evitar pèrdua de punts a 60-240Hz per batching de React
+        activeStroke.points.push(coords);
+
+        const updatedStroke: Stroke = {
+            ...activeStroke,
+            points: [...activeStroke.points]
+        };
+
+        setCurrentStroke(updatedStroke);
         
-        if (currentStroke) {
-            broadcastLiveStroke({
-                ...currentStroke,
-                points: [...currentStroke.points, coords]
+        // Throttling adaptatiu per no saturar el canal RTDB de Firebase
+        pendingLiveBroadcast.current = updatedStroke;
+        if (!liveBroadcastRaf.current) {
+            liveBroadcastRaf.current = requestAnimationFrame(() => {
+                liveBroadcastRaf.current = null;
+                if (pendingLiveBroadcast.current) {
+                    broadcastLiveStroke(pendingLiveBroadcast.current);
+                }
             });
         }
         updateCursor(coords.x, coords.y);
     };
 
     const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-        if (!isDrawMode || currentTool !== 'pen' || !currentStroke) return;
+        const activeStroke = currentStrokeRef.current;
+        if (!isDrawMode || currentTool !== 'pen' || !activeStroke) return;
         e.preventDefault();
         e.currentTarget.releasePointerCapture(e.pointerId);
         
-        if (currentStroke.points.length > 0) {
-            setStrokes((prev: Stroke[]) => [...prev, currentStroke]);
-            broadcastStroke(currentStroke);
+        lastPointRef.current = null;
+        if (liveBroadcastRaf.current) {
+            cancelAnimationFrame(liveBroadcastRaf.current);
+            liveBroadcastRaf.current = null;
         }
+
+        if (activeStroke.points.length > 0) {
+            setStrokes((prev: Stroke[]) => [...prev, activeStroke]);
+            broadcastStroke(activeStroke);
+        }
+        currentStrokeRef.current = null;
         setCurrentStroke(null);
     };
 

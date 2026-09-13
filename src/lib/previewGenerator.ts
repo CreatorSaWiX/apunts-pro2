@@ -50,16 +50,31 @@ const generateImageThumbnail = (file: File): Promise<string> => {
 const generateVideoThumbnail = (file: File): Promise<string> => {
     return new Promise((resolve) => {
         const video = document.createElement('video');
-        video.src = URL.createObjectURL(file);
+        const objectUrl = URL.createObjectURL(file);
+        video.src = objectUrl;
         video.muted = true;
         video.crossOrigin = 'anonymous';
         
+        let isCleanedUp = false;
+        const cleanup = () => {
+            if (!isCleanedUp) {
+                isCleanedUp = true;
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+
+        const timeout = setTimeout(() => {
+            cleanup();
+            resolve(generateGenericThumbnail(file.name));
+        }, 4000);
+
         video.onloadedmetadata = () => {
             video.currentTime = Math.min(1.5, video.duration / 2);
         };
         
         video.onseeked = () => {
-            URL.revokeObjectURL(video.src);
+            clearTimeout(timeout);
+            cleanup();
             const canvas = document.createElement('canvas');
             const MAX_WIDTH = 800;
             const MAX_HEIGHT = 800;
@@ -108,7 +123,11 @@ const generateVideoThumbnail = (file: File): Promise<string> => {
                 resolve(generateGenericThumbnail(file.name));
             }
         };
-        video.onerror = () => { URL.revokeObjectURL(video.src); resolve(generateGenericThumbnail(file.name)); };
+        video.onerror = () => { 
+            clearTimeout(timeout);
+            cleanup();
+            resolve(generateGenericThumbnail(file.name)); 
+        };
     });
 };
 

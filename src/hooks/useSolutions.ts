@@ -3,6 +3,20 @@ import { fetchJutgeProblem } from '../lib/jutge';
 import { allSolutions, getSolutionsByTopic, getSolutionById } from '../content/data/solutions';
 import type { Solution } from '../content/data/solutions';
 
+// Pre-indexed static solutions map for O(1) problem lookups
+const globalStaticSolutionsMap = new Map<string, Solution>();
+for (let t = 0; t < allSolutions.length; t++) {
+    const topic = allSolutions[t];
+    if (topic && topic.solutions) {
+        for (let s = 0; s < topic.solutions.length; s++) {
+            const sol = topic.solutions[s];
+            if (sol && sol.id && !globalStaticSolutionsMap.has(sol.id)) {
+                globalStaticSolutionsMap.set(sol.id, sol);
+            }
+        }
+    }
+}
+
 export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
     const [solutions, setSolutions] = useState<Solution[]>([]);
     const [loading, setLoading] = useState(true);
@@ -17,10 +31,13 @@ export const useSolutions = (topicId: string, problemIdsToCheck?: string[]) => {
                 // 1. Get static solutions
                 let staticSolutions = getSolutionsByTopic(topicId);
 
-                // Overlap global static solutions if problemIds are explicitly defined
+                // Overlap global static solutions with O(1) lookups if problemIds are explicitly defined
                 if (problemIdsToCheck && problemIdsToCheck.length > 0) {
-                    const checkSet = new Set(problemIdsToCheck);
-                    const globalStaticSolutions = allSolutions.flatMap(t => t.solutions).filter(s => checkSet.has(s.id));
+                    const globalStaticSolutions: Solution[] = [];
+                    for (let i = 0; i < problemIdsToCheck.length; i++) {
+                        const sol = globalStaticSolutionsMap.get(problemIdsToCheck[i]);
+                        if (sol) globalStaticSolutions.push(sol);
+                    }
                     staticSolutions = [...staticSolutions, ...globalStaticSolutions];
                 }
 
