@@ -83,16 +83,16 @@ export function useAudioRecorder({
 
 	// Refs per estabilitzar callbacks i evitar closures obsolets
 	const inputRef = useRef(input);
-	inputRef.current = input;
-
 	const onTranscriptRef = useRef(onTranscript);
-	onTranscriptRef.current = onTranscript;
-
 	const langRef = useRef(lang);
-	langRef.current = lang;
-
 	const tRef = useRef(t);
-	tRef.current = t;
+
+	useEffect(() => {
+		inputRef.current = input;
+		onTranscriptRef.current = onTranscript;
+		langRef.current = lang;
+		tRef.current = t;
+	});
 
 	const clearErrorMessage = useCallback(() => {
 		setErrorMessage(null);

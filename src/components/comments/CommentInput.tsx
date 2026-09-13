@@ -137,6 +137,7 @@ const CommentInputComponent = ({
     }, [user, isSubmitting, replyingTo, onSubmit, getMentionedUsers, onCancelReply, setMentionSearch]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.nativeEvent.isComposing) return;
         if (e.key === 'Enter') {
             if (e.shiftKey) {
                 // Allow shift+enter for multiline comments
@@ -251,11 +252,11 @@ const CommentInputComponent = ({
             <AnimatePresence>
                 {replyingTo && (
                     <motion.div
-                        initial={{ opacity: 0, y: 4, height: 0 }}
-                        animate={{ opacity: 1, y: 0, height: 'auto' }}
-                        exit={{ opacity: 0, y: 4, height: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="flex items-center justify-between px-3 py-1.5 mb-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs"
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        className="flex items-center justify-between px-3 py-1.5 mb-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs overflow-hidden"
                     >
                         <span className="flex items-center gap-1.5 truncate">
                             <span>Responent a</span>

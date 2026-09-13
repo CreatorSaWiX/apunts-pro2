@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -20,7 +20,7 @@ export const useMentions = () => {
         let isMounted = true;
         const fetchUsers = async () => {
             try {
-                const snap = await getDocs(collection(db, 'usernames'));
+                const snap = await getDocs(query(collection(db, 'usernames'), limit(200)));
                 if (!isMounted) return;
                 setAllUsers(snap.docs.map(doc => ({ 
                     id: doc.data().uid, 
@@ -55,8 +55,10 @@ export const useMentions = () => {
     };
 
     const getMentionedUsers = (text: string, currentUserId?: string) => {
-        const mentionedUsernames = Array.from(new Set(text.match(/@([a-zA-Z0-9_]+)/g)?.map(u => u.substring(1)) || []));
-        return allUsers.filter(u => mentionedUsernames.includes(u.username) && u.id !== currentUserId);
+        const matches = text.match(/@([a-zA-Z0-9_]+)/g);
+        if (!matches || matches.length === 0) return [];
+        const mentionedSet = new Set(matches.map(u => u.substring(1)));
+        return allUsers.filter(u => mentionedSet.has(u.username) && u.id !== currentUserId);
     };
 
     const suggestedUsers = mentionSearch 

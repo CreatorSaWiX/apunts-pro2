@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { m as motion } from 'framer-motion';
 
 import { Bell, Heart, MessageCircle, AtSign } from 'lucide-react';
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -78,8 +78,13 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
         if (!notification.read) {
             try {
                 const idsToUpdate = notification.ids || [notification.id];
-                await Promise.all(idsToUpdate.map(id => updateDoc(doc(db, 'notifications', id), { read: true })));
-                setNotifications(prev => prev.map(n => idsToUpdate.includes(n.id) ? { ...n, read: true } : n));
+                const idsSet = new Set(idsToUpdate);
+                const batch = writeBatch(db);
+                idsToUpdate.forEach(id => {
+                    batch.update(doc(db, 'notifications', id), { read: true });
+                });
+                await batch.commit();
+                setNotifications(prev => prev.map(n => idsSet.has(n.id) ? { ...n, read: true } : n));
             } catch (error) {
                 console.error("Error marking as read", error);
             }
@@ -90,7 +95,12 @@ const InboxModal = ({ isOpen, onClose }: InboxModalProps) => {
     const markAllAsRead = async () => {
         try {
             const unread = notifications.filter(n => !n.read);
-            await Promise.all(unread.map(n => updateDoc(doc(db, 'notifications', n.id), { read: true })));
+            if (unread.length === 0) return;
+            const batch = writeBatch(db);
+            unread.forEach(n => {
+                batch.update(doc(db, 'notifications', n.id), { read: true });
+            });
+            await batch.commit();
             setNotifications(prev => prev.map(n => ({ ...n, read: true })));
         } catch (error) {
             console.error("Error marking all read", error);

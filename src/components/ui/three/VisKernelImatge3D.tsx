@@ -20,6 +20,11 @@ const VisKernelImatge3D = () => {
     const isMobile = useIsMobile();
     const [p, setP] = React.useState<[number, number, number]>([2, 2, 2]);
 
+    const memoDir3D = React.useMemo(() => new THREE.Vector3(p[0], p[1], p[2]).normalize(), [p]);
+    const length3D = React.useMemo(() => new THREE.Vector3(p[0], p[1], p[2]).length(), [p]);
+    const memoDirProj = React.useMemo(() => new THREE.Vector3(p[0], 0, p[2]).normalize(), [p]);
+    const lengthProj = React.useMemo(() => new THREE.Vector3(p[0], 0, p[2]).length(), [p]);
+
     return (
         <div className="w-full h-[600px] relative group flex flex-col bg-slate-950 overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
             <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
@@ -75,8 +80,8 @@ const VisKernelImatge3D = () => {
                     <Line points={[[0, -5, 0], [0, 5, 0]]} color="#f43f5e" lineWidth={4} opacity={0.6} />
 
                     {/* Vectors */}
-                    <Arrow memoDir={new THREE.Vector3(p[0], p[1], p[2]).normalize()} length={new THREE.Vector3(p[0], p[1], p[2]).length()} color="#3b82f6" head={0.2} width={0.06} />
-                    <Arrow memoDir={new THREE.Vector3(p[0], 0, p[2]).normalize()} length={new THREE.Vector3(p[0], 0, p[2]).length()} color="#10b981" head={0.2} width={0.06} />
+                    <Arrow memoDir={memoDir3D} length={length3D} color="#3b82f6" head={0.2} width={0.06} />
+                    <Arrow memoDir={memoDirProj} length={lengthProj} color="#10b981" head={0.2} width={0.06} />
 
                     {/* Vertical Projection Line */}
                     <Line points={[[p[0], 0, p[2]], [p[0], p[1], p[2]]]} color="white" lineWidth={1} dashed opacity={0.3} />

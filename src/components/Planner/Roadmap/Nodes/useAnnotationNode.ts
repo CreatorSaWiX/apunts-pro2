@@ -22,7 +22,9 @@ export function useAnnotationNode({ id, data, defaultFontSize = 16 }: UseAnnotat
     const [localText, setLocalText] = useState(data.text || '');
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const latestTextRef = useRef(data.text || '');
-    latestTextRef.current = localText;
+    useEffect(() => {
+        latestTextRef.current = localText;
+    });
 
     const currentFontSize = data.fontSize || defaultFontSize;
 

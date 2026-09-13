@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -149,7 +149,7 @@ interface CarouselCardProps {
     navigate: (to: string) => void;
     markAsSeen: (slug: string, updateTime: number) => void;
     isInteractive: boolean;
-    seenNewTopics: string[];
+    seenNewTopics: Set<string>;
     seenVersions: Record<string, number>;
     onCardClick: (index: number) => void;
     topicMeta?: { hasNew: boolean; newestUpdate: number };
@@ -177,7 +177,7 @@ const CarouselCard = React.memo(({
     const hasNewTag = topicMeta?.hasNew ?? false;
     const newestUpdate = topicMeta?.newestUpdate ?? 0;
 
-    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+    const isTopicNew = hasNewTag && !seenNewTopics.has(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
 
     return (
@@ -326,7 +326,7 @@ interface LandscapeTopicCardProps {
     subject: string;
     navigate: (to: string) => void;
     markAsSeen: (slug: string, updateTime?: number) => void;
-    seenNewTopics: string[];
+    seenNewTopics: Set<string>;
     seenVersions: Record<string, number>;
     topicMeta?: { hasNew: boolean; newestUpdate: number };
     t: any;
@@ -336,7 +336,7 @@ const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAs
     const hasNewTag = topicMeta?.hasNew ?? false;
     const newestUpdate = topicMeta?.newestUpdate ?? 0;
 
-    const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+    const isTopicNew = hasNewTag && !seenNewTopics.has(topic.slug);
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
 
     return (
@@ -399,6 +399,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     
     const [activeIndex, setActiveIndex] = useState(0);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
 
@@ -572,7 +573,7 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
                             navigate={navigate}
                             markAsSeen={markAsSeen}
                             isInteractive={isInteractive}
-                            seenNewTopics={seenNewTopics}
+                            seenNewTopics={seenNewTopicsSet}
                             seenVersions={seenVersions}
                             onCardClick={scrollToCard}
                             topicMeta={topicMeta.get(topic.slug)}
@@ -628,6 +629,7 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     const preferredLang = i18n.language;
     
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
 
@@ -694,7 +696,7 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
                                 subject={subject}
                                 navigate={navigate}
                                 markAsSeen={markAsSeen}
-                                seenNewTopics={seenNewTopics}
+                                seenNewTopics={seenNewTopicsSet}
                                 seenVersions={seenVersions}
                                 topicMeta={topicMeta.get(topic.slug)}
                                 t={t}

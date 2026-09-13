@@ -8,6 +8,7 @@ import NotebookLayout from '../components/layout/NotebookLayout';
 import { useTranslation } from 'react-i18next';
 import ProblemCard from '../components/solutions/ProblemCard';
 import PdfDropdownMenu from '../components/solutions/PdfDropdownMenu';
+import { checkPdfsAvailability } from '../lib/mediaUtils';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
@@ -22,15 +23,19 @@ const SolutionsListPage = () => {
     const [importError, setImportError] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         import('../content/data/courseStructure')
             .then(m => {
-                setTopicDefinition(m.courseStructure.find((t: TopicDefinition) => t.id === topicId));
-                setImportError(false);
+                if (isMounted) {
+                    setTopicDefinition(m.courseStructure.find((t: TopicDefinition) => t.id === topicId));
+                    setImportError(false);
+                }
             })
             .catch(e => {
                 console.error(e);
-                setImportError(true);
+                if (isMounted) setImportError(true);
             });
+        return () => { isMounted = false; };
     }, [topicId]);
 
     // We pass the explicit problem IDs so they are searched globally (not just constrained by topicId namespace)
@@ -51,27 +56,25 @@ const SolutionsListPage = () => {
 
         if (topicId) {
             const subject = topicId.split('-')[0];
-            const checkPdfs = async () => {
-                try {
-                    const [caRes, esRes] = await Promise.all([
-                        fetch(`/pdfs/solucionaris/${subject}/ca/solucionari-${topicId}.pdf`, { method: 'HEAD' }),
-                        fetch(`/pdfs/solucionaris/${subject}/es/solucionari-${topicId}.pdf`, { method: 'HEAD' })
-                    ]);
+            const controller = new AbortController();
+            let isMounted = true;
 
-                    const isValidPdf = (res: Response) => {
-                        return res.ok && res.headers.get('content-type')?.includes('application/pdf');
-                    };
-
-                    setAvailablePdfs({
-                        ca: !!isValidPdf(caRes),
-                        es: !!isValidPdf(esRes)
-                    });
-                } catch (e) {
-                    console.error("Error comprovant PDFs de solucionaris", e);
+            checkPdfsAvailability(
+                `/pdfs/solucionaris/${subject}/ca/solucionari-${topicId}.pdf`,
+                `/pdfs/solucionaris/${subject}/es/solucionari-${topicId}.pdf`,
+                controller.signal
+            ).then((availability) => {
+                if (isMounted) setAvailablePdfs(availability);
+            }).catch((err) => {
+                if (err?.name !== 'AbortError' && isMounted) {
                     setAvailablePdfs({ ca: false, es: false });
                 }
+            });
+
+            return () => {
+                isMounted = false;
+                controller.abort();
             };
-            checkPdfs();
         }
     }, [topicId]);
 

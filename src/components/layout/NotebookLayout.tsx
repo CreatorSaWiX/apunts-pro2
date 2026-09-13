@@ -6,6 +6,7 @@ import type { Solution } from '../../content/data/solutions';
 import type { TopicDefinition } from '../../content/data/courseStructure';
 import { MarkdownRenderer } from '../../markdown/MarkdownRenderer';
 import { useTranslation } from 'react-i18next';
+import { checkPdfsAvailability } from '../../lib/mediaUtils';
 
 interface NotebookLayoutProps {
     topic: TopicDefinition;
@@ -45,27 +46,25 @@ const NotebookLayout = ({ topic, solutions, loading }: NotebookLayoutProps) => {
     // Check for PDFs
     useEffect(() => {
         const subject = topic.id.split('-')[0];
-        const checkPdfs = async () => {
-            try {
-                const [caRes, esRes] = await Promise.all([
-                    fetch(`/pdfs/solucionaris/${subject}/ca/solucionari-${topic.id}.pdf`, { method: 'HEAD' }),
-                    fetch(`/pdfs/solucionaris/${subject}/es/solucionari-${topic.id}.pdf`, { method: 'HEAD' })
-                ]);
+        const controller = new AbortController();
+        let isMounted = true;
 
-                const isValidPdf = (res: Response) => {
-                    return res.ok && res.headers.get('content-type')?.includes('application/pdf');
-                };
-
-                setAvailablePdfs({
-                    ca: !!isValidPdf(caRes),
-                    es: !!isValidPdf(esRes)
-                });
-            } catch (e) {
-                console.error("Error comprovant PDFs de solucionaris", e);
+        checkPdfsAvailability(
+            `/pdfs/solucionaris/${subject}/ca/solucionari-${topic.id}.pdf`,
+            `/pdfs/solucionaris/${subject}/es/solucionari-${topic.id}.pdf`,
+            controller.signal
+        ).then((availability) => {
+            if (isMounted) setAvailablePdfs(availability);
+        }).catch((err) => {
+            if (err?.name !== 'AbortError' && isMounted) {
                 setAvailablePdfs({ ca: false, es: false });
             }
+        });
+
+        return () => {
+            isMounted = false;
+            controller.abort();
         };
-        checkPdfs();
     }, [topic.id]);
 
     if (loading && solutions.length === 0) {

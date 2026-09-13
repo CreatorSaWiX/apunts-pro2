@@ -17,10 +17,18 @@ export const generatePreview = async (file: File): Promise<string> => {
 
 const generateImageThumbnail = (file: File): Promise<string> => {
     return new Promise((resolve) => {
+        const objectUrl = URL.createObjectURL(file);
         const img = new Image();
-        img.src = URL.createObjectURL(file);
+        let isCleanedUp = false;
+        const cleanup = () => {
+            if (!isCleanedUp) {
+                isCleanedUp = true;
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+
         img.onload = () => {
-            URL.revokeObjectURL(img.src);
+            cleanup();
             const canvas = document.createElement('canvas');
             const MAX_WIDTH = 800;
             const MAX_HEIGHT = 800;
@@ -43,7 +51,11 @@ const generateImageThumbnail = (file: File): Promise<string> => {
                 resolve(generateGenericThumbnail(file.name));
             }
         };
-        img.onerror = () => { URL.revokeObjectURL(img.src); resolve(generateGenericThumbnail(file.name)); };
+        img.onerror = () => {
+            cleanup();
+            resolve(generateGenericThumbnail(file.name));
+        };
+        img.src = objectUrl;
     });
 };
 
@@ -132,37 +144,48 @@ const generateVideoThumbnail = (file: File): Promise<string> => {
 };
 
 const generatePdfThumbnail = async (file: File): Promise<string> => {
-    // Dynamic import to avoid blowing up the main bundle size
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    let pdf: any = null;
+    let page: any = null;
+    try {
+        // Dynamic import to avoid blowing up the main bundle size
+        const pdfjsLib = await import('pdfjs-dist');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
-    const arrayBuffer = await file.arrayBuffer();
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-    const pdf = await loadingTask.promise;
-    const page = await pdf.getPage(1);
-    
-    const initialViewport = page.getViewport({ scale: 1.0 });
-    const scale = Math.min(800 / initialViewport.width, 800 / initialViewport.height, 2.0);
-    const viewport = page.getViewport({ scale });
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) return generateGenericThumbnail(file.name);
-    
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    
-    // Fons blanc per si el PDF és transparent
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    const renderContext = {
-        canvasContext: ctx,
-        viewport: viewport
-    };
-    
-    await page.render(renderContext as unknown as Parameters<typeof page.render>[0]).promise;
-    return canvas.toDataURL('image/jpeg', 0.9);
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        pdf = await loadingTask.promise;
+        if (!pdf) return generateGenericThumbnail(file.name);
+        page = await pdf.getPage(1);
+        
+        const initialViewport = page.getViewport({ scale: 1.0 });
+        const scale = Math.min(800 / initialViewport.width, 800 / initialViewport.height, 2.0);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) return generateGenericThumbnail(file.name);
+        
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        // Fons blanc per si el PDF és transparent
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+        };
+        
+        await page.render(renderContext as unknown as Parameters<typeof page.render>[0]).promise;
+        return canvas.toDataURL('image/jpeg', 0.9);
+    } catch (e) {
+        console.error("Error generant preview PDF:", e);
+        return generateGenericThumbnail(file.name);
+    } finally {
+        if (page?.cleanup) page.cleanup();
+        if (pdf?.destroy) pdf.destroy();
+    }
 };
 
 const generateGenericThumbnail = (filename: string): string => {

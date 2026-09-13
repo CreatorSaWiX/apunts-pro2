@@ -14,6 +14,7 @@ export const useQuiz = (topicId: string | undefined) => {
 
     useEffect(() => {
         let isMounted = true;
+        const controller = new AbortController();
         const loadQuiz = async () => {
             if (!topicId) return;
 
@@ -63,6 +64,7 @@ export const useQuiz = (topicId: string | undefined) => {
                 const response = await fetch('/api/generate-quiz', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
                     body: JSON.stringify({
                         topicId: topicId,
                         markdownContent: topicNote.content
@@ -84,7 +86,9 @@ export const useQuiz = (topicId: string | undefined) => {
                     console.error("Failed to generate quiz:", response.status, errText);
                 }
             } catch (e) {
-                console.error("Error connecting to Gemini", e);
+                if ((e as Error)?.name !== 'AbortError') {
+                    console.error("Error connecting to Gemini", e);
+                }
             } finally {
                 if (isMounted) {
                     setIsGenerating(false);
@@ -94,7 +98,10 @@ export const useQuiz = (topicId: string | undefined) => {
         };
 
         loadQuiz();
-        return () => { isMounted = false; };
+        return () => {
+            isMounted = false;
+            controller.abort();
+        };
     }, [topicId, t]);
 
     return { quiz, isGenerating, aiPhase, aiThought };

@@ -25,6 +25,14 @@ const VisOptimitzacioCompacte = () => {
     const critP = [2, 1];
     const center = [1, 1];
     const radius = 2;
+    const boundaryPoints = React.useMemo(() => {
+        return Array.from({ length: 100 }, (_, i) => {
+            const angle = (i / 99) * Math.PI * 2;
+            const px = center[0] + Math.cos(angle) * radius;
+            const py = center[1] + Math.sin(angle) * radius;
+            return new THREE.Vector3(px, f(px, py), py);
+        });
+    }, []);
 
     return (
         <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 rounded-3xl border border-white/10 ${isFullScreen ? 'h-full' : ''}`}>
@@ -55,15 +63,7 @@ const VisOptimitzacioCompacte = () => {
 
                     <FunctionSurface f={f} showWireframe={true} opacity={0.7} colorScale={2} />
                     
-                    {(() => {
-                        const points = Array.from({ length: 100 }, (_, i) => {
-                            const angle = (i / 99) * Math.PI * 2;
-                            const px = center[0] + Math.cos(angle) * radius;
-                            const py = center[1] + Math.sin(angle) * radius;
-                            return new THREE.Vector3(px, f(px, py), py);
-                        });
-                        return <Line points={points} color="#f43f5e" lineWidth={4} />;
-                    })()}
+                    <Line points={boundaryPoints} color="#f43f5e" lineWidth={4} />
 
                     {showCandidates && (
                         <>

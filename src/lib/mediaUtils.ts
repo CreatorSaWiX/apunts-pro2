@@ -58,3 +58,35 @@ export function isVideoUrl(url?: string | null): boolean {
     if (!url) return false;
     return /\.(mp4|webm|mov|ogg)$/i.test(url.split('?')[0]);
 }
+
+const pdfAvailabilityCache = new Map<string, { ca: boolean; es: boolean }>();
+
+export async function checkPdfsAvailability(
+    caUrl: string,
+    esUrl: string,
+    signal?: AbortSignal
+): Promise<{ ca: boolean; es: boolean }> {
+    const cacheKey = `${caUrl}|${esUrl}`;
+    if (pdfAvailabilityCache.has(cacheKey)) {
+        return pdfAvailabilityCache.get(cacheKey)!;
+    }
+
+    try {
+        const [caRes, esRes] = await Promise.all([
+            fetch(caUrl, { method: 'HEAD', signal }),
+            fetch(esUrl, { method: 'HEAD', signal })
+        ]);
+
+        const isValidPdf = (res: Response) => res.ok && (res.headers.get('content-type')?.includes('application/pdf') ?? false);
+
+        const result = {
+            ca: !!isValidPdf(caRes),
+            es: !!isValidPdf(esRes)
+        };
+        pdfAvailabilityCache.set(cacheKey, result);
+        return result;
+    } catch (e) {
+        if ((e as Error)?.name === 'AbortError') throw e;
+        return { ca: false, es: false };
+    }
+}

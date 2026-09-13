@@ -7,7 +7,9 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
     handler: Handler
 ) {
     const handlerRef = useRef(handler);
-    handlerRef.current = handler;
+    useEffect(() => {
+        handlerRef.current = handler;
+    });
 
     useEffect(() => {
         const listener = (event: MouseEvent | TouchEvent) => {

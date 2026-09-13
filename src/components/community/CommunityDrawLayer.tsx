@@ -85,14 +85,20 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
     const currentStrokeRef = useRef<Stroke | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
+    const viewportRef = useRef({ x, y, zoom });
+    useEffect(() => {
+        viewportRef.current = { x, y, zoom };
+    });
+
     const getMouseCoords = (e: React.PointerEvent<SVGSVGElement> | MouseEvent) => {
         if (!svgRef.current) return { x: 0, y: 0 };
         const rect = svgRef.current.getBoundingClientRect();
         const clientX = 'clientX' in e ? e.clientX : 0;
         const clientY = 'clientY' in e ? e.clientY : 0;
+        const { x: vx, y: vy, zoom: vz } = viewportRef.current;
         return {
-            x: (clientX - rect.left - x) / zoom,
-            y: (clientY - rect.top - y) / zoom
+            x: (clientX - rect.left - vx) / vz,
+            y: (clientY - rect.top - vy) / vz
         };
     };
 
@@ -114,20 +120,20 @@ const CommunityDrawLayer: React.FC<CommunityDrawLayerProps> = ({ updateCursor, b
 
     // Send cursor position even when not drawing if mouse is over
     useEffect(() => {
+        if (!isDrawMode) return;
         const handleGlobalMove = (e: MouseEvent) => {
-            if (isDrawMode && svgRef.current && svgRef.current.contains(e.target as Node)) {
+            if (svgRef.current && svgRef.current.contains(e.target as Node)) {
                 const coords = getMouseCoords(e);
                 updateCursor(coords.x, coords.y);
                 updateLocalCursorCSS(e);
             }
         };
-        window.addEventListener('mousemove', handleGlobalMove);
+        window.addEventListener('mousemove', handleGlobalMove, { passive: true });
         return () => {
             window.removeEventListener('mousemove', handleGlobalMove);
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isDrawMode, x, y, zoom, updateCursor]);
+    }, [isDrawMode, updateCursor]);
 
     const lastPointRef = useRef<{ x: number; y: number } | null>(null);
     const liveBroadcastRaf = useRef<number | null>(null);

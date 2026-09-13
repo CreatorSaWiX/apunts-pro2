@@ -116,7 +116,9 @@ const ResizableTask: React.FC<{ task: Task; day: Date; updateTask: (id: string, 
     }, [isSelected, task.id, deleteTask]);
 
     const isSelectedRef = React.useRef(isSelected);
-    isSelectedRef.current = isSelected;
+    React.useEffect(() => {
+        isSelectedRef.current = isSelected;
+    });
 
     React.useEffect(() => {
         const handleTaskSelected = (e: Event) => {

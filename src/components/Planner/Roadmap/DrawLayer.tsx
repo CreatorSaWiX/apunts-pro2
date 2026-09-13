@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import { useViewport } from '@xyflow/react';
 import { useDrawContext, type Stroke } from '../../../contexts/DrawContext';
 import { useShallow } from 'zustand/react/shallow';
@@ -95,9 +95,12 @@ const DrawLayer: React.FC = React.memo(() => {
     //   getMouseCoords → handlePointerDown/Move/Up → 4 callbacks × 60fps = 240 recreations/s
     // With refs, all handlers have stable identity ([] deps).
     const viewportRef = useRef({ x, y, zoom });
-    viewportRef.current = { x, y, zoom };
     const drawStateRef = useRef({ isDrawMode, currentTool, currentColor, currentWidth });
-    drawStateRef.current = { isDrawMode, currentTool, currentColor, currentWidth };
+
+    useEffect(() => {
+        viewportRef.current = { x, y, zoom };
+        drawStateRef.current = { isDrawMode, currentTool, currentColor, currentWidth };
+    });
 
     const getMouseCoords = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
         if (!svgRef.current) return { x: 0, y: 0 };

@@ -104,7 +104,9 @@ const BoardView: React.FC = () => {
 
     // Ref per desacoblar allTasks dels callbacks i mantenir referències 100% estables
     const allTasksRef = useRef(allTasks);
-    allTasksRef.current = allTasks;
+    useEffect(() => {
+        allTasksRef.current = allTasks;
+    });
 
     // O(1) Pre-càlcul: agrupació de tasques per columna (només canvia quan canvien les tasques)
     const tasksByStatus = useMemo(() => {

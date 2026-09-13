@@ -37,16 +37,16 @@ export const useComments = ({
 
     // Keep snapshot reference for optimistic rollback
     const rawCommentsRef = useRef<CommentEntity[]>([]);
-    rawCommentsRef.current = rawComments;
+    useEffect(() => {
+        rawCommentsRef.current = rawComments;
+    }, [rawComments]);
 
     // Reset state when switching resources
-    const lastResourceIdRef = useRef(resourceId);
-    if (lastResourceIdRef.current !== resourceId) {
-        lastResourceIdRef.current = resourceId;
+    useEffect(() => {
         setRawComments([]);
         setLoading(true);
         setQueryLimit(initialLimit);
-    }
+    }, [resourceId, initialLimit]);
 
     // Subcollection name in Firestore (preserves legacy data schema)
     const subcollectionName = resourceType === 'community_posts' ? 'replies' : 'comments';
@@ -273,10 +273,10 @@ export const useComments = ({
 
                     // Mentions notification
                     if (mentionedUsers.length > 0) {
-                        for (const item of mentionedUsers) {
+                        const mentionPromises = mentionedUsers.map(async (item) => {
                             const username = typeof item === 'string' ? item : item.username;
                             if (username && username !== user.username) {
-                                await addDoc(collection(db, 'notifications'), {
+                                return addDoc(collection(db, 'notifications'), {
                                     recipientUsername: username,
                                     type: 'mention',
                                     fromUserId: user.id,
@@ -291,7 +291,8 @@ export const useComments = ({
                                     createdAt: serverTimestamp()
                                 });
                             }
-                        }
+                        });
+                        await Promise.allSettled(mentionPromises);
                     }
                 } catch (notifErr) {
                     console.warn('[useComments] Non-critical notification dispatch error:', notifErr);

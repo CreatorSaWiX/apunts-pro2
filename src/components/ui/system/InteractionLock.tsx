@@ -204,18 +204,18 @@ export const InteractionLock: React.FC<InteractionLockProps> = ({ children, clas
         };
     }, [isFullScreen]);
 
+    const interactionContextValue = useMemo(() => ({
+        isFullScreen,
+        setIsFullScreen,
+        resizeKey
+    }), [isFullScreen, resizeKey]);
+
     // Standard render - we ALWAYS use the interaction lock system to implement 
     // lazy loading and context management, preventing "Context Lost" errors 
     // caused by too many simultaneous WebGL canvases.
     if (disabled) {
         return <div className={className}>{children}</div>;
     }
-
-    const interactionContextValue = useMemo(() => ({
-        isFullScreen,
-        setIsFullScreen,
-        resizeKey
-    }), [isFullScreen, resizeKey]);
 
     return (
         <InteractionProvider value={interactionContextValue}>

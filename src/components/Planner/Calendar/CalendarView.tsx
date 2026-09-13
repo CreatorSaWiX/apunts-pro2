@@ -86,7 +86,9 @@ const CalendarView: React.FC = () => {
 
     const containerRef = useRef<HTMLDivElement>(null);
     const modeRef = useRef(mode);
-    modeRef.current = mode;
+    useEffect(() => {
+        modeRef.current = mode;
+    });
 
     // Sensors de gestos i ratolí per a drag & drop
     const sensors = useSensors(

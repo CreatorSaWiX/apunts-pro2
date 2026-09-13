@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight, FileText, X } from 'lucide-react';
 import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
 import Spinner from '../components/ui/Spinner';
+import { checkPdfsAvailability } from '../lib/mediaUtils';
 
 
 const TopicPage: React.FC = () => {
@@ -17,15 +18,19 @@ const TopicPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        let isMounted = true;
         import('content-collections')
             .then(m => {
-                setAllPersonalNotes(m.allPersonalNotes);
-                setIsLoading(false);
+                if (isMounted) {
+                    setAllPersonalNotes(m.allPersonalNotes);
+                    setIsLoading(false);
+                }
             })
             .catch(e => {
                 console.error(e);
-                setIsLoading(false);
+                if (isMounted) setIsLoading(false);
             });
+        return () => { isMounted = false; };
     }, []);
     
     // PDF Download state
@@ -93,29 +98,27 @@ const TopicPage: React.FC = () => {
         window.scrollTo(0, 0);
 
         if (topic && filename) {
-            const checkPdfs = async () => {
-                try {
-                    const [caRes, esRes] = await Promise.all([
-                        fetch(`/pdfs/${topic.subject}/ca/${filename}.pdf`, { method: 'HEAD' }),
-                        fetch(`/pdfs/${topic.subject}/es/${filename}.pdf`, { method: 'HEAD' })
-                    ]);
-                    
-                    const isValidPdf = (res: Response) => {
-                        return res.ok && res.headers.get('content-type')?.includes('application/pdf');
-                    };
+            const controller = new AbortController();
+            let isMounted = true;
 
-                    setAvailablePdfs({ 
-                        ca: !!isValidPdf(caRes), 
-                        es: !!isValidPdf(esRes) 
-                    });
-                } catch (e) {
-                    console.error("Error comprovant PDFs", e);
+            checkPdfsAvailability(
+                `/pdfs/${topic.subject}/ca/${filename}.pdf`,
+                `/pdfs/${topic.subject}/es/${filename}.pdf`,
+                controller.signal
+            ).then((availability) => {
+                if (isMounted) setAvailablePdfs(availability);
+            }).catch((err) => {
+                if (err?.name !== 'AbortError' && isMounted) {
                     setAvailablePdfs({ ca: false, es: false });
                 }
+            });
+
+            return () => {
+                isMounted = false;
+                controller.abort();
             };
-            checkPdfs();
         }
-    }, [id, topic]);
+    }, [id, topic, filename]);
 
     if (isLoading) {
         return (

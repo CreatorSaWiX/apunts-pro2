@@ -57,7 +57,7 @@ const VisRegularitatHibrida = () => {
     const z0 = f3d(p[0], p[1]);
 
     // Normal vector for lookAt: (dx, 1, dy)
-    const normalDir = new THREE.Vector3(g.dx, 1, g.dy).normalize();
+    const normalDir = React.useMemo(() => new THREE.Vector3(g.dx, 1, g.dy).normalize(), [g.dx, g.dy]);
 
     return (
         <div key={resizeKey} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>

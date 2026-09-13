@@ -39,43 +39,47 @@ export function useProfile(username: string | undefined) {
             const targetUsername = username || authUser?.username;
             if (targetUsername) {
                 setIsFetchingUser(true);
-                const [{ db }, { doc, getDoc }] = await Promise.all([
-                    import('../lib/firebase'),
-                    import('firebase/firestore')
-                ]);
-                if (!isMounted) return;
-                
-                // 1. Cerca quin UID correspon a aquest username
-                const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
-                let resolvedUid = null;
-                
-                if (usernameDoc.exists()) {
-                    resolvedUid = usernameDoc.data().uid;
-                }
-                
-                // 2. Si l'hem trobat, descarrega l'usuari complet
-                if (resolvedUid && isMounted) {
-                    const userDocSnap = await getDoc(doc(db, 'users', resolvedUid));
-                    if (userDocSnap.exists()) {
-                        setExtendedUser({ ...userDocSnap.data(), id: userDocSnap.id } as ExtendedUser);
-                        setIsFetchingUser(false);
-                        return; // Acabem amb èxit
+                try {
+                    const [{ db }, { doc, getDoc }] = await Promise.all([
+                        import('../lib/firebase'),
+                        import('firebase/firestore')
+                    ]);
+                    if (!isMounted) return;
+                    
+                    // 1. Cerca quin UID correspon a aquest username
+                    const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
+                    let resolvedUid = null;
+                    
+                    if (usernameDoc.exists()) {
+                        resolvedUid = usernameDoc.data().uid;
                     }
-                }
-                
-                if (!isMounted) return;
+                    
+                    // 2. Si l'hem trobat, descarrega l'usuari complet
+                    if (resolvedUid && isMounted) {
+                        const userDocSnap = await getDoc(doc(db, 'users', resolvedUid));
+                        if (userDocSnap.exists()) {
+                            setExtendedUser({ ...userDocSnap.data(), id: userDocSnap.id } as ExtendedUser);
+                            return; // Acabem amb èxit
+                        }
+                    }
+                    
+                    if (!isMounted) return;
 
-                // 3. Fallbacks
-                if (isOwnProfile && authUser) {
-                    setExtendedUser(authUser as ExtendedUser);
-                } else {
-                    setExtendedUser({
-                        id: targetUsername,
-                        username: targetUsername, // Changed to use targetUsername as fallback for better UX
-                        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${targetUsername}`,
-                    });
+                    // 3. Fallbacks
+                    if (isOwnProfile && authUser) {
+                        setExtendedUser(authUser as ExtendedUser);
+                    } else {
+                        setExtendedUser({
+                            id: targetUsername,
+                            username: targetUsername, // Changed to use targetUsername as fallback for better UX
+                            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${targetUsername}`,
+                        });
+                    }
+                } catch (e) {
+                    console.error("Error fetching user profile:", e);
+                } finally {
+                    if (isMounted) setIsFetchingUser(false);
                 }
-                setIsFetchingUser(false);
             }
         };
         

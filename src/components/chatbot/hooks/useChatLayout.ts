@@ -46,7 +46,9 @@ export function useChatLayout({ isOpen, t }: UseChatLayoutOptions): UseChatLayou
   const activeReaderRef = useRef<FileReader | null>(null);
 
   const tRef = useRef(t);
-  tRef.current = t;
+  useEffect(() => {
+    tRef.current = t;
+  });
 
   // ── Gestió de fitxers adjunts ─────────────────────────────────────────────
   const processFile = useCallback((file: File) => {

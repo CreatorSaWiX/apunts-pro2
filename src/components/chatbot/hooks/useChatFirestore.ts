@@ -65,10 +65,12 @@ export function useChatFirestore({ user, isOpen, t, onCloseHistory }: UseChatFir
 
   // Refs per estabilitzar callbacks i evitar re-renders innecessaris
   const onCloseHistoryRef = useRef(onCloseHistory);
-  onCloseHistoryRef.current = onCloseHistory;
-
   const chatListRef = useRef(chatList);
-  chatListRef.current = chatList;
+
+  useEffect(() => {
+    onCloseHistoryRef.current = onCloseHistory;
+    chatListRef.current = chatList;
+  });
 
   const fetchChatList = useCallback(async (): Promise<ChatMeta[]> => {
     if (!user) return [];

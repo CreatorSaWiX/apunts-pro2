@@ -21,6 +21,12 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
         return geo;
     }, []);
 
+    useEffect(() => {
+        return () => {
+            geometry.dispose();
+        };
+    }, [geometry]);
+
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },
         uVariant: { value: 0 }
@@ -31,7 +37,7 @@ const AnimatedSurface = ({ variant }: { variant: 'login' | 'register' }) => {
     }, [variant, uniforms]);
 
     useFrame((state) => {
-        uniforms.uTime.value = state.clock.getElapsedTime() * 0.8;
+        uniforms.uTime.value = state.clock.elapsedTime * 0.8;
     });
 
     interface WebGLShaderCompile {

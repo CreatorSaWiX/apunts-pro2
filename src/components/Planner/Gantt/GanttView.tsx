@@ -74,9 +74,11 @@ const TaskBar: React.FC<TaskBarProps> = React.memo(({
 
     // Refs per sincronitzar valors mutables als listeners d'esdeveniments globals sense re-subscriure
     const dragStateRef = useRef(dragState);
-    dragStateRef.current = dragState;
     const optimisticRef = useRef(optimistic);
-    optimisticRef.current = optimistic;
+    useEffect(() => {
+        dragStateRef.current = dragState;
+        optimisticRef.current = optimistic;
+    });
 
     const isDragging = dragState !== null;
 

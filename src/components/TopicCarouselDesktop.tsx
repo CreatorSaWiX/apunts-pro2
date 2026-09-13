@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
@@ -104,6 +104,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const restoringRef = useRef(true);
     const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
     const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
     const metricsRef = useRef<{ center: number, index: number }[]>([]);
 
@@ -391,7 +392,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                         const hasNewTag = meta?.hasNew ?? false;
                         const newestUpdate = meta?.newestUpdate ?? 0;
 
-                        const isTopicNew = hasNewTag && !seenNewTopics.includes(topic.slug);
+                        const isTopicNew = hasNewTag && !seenNewTopicsSet.has(topic.slug);
                         const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
 
                         return (

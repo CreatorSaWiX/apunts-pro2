@@ -11,11 +11,18 @@ export interface Cursor {
     updatedAt: number;
 }
 
-// Lazy-cached firebase/database module
+// Lazy-cached firebase/database module and RTDB instance
 let _dbModule: typeof import('firebase/database') | null = null;
+let _rtdbInstance: any = null;
+
 const getDbModule = async () => {
     if (!_dbModule) _dbModule = await import('firebase/database');
     return _dbModule;
+};
+
+const getRtdbInstance = async () => {
+    if (!_rtdbInstance) _rtdbInstance = await getRtdb();
+    return _rtdbInstance;
 };
 
 export const useMultiplayerCanvas = (
@@ -25,8 +32,22 @@ export const useMultiplayerCanvas = (
 ) => {
     const { user } = useAuth();
     const localStrokesRef = useRef<Set<string>>(new Set());
+    const dbRef = useRef<{ rtdb: any; db: typeof import('firebase/database') } | null>(null);
 
-
+    // Warm up RTDB and Database module references
+    useEffect(() => {
+        let isMounted = true;
+        Promise.all([getRtdbInstance(), getDbModule()]).then(([rtdb, db]) => {
+            if (isMounted) {
+                dbRef.current = { rtdb, db };
+                if (user) {
+                    const presenceRef = db.ref(rtdb, `community_canvas/presence/${user.id}`);
+                    db.onDisconnect(presenceRef).remove().catch(console.error);
+                }
+            }
+        }).catch(console.error);
+        return () => { isMounted = false; };
+    }, [user]);
 
     // Throttle cursor updates
     const lastUpdate = useRef(0);
@@ -35,9 +56,14 @@ export const useMultiplayerCanvas = (
         const now = Date.now();
         if (now - lastUpdate.current > 50) { // ~20fps to reduce network load
             lastUpdate.current = now;
-            const rtdb = await getRtdb();
-            const { ref, set } = await getDbModule();
-            set(ref(rtdb, `community_canvas/presence/${user.id}`), {
+            let current = dbRef.current;
+            if (!current) {
+                const [rtdb, db] = await Promise.all([getRtdbInstance(), getDbModule()]);
+                current = { rtdb, db };
+                dbRef.current = current;
+            }
+            const { rtdb, db } = current;
+            db.set(db.ref(rtdb, `community_canvas/presence/${user.id}`), {
                 x,
                 y,
                 color: currentColor,
@@ -51,9 +77,8 @@ export const useMultiplayerCanvas = (
     useEffect(() => {
         const cleanup = async () => {
             if (user) {
-                const rtdb = await getRtdb();
-                const { ref, remove } = await getDbModule();
-                remove(ref(rtdb, `community_canvas/presence/${user.id}`));
+                const current = dbRef.current || { rtdb: await getRtdbInstance(), db: await getDbModule() };
+                current.db.remove(current.db.ref(current.rtdb, `community_canvas/presence/${user.id}`)).catch(console.error);
             }
         };
         window.addEventListener('beforeunload', cleanup);
@@ -136,9 +161,8 @@ export const useMultiplayerCanvas = (
     const broadcastStroke = useCallback(async (stroke: Stroke) => {
         if (!user) return;
         localStrokesRef.current.add(stroke.id);
-        const rtdb = await getRtdb();
-        const { ref, set } = await getDbModule();
-        set(ref(rtdb, `community_canvas/strokes/${stroke.id}`), stroke).catch(console.error);
+        const current = dbRef.current || { rtdb: await getRtdbInstance(), db: await getDbModule() };
+        current.db.set(current.db.ref(current.rtdb, `community_canvas/strokes/${stroke.id}`), stroke).catch(console.error);
     }, [user]);
 
     const lastLiveStrokeUpdate = useRef(0);
@@ -147,25 +171,23 @@ export const useMultiplayerCanvas = (
         const now = Date.now();
         if (now - lastLiveStrokeUpdate.current > 50) { // ~20fps throttle
             lastLiveStrokeUpdate.current = now;
-            const rtdb = await getRtdb();
-            const { ref, set } = await getDbModule();
-            set(ref(rtdb, `community_canvas/strokes/${stroke.id}`), stroke).catch(console.error);
+            const current = dbRef.current || { rtdb: await getRtdbInstance(), db: await getDbModule() };
+            current.db.set(current.db.ref(current.rtdb, `community_canvas/strokes/${stroke.id}`), stroke).catch(console.error);
         }
     }, [user]);
 
     const broadcastClear = useCallback(async () => {
         if (!user) return;
-        const rtdb = await getRtdb();
-        const { ref, remove, set, serverTimestamp } = await getDbModule();
-        remove(ref(rtdb, 'community_canvas/strokes')).catch(console.error);
-        set(ref(rtdb, 'community_canvas/meta/lastClearedAt'), serverTimestamp()).catch(console.error);
+        const current = dbRef.current || { rtdb: await getRtdbInstance(), db: await getDbModule() };
+        const { ref, remove, set, serverTimestamp } = current.db;
+        remove(ref(current.rtdb, 'community_canvas/strokes')).catch(console.error);
+        set(ref(current.rtdb, 'community_canvas/meta/lastClearedAt'), serverTimestamp()).catch(console.error);
     }, [user]);
 
     const broadcastRemoveStroke = useCallback(async (id: string) => {
         if (!user) return;
-        const rtdb = await getRtdb();
-        const { ref, remove } = await getDbModule();
-        remove(ref(rtdb, `community_canvas/strokes/${id}`)).catch(console.error);
+        const current = dbRef.current || { rtdb: await getRtdbInstance(), db: await getDbModule() };
+        current.db.remove(current.db.ref(current.rtdb, `community_canvas/strokes/${id}`)).catch(console.error);
     }, [user]);
 
     return { updateCursor, broadcastStroke, broadcastLiveStroke, broadcastClear, broadcastRemoveStroke };

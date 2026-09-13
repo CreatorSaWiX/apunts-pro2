@@ -29,6 +29,7 @@ const VisVectorDirectorAngle = () => {
     const v = { x: Math.cos(alpha), y: Math.sin(alpha) };
     const dotProduct = grad.x * v.x + grad.y * v.y;
     const gradNorm = Math.sqrt(grad.x ** 2 + grad.y ** 2);
+    const memoGradDir = React.useMemo(() => new THREE.Vector3(grad.x, 0, grad.y).normalize(), [grad.x, grad.y]);
 
     return (
         <div key={isFullScreen ? resizeKey : 'static'} className={`w-full overflow-hidden relative group transition duration-500 flex flex-col bg-slate-900 ${isFullScreen ? 'h-full' : 'h-[650px] md:h-[650px]'}`}>
@@ -131,7 +132,7 @@ const VisVectorDirectorAngle = () => {
 
                         {/* Gradient Arrow on surface */}
                         <group position={[p[0], f(p[0], p[1]) + 0.1, p[1]]}>
-                            <Arrow memoDir={new THREE.Vector3(grad.x, 0, grad.y).normalize()} length={gradNorm * 2} color={Theme.indigo} head={0.2} width={0.1} />
+                            <Arrow memoDir={memoGradDir} length={gradNorm * 2} color={Theme.indigo} head={0.2} width={0.1} />
                         </group>
                     </Canvas>
                 </div>
