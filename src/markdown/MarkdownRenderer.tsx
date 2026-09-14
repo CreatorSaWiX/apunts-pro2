@@ -31,6 +31,8 @@ const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/Maf
 const VectorVisualizer = React.lazy(() => import("../components/ui/visualizers/VectorVisualizer"));
 const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/ListVisualizer"));
 const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/PointerVisualizer"));
+const VennVisualizer = React.lazy(() => import("../components/ui/visualizers/VennVisualizer"));
+const ProbTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/ProbTreeVisualizer"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -208,6 +210,20 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <HeapVisualizer />
+            </SafeSuspense>
+        );
+    },
+    vennviz: (props: MarkdownComponentProps) => {
+        return (
+            <SafeSuspense>
+                <VennVisualizer {...(props as unknown as React.ComponentProps<typeof VennVisualizer>)} />
+            </SafeSuspense>
+        );
+    },
+    probtreeviz: (props: MarkdownComponentProps) => {
+        return (
+            <SafeSuspense>
+                <ProbTreeVisualizer {...(props as unknown as React.ComponentProps<typeof ProbTreeVisualizer>)} />
             </SafeSuspense>
         );
     },
@@ -393,7 +409,7 @@ const rehypePluginsConfig = [
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
             'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
-            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
+            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
             'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
@@ -415,6 +431,8 @@ const rehypePluginsConfig = [
             'linkedinviz': ['src'],
             'mafs': ['type'],
             'threeviz': ['type'],
+            'vennviz': ['op', 'operation', 'compact', 'interactive', 'className', 'class'],
+            'probtreeviz': ['mode', 'className', 'class'],
             'graph': ['edges', 'nodes', 'height', 'directed'],
             'listviz': ['edges', 'nodes', 'height', 'directed'],
             'accordion': ['title', 'defaultOpen'],

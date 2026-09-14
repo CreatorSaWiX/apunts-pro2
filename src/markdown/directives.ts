@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -86,4 +86,6 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   youtubeviz:     makePassthrough("youtubeviz"),
   threeviz:       makePassthrough("threeviz"),
   three:          makePassthrough("threeviz"), // Alias → maps to same component
+  vennviz:        makePassthrough("vennviz"),
+  probtreeviz:    makePassthrough("probtreeviz"),
 };

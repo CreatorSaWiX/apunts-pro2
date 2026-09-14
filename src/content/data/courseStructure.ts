@@ -509,8 +509,8 @@ export const courseStructure: TopicDefinition[] = [
     // --- M2 (Càlcul i Optimitació) ---
     {
         id: "m2-tema-1-reals",
-        title: "Tema 1: Nombres reals i complexos",
-        description: "Valor absoluts, desigualtats i nombres complexos. Propietats bàsiques.",
+        title: "Tema 1: Nombres reals",
+        description: "Valor absoluts, desigualtats. Propietats bàsiques.",
         problems: [
             { id: "M2-T1-Ex1", title: "Problema 1: Desigualtats fraccionàries i polinòmiques" },
             { id: "M2-T1-Ex2", title: "Problema 2: Desigualtats amb valor absolut" },
