@@ -24,7 +24,7 @@ $$
 \Omega = \{\omega_1, \omega_2, \dots\}
 $$
 
-Common examples:
+Examples:
 - **Rolling a 6-sided die**: $\Omega = \{1, 2, 3, 4, 5, 6\}$.
 - **Flipping two coins**: $\Omega = \{(\text{heads}, \text{heads}),\, (\text{heads}, \text{tails}),\, (\text{tails}, \text{heads}),\, (\text{tails}, \text{tails})\}$.
 - **Discrete count (arrival processes, requests to a server)**: $\Omega = \{0, 1, 2, 3, \dots\}$.
@@ -117,8 +117,7 @@ $$
 P(A \mid B) = \frac{P(A \cap B)}{P(B)}
 $$
 
-In practice, conditioning on $B$ means **reducing the universe of observable outcomes to the set $B$**. All outcomes outside $B$ become impossible, and the probabilities of subsets of $A$ are rescaled by dividing by the total weight of $B$.
-- When evaluating $P(A \mid B)$, the two events play completely asymmetric roles: **$A$ is uncertain**, whereas **$B$ is known information or assumed to be true**.
+In practice, conditioning on $B$ means **reducing the universe of observable outcomes to the set $B$**. All outcomes outside $B$ become impossible, and the probabilities of subsets of $A$ are rescaled by dividing by the total weight of $B$. When evaluating $P(A \mid B)$, the two events play completely asymmetric roles: **$A$ is uncertain**, whereas **$B$ is known information or assumed to be true**.
 
 In general:
 $$P(A \mid B) \neq P(B \mid A) \neq P(A \cap B)$$
@@ -187,13 +186,11 @@ If $P(A) > 0$ and $P(B) > 0$, the following statements are completely equivalent
 
 If any of these equalities does not hold, the events are **dependent** ($P(B \mid A) \neq P(B)$).
 
-:::warning Disjoint vs. independent
 It is a very common mistake to confuse mutually exclusive (disjoint) events with independent events:
 - **Disjoint (mutually exclusive)**: $A \cap B = \emptyset \implies P(A \cap B) = 0$.
 - **Independent**: Requires $P(A \cap B) = P(A) \cdot P(B)$.
 
 Two disjoint events with strictly positive probabilities ($P(A) > 0$ and $P(B) > 0$) **can NEVER be independent!** If they are disjoint and we know $A$ has occurred, we have absolute certainty that $B$ cannot have occurred ($P(B \mid A) = 0 \neq P(B)$); therefore, the occurrence of $A$ provides the maximum possible information about $B$.
-:::
 
 ---
 

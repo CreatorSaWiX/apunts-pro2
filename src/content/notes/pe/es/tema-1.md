@@ -24,7 +24,7 @@ $$
 \Omega = \{\omega_1, \omega_2, \dots\}
 $$
 
-Ejemplos habituales:
+Ejemplos:
 - **Lanzamiento de un dado de 6 caras**: $\Omega = \{1, 2, 3, 4, 5, 6\}$.
 - **Lanzamiento de dos monedas**: $\Omega = \{(\text{cara}, \text{cara}),\, (\text{cara}, \text{cruz}),\, (\text{cruz}, \text{cara}),\, (\text{cruz}, \text{cruz})\}$.
 - **Recuento discreto (procesos de llegada, peticiones a un servidor)**: $\Omega = \{0, 1, 2, 3, \dots\}$.
@@ -117,8 +117,7 @@ $$
 P(A \mid B) = \frac{P(A \cap B)}{P(B)}
 $$
 
-En la práctica, condicionar por $B$ significa **reducir el universo de resultados observables al conjunto $B$**. Todos los resultados fuera de $B$ pasan a ser imposibles, y las probabilidades de los subconjuntos de $A$ se reescalan dividiendo por el peso total de $B$.
-- Al evaluar $P(A \mid B)$, los dos sucesos juegan roles completamente asimétricos: **$A$ es incierto**, mientras que **$B$ es un dato conocido o asumido como cierto**.
+En la práctica, condicionar por $B$ significa **reducir el universo de resultados observables al conjunto $B$**. Todos los resultados fuera de $B$ pasan a ser imposibles, y las probabilidades de los subconjuntos de $A$ se reescalan dividiendo por el peso total de $B$. Al evaluar $P(A \mid B)$, los dos sucesos juegan roles completamente asimétricos: **$A$ es incierto**, mientras que **$B$ es un dato conocido o asumido como cierto**.
 
 En general:
 $$P(A \mid B) \neq P(B \mid A) \neq P(A \cap B)$$
@@ -187,13 +186,11 @@ Si $P(A) > 0$ y $P(B) > 0$, las siguientes afirmaciones son completamente equiva
 
 Si alguna de estas igualdades no se cumple, los sucesos son **dependientes** ($P(B \mid A) \neq P(B)$).
 
-:::warning Disjuntos vs. independientes
 Es un error muy común confundir que dos sucesos sean disjuntos con que sean independientes:
 - **Disjuntos (incompatibles)**: $A \cap B = \emptyset \implies P(A \cap B) = 0$.
 - **Independientes**: Exige $P(A \cap B) = P(A) \cdot P(B)$.
 
 Dos sucesos disjuntos con probabilidades estrictamente positivas ($P(A) > 0$ y $P(B) > 0$) **¡NUNCA pueden ser independientes!** Si son disjuntos y sabemos que ha ocurrido $A$, tenemos la certeza absoluta de que no puede haber ocurrido $B$ ($P(B \mid A) = 0 \neq P(B)$); por lo tanto, la ocurrencia de $A$ proporciona la máxima información posible sobre $B$.
-:::
 
 ---
 

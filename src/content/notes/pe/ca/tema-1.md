@@ -24,7 +24,7 @@ $$
 \Omega = \{\omega_1, \omega_2, \dots\}
 $$
 
-Exemples habituals:
+Exemples:
 - **Llançament d'un dau de 6 cares**: $\Omega = \{1, 2, 3, 4, 5, 6\}$.
 - **Llançament de dues monedes**: $\Omega = \{(\text{cara}, \text{cara}),\, (\text{cara}, \text{creu}),\, (\text{creu}, \text{cara}),\, (\text{creu}, \text{creu})\}$.
 - **Recompte discret (processos d'arribada, peticions a un servidor)**: $\Omega = \{0, 1, 2, 3, \dots\}$.
@@ -117,8 +117,7 @@ $$
 P(A \mid B) = \frac{P(A \cap B)}{P(B)}
 $$
 
-A la pràctica, condicionar per $B$ significa **reduir l'univers de resultats observables al conjunt $B$**. Tots els resultats fora de $B$ esdevenen impossibles, i les probabilitats dels subconjunts d'$A$ es reescalen dividint pel pes total de $B$.
-- En avaluar $P(A \mid B)$, els dos esdeveniments juguen rols completament asimètrics: **$A$ és incert**, mentre que **$B$ és una dada coneguda o assumida com a certa**.
+A la pràctica, condicionar per $B$ significa **reduir l'univers de resultats observables al conjunt $B$**. Tots els resultats fora de $B$ esdevenen impossibles, i les probabilitats dels subconjunts d'$A$ es reescalen dividint pel pes total de $B$. En avaluar $P(A \mid B)$, els dos esdeveniments juguen rols completament asimètrics: **$A$ és incert**, mentre que **$B$ és una dada coneguda o assumida com a certa**.
 
 En general:
 $$P(A \mid B) \neq P(B \mid A) \neq P(A \cap B)$$
@@ -187,13 +186,11 @@ Si $P(A) > 0$ i $P(B) > 0$, les següents afirmacions són completament equivale
 
 Si alguna d'aquestes igualtats no es compleix, els esdeveniments són **dependents** ($P(B \mid A) \neq P(B)$).
 
-:::warning Disjunts vs. independents
 És un error molt comú confondre que dos esdeveniments siguin disjunts amb el fet que siguin independents:
 - **Disjunts (incompatibles)**: $A \cap B = \emptyset \implies P(A \cap B) = 0$.
 - **Independents**: Exigeix $P(A \cap B) = P(A) \cdot P(B)$.
 
 Dos successos disjunts amb probabilitats estrictament positives ($P(A) > 0$ i $P(B) > 0$) **MAI poden ser independents!** Si són disjunts i sabem que ha passat $A$, tenim la certesa absoluta que no pot haver passat $B$ ($P(B \mid A) = 0 \neq P(B)$); per tant, l'ocurrència d'$A$ proporciona la màxima informació possible sobre $B$.
-:::
 
 ---
 
