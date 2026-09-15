@@ -195,6 +195,15 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Recalculate metrics when topic list changes (async data load)
+    useEffect(() => {
+        if (sortedTopics.length === 0) return;
+        // Wait for DOM to update with new cards before measuring
+        requestAnimationFrame(() => {
+            updateMetrics();
+        });
+    }, [sortedTopics.length, updateMetrics]);
+
     // Initialize layout scales on mount & restore saved position
     useEffect(() => {
         const saved = sessionStorage.getItem(`topic-carousel-${subject}`);
@@ -307,7 +316,14 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         if (requestRef.current) cancelAnimationFrame(requestRef.current);
 
         requestRef.current = requestAnimationFrame(() => {
-            if (!scrollRef.current || metricsRef.current.length === 0) return;
+            if (!scrollRef.current) return;
+
+            // Lazily recalculate metrics if empty (e.g. data loaded after initial mount)
+            if (metricsRef.current.length === 0) {
+                updateMetrics();
+                if (metricsRef.current.length === 0) return;
+            }
+
             const container = scrollRef.current;
 
             const containerWidth = container.clientWidth;
