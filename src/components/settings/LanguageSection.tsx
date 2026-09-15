@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 export const LanguageSection = () => {
     const { t, i18n } = useTranslation();
-    const preferredLang = i18n.language;
+    const preferredLang = (i18n.resolvedLanguage || i18n.language || 'ca').split('-')[0];
 
     return (
         <div id="general" className="flex flex-col items-start gap-8 w-full pt-4 pb-4">

@@ -18,11 +18,13 @@ i18n
   .init({
     resources,
     fallbackLng: 'ca',
+    supportedLngs: ['ca', 'es', 'en'],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'],
       caches: ['localStorage'],
       lookupLocalStorage: 'preferredLang'
     }

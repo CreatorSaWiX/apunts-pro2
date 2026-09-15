@@ -25,7 +25,7 @@ const MobileActionMenu: React.FC<{
     const { subject, setSubject } = useSubjectStore();
     const { homeSubjects, customSubjectColors } = useSettingsStore();
     const { t, i18n } = useTranslation();
-    const preferredLang = i18n.language;
+    const preferredLang = (i18n.resolvedLanguage || i18n.language || 'ca').split('-')[0];
     const [, startTransition] = useTransition();
 
     const displaySubjects = React.useMemo(() => {

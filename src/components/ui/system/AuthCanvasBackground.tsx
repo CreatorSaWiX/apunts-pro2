@@ -241,13 +241,8 @@ const MathBackground = ({ variant }: { variant: 'login' | 'register' }) => {
 
     useEffect(() => {
         let frameId: number;
-        let lastFrameTime = 0;
-        const FRAME_INTERVAL = 1000 / 24; // ~24fps — smooth enough for math animations, saves ~60% CPU
         const render = (t: number) => {
-            if (t - lastFrameTime >= FRAME_INTERVAL) {
-                lastFrameTime = t;
-                setTime(t / 1000);
-            }
+            setTime(t / 1000);
             frameId = requestAnimationFrame(render);
         };
         frameId = requestAnimationFrame(render);
