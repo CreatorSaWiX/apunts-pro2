@@ -51,15 +51,15 @@ export function useAnnotationNode({ id, data, defaultFontSize = 16 }: UseAnnotat
         updateNodeData(id, { text: textToSave });
     }, [id, updateNodeData]);
 
-    // Clean up timer and flush on unmount
+    // Clean up timer on unmount
     useEffect(() => {
         return () => {
             if (debounceTimerRef.current) {
                 clearTimeout(debounceTimerRef.current);
-                updateNodeData(id, { text: latestTextRef.current });
+                debounceTimerRef.current = null;
             }
         };
-    }, [id, updateNodeData]);
+    }, []);
 
     const handleTextChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;

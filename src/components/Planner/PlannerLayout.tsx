@@ -21,8 +21,8 @@ const RoadmapView = lazy(() => import('./Roadmap/RoadmapView'));
 type ViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
 const VIEW_TRANSITION = {
-    duration: 0.4,
-    ease: 'easeInOut' as const
+    duration: 0.3,
+    ease: [0.25, 0.1, 0.25, 1] as const
 };
 
 /**
@@ -345,6 +345,7 @@ const PlannerLayout: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={VIEW_TRANSITION}
+                                style={{ willChange: 'opacity, transform' }}
                                 className={`absolute inset-x-0 bottom-0 top-[88px] ${contentTopClass} touch-landscape:!top-0 z-10`}
                             >
                                 <BoardView />
@@ -360,6 +361,7 @@ const PlannerLayout: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={VIEW_TRANSITION}
+                                style={{ willChange: 'opacity, transform' }}
                                 className="absolute inset-x-0 bottom-0 top-[88px] touch-landscape:!top-0 z-10"
                             >
                                 <CalendarView />
@@ -375,6 +377,7 @@ const PlannerLayout: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={VIEW_TRANSITION}
+                                style={{ willChange: 'opacity, transform' }}
                                 className={`absolute inset-x-0 bottom-0 top-[88px] ${contentTopClass} touch-landscape:!top-0 z-10`}
                             >
                                 <GanttView />
@@ -390,6 +393,7 @@ const PlannerLayout: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={VIEW_TRANSITION}
+                                style={{ willChange: 'opacity, transform' }}
                                 className="fixed inset-0 z-0"
                             >
                                 <RoadmapView isOpenAI={isAIModalOpen} onCloseAI={() => setIsAIModalOpen(false)} />

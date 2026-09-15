@@ -96,13 +96,17 @@ const TargetGradeBadge = ({ requiredGrade }: { requiredGrade: number }) => {
 };
 
 const RotatingBorder = ({ isRetaking }: { isRetaking: boolean }) => (
-    <div className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen">
+    <div
+        className="absolute inset-[-2px] rounded-lg overflow-hidden pointer-events-none z-0 mix-blend-screen"
+        style={{ transform: 'translateZ(0)', contain: 'paint' }}
+    >
         <div
             className={`roadmap-spin-border absolute inset-[-50%] animate-[spin_3s_linear_infinite] ${
                 isRetaking
                     ? 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(251,191,36,0.6)_360deg)]'
                     : 'bg-[conic-gradient(from_0deg,transparent_0_300deg,rgba(56,189,248,0.6)_360deg)]'
             }`}
+            style={{ willChange: 'transform' }}
         />
         <div className="absolute inset-[2px] bg-slate-900 rounded-lg" />
     </div>

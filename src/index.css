@@ -403,6 +403,15 @@ canvas {
   }
 }
 
+/* Pause GPU-heavy spin animations and freeze nodes during Roadmap exit transition */
+[data-exiting="true"] .roadmap-spin-border {
+  animation-play-state: paused !important;
+}
+
+[data-exiting="true"] .roadmap-node-enter {
+  animation: none !important;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                        TIPTAP PLUGIN MODIFICATIONS                         */
 /* -------------------------------------------------------------------------- */

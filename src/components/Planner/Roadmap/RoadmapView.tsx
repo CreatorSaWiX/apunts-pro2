@@ -161,20 +161,9 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
     const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const isPresent = useIsPresent();
-    const [shouldRender, setShouldRender] = useState(true);
-
     const isExiting = !isPresent;
 
-    useCanvasShortcuts({ enabled: isDrawMode && !isExiting, onClose: () => setIsDrawMode(false) });
-
-    useEffect(() => {
-        if (!isPresent) {
-            const timer = setTimeout(() => setShouldRender(false), 450);
-            return () => clearTimeout(timer);
-        } else {
-            setShouldRender(true);
-        }
-    }, [isPresent]);
+    useCanvasShortcuts({ enabled: isDrawMode && isPresent, onClose: () => setIsDrawMode(false) });
 
     useEffect(() => {
         if (initialStrokes && initialStrokes.length > 0) {
@@ -279,8 +268,6 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     const handleCloseValidations = useCallback(() => setIsValidationsModalOpen(false), []);
     const handleCloseSpec = useCallback(() => setIsSpecMenuOpen(false), []);
 
-    if (!shouldRender) return null;
-
     if (isLoading) {
         return (
             <div className="w-full h-full flex flex-col items-center justify-center bg-[#09090b]">
@@ -296,15 +283,21 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
     }
 
     return (
-        <div className="w-full h-full relative bg-[#09090b] overflow-hidden flex">
+        <div
+            data-exiting={isExiting}
+            className={`w-full h-full relative bg-[#09090b] overflow-hidden flex ${isExiting ? 'pointer-events-none' : ''}`}
+            style={isExiting ? { willChange: 'opacity, transform' } : undefined}
+        >
             {/* Animated Sci-Fi Grid Overlay */}
             <div
                 className="absolute inset-0 pointer-events-none z-0 opacity-30"
                 style={{
                     backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px)',
                     backgroundSize: '60px 60px',
-                    maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)'
+                    maskImage: isExiting ? undefined : 'radial-gradient(ellipse at center, black 20%, transparent 80%)',
+                    WebkitMaskImage: isExiting ? undefined : 'radial-gradient(ellipse at center, black 20%, transparent 80%)',
+                    transform: 'translateZ(0)',
+                    willChange: isExiting ? 'opacity' : undefined
                 }}
             />
 
@@ -327,13 +320,13 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                         className="bg-transparent"
                         minZoom={0.1}
                         maxZoom={2}
-                        panOnDrag={!isDrawMode && !isExiting}
-                        nodesDraggable={!isDrawMode && !isExiting}
-                        zoomOnScroll={!isDrawMode && !isExiting}
-                        zoomOnPinch={!isDrawMode && !isExiting}
+                        panOnDrag={!isDrawMode}
+                        nodesDraggable={!isDrawMode}
+                        zoomOnScroll={!isDrawMode}
+                        zoomOnPinch={!isDrawMode}
                         zoomOnDoubleClick={false}
-                        elementsSelectable={!isDrawMode && !isExiting}
-                        nodesConnectable={!isDrawMode && !isExiting}
+                        elementsSelectable={!isDrawMode}
+                        nodesConnectable={!isDrawMode}
                         defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
                     >
                         <Background color="#38bdf8" variant={BackgroundVariant.Dots} gap={24} size={2} className="opacity-10" />
@@ -342,9 +335,7 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                     </ReactFlow>
                 </TargetGradeProvider>
 
-                {!isExiting && (
-                    <>
-                        <RoadmapStatsWidget
+                    <RoadmapStatsWidget
                             averageGrade={averageGrade}
                             targetGrade={targetGrade}
                             requiredAverageGrade={requiredAverageGrade}
@@ -566,8 +557,6 @@ const RoadmapViewInner: React.FC<RoadmapViewProps> = ({ isOpenAI = false, onClos
                                 ]}
                             />
                         )}
-                    </>
-                )}
             </div>
 
             <SubjectContextMenu
