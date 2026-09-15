@@ -1,5 +1,5 @@
 ---
-title: "Tema 1: Teoria de la Probabilitat"
+title: "Tema 1: Teoria de la probabilitat"
 description: "Espai mostral, operacions amb esdeveniments, axiomes de Kolmogórov, probabilitat condicionada, fórmula de Bayes, independència, arbres de probabilitat i taules de contingència."
 readTime: "12 min"
 order: 1
@@ -8,7 +8,7 @@ draft: false
 
 La teoria de la probabilitat proporciona el marc matemàtic formal per quantificar la incertesa i modelar experiments en què el resultat no es pot predir amb certesa absoluta.
 
-## 1. Experiència Aleatòria i Definicions
+## 1. Experiència aleatòria i definicions
 
 ### Fenòmens deterministes vs. aleatoris
 Dins del mètode científic i l'enginyeria distingim dos tipus de fenòmens:
@@ -108,7 +108,7 @@ $$
 
 ---
 
-## 4. Probabilitat Condicionada
+## 4. Probabilitat condicionada
 
 La **probabilitat condicionada** mesura com canvia la probabilitat d'un esdeveniment quan disposem d'informació prèvia sobre la realització d'un altre esdeveniment. Notem $P(A \mid B)$ la probabilitat d'observar $A$ sabent que s'ha produït l'esdeveniment $B$ (es llegeix «probabilitat de $A$ donat $B$» o «probabilitat de $A$ condicionada per $B$»).
 
@@ -161,7 +161,7 @@ $$
 P(B \mid A) \cdot P(A) = P(A \mid B) \cdot P(B)
 $$
 
-Aïllant la probabilitat condicionada inversa obtenim la **Fórmula de Bayes per a dos esdeveniments**:
+Aïllant la probabilitat condicionada inversa obtenim la **fórmula de Bayes per a dos esdeveniments**:
 $$
 P(B \mid A) = \frac{P(A \mid B) \cdot P(B)}{P(A)}
 $$
@@ -187,7 +187,7 @@ Si $P(A) > 0$ i $P(B) > 0$, les següents afirmacions són completament equivale
 
 Si alguna d'aquestes igualtats no es compleix, els esdeveniments són **dependents** ($P(B \mid A) \neq P(B)$).
 
-:::warning Disjunts vs. Independents
+:::warning Disjunts vs. independents
 És un error molt comú confondre que dos esdeveniments siguin disjunts amb el fet que siguin independents:
 - **Disjunts (incompatibles)**: $A \cap B = \emptyset \implies P(A \cap B) = 0$.
 - **Independents**: Exigeix $P(A \cap B) = P(A) \cdot P(B)$.
@@ -197,15 +197,15 @@ Dos successos disjunts amb probabilitats estrictament positives ($P(A) > 0$ i $P
 
 ---
 
-## 7. Eines de Representació: Arbres de Probabilitat i Taules de Contingència
+## 7. Eines de representació: arbres de probabilitat i taules de contingència
 
 Per analitzar problemes compostos i estructurar les dades d'un experiment, s'utilitzen habitualment dues eines gràfiques complementàries.
 
 ### 7.1 Arbres d'esdeveniments i probabilitats
 Un arbre de probabilitat desglossa un experiment en etapes seqüencials:
-- **Nivell 1 (Arrel $\to$ Primer nivell)**: Conté les probabilitats **marginals** dels esdeveniments inicials ($P(A)$ i $P(\neg A)$).
+- **Nivell 1 (Arrel $\to$ primer nivell)**: Conté les probabilitats **marginals** dels esdeveniments inicials ($P(A)$ i $P(\neg A)$).
 - **Nivell 2 (Branques interiors)**: Conté **sempre probabilitats condicionades**, mai probabilitats conjuntes.
-- **Fulles terminals (Regla del producte)**: La probabilitat conjunta del camí complet des de l'arrel fins a una fulla s'obté multiplicant les probabilitats de totes les branques del camí:
+- **Fulles terminals (regla del producte)**: La probabilitat conjunta del camí complet des de l'arrel fins a una fulla s'obté multiplicant les probabilitats de totes les branques del camí:
   $$P(A \cap B) = P(A) \cdot P(B \mid A)$$
 
 :::probtreeviz
