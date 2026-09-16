@@ -1,4 +1,32 @@
 {
+  "mascot": {
+    "modal": {
+      "title": "Tria la teva Mascota",
+      "subtitle": "Més de 3.400 mascotes originals lliures i optimitzades"
+    },
+    "search": {
+      "placeholder": "Cerca per nom (ex: cat, owl, robot, coffee)...",
+      "clear": "Netejar"
+    },
+    "shuffle": "Barallar",
+    "categories": {
+      "all": "Tots",
+      "animals": "Animals",
+      "nature": "Natura",
+      "objects": "Objectes",
+      "symbols": "Símbols",
+      "other": "Altres"
+    },
+    "empty": {
+      "title": "No s'ha trobat cap mascota",
+      "subtitle": "Prova amb una altra paraula o categoria"
+    },
+    "loadMore": "Carregar-ne més",
+    "remaining": "restants",
+    "selected": "Seleccionat:",
+    "hint": "Fes clic sobre una mascota per seleccionar-la o doble clic per aplicar",
+    "apply": "Aplicar avatar"
+  },
   "chat": {
     "stop": "Atura la generació",
     "wait": "Espera {{cooldown}}s",
@@ -195,6 +223,9 @@
       "title": "Assistent IA",
       "subtitle": "Configura la personalitat i el comportament del teu copilot. Aquesta funcionalitat està inspirat en",
       "identity": "Identitat (Qui soc)",
+      "clickToChooseMascot": "Fes clic per triar una mascota",
+      "chooseMascotModalTitle": "Tria la mascota de la teva IA",
+      "removeAvatar": "Restablir per defecte",
       "delete": "Eliminar",
       "change": "Canviar",
       "name": "Nom de la IA",
@@ -553,6 +584,7 @@
     "settings": "Configuració",
     "profile": "El meu perfil",
     "login": "Inicia Sessió",
+    "loginShort": "Entra",
     "general": "General",
     "offline": "Emmagatzematge",
     "shortcuts": "Dreceres",

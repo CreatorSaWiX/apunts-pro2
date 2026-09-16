@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@custom-variant touch-landscape (@media (max-height: 600px) and (pointer: coarse) and (orientation: landscape));
+@custom-variant touch-landscape (@media (max-height: 600px) and (orientation: landscape));
 
 @theme {
   --color-background: var(--background);
@@ -161,7 +161,7 @@ body.player-fullscreen .nav-pill-container {
 }
 
 /* Codi inline i variables matemàtiques */
-.jutge-content :not(pre) > code,
+.jutge-content :not(pre)>code,
 .jutge-content var,
 .jutge-content tt,
 .jutge-content kbd {
@@ -299,8 +299,13 @@ canvas {
 }
 
 @keyframes ai-shimmer-slide {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(50%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(50%);
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -386,6 +391,7 @@ canvas {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -546,4 +552,25 @@ ul[data-type="taskList"] li>label>input[type="checkbox"]:checked::after {
 
 ul[data-type="taskList"] li>div {
   @apply flex-1 mt-0 text-slate-300;
+}
+/* Prevent KaTeX from breaking page width on mobile */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+.katex-display::-webkit-scrollbar {
+  height: 4px;
+}
+.katex-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+.katex-display::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.katex-display::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }

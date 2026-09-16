@@ -14,10 +14,10 @@ const LazyNavigationMenu = lazy(() => import('./NavigationMenu'));
 
 const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bottom" }: { children: React.ReactNode, text?: string, disabled?: boolean, tooltipPosition?: "top" | "bottom" }) => {
     const [isHovered, setIsHovered] = useState(false);
-    
+
     const tooltipYOffset = tooltipPosition === "bottom" ? 10 : -10;
-    const tooltipPositionClass = tooltipPosition === "bottom" 
-        ? "top-[calc(100%+8px)]" 
+    const tooltipPositionClass = tooltipPosition === "bottom"
+        ? "top-[calc(100%+8px)]"
         : "bottom-[calc(100%+8px)]";
 
     return (
@@ -44,9 +44,9 @@ const TooltipItem = ({ children, text, disabled = false, tooltipPosition = "bott
     );
 };
 
-const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, className }: { to: string, icon?: React.ComponentType<{ size?: number; className?: string }>, children?: React.ReactNode, label: string, isActive: boolean, text?: string, className?: string }) => {
+const NavLinkItem = ({ to, icon: Icon, children, label, tooltip, isActive, text, className }: { to: string, icon?: React.ComponentType<{ size?: number; className?: string }>, children?: React.ReactNode, label: string, tooltip?: string, isActive: boolean, text?: string, className?: string }) => {
     return (
-        <TooltipItem text={label}>
+        <TooltipItem text={tooltip || label}>
             <Link
                 to={to}
                 className={`group relative flex items-center justify-center rounded-full transition duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white'} ${className || 'h-11 md:w-10 md:h-10'} ${!className ? (isActive ? 'w-auto px-3 md:px-0 md:w-10' : 'w-10 md:w-10') : ''}`}
@@ -61,17 +61,17 @@ const NavLinkItem = ({ to, icon: Icon, children, label, isActive, text, classNam
                         <div className="absolute inset-x-2 -bottom-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent blur-[1px]" />
                     </motion.div>
                 )}
-                <motion.div 
-                    whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }} 
+                <motion.div
+                    whileHover={{ scale: 1.15, rotate: Icon === Settings ? 45 : 0 }}
                     whileTap={{ scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
                     className="flex items-center justify-center"
                 >
                     {Icon ? <Icon size={isActive ? 20 : 22} className={`transition duration-500 md:w-5 md:h-5 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:text-slate-200'}`} /> : children}
-                    
+
                     <AnimatePresence mode="popLayout">
                         {isActive && !text && Icon && (
-                            <motion.span 
+                            <motion.span
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
@@ -130,18 +130,26 @@ const Navigation: React.FC = () => {
     }, [user]);
 
     // Mobile Navbar states
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        const isTouchLandscape = window.matchMedia('(max-height: 600px) and (orientation: landscape)').matches;
+        return window.innerWidth < 768 || isTouchLandscape;
+    });
     const [isCanvasActive, setIsCanvasActive] = useState(false);
     const navRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleResize = () => {
-            const isTouchLandscape = window.matchMedia('(max-height: 600px) and (pointer: coarse) and (orientation: landscape)').matches;
+            const isTouchLandscape = window.matchMedia('(max-height: 600px) and (orientation: landscape)').matches;
             setIsMobile(window.innerWidth < 768 || isTouchLandscape);
         };
         handleResize();
         window.addEventListener('resize', handleResize, { passive: true });
-        return () => window.removeEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize, { passive: true });
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('orientationchange', handleResize);
+        };
     }, []);
 
     useEffect(() => {
@@ -159,94 +167,98 @@ const Navigation: React.FC = () => {
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
             <div ref={navRef} className={`nav-pill-container fixed z-50 transition duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${location.pathname.startsWith('/planner') ? 'touch-landscape:hidden' : 'touch-landscape:bottom-4 touch-landscape:top-auto touch-landscape:left-1/2 touch-landscape:-translate-x-1/2 touch-landscape:w-[calc(100%-2rem)] touch-landscape:max-w-[400px]'} ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    initial={false}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="w-full"
                 >
-                    <NavigationPill className={`!p-2 md:!p-1.5 touch-landscape:!p-2 ${isMobile ? '!bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:px-2 touch-landscape:px-3' : 'w-[max-content] justify-start'}`}>
+                    <NavigationPill className="!p-2 md:!p-1.5 touch-landscape:!p-2 !bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:w-[max-content] md:justify-start md:px-2 touch-landscape:w-full touch-landscape:justify-between touch-landscape:px-3">
 
-                            <NavLinkItem 
-                                to="/" 
-                                icon={Home} 
-                                label={t('nav.home', 'Inici')} 
-                                isActive={location.pathname === '/'} 
-                            />
-                            <NavLinkItem 
-                                to="/comunitat" 
-                                icon={Users} 
-                                label={t('nav.community', 'Comunitat')} 
-                                isActive={location.pathname === '/comunitat'} 
-                            />
-                            <NavLinkItem 
-                                to="/planner" 
-                                icon={CalendarDays} 
-                                label={t('nav.planner', 'Planificador')} 
-                                isActive={location.pathname === '/planner'} 
-                            />
-                            <NavLinkItem 
-                                to="/settings" 
-                                icon={Settings} 
-                                label={t('nav.settings', 'Configuració')} 
-                                isActive={location.pathname === '/settings'} 
-                            />
+                        <NavLinkItem
+                            to="/"
+                            icon={Home}
+                            label={t('nav.home', 'Inici')}
+                            isActive={location.pathname === '/'}
+                        />
+                        <NavLinkItem
+                            to="/comunitat"
+                            icon={Users}
+                            label={t('nav.community', 'Comunitat')}
+                            isActive={location.pathname === '/comunitat'}
+                        />
+                        <NavLinkItem
+                            to="/planner"
+                            icon={CalendarDays}
+                            label={t('nav.planner', 'Planificador')}
+                            isActive={location.pathname === '/planner'}
+                        />
+                        <NavLinkItem
+                            to="/settings"
+                            icon={Settings}
+                            label={t('nav.settings', 'Configuració')}
+                            isActive={location.pathname === '/settings'}
+                        />
 
-                            <div className="hidden md:block w-px h-5 bg-white/10 mx-1" />
+                        <div className="hidden md:block w-px h-5 bg-white/10 mx-1" />
 
-                            {user && (
-                                <NavLinkItem
-                                    to="/profile"
-                                    label={t('nav.profile', 'El meu perfil')}
-                                    isActive={location.pathname === '/profile'}
-                                    text={user.username}
-                                    className={`h-11 md:h-10 pl-1 md:pl-1.5 transition duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0`}
-                                >
-                                    <div className="relative flex items-center justify-center shrink-0">
-                                        {user.avatar ? (
-                                            <img 
-                                                src={resolveMediaUrl(user.avatar) || user.avatar} 
-                                                alt={user.username || ''} 
-                                                loading="eager" 
-                                                className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`} 
-                                            />
-                                        ) : (
-                                            <div className={`rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white border-2 transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`}>
-                                                {user.username?.[0]?.toUpperCase() || 'U'}
-                                            </div>
-                                        )}
-                                        {unreadCount > 0 && (
-                                            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
-                                        )}
-                                    </div>
-                                    <AnimatePresence mode="popLayout">
-                                        {location.pathname === '/profile' && (
-                                            <motion.span 
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.8 }}
-                                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                                className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
-                                            >
-                                                {user.username}
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
-                                </NavLinkItem>
-                            )}
+                        {user && (
+                            <NavLinkItem
+                                to="/profile"
+                                label={t('nav.profile', 'El meu perfil')}
+                                isActive={location.pathname === '/profile'}
+                                text={user.username}
+                                className={`h-11 md:h-10 pl-1 md:pl-1.5 transition duration-300 ${location.pathname === '/profile' ? 'w-auto pr-3 md:pr-4' : 'w-10 md:w-auto pr-1 md:pr-4'} flex items-center justify-center shrink-0`}
+                            >
+                                <div className="relative flex items-center justify-center shrink-0">
+                                    {user.avatar ? (
+                                        <img
+                                            src={resolveMediaUrl(user.avatar) || user.avatar}
+                                            alt={user.username || ''}
+                                            loading="eager"
+                                            className={`rounded-full bg-slate-800 border-2 shadow-sm object-cover transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary shadow-[0_0_10px_rgba(56,189,248,0.5)] md:w-7 md:h-7 md:border-white/20' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`}
+                                        />
+                                    ) : (
+                                        <div className={`rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white border-2 transition duration-500 ${location.pathname === '/profile' ? 'w-7 h-7 border-primary' : 'w-8 h-8 border-white/20 md:w-7 md:h-7'}`}>
+                                            {user.username?.[0]?.toUpperCase() || 'U'}
+                                        </div>
+                                    )}
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-3 md:h-3 bg-rose-500 rounded-full border-2 border-[#0F172A] shadow-sm animate-pulse" />
+                                    )}
+                                </div>
+                                <AnimatePresence mode="popLayout">
+                                    {location.pathname === '/profile' && (
+                                        <motion.span
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                            className="text-[13px] font-bold tracking-wide whitespace-nowrap overflow-hidden md:hidden ml-1"
+                                        >
+                                            {user.username}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </NavLinkItem>
+                        )}
 
-                            <div className={`h-11 md:h-10 px-3 md:px-0 md:w-10 items-center justify-center shrink-0 ${!user && isLoading ? 'flex' : 'hidden'}`}>
+                        {!user && isLoading && (
+                            <div className="h-11 md:h-10 px-3 md:px-0 md:w-10 items-center justify-center shrink-0 flex">
                                 <div className="w-8 h-8 md:w-7 md:h-7 rounded-full bg-slate-800 animate-pulse border-2 border-white/10" />
                             </div>
+                        )}
 
+                        {!user && !isLoading && (
                             <NavLinkItem
                                 to="/login"
                                 icon={LogIn}
-                                label={t('nav.login', 'Iniciar Sessió')}
+                                label={t('nav.loginShort', 'Entra')}
+                                tooltip={t('nav.login', 'Iniciar Sessió')}
                                 isActive={location.pathname === '/login'}
-                                className={`h-11 md:h-10 w-10 md:w-10 items-center justify-center shrink-0 ${!user && !isLoading ? 'flex' : 'hidden'}`}
                             />
-                        </NavigationPill>
-                    </motion.div>
+                        )}
+                    </NavigationPill>
+                </motion.div>
             </div>
 
             {/* Menu Drawer - Slides from LEFT */}

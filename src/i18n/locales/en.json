@@ -1,4 +1,32 @@
 {
+  "mascot": {
+    "modal": {
+      "title": "Choose your Mascot",
+      "subtitle": "Over 3,400 free and optimized original mascots"
+    },
+    "search": {
+      "placeholder": "Search by name (e.g. cat, owl, robot, coffee)...",
+      "clear": "Clear"
+    },
+    "shuffle": "Shuffle",
+    "categories": {
+      "all": "All",
+      "animals": "Animals",
+      "nature": "Nature",
+      "objects": "Objects",
+      "symbols": "Symbols",
+      "other": "Other"
+    },
+    "empty": {
+      "title": "No mascots found",
+      "subtitle": "Try another search term or category"
+    },
+    "loadMore": "Load more",
+    "remaining": "remaining",
+    "selected": "Selected:",
+    "hint": "Click on a mascot to select it or double click to apply",
+    "apply": "Apply avatar"
+  },
   "chat": {
     "stop": "Stop generating",
     "wait": "Wait {{cooldown}}s",
@@ -194,6 +222,9 @@
       "title": "AI Assistant",
       "subtitle": "Configure the personality and behavior of your copilot. This feature is inspired by",
       "identity": "Identity (Who am I)",
+      "clickToChooseMascot": "Click to choose a mascot",
+      "chooseMascotModalTitle": "Choose your AI mascot",
+      "removeAvatar": "Reset to default",
       "delete": "Delete",
       "change": "Change",
       "name": "AI Name",
@@ -552,6 +583,7 @@
     "settings": "Settings",
     "profile": "My Profile",
     "login": "Login",
+    "loginShort": "Login",
     "general": "General",
     "offline": "Storage",
     "shortcuts": "Shortcuts",

@@ -1,4 +1,32 @@
 {
+  "mascot": {
+    "modal": {
+      "title": "Elige tu Mascota",
+      "subtitle": "Más de 3.400 mascotas originales libres y optimizadas"
+    },
+    "search": {
+      "placeholder": "Buscar por nombre (ej: cat, owl, robot, coffee)...",
+      "clear": "Limpiar"
+    },
+    "shuffle": "Mezclar",
+    "categories": {
+      "all": "Todos",
+      "animals": "Animales",
+      "nature": "Naturaleza",
+      "objects": "Objetos",
+      "symbols": "Símbolos",
+      "other": "Otros"
+    },
+    "empty": {
+      "title": "No se ha encontrado ninguna mascota",
+      "subtitle": "Prueba con otra palabra o categoría"
+    },
+    "loadMore": "Cargar más",
+    "remaining": "restantes",
+    "selected": "Seleccionado:",
+    "hint": "Haz clic en una mascota para seleccionarla o doble clic para aplicar",
+    "apply": "Aplicar avatar"
+  },
   "chat": {
     "stop": "Detener generación",
     "wait": "Espera {{cooldown}}s",
@@ -194,6 +222,9 @@
       "title": "Asistente IA",
       "subtitle": "Configura la personalidad y el comportamiento de tu copiloto. Esta funcionalidad está inspirada en",
       "identity": "Identidad (Quién soy)",
+      "clickToChooseMascot": "Haz clic para elegir una mascota",
+      "chooseMascotModalTitle": "Elige la mascota de tu IA",
+      "removeAvatar": "Restablecer por defecto",
       "delete": "Eliminar",
       "change": "Cambiar",
       "name": "Nombre de la IA",
@@ -552,6 +583,7 @@
     "settings": "Configuración",
     "profile": "Mi perfil",
     "login": "Iniciar Sesión",
+    "loginShort": "Entrar",
     "general": "General",
     "offline": "Almacenamiento",
     "shortcuts": "Atajos",

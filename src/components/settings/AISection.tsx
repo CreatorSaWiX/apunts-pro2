@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Bot, Trash2, Save } from 'lucide-react';
+import { Bot, Save, Upload, Trash2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettingsStore } from '../../stores/useSettingsStore';
-import FileUploader from '../ui/inputs/FileUploader';
 import Modal from '../ui/modals/Modal';
+import MascotPickerModal from '../ui/modals/MascotPickerModal';
 import { useTranslation } from 'react-i18next';
 import { InputField, TextAreaField } from './SharedFields';
 
@@ -12,6 +12,7 @@ export const AISection = () => {
     const { user } = useAuth();
     const { aiSettings, setAiSettings } = useSettingsStore();
     const [editingSoulField, setEditingSoulField] = useState<'rules' | 'boundaries' | 'customDirectives' | null>(null);
+    const [isMascotModalOpen, setIsMascotModalOpen] = useState(false);
 
     return (
         <div id="ai" className="flex flex-col gap-10 w-full pt-4 pb-16">
@@ -32,7 +33,11 @@ export const AISection = () => {
 
                     <div className="flex flex-col gap-6">
                         <div className="flex items-end gap-6">
-                            <div className="relative w-24 h-24 rounded-4xl border border-white/10 overflow-hidden bg-white/3 shrink-0 flex items-center justify-center group shadow-lg">
+                            <div 
+                                onClick={() => setIsMascotModalOpen(true)}
+                                className="relative w-24 h-24 rounded-4xl border border-white/10 overflow-hidden bg-white/3 shrink-0 flex items-center justify-center group shadow-lg cursor-pointer"
+                                title={t('settings.ai.clickToChooseMascot', 'Fes clic per triar una mascota')}
+                            >
                                 {aiSettings.identity.avatarUrl ? (
                                     <img src={aiSettings.identity.avatarUrl} alt="Avatar" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 ) : (
@@ -40,19 +45,10 @@ export const AISection = () => {
                                 )}
 
                                 {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-white mt-1">{t('settings.ai.change', 'Canviar')}</span>
+                                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white">
+                                    <Upload size={24} className="mb-1 text-white pointer-events-none" />
+                                    <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase text-center px-2 text-white pointer-events-none">{t('common.change', 'Canviar')}</span>
                                 </div>
-
-                                <FileUploader
-                                    maxFiles={1}
-                                    variant="avatar"
-                                    onUploadComplete={(atts) => {
-                                        if (atts.length > 0) {
-                                            setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, avatarUrl: atts[0].url } })
-                                        }
-                                    }}
-                                />
                             </div>
 
                             <div className="flex-1">
@@ -227,6 +223,32 @@ export const AISection = () => {
                     </div>
                 </div>
             </Modal>
+
+            {/* Modal de selecció de Mascotes per a la IA */}
+            <MascotPickerModal
+                isOpen={isMascotModalOpen}
+                onClose={() => setIsMascotModalOpen(false)}
+                currentUrl={aiSettings.identity.avatarUrl}
+                title={t('settings.ai.chooseMascotModalTitle', 'Tria la mascota de la teva IA')}
+                onReset={() => {
+                    setAiSettings({
+                        ...aiSettings,
+                        identity: {
+                            ...aiSettings.identity,
+                            avatarUrl: ''
+                        }
+                    });
+                }}
+                onSelect={(url) => {
+                    setAiSettings({
+                        ...aiSettings,
+                        identity: {
+                            ...aiSettings.identity,
+                            avatarUrl: url
+                        }
+                    });
+                }}
+            />
         </div>
     );
 };
