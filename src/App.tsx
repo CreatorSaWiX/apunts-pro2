@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import HomePage from './pages/HomePage';
 import PageTransition from './components/ui/system/PageTransition';
@@ -19,8 +19,9 @@ const SolutionsListPage = lazy(() => import('./pages/SolutionsListPage'));
 const SolutionDetailPage = lazy(() => import('./pages/SolutionDetailPage'));
 
 const QuizPage = lazy(() => import('./pages/QuizPage'));
-const CommunityPage = lazy(() => import('./pages/CommunityPage'));
-const PlannerPage = lazy(() => import('./pages/PlannerPage'));
+// Temporarily disabled while under development:
+// const CommunityPage = lazy(() => import('./pages/CommunityPage'));
+// const PlannerPage = lazy(() => import('./pages/PlannerPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ChatBot = lazy(() => import('./components/chatbot/index').then(module => ({ default: module.ChatBot })));
 
@@ -65,9 +66,10 @@ function App() {
                 <Route path="/tema/:id/test" element={<SuspendedPage><QuizPage /></SuspendedPage>} />
                 <Route path="/tema/:id/solucionaris" element={<ProtectedRoute><SuspendedPage><SolutionsListPage /></SuspendedPage></ProtectedRoute>} />
                 <Route path="/tema/:id/solucionaris/:problemId" element={<ProtectedRoute><SuspendedPage><SolutionDetailPage /></SuspendedPage></ProtectedRoute>} />
-                <Route path="/comunitat" element={<ProtectedRoute><SuspendedPage><CommunityPage /></SuspendedPage></ProtectedRoute>} />
+                {/* Temporarily disabled while under development */}
+                <Route path="/comunitat" element={<Navigate to="/" replace />} />
                 <Route path="/register" element={<SuspendedPage><RegisterPage /></SuspendedPage>} />
-                <Route path="/planner" element={<ProtectedRoute><SuspendedPage><PlannerPage /></SuspendedPage></ProtectedRoute>} />
+                <Route path="/planner" element={<Navigate to="/" replace />} />
                 <Route path="/settings" element={<SuspendedPage><SettingsPage /></SuspendedPage>} />
               </Routes>
             </AnimatePresence>

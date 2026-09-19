@@ -5,7 +5,7 @@ import { useSubjectStore } from './useSubjectStore';
 
 export type PlannerViewMode = 'board' | 'calendar' | 'gantt' | 'roadmap';
 
-export const DEFAULT_HOME_SUBJECTS = ['PE', 'EDA', 'BD', 'CI', 'SO'];
+export const DEFAULT_HOME_SUBJECTS = ['PRO2', 'M1', 'M2'];
 
 export type OfflineStorageSettings = Record<string, boolean>;
 const DEFAULT_OFFLINE_STORAGE: OfflineStorageSettings = {};
