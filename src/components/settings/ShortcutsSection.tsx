@@ -96,7 +96,6 @@ export const ShortcutsSection = () => {
                 }
             ]
         },
-        /* Temporarily hidden while under development:
         {
             id: 'editor',
             label: t('settings.shortcuts.categories.community', 'Community'),
@@ -133,7 +132,6 @@ export const ShortcutsSection = () => {
                 { id: 'plannerDuplicateModifier', label: t('settings.shortcuts.actions.plannerDuplicateModifier', 'Modificador Duplicar (Ratolí)'), default: { key: 'Alt', meta: false } }
             ]
         },
-        */
         {
             id: 'canvas',
             label: t('settings.shortcuts.categories.canvas', 'Llenç / Dibuix (Canvas)'),

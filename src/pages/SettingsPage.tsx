@@ -10,7 +10,7 @@ import { SubjectsSection } from '../components/settings/SubjectsSection';
 import { PushNotificationSection } from '../components/settings/PushNotificationSection';
 
 // Seccions secundàries carregades amb Lazy Load (Code Splitting)
-// const PlannerSection = lazy(() => import('../components/settings/PlannerSection').then(m => ({ default: m.PlannerSection })));
+const PlannerSection = lazy(() => import('../components/settings/PlannerSection').then(m => ({ default: m.PlannerSection })));
 const PrivacySection = lazy(() => import('../components/settings/PrivacySection').then(m => ({ default: m.PrivacySection })));
 const DeleteAccSection = lazy(() => import('../components/settings/DeleteAccSection').then(m => ({ default: m.DeleteAccSection })));
 const AISection = lazy(() => import('../components/settings/AISection').then(m => ({ default: m.AISection })));
@@ -54,7 +54,7 @@ const SettingsPage = () => {
                     {user && (
                         <>
                             <PushNotificationSection />
-                            {/* <PlannerSection /> - Temporarily hidden while under development */}
+                            <PlannerSection />
                             <PrivacySection />
                             <DeleteAccSection />
                         </>

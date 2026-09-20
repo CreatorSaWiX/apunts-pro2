@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, LogIn, Settings } from 'lucide-react';
+import { Users, Home, LogIn, CalendarDays, Settings } from 'lucide-react';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -165,20 +165,32 @@ const Navigation: React.FC = () => {
     return (
         <>
             {/* Main Floating Navigation Pill (Bottom on Mobile, Top-Left on Desktop) */}
-            <div ref={navRef} className={`nav-pill-container fixed z-50 transition duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-auto max-w-[calc(100%-2rem)] md:w-[max-content] md:max-w-none touch-landscape:bottom-4 touch-landscape:top-auto touch-landscape:left-1/2 touch-landscape:-translate-x-1/2 touch-landscape:w-auto touch-landscape:max-w-[calc(100%-2rem)] ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
+            <div ref={navRef} className={`nav-pill-container fixed z-50 transition duration-300 ease-out bottom-4 md:bottom-auto md:top-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-2rem)] max-w-[400px] md:w-[max-content] md:max-w-none ${location.pathname.startsWith('/planner') ? 'touch-landscape:hidden' : 'touch-landscape:bottom-4 touch-landscape:top-auto touch-landscape:left-1/2 touch-landscape:-translate-x-1/2 touch-landscape:w-[calc(100%-2rem)] touch-landscape:max-w-[400px]'} ${isMobile && isCanvasActive ? 'opacity-0 pointer-events-none translate-y-24 !z-0' : ''}`}>
                 <motion.div
                     initial={false}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="w-full"
                 >
-                    <NavigationPill className="!p-2 md:!p-1.5 touch-landscape:!p-2 !bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-auto justify-center gap-2 px-3 md:w-[max-content] md:justify-start md:px-2 md:gap-0 touch-landscape:w-auto touch-landscape:justify-center touch-landscape:px-3 touch-landscape:gap-2">
+                    <NavigationPill className="!p-2 md:!p-1.5 touch-landscape:!p-2 !bg-[#0B1120]/85 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.2)] w-full justify-between px-3 md:w-[max-content] md:justify-start md:px-2 touch-landscape:w-full touch-landscape:justify-between touch-landscape:px-3">
 
                         <NavLinkItem
                             to="/"
                             icon={Home}
                             label={t('nav.home', 'Inici')}
                             isActive={location.pathname === '/'}
+                        />
+                        <NavLinkItem
+                            to="/comunitat"
+                            icon={Users}
+                            label={t('nav.community', 'Comunitat')}
+                            isActive={location.pathname === '/comunitat'}
+                        />
+                        <NavLinkItem
+                            to="/planner"
+                            icon={CalendarDays}
+                            label={t('nav.planner', 'Planificador')}
+                            isActive={location.pathname === '/planner'}
                         />
                         <NavLinkItem
                             to="/settings"
