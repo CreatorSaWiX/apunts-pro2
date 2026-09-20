@@ -342,6 +342,7 @@
     "solutions": {
       "m1": "Solucionaris M1",
       "m2": "Solucionaris M2",
+      "pe": "Solucionaris PE",
       "lab": "Solucionaris Lab",
       "jutge": "Solucionaris Jutge"
     }

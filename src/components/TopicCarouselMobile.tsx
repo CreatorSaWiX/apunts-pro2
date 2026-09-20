@@ -8,6 +8,7 @@ import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hapticSelection, hapticLight } from '../lib/haptics';
 import { useTopicNotes } from '../hooks/useTopicNotes';
+import { getTopicSolutionRoute, isProgrammingSubject } from '../utils/solutionUtils';
 
 import type { MotionValue } from 'framer-motion';
 
@@ -304,11 +305,11 @@ const CarouselCard = React.memo(({
                                             e.stopPropagation(); 
                                             hapticLight();
                                             markAsSeen(topic.slug, newestUpdate); 
-                                            navigate(subject === 'pro2' && topic.slug === 'pro2-tema-1' ? '/tema/pro2-lab-1' : subject === 'pro2' && topic.slug === 'pro2-tema-2' ? '/tema/pro2-lab-2' : subject === 'pro2' && topic.slug === 'pro2-tema-9' ? '/tema/pro2-lab-7' : `/tema/${topic.slug}/solucionaris`);
+                                            navigate(getTopicSolutionRoute(topic.slug));
                                         }}
                                         className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
                                     >
-                                        {subject === 'pro2' || subject === 'eda' ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
+                                        {isProgrammingSubject(subject) ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
                                     </motion.div>
                                 </div>
                             </div>

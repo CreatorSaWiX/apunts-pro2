@@ -5,6 +5,7 @@ export interface TopicDefinition {
     description?: string;
     description_es?: string;
     problems: { id: string; title: string; title_es?: string }[];
+    layout?: 'notebook' | 'jutge';
 }
 
 export const courseStructure: TopicDefinition[] = [
@@ -894,5 +895,15 @@ export const courseStructure: TopicDefinition[] = [
             { id: "P39621", title: "Cavalls voraços" },
             { id: "P82271", title: "Dues festes" }
         ]
+    },
+
+    // --- PE (Probabilitat i Estadística) ---
+    {
+        id: "pe-tema-1",
+        title: "Tema 1: Probabilitat i VAs",
+        title_es: "Tema 1: Teoría de la probabilidad",
+        description: "Probabilitat, Bayes i variables aleatòries discretes i contínues.",
+        description_es: "Espacio muestral, operaciones con sucesos, axiomas de Kolmogórov, probabilidad condicionada, fórmula de Bayes, independencia.",
+        problems: []
     }
 ];

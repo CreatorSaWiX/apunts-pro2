@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import ProblemCard from '../components/solutions/ProblemCard';
 import PdfDropdownMenu from '../components/solutions/PdfDropdownMenu';
 import { checkPdfsAvailability } from '../lib/mediaUtils';
+import { shouldUseNotebookLayout } from '../utils/solutionUtils';
 
 const SolutionsListPage = () => {
     const { id: topicId } = useParams();
@@ -78,8 +79,8 @@ const SolutionsListPage = () => {
         }
     }, [topicId]);
 
-    // 2. M1 & M2 Special Layout Check
-    if ((topicId?.startsWith('m1-') || topicId?.startsWith('m2-')) && topicDefinition) {
+    // 2. Notebook Layout Check (Scalable layout resolver)
+    if (topicDefinition && shouldUseNotebookLayout(topicDefinition, topicId)) {
         return <NotebookLayout topic={topicDefinition} solutions={uploadedSolutions} loading={loading} />;
     }
 
