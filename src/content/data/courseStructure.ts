@@ -904,6 +904,23 @@ export const courseStructure: TopicDefinition[] = [
         title_es: "Tema 1: Teoría de la probabilidad",
         description: "Probabilitat, Bayes i variables aleatòries discretes i contínues.",
         description_es: "Espacio muestral, operaciones con sucesos, axiomas de Kolmogórov, probabilidad condicionada, fórmula de Bayes, independencia.",
-        problems: []
+        problems: [
+            { id: "PE-T1-Ex1.1", title: "Exercici 1.1: Experiències aleatòries i àlgebra d'esdeveniments", title_es: "Ejercicio 1.1: Experiencias aleatorias y álgebra de sucesos" },
+            { id: "PE-T1-Ex1.2", title: "Exercici 1.2: Taules de contingència i probabilitat condicionada (C++ vs Java)", title_es: "Ejercicio 1.2: Tablas de contingencia y probabilidad condicionada" },
+            { id: "PE-T1-Ex1.3", title: "Exercici 1.3: Reconstrucció de taules de probabilitat a partir d'arbres", title_es: "Ejercicio 1.3: Reconstrucción de tablas de probabilidad a partir de árboles" },
+            { id: "PE-T1-Ex1.4", title: "Exercici 1.4: Taules de probabilitats i anàlisi d'independència", title_es: "Ejercicio 1.4: Tablas de probabilidad y análisis de independencia" },
+            { id: "PE-T1-Ex1.5", title: "Exercici 1.5: Llançament de 3 monedes i espai mostral equiprobable", title_es: "Ejercicio 1.5: Lanzamiento de 3 monedas y espacio muestral equiprobable" },
+            { id: "PE-T1-Ex1.6", title: "Exercici 1.6: Aeroport I - Facturació i embarcament", title_es: "Ejercicio 1.6: Aeropuerto I - Facturación y embarque" },
+            { id: "PE-T1-Ex1.7", title: "Exercici 1.7: Aeroport II - Facturació i control de passaports (CP)", title_es: "Ejercicio 1.7: Aeropuerto II - Facturación y control de pasaportes" },
+            { id: "PE-T1-Ex1.8", title: "Exercici 1.8: Memòria cau i models de fiabilitat de sistemes", title_es: "Ejercicio 1.8: Memoria caché y modelos de fiabilidad de sistemas" },
+            { id: "PE-T1-Ex1.9", title: "Exercici 1.9: Variable aleatòria discreta: nombre de cares en 3 monedes", title_es: "Ejercicio 1.9: Variable aleatoria discreta: número de caras en 3 monedas" },
+            { id: "PE-T1-Ex1.10", title: "Exercici 1.10: Aeroport III - VAD de flux d'arribada de viatgers", title_es: "Ejercicio 1.10: Aeropuerto III - VAD de flujo de llegada de viajeros" },
+            { id: "PE-T1-Ex1.11", title: "Exercici 1.11: Aeroport IV - VAC de temps de facturació exponencial", title_es: "Ejercicio 1.11: Aeropuerto IV - VAC de tiempo de facturación exponencial" },
+            { id: "PE-T1-Ex1.12", title: "Exercici 1.12: Càlcul i interpretació de quantils en VAD i VAC", title_es: "Ejercicio 1.12: Cálculo e interpretación de cuantiles en VAD y VAC" },
+            { id: "PE-T1-Ex1.13", title: "Exercici 1.13: Paquets de 3 bits - Parell de VADs, Covariància i Correlació", title_es: "Ejercicio 1.13: Paquetes de 3 bits - Par de VADs, Covarianza y Correlación" },
+            { id: "PE-T1-Ex1.14", title: "Exercici 1.14: Dos Daus - Suma, diferència absoluta i esperança condicionada", title_es: "Ejercicio 1.14: Dos Dados - Suma, diferencia absoluta y esperanza condicionada" },
+            { id: "PE-T1-Ex1.15", title: "Exercici 1.15: Anàlisi de covariància i coeficient de correlació de Pearson", title_es: "Ejercicio 1.15: Análisis de covarianza y coeficiente de correlación de Pearson" },
+            { id: "PE-T1-Ex1.16", title: "Exercici 1.16: Parell de VADs: Memòria RAM i bloquejos mensuals", title_es: "Ejercicio 1.16: Par de VADs: Memoria RAM y bloqueos mensuales" }
+        ]
     }
 ];
