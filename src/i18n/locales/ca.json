@@ -1,4 +1,13 @@
 {
+  "notFound": {
+    "badge": "Error 404",
+    "title": "Pàgina no trobada",
+    "subtitle": "Aquesta pàgina s'ha desintegrat a l'espai de partícules. Pots interactuar amb el text amb el cursor o tornar a l'inici.",
+    "homeBtn": "Tornar a l'inici",
+    "scatterBtn": "Dispersar partícules",
+    "backBtn": "Enrere",
+    "hint": "💡 Mou el ratolí o toca la pantalla per interactuar amb la física 3D"
+  },
   "mascot": {
     "modal": {
       "title": "Tria la teva Mascota",

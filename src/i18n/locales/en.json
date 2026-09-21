@@ -1,4 +1,13 @@
 {
+  "notFound": {
+    "badge": "Error 404",
+    "title": "Page Not Found",
+    "subtitle": "This page has disintegrated into particle space. You can interact with the text using your cursor or return to the home page.",
+    "homeBtn": "Back to Home",
+    "scatterBtn": "Scatter Particles",
+    "backBtn": "Go Back",
+    "hint": "💡 Move your mouse or touch the screen to interact with 3D physics"
+  },
   "mascot": {
     "modal": {
       "title": "Choose your Mascot",

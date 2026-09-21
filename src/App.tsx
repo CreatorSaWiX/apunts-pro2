@@ -23,6 +23,7 @@ const QuizPage = lazy(() => import('./pages/QuizPage'));
 // const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 // const PlannerPage = lazy(() => import('./pages/PlannerPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ChatBot = lazy(() => import('./components/chatbot/index').then(module => ({ default: module.ChatBot })));
 
 const SuspendedPage = ({ children }: { children: React.ReactNode }) => (
@@ -71,6 +72,7 @@ function App() {
                 <Route path="/register" element={<SuspendedPage><RegisterPage /></SuspendedPage>} />
                 <Route path="/planner" element={<Navigate to="/" replace />} />
                 <Route path="/settings" element={<SuspendedPage><SettingsPage /></SuspendedPage>} />
+                <Route path="*" element={<SuspendedPage><NotFoundPage /></SuspendedPage>} />
               </Routes>
             </AnimatePresence>
 
