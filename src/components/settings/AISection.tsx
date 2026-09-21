@@ -56,7 +56,7 @@ export const AISection = () => {
                                     label={t('settings.ai.name', 'Nom de la IA')}
                                     value={aiSettings.identity.name || ''}
                                     onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, name: e.target.value } })}
-                                    placeholder="ex: Cloufy"
+                                    placeholder="unnamed"
                                 />
                             </div>
                         </div>
@@ -66,7 +66,7 @@ export const AISection = () => {
                                 label={t('settings.ai.pronouns', 'Pronoms')}
                                 value={aiSettings.identity.pronouns || ''}
                                 onChange={(e) => setAiSettings({ ...aiSettings, identity: { ...aiSettings.identity, pronouns: e.target.value } })}
-                                placeholder="ex: he, she, they"
+                                placeholder="he, she, they"
                             />
 
                             <div className="space-y-2 w-full">
@@ -84,7 +84,7 @@ export const AISection = () => {
                                     value={aiSettings.userContext?.userPreferredName || ''}
                                     onChange={(e) => setAiSettings({ ...aiSettings, userContext: { memories: aiSettings.userContext?.memories || [], ...aiSettings.userContext, userPreferredName: e.target.value } })}
                                     className="w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-white/30 focus:bg-white/6 transition"
-                                    placeholder="ex: mestre, cap..."
+                                    placeholder="user"
                                 />
                             </div>
                         </div>
