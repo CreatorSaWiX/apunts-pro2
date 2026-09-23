@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 1025" width="100%" height="100%" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #000000; stroke-width: 1.2; stroke-linejoin: miter; stroke-linecap: square; }
+      .bus { fill: none; stroke: #555555; stroke-width: 4.2; stroke-linecap: square; stroke-linejoin: miter; }
+      .wire { fill: none; stroke: #000000; stroke-width: 1.2; stroke-linecap: square; stroke-linejoin: miter; }
+      .wire-bold { fill: none; stroke: #000000; stroke-width: 1.8; stroke-linecap: square; stroke-linejoin: miter; }
+      .txt { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; fill: #000000; dominant-baseline: central; }
+      .txt-bold { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: bold; fill: #000000; dominant-baseline: central; }
+      .txt-sm { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 8.5px; fill: #000000; dominant-baseline: central; }
+      .txt-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #000000; dominant-baseline: central; }
+      .txt-bus { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #000000; dominant-baseline: central; }
+      .ta-start { text-anchor: start; }
+      .ta-end { text-anchor: end; }
+      .ta-mid { text-anchor: middle; }
+      .bit-num { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 9.5px; font-weight: bold; fill: #000000; dominant-baseline: central; }
+    </style>
+
+    <!-- Arrow Markers with userSpaceOnUse to maintain exact crisp dimensions -->
+    <!-- Black wire arrow forward -->
+    <marker id="arr-black" viewBox="0 0 10 10" refX="7.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <polygon points="0,1.5 8,5 0,8.5" fill="#000000" />
+    </marker>
+    <!-- Black wire arrow backward -->
+    <marker id="arr-black-rev" viewBox="0 0 10 10" refX="1.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <polygon points="8,1.5 0,5 8,8.5" fill="#000000" />
+    </marker>
+    <!-- Solid black triangle (for state machine arrow) -->
+    <marker id="arr-black-solid" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="8.5" markerHeight="8.5" orient="auto">
+      <polygon points="0,1 9,5 0,9" fill="#000000" />
+    </marker>
+    <!-- Grey Bus arrow forward -->
+    <marker id="arr-bus-grey" viewBox="0 0 10 10" refX="7.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto">
+      <polygon points="0,1 8.5,5 0,9" fill="#555555" />
+    </marker>
+    <!-- Grey Bus arrow backward -->
+    <marker id="arr-bus-grey-rev" viewBox="0 0 10 10" refX="1.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto">
+      <polygon points="8.5,1 0,5 8.5,9" fill="#555555" />
+    </marker>
+  </defs>
+  <!-- Background -->
+  <rect width="710" height="1025" fill="#ffffff" />
+
+  <!-- ==================== MAIN DATA BUSES ==================== -->
+  <g id="main-buses">
+    <path d="M 148 24 L 551 24 L 551 930 L 70 930" class="bus" />
+    <path d="M 551 930 L 626 930" class="bus" />
+    <line x1="156" y1="24" x2="145" y2="24" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="350" y="14" class="txt-bus ta-mid">Data Bus&lt;8&gt;</text>
+  </g>
+
+  <!-- ==================== TABLE POINTER ==================== -->
+  <g id="table-pointer">
+    <rect x="39" y="12" width="106" height="68" class="box" />
+    <rect x="42" y="15" width="100" height="22" class="box" />
+    <text x="92" y="26" class="txt-bold ta-mid">Table Pointer&lt;21&gt;</text>
+    <rect x="42" y="49" width="100" height="28" class="box" />
+    <text x="92" y="63" class="txt ta-mid">inc/dec logic</text>
+    <line x1="92" y1="37" x2="92" y2="49" class="wire" marker-start="url(#arr-black-rev)" marker-end="url(#arr-black)" />
+    <line x1="68" y1="80" x2="68" y2="169" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="78" y="115" class="bit-num ta-start">21</text>
+  </g>
+
+  <!-- ==================== PROGRAM COUNTER & STACK ==================== -->
+  <g id="program-counter-block">
+    <rect x="161" y="78" width="154" height="82" class="box" />
+    <rect x="170" y="90" width="56" height="18" class="box" />
+    <text x="198" y="99" class="txt-bold ta-mid">PCLATU</text>
+    <rect x="226" y="90" width="56" height="18" class="box" />
+    <text x="254" y="99" class="txt-bold ta-mid">PCLATH</text>
+    <rect x="188" y="127" width="38" height="16" class="box" />
+    <text x="207" y="135" class="txt-bold ta-mid">PCU</text>
+    <rect x="226" y="127" width="38" height="16" class="box" />
+    <text x="245" y="135" class="txt-bold ta-mid">PCH</text>
+    <rect x="264" y="127" width="39" height="16" class="box" />
+    <text x="283.5" y="135" class="txt-bold ta-mid">PCL</text>
+    <text x="245" y="151" class="txt-bold ta-mid">Program Counter</text>
+    <line x1="202" y1="28" x2="202" y2="90" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <text x="212" y="58" class="bit-num ta-start">8</text>
+    <line x1="254" y1="28" x2="254" y2="90" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <text x="264" y="58" class="bit-num ta-start">8</text>
+    <line x1="283" y1="28" x2="283" y2="127" class="bus" marker-end="url(#arr-bus-grey)" />
+    <line x1="254" y1="108" x2="254" y2="127" class="wire" marker-start="url(#arr-black-rev)" marker-end="url(#arr-black)" />
+    <path d="M 161 138 L 111 138 L 111 169" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="136" y="129" class="bit-num ta-mid">20</text>
+    <rect x="176" y="195" width="138" height="20" class="box" />
+    <text x="245" y="205" class="txt-bold ta-mid">31-Level Stack</text>
+    <line x1="245" y1="160" x2="245" y2="195" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="207" y="232" width="76" height="20" class="box" />
+    <text x="245" y="242" class="txt-bold ta-mid">STKPTR</text>
+    <line x1="245" y1="232" x2="245" y2="215" class="wire" marker-end="url(#arr-black)" />
+    <path d="M 338 28 L 338 242 L 283 242" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+  </g>
+
+  <!-- ==================== PROGRAM MEMORY ==================== -->
+  <g id="program-memory-block">
+    <polygon points="47,169 131,169 123,181 55,181" class="box" />
+    <line x1="89" y1="181" x2="89" y2="207" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="38" y="207" width="102" height="17" class="box" />
+    <text x="89" y="215.5" class="txt ta-mid">Address Latch</text>
+    <rect x="38" y="224" width="102" height="43" class="box" />
+    <text x="89" y="238" class="txt ta-mid">Program Memory</text>
+    <text x="89" y="252" class="txt-sm ta-mid">(8/16/32/64 Kbytes)</text>
+    <rect x="38" y="267" width="102" height="17" class="box" />
+    <text x="89" y="275.5" class="txt ta-mid">Data Latch</text>
+    <path d="M 89 284 L 89 370 L 167 370" class="bus" />
+    <path d="M 135 370 L 135 325 L 168 325" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="135" y="314" class="bit-num ta-mid">8</text>
+    <text x="162" y="384" class="txt-bus ta-end">Instruction Bus &lt;16&gt;</text>
+  </g>
+
+  <!-- ==================== INSTRUCTION PIPELINE ==================== -->
+  <g id="instruction-pipeline">
+    <rect x="168" y="316" width="76" height="18" class="box" />
+    <text x="206" y="325" class="txt ta-mid">Table Latch</text>
+    <path d="M 244 325 L 372 325 L 372 278 L 415 278" class="bus" marker-end="url(#arr-bus-grey)" />
+    <line x1="385" y1="278" x2="385" y2="237" class="wire" marker-end="url(#arr-black)" />
+    <rect x="167" y="362" width="77" height="17" class="box" />
+    <text x="205.5" y="370.5" class="txt ta-mid">ROM Latch</text>
+    <line x1="244" y1="370" x2="408" y2="370" class="wire" marker-end="url(#arr-black)" />
+    <line x1="205.5" y1="379" x2="205.5" y2="410" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="168" y="410" width="76" height="17" class="box" />
+    <text x="206" y="418.5" class="txt-bold ta-mid">IR</text>
+    <line x1="206" y1="427" x2="206" y2="468" class="bus" marker-end="url(#arr-bus-grey)" />
+    <path d="M 244 418 L 523 418 L 523 186" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="511" y="280" class="bit-num ta-end">12</text>
+    <path d="M 206 438 L 388 438 L 388 582" class="wire" marker-end="url(#arr-black)" />
+    <text x="398" y="552" class="bit-num ta-start">3</text>
+    <rect x="168" y="468" width="76" height="48" class="box" />
+    <text x="206" y="480" class="txt ta-mid">Instruction</text>
+    <text x="206" y="492" class="txt ta-mid">Decode and</text>
+    <text x="206" y="504" class="txt ta-mid">Control</text>
+    <line x1="244" y1="480" x2="263" y2="480" class="wire-bold" marker-end="url(#arr-black-solid)" />
+    <text x="270" y="475" class="txt ta-start">State machine</text>
+    <text x="270" y="487" class="txt ta-start">control signals</text>
+    <path d="M 244 504 L 258 504 L 258 612" class="wire" marker-end="url(#arr-black)" />
+  </g>
+
+  <!-- ==================== DATA MEMORY & ADDRESSING ==================== -->
+  <g id="data-memory-block">
+    <rect x="413" y="46" width="79" height="17" class="box" />
+    <text x="452.5" y="54.5" class="txt ta-mid">Data Latch</text>
+    <rect x="413" y="63" width="79" height="52" class="box" />
+    <text x="452.5" y="89" class="txt-bold ta-mid">Data Memory</text>
+    <rect x="413" y="115" width="79" height="19" class="box" />
+    <text x="452.5" y="124.5" class="txt ta-mid">Address Latch</text>
+    <line x1="452.5" y1="28" x2="452.5" y2="46" class="bus" marker-end="url(#arr-bus-grey)" />
+    <polygon points="368,167 528,167 540,186 356,186" class="box" />
+    <text x="448" y="176.5" class="txt-bold ta-mid">Data Address&lt;12&gt;</text>
+    <line x1="452.5" y1="167" x2="452.5" y2="134" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="464" y="150" class="bit-num ta-start">12</text>
+    <rect x="370" y="222" width="30" height="15" class="box" />
+    <text x="385" y="229.5" class="txt-bold ta-mid">BSR</text>
+    <line x1="385" y1="222" x2="385" y2="186" class="wire" marker-end="url(#arr-black)" />
+    <text x="394" y="206" class="bit-num ta-start">4</text>
+    <rect x="415" y="220" width="42" height="107" class="box" />
+    <rect x="418" y="223" width="36" height="17" class="box" />
+    <text x="436" y="231.5" class="txt ta-mid">FSR0</text>
+    <rect x="418" y="240" width="36" height="17" class="box" />
+    <text x="436" y="248.5" class="txt ta-mid">FSR1</text>
+    <rect x="418" y="257" width="36" height="17" class="box" />
+    <text x="436" y="265.5" class="txt ta-mid">FSR2</text>
+    <line x1="436" y1="274" x2="436" y2="287" class="wire" marker-start="url(#arr-black-rev)" marker-end="url(#arr-black)" />
+    <rect x="418" y="287" width="36" height="36" class="box" />
+    <text x="436" y="299" class="txt-sm ta-mid">inc/dec</text>
+    <text x="436" y="311" class="txt-sm ta-mid">logic</text>
+    <line x1="436" y1="220" x2="436" y2="186" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="446" y="206" class="bit-num ta-start">12</text>
+    <line x1="436" y1="348" x2="436" y2="327" class="wire" marker-end="url(#arr-black)" />
+    <rect x="469" y="222" width="40" height="20" class="box" />
+    <text x="489" y="229" class="txt-sm ta-mid">Access</text>
+    <text x="489" y="238" class="txt-sm ta-mid">Bank</text>
+    <line x1="489" y1="222" x2="489" y2="186" class="wire" marker-end="url(#arr-black)" />
+    <text x="498" y="206" class="bit-num ta-start">4</text>
+    <rect x="408" y="348" width="55" height="33" class="box" />
+    <text x="435.5" y="359" class="txt ta-mid">Address</text>
+    <text x="435.5" y="371" class="txt ta-mid">Decode</text>
+  </g>
+
+  <!-- ==================== ARITHMETIC LOGIC UNIT & MULTIPLY ==================== -->
+  <g id="alu-block">
+    <path d="M 551 450 L 474 450 L 474 475" class="bus" />
+    <text x="512" y="440" class="bit-num ta-mid">8</text>
+    <line x1="444" y1="475" x2="504" y2="475" class="bus" />
+    <line x1="452" y1="475" x2="452" y2="505" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <line x1="496" y1="475" x2="496" y2="505" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="424" y="505" width="100" height="16" class="box" />
+    <line x1="474" y1="505" x2="474" y2="521" class="wire" />
+    <text x="449" y="513" class="txt-bold ta-mid">PRODH</text>
+    <text x="499" y="513" class="txt-bold ta-mid">PRODL</text>
+    <rect x="423" y="538" width="101" height="16" class="box" />
+    <text x="473.5" y="546" class="txt-bold ta-mid">8 x 8 Multiply</text>
+    <line x1="452" y1="538" x2="452" y2="521" class="bus" marker-end="url(#arr-bus-grey)" />
+    <line x1="496" y1="538" x2="496" y2="521" class="bus" marker-end="url(#arr-bus-grey)" />
+    <path d="M 551 565 L 496 565 L 496 554" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="524" y="556" class="bit-num ta-mid">8</text>
+    <rect x="431" y="579" width="45" height="17" class="box" />
+    <text x="453.5" y="587.5" class="txt-bold ta-mid">W</text>
+    <line x1="476" y1="587.5" x2="551" y2="587.5" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <text x="515" y="597" class="bit-num ta-mid">8</text>
+    <line x1="453.5" y1="579" x2="453.5" y2="554" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="365" y="582" width="46" height="15" class="box" />
+    <text x="388" y="589.5" class="txt-bold ta-mid">BITOP</text>
+    <polygon points="374,606 464,606 452,619 386,619" class="box" />
+    <line x1="388" y1="597" x2="388" y2="606" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="398" y="602" class="bit-num ta-start">8</text>
+    <line x1="453.5" y1="596" x2="453.5" y2="606" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="463" y="602" class="bit-num ta-start">8</text>
+    <polygon points="405,632 440,632 455,644 470,632 505,632 475,665 435,665" class="box" />
+    <text x="455" y="654" class="txt-bold ta-mid">ALU&lt;8&gt;</text>
+    <line x1="420" y1="619" x2="420" y2="632" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="430" y="625" class="bit-num ta-start">8</text>
+    <path d="M 551 620 L 485 620 L 485 632" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="518" y="629" class="bit-num ta-mid">8</text>
+    <path d="M 455 665 L 455 700 L 551 700" class="bus" marker-end="url(#arr-bus-grey)" />
+    <text x="467" y="683" class="bit-num ta-start">8</text>
+  </g>
+
+  <!-- ==================== I/O PORTS ==================== -->
+  <g id="io-ports">
+    <rect x="584" y="96" width="87" height="70" class="box" />
+    <text x="627.5" y="122" class="txt-title ta-mid">PORTA</text>
+    <text x="627.5" y="142" class="txt ta-mid">RA0:RA7</text>
+    <line x1="551" y1="131" x2="584" y2="131" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="584" y="237" width="87" height="70" class="box" />
+    <text x="627.5" y="263" class="txt-title ta-mid">PORTB</text>
+    <text x="627.5" y="283" class="txt ta-mid">RB0:RB7</text>
+    <line x1="551" y1="270" x2="584" y2="270" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="584" y="374" width="87" height="70" class="box" />
+    <text x="627.5" y="400" class="txt-title ta-mid">PORTC</text>
+    <text x="627.5" y="420" class="txt ta-mid">RC0:RC7</text>
+    <line x1="551" y1="408" x2="584" y2="408" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="584" y="504" width="87" height="70" class="box" />
+    <text x="627.5" y="530" class="txt-title ta-mid">PORTD</text>
+    <text x="627.5" y="550" class="txt ta-mid">RD0:RD7</text>
+    <line x1="551" y1="538" x2="584" y2="538" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="584" y="641" width="87" height="75" class="box" />
+    <text x="627.5" y="663" class="txt-title ta-mid">PORTE</text>
+    <text x="627.5" y="682" class="txt ta-mid">RE0:RE2</text>
+    <text x="627.5" y="699" class="txt ta-mid">RE3<tspan dy="-3" font-size="7">(1)</tspan></text>
+    <line x1="551" y1="678" x2="584" y2="678" class="bus" marker-end="url(#arr-bus-grey)" />
+  </g>
+
+  <!-- ==================== OSCILLATOR & TIMING BLOCK ==================== -->
+  <g id="oscillator-timing-block">
+    <rect x="120" y="612" width="218" height="214" class="box" />
+    <rect x="128" y="620" width="110" height="133" class="box" />
+    <text x="183" y="631" class="txt-sm ta-mid">Internal</text>
+    <text x="183" y="642" class="txt-sm ta-mid">Oscillator</text>
+    <text x="183" y="653" class="txt-sm ta-mid">Block</text>
+    <rect x="133" y="663" width="100" height="40" class="box" />
+    <text x="183" y="677" class="txt-sm ta-mid">LFINTOSC</text>
+    <text x="183" y="689" class="txt-sm ta-mid">Oscillator</text>
+    <rect x="133" y="708" width="100" height="40" class="box" />
+    <text x="183" y="722" class="txt-sm ta-mid">16 MHz</text>
+    <text x="183" y="734" class="txt-sm ta-mid">Oscillator</text>
+    <rect x="128" y="758" width="110" height="60" class="box" />
+    <line x1="128" y1="788" x2="238" y2="788" class="wire" />
+    <text x="183" y="770" class="txt-sm ta-mid">Single-Supply</text>
+    <text x="183" y="781" class="txt-sm ta-mid">Programming</text>
+    <text x="183" y="797" class="txt-sm ta-mid">In-Circuit</text>
+    <text x="183" y="808" class="txt-sm ta-mid">Debugger</text>
+    <line x1="238" y1="674" x2="248" y2="674" class="wire" marker-start="url(#arr-black-rev)" marker-end="url(#arr-black)" />
+    <rect x="248" y="620" width="82" height="198" class="box" />
+    <text x="289" y="632.5" class="txt-sm ta-mid">Power-up</text>
+    <text x="289" y="643.5" class="txt-sm ta-mid">Timer</text>
+    <line x1="248" y1="656" x2="330" y2="656" class="wire" />
+    <text x="289" y="667.5" class="txt-sm ta-mid">Oscillator</text>
+    <text x="289" y="678.5" class="txt-sm ta-mid">Start-up Timer</text>
+    <line x1="248" y1="690" x2="330" y2="690" class="wire" />
+    <text x="289" y="701.5" class="txt-sm ta-mid">Power-on</text>
+    <text x="289" y="712.5" class="txt-sm ta-mid">Reset</text>
+    <line x1="248" y1="724" x2="330" y2="724" class="wire" />
+    <text x="289" y="734.0" class="txt-sm ta-mid">Watchdog</text>
+    <text x="289" y="745.0" class="txt-sm ta-mid">Timer</text>
+    <line x1="248" y1="755" x2="330" y2="755" class="wire" />
+    <text x="289" y="766.0" class="txt-sm ta-mid">Brown-out</text>
+    <text x="289" y="777.0" class="txt-sm ta-mid">Reset</text>
+    <line x1="248" y1="788" x2="330" y2="788" class="wire" />
+    <text x="289" y="797.5" class="txt-sm ta-mid">Fail-Safe</text>
+    <text x="289" y="808.5" class="txt-sm ta-mid">Clock Monitor</text>
+    <text x="74" y="631" class="txt ta-end">OSC1<tspan dy="-3" font-size="7">(2)</tspan></text>
+    <line x1="80" y1="631" x2="120" y2="631" class="wire" marker-end="url(#arr-black)" />
+    <text x="74" y="667" class="txt ta-end">OSC2<tspan dy="-3" font-size="7">(2)</tspan></text>
+    <line x1="80" y1="667" x2="120" y2="667" class="wire" marker-end="url(#arr-black)" />
+    <text x="74" y="703" class="txt ta-end">SOSCI</text>
+    <line x1="80" y1="703" x2="120" y2="703" class="wire" marker-end="url(#arr-black)" />
+    <text x="74" y="736" class="txt ta-end">SOSCO</text>
+    <line x1="80" y1="736" x2="120" y2="736" class="wire" marker-end="url(#arr-black)" />
+    <text x="74" y="770" class="txt ta-end">MCLR<tspan dy="-3" font-size="7">(1)</tspan></text>
+    <line x1="33" y1="763" x2="61" y2="763" stroke="#000000" stroke-width="1.2" />
+    <line x1="80" y1="770" x2="120" y2="770" class="wire" marker-end="url(#arr-black)" />
+    <rect x="370" y="746" width="74" height="41" class="box" />
+    <text x="407" y="757" class="txt-sm ta-mid">Precision</text>
+    <text x="407" y="767" class="txt-sm ta-mid">Band Gap</text>
+    <text x="407" y="777" class="txt-sm ta-mid">Reference</text>
+    <line x1="370" y1="766.5" x2="338" y2="766.5" class="wire" marker-end="url(#arr-black)" />
+    <line x1="444" y1="766.5" x2="505" y2="766.5" class="wire" marker-end="url(#arr-black)" />
+    <text x="475" y="758" class="txt-bold ta-mid">FVR</text>
+  </g>
+
+  <!-- ==================== PERIPHERAL MODULES ==================== -->
+  <g id="peripheral-modules">
+    <rect x="61" y="851" width="51" height="47" class="box" />
+    <text x="86.5" y="868" class="txt-sm ta-mid">BOR</text>
+    <text x="86.5" y="882" class="txt-sm ta-mid">HLVD</text>
+    <rect x="48" y="959" width="92" height="47" class="box" />
+    <text x="94" y="976" class="txt-sm ta-mid">Comparators</text>
+    <text x="94" y="990" class="txt-sm ta-mid">C1/C2</text>
+    <line x1="86.5" y1="898" x2="86.5" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <text x="32" y="966" class="txt-sm ta-end">FVR</text>
+    <line x1="36" y1="966" x2="48" y2="966" class="wire" marker-end="url(#arr-black)" />
+    <text x="32" y="990" class="txt-sm ta-end">DAC</text>
+    <line x1="36" y1="990" x2="48" y2="990" class="wire" marker-end="url(#arr-black)" />
+    <rect x="147" y="851" width="58" height="47" class="box" />
+    <text x="176" y="868" class="txt-sm ta-mid">Data</text>
+    <text x="176" y="882" class="txt-sm ta-mid">EEPROM</text>
+    <rect x="150" y="959" width="61" height="47" class="box" />
+    <text x="180.5" y="969" class="txt-sm ta-mid">ECCP1</text>
+    <text x="180.5" y="982" class="txt-sm ta-mid">ECCP2<tspan dy="-3" font-size="7">(3)</tspan></text>
+    <text x="180.5" y="996" class="txt-sm ta-mid">ECCP3</text>
+    <line x1="178" y1="898" x2="178" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="232" y="851" width="54" height="47" class="box" />
+    <text x="259" y="874.5" class="txt ta-mid">Timer0</text>
+    <rect x="225" y="959" width="69" height="47" class="box" />
+    <text x="259.5" y="976" class="txt ta-mid">CCP4</text>
+    <text x="259.5" y="990" class="txt ta-mid">CCP5</text>
+    <line x1="259" y1="898" x2="259" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="314" y="851" width="55" height="47" class="box" />
+    <text x="341.5" y="864" class="txt-sm ta-mid">Timer1</text>
+    <text x="341.5" y="874.5" class="txt-sm ta-mid">Timer3</text>
+    <text x="341.5" y="885" class="txt-sm ta-mid">Timer5</text>
+    <rect x="318" y="959" width="48" height="47" class="box" />
+    <text x="342" y="976" class="txt-sm ta-mid">MSSP1</text>
+    <text x="342" y="990" class="txt-sm ta-mid">MSSP2</text>
+    <line x1="341.5" y1="898" x2="341.5" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="396" y="851" width="55" height="47" class="box" />
+    <text x="423.5" y="864" class="txt-sm ta-mid">Timer2</text>
+    <text x="423.5" y="874.5" class="txt-sm ta-mid">Timer4</text>
+    <text x="423.5" y="885" class="txt-sm ta-mid">Timer6</text>
+    <rect x="392" y="959" width="64" height="47" class="box" />
+    <text x="424" y="976" class="txt-sm ta-mid">EUSART1</text>
+    <text x="424" y="990" class="txt-sm ta-mid">EUSART2</text>
+    <line x1="423.5" y1="898" x2="423.5" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="482" y="851" width="55" height="47" class="box" />
+    <text x="509.5" y="874.5" class="txt ta-mid">CTMU</text>
+    <rect x="480" y="959" width="54" height="47" class="box" />
+    <text x="507" y="982.5" class="txt ta-mid">SR Latch</text>
+    <line x1="508" y1="898" x2="508" y2="959" class="bus" marker-start="url(#arr-bus-grey-rev)" marker-end="url(#arr-bus-grey)" />
+    <rect x="594" y="851" width="59" height="47" class="box" />
+    <text x="623.5" y="874.5" class="txt ta-mid">DAC</text>
+    <line x1="623.5" y1="930" x2="623.5" y2="898" class="bus" marker-end="url(#arr-bus-grey)" />
+    <rect x="599" y="959" width="54" height="47" class="box" />
+    <text x="626" y="976" class="txt ta-mid">ADC</text>
+    <text x="626" y="990" class="txt-sm ta-mid">10-bit</text>
+    <line x1="626" y1="930" x2="626" y2="959" class="bus" marker-end="url(#arr-bus-grey)" />
+    <line x1="690" y1="982.5" x2="653" y2="982.5" class="wire" marker-end="url(#arr-black)" />
+    <text x="694" y="982.5" class="txt-sm ta-start">FVR</text>
+  </g>
+</svg>

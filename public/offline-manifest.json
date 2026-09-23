@@ -125,7 +125,9 @@
   ],
   "pro2": [],
   "bd": [],
-  "ci": [],
+  "ci": [
+    "/ci/svgs/pic18f-block-diagram.svg"
+  ],
   "eda": [],
   "pe": [],
   "so": [],

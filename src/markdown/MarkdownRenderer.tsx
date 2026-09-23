@@ -192,6 +192,20 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    circuitviz: (props: MarkdownComponentProps) => {
+        let simName = (props.simulation || (props as any).circuit || '') as string;
+        if (!simName && props.children) {
+            const str = String(props.children);
+            const match = str.match(/simulation=["']?([a-zA-Z0-9_-]+)["']?/) || str.match(/([a-zA-Z0-9_-]+)/);
+            if (match) simName = match[1];
+        }
+        if (!simName) simName = 'pin_gpio';
+        return (
+            <SafeSuspense>
+                <SimulationPlayer type="circuit" simulation={simName} />
+            </SafeSuspense>
+        );
+    },
     stackviz: () => {
         return (
             <SafeSuspense>
@@ -407,7 +421,7 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
+            'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'circuitviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
             'linkedinviz', 'youtubeviz', 'object', 'mark'
@@ -425,6 +439,7 @@ const rehypePluginsConfig = [
             'download': ['href', 'url', 'src', 'label', 'title', 'format', 'type', 'description'],
             'videoviz': ['src', 'url', 'delay'],
             'oopviz': ['simulation'],
+            'circuitviz': ['simulation'],
             'algoviz': ['algorithm'],
             'proofviz': ['proof'],
             'youtubeviz': ['src', 'caption'],

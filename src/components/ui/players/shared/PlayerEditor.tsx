@@ -55,12 +55,15 @@ export const executionGutterField = StateField.define<RangeSet<GutterMarker>>({
     provide: f => lineNumberMarkers.from(f)
 });
 
+import type { Extension } from '@codemirror/state';
+
 interface PlayerEditorProps {
     code: string;
     executionLine: number;
+    language?: Extension;
 }
 
-export function PlayerEditor({ code, executionLine }: PlayerEditorProps) {
+export function PlayerEditor({ code, executionLine, language }: PlayerEditorProps) {
     const editorRef = useRef<ReactCodeMirrorRef | null>(null);
 
     const customTheme = useMemo(() => EditorView.theme({
@@ -161,7 +164,7 @@ export function PlayerEditor({ code, executionLine }: PlayerEditorProps) {
                 editable={false}
                 height="100%"
                 theme={[vscodeDark, customTheme]}
-                extensions={[cpp(), executionLineFacet.of(executionLine), executionHighlightField, executionGutterField]}
+                extensions={[language ?? cpp(), executionLineFacet.of(executionLine), executionHighlightField, executionGutterField]}
                 className="flex-1 font-mono tracking-tight overflow-hidden min-h-0"
                 basicSetup={{
                     lineNumbers: true,

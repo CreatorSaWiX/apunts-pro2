@@ -5,9 +5,10 @@ const AlgoPlayer = lazy(() => import('./variants/AlgoPlayer'));
 const OOPPlayer = lazy(() => import('./variants/OOPPlayer'));
 const ProofPlayer = lazy(() => import('./variants/ProofPlayer'));
 const VideoPlayer = lazy(() => import('./variants/VideoPlayer'));
+const CircuitPlayer = lazy(() => import('./variants/CircuitPlayer'));
 
 interface SimulationPlayerProps {
-    type: 'algo' | 'oop' | 'proof' | 'video';
+    type: 'algo' | 'oop' | 'proof' | 'video' | 'circuit';
     [key: string]: any;
 }
 
@@ -26,6 +27,9 @@ export default function SimulationPlayer({ type, ...props }: SimulationPlayerPro
             break;
         case 'video':
             PlayerComponent = VideoPlayer;
+            break;
+        case 'circuit':
+            PlayerComponent = CircuitPlayer;
             break;
         default:
             return <div className="p-4 bg-red-500/10 text-red-500 rounded-lg">Player type not supported: {type}</div>;

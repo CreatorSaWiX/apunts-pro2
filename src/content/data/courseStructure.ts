@@ -922,5 +922,32 @@ export const courseStructure: TopicDefinition[] = [
             { id: "PE-T1-Ex1.15", title: "Exercici 1.15: Anàlisi de covariància i coeficient de correlació de Pearson", title_es: "Ejercicio 1.15: Análisis de covarianza y coeficiente de correlación de Pearson" },
             { id: "PE-T1-Ex1.16", title: "Exercici 1.16: Parell de VADs: Memòria RAM i bloquejos mensuals", title_es: "Ejercicio 1.16: Par de VADs: Memoria RAM y bloqueos mensuales" }
         ]
+    },
+
+    // --- BD (Bases de Dades) ---
+    {
+        id: "bd-tema-1",
+        title: "Tema 1: Introducció i Arquitectura dels SGBD",
+        title_es: "Tema 1: Introducción y Arquitectura de los SGBD",
+        description: "Els tres mons de la informació, objectius dels SGBD, transaccions, concurrència, fiabilitat i arquitectura ANSI/SPARC.",
+        description_es: "Los tres mundos de la información, objetivos de los SGBD, transacciones, concurrencia, fiabilidad y arquitectura ANSI/SPARC.",
+        problems: []
+    },
+    {
+        id: "bd-tema-2",
+        title: "Tema 2: El Model Relacional de Dades",
+        title_es: "Tema 2: El Modelo Relacional de Datos",
+        description: "Estructura formal de relacions, atributs i tuples, jerarquia de claus (PK, FK, AK), regles d'integritat i accions compensatòries.",
+        description_es: "Estructura formal de relaciones, atributos y tuplas, jerarquía de claves (PK, FK, AK), reglas de integridad y acciones compensatorias.",
+        problems: []
+    },
+    {
+        id: "bd-tema-3",
+        title: "Tema 3: SQL Cheat Sheet (DDL, DML i DQL)",
+        title_es: "Tema 3: SQL Cheat Sheet (DDL, DML y DQL)",
+        description: "Guia ràpida completa de SQL: definició d'esquemes (DDL), manipulació de dades (DML), consultes simples, joins, agregats, subconsultes i tipus temporals.",
+        description_es: "Guía rápida completa de SQL: definición de esquemas (DDL), manipulación de datos (DML), consultas simples, joins, agregados, subconsultas y tipos temporales.",
+        problems: []
     }
 ];
+
