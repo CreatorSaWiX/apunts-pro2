@@ -49,17 +49,8 @@ On la feina no recursiva $g(n) = T_{\text{divisio}}(n) + T_{\text{combinar}}(n)$
 ### Exemple introductori: Cerca binària (dicotòmica)
 Donat un vector $A[0 \dots n-1]$ **ordenat**, volem determinar si un element $x$ hi pertany. A cada pas comparem $x$ amb l'element central $A[m]$: si coincideixen hem acabat; si $x < A[m]$, busquem recursivament a la meitat esquerra; si $x > A[m]$, a la meitat dreta.
 
-```cpp
-int cerca_binaria(const vector<int>& a, int i, int j, int x) {
-    if (i <= j) {
-        int k = (i + j) / 2;
-        if (x < a[k]) return cerca_binaria(a, i, k - 1, x);
-        else if (x > a[k]) return cerca_binaria(a, k + 1, j, x);
-        else return k;
-    }
-    else return -1;
-}
-```
+:::oopviz{simulation="binary_search"}
+:::
 
 #### Anàlisi de cost de la cerca binària
 El paràmetre de recursió és $n = j - i + 1$. A cada nivell es realitza només **una** crida recursiva ($a = 1$) sobre un subvector de mida meitat ($b = 2$), i el treball no recursiu (càlcul del mig i comparacions) és constant ($g(n) \in \Theta(1) \implies k = 0$).
@@ -106,22 +97,8 @@ Per no duplicar memòria durant les divisions, l'algorisme opera sobre el mateix
 4. Cridem recursivament per ordenar la segona meitat: $T[m+1 \dots d]$.
 5. Fusionem les dues meitats ordenades mitjançant l'operació clau `merge(T, e, m, d)`.
 
-```cpp
-template <typename elem>
-void mergesort(vector<elem>& T) {
-    mergesort(T, 0, T.size() - 1);
-}
-
-template <typename elem>
-void mergesort(vector<elem>& T, int e, int d) {
-    if (e < d) {
-        int m = (e + d) / 2;
-        mergesort(T, e, m);
-        mergesort(T, m + 1, d);
-        merge(T, e, m, d);
-    }
-}
-```
+:::oopviz{simulation="mergesort"}
+:::
 
 ### L'operació de fusió (`merge`) i la necessitat de memòria auxiliar
 El cor de l'algorisme és combinar dos subvectors ordenats contigus $T[e \dots m]$ i $T[m+1 \dots d]$ en un únic subvector ordenat a $T[e \dots d]$.  
@@ -299,29 +276,8 @@ Estat final:      [ 1 | 2 ] ┃ [ 7 | 4 | 6 | 8 | 3 | 5 ]
                             Retorn de j (tall de partició)
 ```
 
-```cpp
-template <typename elem>
-int partition(vector<elem>& T, int e, int d) {
-    elem x = T[e];
-    int i = e - 1;
-    int j = d + 1;
-    for (;;) {
-        while (x < T[--j]);
-        while (T[++i] < x);
-        if (i >= j) return j;
-        swap(T[i], T[j]);
-    }
-}
-
-template <typename elem>
-void quicksort(vector<elem>& T, int e, int d) {
-    if (e < d) {
-        int q = partition(T, e, d);
-        quicksort(T, e, q);
-        quicksort(T, q + 1, d);
-    }
-}
-```
+:::oopviz{simulation="quicksort"}
+:::
 
 #### Detalls tècnics de la partició de Hoare:
 - **Punters fora de rang i pre-operadors:** S'inicialitzen $i = e - 1$ i $j = d + 1$. Com que s'utilitzen pre-decrements (`--j`) i pre-increments (`++i`), a la primera avaluació els punters apunten exactament als extrems $d$ i $e$.
@@ -445,14 +401,8 @@ Feina per nivell:  Θ(1) multiplicacions
 Cost total:        Θ(log n)
 ```
 
-```cpp
-double potencia(double x, int n) {
-    if (n == 0) return 1;
-    double y = potencia(x, n / 2);
-    if (n % 2 == 0) return y * y;
-    else return y * y * x;
-}
-```
+:::oopviz{simulation="fast_power"}
+:::
 
 ### Anàlisi de cost i parany habitual d'examen
 > **Parany habitual:** Escriure `return potencia(x, n/2) * potencia(x, n/2);`. En aquest cas es farien $a = 2$ crides recursives, resultant en $T(n) = 2T(n/2) + \Theta(1) \implies \Theta(n)$, perdent completament l'avantatge algorísmic!

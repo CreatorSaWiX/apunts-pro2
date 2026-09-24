@@ -15,6 +15,12 @@ import { queue_patata } from './implementations/queue_patata';
 import { queue_recents } from './implementations/queue_recents';
 import { immersio_reverse } from './implementations/immersio_reverse';
 import { immersio_fibonacci } from './implementations/immersio_fibonacci';
+import { selection_sort } from './implementations/selection_sort';
+import { insertion_sort } from './implementations/insertion_sort';
+import { binary_search } from './implementations/binary_search';
+import { mergesort } from './implementations/mergesort';
+import { quicksort } from './implementations/quicksort';
+import { fast_power } from './implementations/fast_power';
 
 export const pro: Record<string, Simulation> = {
     punt_basic,
@@ -32,5 +38,11 @@ export const pro: Record<string, Simulation> = {
     queue_patata,
     queue_recents,
     immersio_reverse,
-    immersio_fibonacci
+    immersio_fibonacci,
+    selection_sort,
+    insertion_sort,
+    binary_search,
+    mergesort,
+    quicksort,
+    fast_power
 };

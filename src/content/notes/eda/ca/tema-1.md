@@ -188,21 +188,8 @@ Si un bucle realitza $N$ iteracions:
 ### Ordenació per selecció (Selection Sort)
 A cada iteració $i$ (de $n-1$ baixant fins a $1$), cerca el màxim de la part restant $v[0 \dots i]$ i l'intercanvia amb $v[i]$, deixant-lo fixat al final:
 
-```cpp
-int posicio_maxim(const vector<int>& v, int n) {
-    int k = 0;                         // Θ(1)
-    for (int i = 1; i <= n; ++i)       // n voltes (avalua condició n+1 cops)
-        if (v[i] > v[k]) k = i;        // n comparacions ⟹ Θ(n)
-    return k;
-}
-
-void ordena_seleccio(vector<int>& v, int n) {
-    for (int i = n - 1; i >= 1; --i) { // n-1 iteracions (i = n-1 ... 1)
-        int k = posicio_maxim(v, i);   // Cerca a v[0 ... i]: i comparacions
-        swap(v[k], v[i]);              // 1 intercanvi directe: cost Θ(1)
-    }                                  // ⟹ Cost total: (n-1) + ... + 1 = Θ(n²)
-}
-```
+:::oopviz{simulation="selection_sort"}
+:::
 
 #### Exemple pas a pas ($v = [3, \; 8, \; 5, \; 1, \; 4]$ amb $n=5$):
 
@@ -228,17 +215,8 @@ void ordena_seleccio(vector<int>& v, int n) {
 
 ### Ordenació per inserció (Insertion Sort)
 
-```cpp
-void ordena_insercio(vector<int>& v, int n) {
-    for (int k = 1; k <= n - 1; ++k) {        // Bucle extern: n-1 passades (k = 1 ... n-1)
-        int j = k - 1;                        // j: índex explorador que retrocedeix cap a l'esquerra
-        while (j >= 0 and v[j+1] < v[j]) {   // Bucle intern: entre 0 i k comparacions
-            swap(v[j], v[j+1]);               // Desplaça l'element cap a l'esquerra: Θ(1)
-            --j;                              // Avança un pas més cap a l'esquerra
-        }                                     // Atura immediat si v[j+1] >= v[j] o si j < 0
-    }                                         // Cost global adaptatiu: Ω(n) <= T(n) <= O(n²)
-}
-```
+:::oopviz{simulation="insertion_sort"}
+:::
 
 #### Exemple pas a pas ($v = [3, \; 8, \; 5, \; 1, \; 4]$ amb $n=5$):
 La barra $\mid$ separa la part ja ordenada $v[0 \dots k-1]$ (esquerra) de la part pendent d'explorar (dreta):
