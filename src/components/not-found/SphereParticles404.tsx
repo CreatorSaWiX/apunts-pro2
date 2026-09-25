@@ -1,5 +1,6 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import * as THREE from 'three';
+import { DEFAULT_404_PARAMS, type SphereParticles404API, type SphereParticles404Params } from './types';
 
 export interface SphereParticles404Handle {
   triggerShockwave: () => void;
@@ -7,6 +8,8 @@ export interface SphereParticles404Handle {
 
 interface SphereParticles404Props {
   className?: string;
+  onReady?: (api: SphereParticles404API) => void;
+  showStats?: boolean;
 }
 
 /**
@@ -53,16 +56,13 @@ function sampleText404Points(count: number, sphereRadius: number): Float32Array 
   // Fallback: Generate parametric 404 strokes if canvas sampling is empty
   if (validPixels.length < 50) {
     const strokes: [number, number, number, number][] = [
-      // First 4
       [-5.5, 2.2, -5.5, 0.0],
       [-5.5, 0.0, -3.2, 0.0],
       [-3.2, 2.2, -3.2, -2.2],
-      // 0
       [-1.8, 2.2, 1.8, 2.2],
       [1.8, 2.2, 1.8, -2.2],
       [1.8, -2.2, -1.8, -2.2],
       [-1.8, -2.2, -1.8, 2.2],
-      // Second 4
       [3.2, 2.2, 3.2, 0.0],
       [3.2, 0.0, 5.5, 0.0],
       [5.5, 2.2, 5.5, -2.2],
@@ -81,7 +81,6 @@ function sampleText404Points(count: number, sphereRadius: number): Float32Array 
     return result;
   }
 
-  // Standard sampled points normalized to 3D world space
   let minX = 1000, maxX = 0, minY = 400, maxY = 0;
   for (const p of validPixels) {
     if (p.x < minX) minX = p.x;
@@ -106,8 +105,7 @@ function sampleText404Points(count: number, sphereRadius: number): Float32Array 
     const nx = (p.x - centerX) / spanX;
     const ny = -(p.y - centerY) / spanY;
 
-    // Distribute across 3 clean depth layers so spheres don't crush into each other
-    const layer = (i % 3) - 1; // -1, 0, 1
+    const layer = (i % 3) - 1;
     const z = layer * (sphereRadius * 1.55) + (Math.random() - 0.5) * 0.04;
     const jx = (Math.random() - 0.5) * 0.06;
     const jy = (Math.random() - 0.5) * 0.06;
@@ -121,9 +119,18 @@ function sampleText404Points(count: number, sphereRadius: number): Float32Array 
 }
 
 export const SphereParticles404 = forwardRef<SphereParticles404Handle, SphereParticles404Props>(
-  ({ className = '' }, ref) => {
+  ({ className = '', onReady, showStats = false }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const shockwaveRef = useRef<(() => void) | null>(null);
+    const statsRef = useRef<any>(null);
+    const showStatsRef = useRef(showStats);
+    showStatsRef.current = showStats;
+
+    useEffect(() => {
+      if (statsRef.current?.domElement) {
+        statsRef.current.domElement.style.display = showStats ? 'block' : 'none';
+      }
+    }, [showStats]);
 
     useImperativeHandle(ref, () => ({
       triggerShockwave: () => {
@@ -166,7 +173,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         }
 
         if (!isDisposed) {
-          cleanupFn = initWebGLFallbackMode(
+          cleanupFn = await initWebGLFallbackMode(
             container,
             count,
             sphereRadiusValue,
@@ -176,7 +183,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
       };
 
       // -------------------------------------------------------------
-      // WebGPU Mode — using instancedArray (matching reference project)
+      // WebGPU Mode
       // -------------------------------------------------------------
       async function initWebGPUMode(
         parent: HTMLDivElement,
@@ -188,9 +195,11 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         const TSL = await import('three/tsl');
         const { bloom } = await import('three/examples/jsm/tsl/display/BloomNode.js');
         const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+        const { default: Stats } = await import('stats-gl');
 
         const width = parent.clientWidth || window.innerWidth;
         const height = parent.clientHeight || window.innerHeight;
+        const isMobile = width < 768;
 
         const canvas = document.createElement('canvas');
         canvas.style.width = '100%';
@@ -201,8 +210,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
         const scene = new THREE_WEBGPU.Scene();
 
-        // Camera (matching reference)
-        const isMobile = width < 768;
+        // Camera
         const camera = new THREE_WEBGPU.PerspectiveCamera(35, width / height, 0.1, 100);
         camera.position.set(0, 0, isMobile ? 22 : 16);
         scene.add(camera);
@@ -212,17 +220,18 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         controls.target.set(0, 0, 0);
         controls.enableDamping = true;
 
-        // Renderer
+        // Renderer with transparency
         const renderer = new THREE_WEBGPU.WebGPURenderer({
           canvas,
           antialias: true,
+          alpha: true,
         });
         renderer.toneMapping = THREE_WEBGPU.CineonToneMapping;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE_WEBGPU.PCFShadowMap;
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x252028);
+        renderer.setClearColor(0x000000, 0);
 
         await renderer.init();
         if (isDisposed) {
@@ -231,17 +240,37 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           return () => {};
         }
 
-        // Post processing Bloom (matching reference)
+        // Performance Monitor (stats-gl)
+        const stats = new Stats({
+          trackGPU: true,
+          horizontal: true,
+        });
+        await stats.init(renderer);
+        statsRef.current = stats;
+        stats.domElement.style.position = 'fixed';
+        stats.domElement.style.bottom = '16px';
+        stats.domElement.style.left = '16px';
+        stats.domElement.style.top = 'auto';
+        stats.domElement.style.zIndex = '9999';
+        stats.domElement.style.borderRadius = '8px';
+        stats.domElement.style.backdropFilter = 'blur(8px)';
+        stats.domElement.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.45)';
+        stats.domElement.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+        stats.domElement.style.display = showStatsRef.current ? 'block' : 'none';
+        document.body.appendChild(stats.domElement);
+
+        // Post processing Bloom
         const renderPipeline = new THREE_WEBGPU.RenderPipeline(renderer);
+        (renderPipeline as any)._quadMesh.material.transparent = true;
         const scenePass = TSL.pass(scene, camera);
         const scenePassColor = scenePass.getTextureNode('output');
         const bloomPass = bloom(scenePassColor);
-        bloomPass.threshold.value = 0;
-        bloomPass.strength.value = 0.15;
-        renderPipeline.outputNode = scenePassColor.add(bloomPass);
+        bloomPass.threshold.value = DEFAULT_404_PARAMS.bloomThreshold;
+        bloomPass.strength.value = DEFAULT_404_PARAMS.bloomStrength;
+        renderPipeline.outputNode = TSL.vec4(scenePassColor.rgb.add(bloomPass.rgb), scenePassColor.a);
 
-        // Lights (matching reference project: 0.3 directional, 0.08 ambient)
-        const directionalLight = new THREE_WEBGPU.DirectionalLight(0xffffff, 0.3);
+        // Lights
+        const directionalLight = new THREE_WEBGPU.DirectionalLight(0xffffff, DEFAULT_404_PARAMS.directionalIntensity);
         directionalLight.castShadow = true;
         directionalLight.position.set(1, 1, 0.75).normalize().multiplyScalar(8);
         directionalLight.shadow.camera.far = 16;
@@ -254,7 +283,10 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         directionalLight.shadow.normalBias = -0.1;
         scene.add(directionalLight);
 
-        const ambientLight = new THREE_WEBGPU.AmbientLight(0xe8b8ff, 0.08);
+        const ambientLight = new THREE_WEBGPU.AmbientLight(
+          new THREE.Color(DEFAULT_404_PARAMS.ambientColor),
+          DEFAULT_404_PARAMS.ambientIntensity
+        );
         scene.add(ambientLight);
 
         // Cursor & Raycasting
@@ -262,8 +294,9 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         const cursor = new THREE_WEBGPU.Vector2(999, 999);
         const cursorPosition = TSL.uniform(TSL.vec3(999, 999, 0));
         const cursorVelocity = TSL.uniform(TSL.vec3(0, 0, 0));
-        const cursorRadius = TSL.uniform(1.75);
-        const cursorStrength = TSL.uniform(0.05);
+        const cursorRadius = TSL.uniform(DEFAULT_404_PARAMS.cursorRadius);
+        const cursorStrength = TSL.uniform(DEFAULT_404_PARAMS.cursorStrength);
+        const shockwaveStrength = TSL.uniform(0.0);
 
         const onPointerMove = (event: PointerEvent) => {
           const rect = canvas.getBoundingClientRect();
@@ -278,38 +311,29 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerleave', onPointerLeave);
 
-        // --- GPU Buffers via instancedArray (matching reference project) ---
+        // --- GPU Buffers ---
         const positionsBuffer = TSL.instancedArray(particleCount, 'vec3');
         const velocitiesBuffer = TSL.instancedArray(particleCount, 'vec3');
         const targetsBuffer = TSL.instancedArray(particleCount, 'vec3');
         const heatBuffer = TSL.instancedArray(particleCount, 'float');
 
-        // Uniforms matching reference project
+        // Uniforms
         const radius = TSL.uniform(sRadius);
-        const gravityStrength = TSL.uniform(0.04);
+        const gravityStrength = TSL.uniform(DEFAULT_404_PARAMS.gravityStrength);
+        const generalDamping = TSL.uniform(DEFAULT_404_PARAMS.generalDamping);
         const impactDamping = TSL.uniform(0.05);
-        const generalDamping = TSL.uniform(0.4);
-        const heatDamping = TSL.uniform(3.0);
+        const heatDamping = TSL.uniform(DEFAULT_404_PARAMS.heatDamping);
         const heatImpactStrength = TSL.uniform(30.0);
-        const emissiveColor = TSL.uniform(TSL.color(0xff3f0f));
 
-        // Upload target positions to GPU buffer via a uniform array
-        const targetData: any[] = [];
-        for (let i = 0; i < particleCount; i++) {
-          targetData.push(new THREE.Vector3(
-            targets[i * 3 + 0],
-            targets[i * 3 + 1],
-            targets[i * 3 + 2]
-          ));
-        }
+        // Motion Color (default: original fire red-orange #ff3f0f)
+        const emissiveColor = TSL.uniform(TSL.color(new THREE.Color(DEFAULT_404_PARAMS.emissiveColor)));
+        const baseColorUniform = TSL.uniform(TSL.color(new THREE.Color(DEFAULT_404_PARAMS.baseColor)));
 
-        // Init compute: write target positions into targetsBuffer and
-        // scatter initial positions randomly (like the reference project's hash init)
+        // Init compute
         const initCompute = TSL.Fn(() => {
           const position = positionsBuffer.element(TSL.instanceIndex);
           const target = targetsBuffer.element(TSL.instanceIndex);
 
-          // Random initial positions (matching reference's cube volume)
           const randomPos = TSL.vec3(
             TSL.hash(TSL.instanceIndex),
             TSL.hash(TSL.instanceIndex.add(12).mul(2)),
@@ -317,18 +341,12 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           ).sub(0.5).mul(10);
 
           position.assign(randomPos);
-
-          // We need to set target positions from CPU data.
-          // We do this by storing them in the velocity buffer temporarily,
-          // then copying them. But instancedArray doesn't support direct CPU upload.
-          // Instead we'll set targets from CPU after init.
-          target.assign(randomPos); // Temporary, will be overridden
+          target.assign(randomPos);
         })().compute(particleCount);
 
         renderer.compute(initCompute);
 
-        // Upload target positions to targetsBuffer via StorageInstancedBufferAttribute
-        // We create a separate buffer attribute to push CPU data into the targets storage
+        // Target upload
         const tarArray = new Float32Array(targets);
         const tarBufferAttr = new (THREE_WEBGPU as any).StorageInstancedBufferAttribute(tarArray, 3);
         const targetsUploadBuffer = TSL.storage(tarBufferAttr, 'vec3', particleCount);
@@ -339,8 +357,6 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           const uploadedTarget = targetsUploadBuffer.element(TSL.instanceIndex);
           target.assign(uploadedTarget);
 
-          // Start directly at target positions with a subtle organic jitter
-          // so "404" is instantly readable from frame 0
           const jitter = TSL.vec3(
             TSL.hash(TSL.instanceIndex),
             TSL.hash(TSL.instanceIndex.add(12).mul(2)),
@@ -352,7 +368,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
         renderer.compute(uploadTargetsCompute);
 
-        // Physics Update compute (matching reference project structure)
+        // Physics Compute
         const updateCompute = TSL.Fn(() => {
           const clampedDeltaTime = TSL.deltaTime.min(1 / 30);
 
@@ -368,7 +384,14 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           aVelocity.addAssign(_cursorVelocity);
           aHeat.addAssign(_cursorVelocity.length().mul(50.0));
 
-          // 2. Attraction towards target 404 position
+          // 2. Shockwave explosion force
+          TSL.If(shockwaveStrength.greaterThan(0.001), () => {
+            const shockDir = aPosition.div(aPosition.length().max(TSL.EPSILON));
+            aVelocity.addAssign(shockDir.mul(shockwaveStrength).mul(0.12));
+            aHeat.addAssign(shockwaveStrength.mul(1.5));
+          });
+
+          // 3. Attraction towards target 404 position
           const toTarget = aTarget.sub(aPosition);
           const targetDist = toTarget.length();
           const targetDir = toTarget.div(targetDist.max(TSL.EPSILON));
@@ -378,20 +401,24 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
             .mul(clampedDeltaTime);
           aVelocity.addAssign(gravityVelocity);
 
-          // 3. Sphere collision
+          // 4. Sphere collision (squared-distance early-out to skip sqrt for distant pairs)
+          const radius2 = radius.mul(2);
+          const radius2Sq = radius2.mul(radius2);
+
           TSL.Loop(
             { start: TSL.instanceIndex.add(1), end: particleCount, condition: '<', name: 'i' },
             ({ i }: any) => {
               const bPosition = positionsBuffer.element(i);
-              const bVelocity = velocitiesBuffer.element(i);
-              const bHeat = heatBuffer.element(i);
-
               const delta = bPosition.sub(aPosition);
-              const distance = delta.length();
-              const direction = delta.div(distance.max(TSL.EPSILON));
+              const distSq = delta.dot(delta);
 
-              const radius2 = radius.mul(2);
-              TSL.If(distance.lessThan(radius2), () => {
+              TSL.If(distSq.lessThan(radius2Sq), () => {
+                const bVelocity = velocitiesBuffer.element(i);
+                const bHeat = heatBuffer.element(i);
+
+                const distance = distSq.sqrt();
+                const direction = delta.div(distance.max(TSL.EPSILON));
+
                 const overlap = radius2.sub(distance);
                 const avoidance = direction.mul(overlap.div(2));
                 aPosition.subAssign(avoidance);
@@ -412,19 +439,20 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
             }
           );
 
-          // 4. Apply velocity
+          // 5. Apply velocity
           aPosition.addAssign(aVelocity);
 
-          // 5. Velocity damping
+          // 6. Velocity damping
           aVelocity.mulAssign(generalDamping.mul(clampedDeltaTime).oneMinus());
 
-          // 6. Heat damping
+          // 7. Heat damping
           aHeat.mulAssign(heatDamping.mul(clampedDeltaTime).oneMinus());
         })().compute(particleCount);
 
-        // Geometry & Material (matching reference)
+        // Geometry & Material
         const geometry = new THREE_WEBGPU.IcosahedronGeometry(1, 2);
         const material = new THREE_WEBGPU.MeshLambertNodeMaterial({ color: 0xffffff });
+        material.colorNode = baseColorUniform;
 
         material.positionNode = TSL.Fn(() => {
           TSL.positionLocal.mulAssign(radius);
@@ -442,8 +470,84 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         (mesh as any).count = particleCount;
         scene.add(mesh);
 
+        // Shockwave trigger
+        const triggerShockwave = () => {
+          shockwaveStrength.value = 1.0;
+        };
+        shockwaveRef.current = triggerShockwave;
+
+        const resetCamera = () => {
+          camera.position.set(0, 0, isMobile ? 22 : 16);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        };
+
+        // Notify external API
+        const currentParams: SphereParticles404Params = {
+          ...DEFAULT_404_PARAMS,
+          showStats: showStatsRef.current,
+        };
+
+        const updateParam = <K extends keyof SphereParticles404Params>(key: K, value: SphereParticles404Params[K]) => {
+          currentParams[key] = value;
+          switch (key) {
+            case 'emissiveColor':
+              emissiveColor.value.set(value as string);
+              break;
+            case 'baseColor':
+              baseColorUniform.value.set(value as string);
+              break;
+            case 'ambientColor':
+              ambientLight.color.set(value as string);
+              break;
+            case 'ambientIntensity':
+              ambientLight.intensity = value as number;
+              break;
+            case 'directionalIntensity':
+              directionalLight.intensity = value as number;
+              break;
+            case 'bloomThreshold':
+              bloomPass.threshold.value = value as number;
+              break;
+            case 'bloomStrength':
+              bloomPass.strength.value = value as number;
+              break;
+            case 'cursorRadius':
+              cursorRadius.value = value as number;
+              break;
+            case 'cursorStrength':
+              cursorStrength.value = value as number;
+              break;
+            case 'gravityStrength':
+              gravityStrength.value = value as number;
+              break;
+            case 'generalDamping':
+              generalDamping.value = value as number;
+              break;
+            case 'heatDamping':
+              heatDamping.value = value as number;
+              break;
+            case 'showStats':
+              if (stats.domElement) {
+                stats.domElement.style.display = value ? 'block' : 'none';
+              }
+              break;
+          }
+        };
+
+        if (onReady) {
+          onReady({
+            params: currentParams,
+            updateParam,
+            triggerShockwave,
+            resetCamera,
+            isWebGPU: true,
+          });
+        }
+
         // Raycasting
         const intersect = new THREE_WEBGPU.Vector3();
+        const _plane = new THREE_WEBGPU.Plane(new THREE_WEBGPU.Vector3(0, 0, 1), 0);
 
         const onResize = () => {
           const w = parent.clientWidth || window.innerWidth;
@@ -460,14 +564,20 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         renderer.setAnimationLoop(() => {
           if (isDisposed) return;
 
+          stats.begin();
+
           controls.update();
+
+          if (shockwaveStrength.value > 0.001) {
+            shockwaveStrength.value *= 0.93;
+          }
 
           if (cursor.x !== 999) {
             raycaster.setFromCamera(cursor, camera);
-            const planeNormal = camera.position.clone().normalize();
-            const plane = new THREE_WEBGPU.Plane(planeNormal, 0);
+            _plane.normal.copy(camera.position).normalize();
+            _plane.constant = 0;
 
-            if (raycaster.ray.intersectPlane(plane, intersect)) {
+            if (raycaster.ray.intersectPlane(_plane, intersect)) {
               cursorVelocity.value.copy(intersect).sub(cursorPosition.value);
               cursorPosition.value.copy(intersect);
             }
@@ -475,6 +585,9 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
           renderer.compute(updateCompute);
           renderPipeline.render();
+
+          stats.end();
+          stats.update();
         });
 
         return () => {
@@ -482,6 +595,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           window.removeEventListener('pointerleave', onPointerLeave);
           window.removeEventListener('resize', onResize);
           renderer.setAnimationLoop(null);
+          stats.domElement?.remove();
           geometry.dispose();
           material.dispose();
           renderer.dispose();
@@ -494,14 +608,18 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
       // -------------------------------------------------------------
       // WebGL Fallback Mode
       // -------------------------------------------------------------
-      function initWebGLFallbackMode(
+      async function initWebGLFallbackMode(
         parent: HTMLDivElement,
         particleCount: number,
         sRadius: number,
         targets: Float32Array
-      ): () => void {
+      ): Promise<() => void> {
+        const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+        const { default: Stats } = await import('stats-gl');
+
         const width = parent.clientWidth || window.innerWidth;
         const height = parent.clientHeight || window.innerHeight;
+        const isMobile = width < 768;
 
         const canvas = document.createElement('canvas');
         canvas.style.width = '100%';
@@ -511,23 +629,46 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         parent.appendChild(canvas);
 
         const scene = new THREE.Scene();
-        const isMobile = width < 768;
         const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
         camera.position.set(0, 0, isMobile ? 22 : 16);
+
+        const controls = new OrbitControls(camera, canvas);
+        controls.target.set(0, 0, 0);
+        controls.enableDamping = true;
 
         const renderer = new THREE.WebGLRenderer({
           canvas,
           antialias: true,
+          alpha: true,
         });
         renderer.toneMapping = THREE.CineonToneMapping;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x252028);
+        renderer.setClearColor(0x000000, 0);
 
-        // Lights matching reference
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        // Performance Monitor (stats-gl)
+        const stats = new Stats({
+          trackGPU: true,
+          horizontal: true,
+        });
+        await stats.init(renderer);
+        statsRef.current = stats;
+        stats.domElement.style.position = 'fixed';
+        stats.domElement.style.bottom = '16px';
+        stats.domElement.style.left = '16px';
+        stats.domElement.style.top = 'auto';
+        stats.domElement.style.zIndex = '9999';
+        stats.domElement.style.borderRadius = '8px';
+        stats.domElement.style.backdropFilter = 'blur(8px)';
+        stats.domElement.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.45)';
+        stats.domElement.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+        stats.domElement.style.display = showStatsRef.current ? 'block' : 'none';
+        document.body.appendChild(stats.domElement);
+
+        // Lights
+        const directionalLight = new THREE.DirectionalLight(0xffffff, DEFAULT_404_PARAMS.directionalIntensity);
         directionalLight.castShadow = true;
         directionalLight.position.set(1, 1, 0.75).normalize().multiplyScalar(8);
         directionalLight.shadow.camera.far = 16;
@@ -540,7 +681,10 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         directionalLight.shadow.normalBias = -0.1;
         scene.add(directionalLight);
 
-        const ambientLight = new THREE.AmbientLight(0xe8b8ff, 0.08);
+        const ambientLight = new THREE.AmbientLight(
+          new THREE.Color(DEFAULT_404_PARAMS.ambientColor),
+          DEFAULT_404_PARAMS.ambientIntensity
+        );
         scene.add(ambientLight);
 
         const geo = new THREE.IcosahedronGeometry(sRadius, 2);
@@ -554,6 +698,15 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         instancedMesh.receiveShadow = true;
         scene.add(instancedMesh);
 
+        // Pre-initialize identity matrices so per-frame loop only updates translation
+        {
+          const mArr = instancedMesh.instanceMatrix.array as Float32Array;
+          for (let j = 0; j < particleCount; j++) {
+            const o = j * 16;
+            mArr[o] = 1; mArr[o + 5] = 1; mArr[o + 10] = 1; mArr[o + 15] = 1;
+          }
+        }
+
         // CPU Arrays
         const pos = new Float32Array(particleCount * 3);
         const vel = new Float32Array(particleCount * 3);
@@ -561,10 +714,93 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
         pos.set(targets);
 
-        const dummy = new THREE.Object3D();
-        const baseColor = new THREE.Color(0xd4d4d8);
-        const emissiveFire = new THREE.Color(0xff3f0f);
+        const baseColor = new THREE.Color(DEFAULT_404_PARAMS.baseColor);
+        const emissiveFire = new THREE.Color(DEFAULT_404_PARAMS.emissiveColor);
         const currentColor = new THREE.Color();
+
+        // Tweaks state
+        let cursorRadiusVal = DEFAULT_404_PARAMS.cursorRadius;
+        let cursorStrengthVal = DEFAULT_404_PARAMS.cursorStrength;
+        let gravityVal = DEFAULT_404_PARAMS.gravityStrength;
+        let dampingVal = DEFAULT_404_PARAMS.generalDamping;
+        let heatDampingVal = DEFAULT_404_PARAMS.heatDamping;
+
+        const triggerShockwave = () => {
+          for (let i = 0; i < particleCount; i++) {
+            const idx = i * 3;
+            const px = pos[idx];
+            const py = pos[idx + 1];
+            const pz = pos[idx + 2];
+            const d = Math.hypot(px, py, pz) + 0.01;
+            vel[idx] += (px / d) * (0.2 + Math.random() * 0.35);
+            vel[idx + 1] += (py / d) * (0.2 + Math.random() * 0.35);
+            vel[idx + 2] += (pz / d) * (0.2 + Math.random() * 0.35);
+            heat[i] = 1.5;
+          }
+        };
+        shockwaveRef.current = triggerShockwave;
+
+        const resetCamera = () => {
+          camera.position.set(0, 0, isMobile ? 22 : 16);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        };
+
+        const currentParams: SphereParticles404Params = {
+          ...DEFAULT_404_PARAMS,
+          showStats: showStatsRef.current,
+        };
+
+        const updateParam = <K extends keyof SphereParticles404Params>(key: K, value: SphereParticles404Params[K]) => {
+          currentParams[key] = value;
+          switch (key) {
+            case 'emissiveColor':
+              emissiveFire.set(value as string);
+              break;
+            case 'baseColor':
+              baseColor.set(value as string);
+              break;
+            case 'ambientColor':
+              ambientLight.color.set(value as string);
+              break;
+            case 'ambientIntensity':
+              ambientLight.intensity = value as number;
+              break;
+            case 'directionalIntensity':
+              directionalLight.intensity = value as number;
+              break;
+            case 'cursorRadius':
+              cursorRadiusVal = value as number;
+              break;
+            case 'cursorStrength':
+              cursorStrengthVal = value as number;
+              break;
+            case 'gravityStrength':
+              gravityVal = value as number;
+              break;
+            case 'generalDamping':
+              dampingVal = value as number;
+              break;
+            case 'heatDamping':
+              heatDampingVal = value as number;
+              break;
+            case 'showStats':
+              if (stats.domElement) {
+                stats.domElement.style.display = value ? 'block' : 'none';
+              }
+              break;
+          }
+        };
+
+        if (onReady) {
+          onReady({
+            params: currentParams,
+            updateParam,
+            triggerShockwave,
+            resetCamera,
+            isWebGPU: false,
+          });
+        }
 
         // Raycasting
         const raycaster = new THREE.Raycaster();
@@ -598,11 +834,19 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
         };
         window.addEventListener('resize', onResize);
 
+        const _wglPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        const _wglHit = new THREE.Vector3();
+        const instanceMatArr = instancedMesh.instanceMatrix.array as Float32Array;
+
         let animationFrameId: number;
         let lastTime = performance.now();
 
         const tick = () => {
           if (isDisposed) return;
+
+          stats.begin();
+
+          controls.update();
 
           const now = performance.now();
           const dt = Math.min((now - lastTime) / 1000, 1 / 30);
@@ -610,18 +854,18 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
           if (cursor.x !== 999) {
             raycaster.setFromCamera(cursor, camera);
-            const plane = new THREE.Plane(camera.position.clone().normalize(), 0);
-            const hit = new THREE.Vector3();
-            if (raycaster.ray.intersectPlane(plane, hit)) {
-              cursorVel.copy(hit).sub(prevCursorWorld);
-              cursorWorld.copy(hit);
-              prevCursorWorld.copy(hit);
+            _wglPlane.normal.copy(camera.position).normalize();
+            _wglPlane.constant = 0;
+            if (raycaster.ray.intersectPlane(_wglPlane, _wglHit)) {
+              cursorVel.copy(_wglHit).sub(prevCursorWorld);
+              cursorWorld.copy(_wglHit);
+              prevCursorWorld.copy(_wglHit);
             }
           }
 
-          const cRadSq = 1.75 * 1.75;
-          const damp = Math.max(0, 1 - 0.4 * dt);
-          const hDamp = Math.max(0, 1 - 3.0 * dt);
+          const cRadSq = cursorRadiusVal * cursorRadiusVal;
+          const damp = Math.max(0, 1 - dampingVal * dt);
+          const hDamp = Math.max(0, 1 - heatDampingVal * dt);
 
           for (let i = 0; i < particleCount; i++) {
             const idx = i * 3;
@@ -635,9 +879,9 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
             const dz = targets[idx + 2] - pz;
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) + 0.0001;
 
-            vel[idx + 0] += (dx / dist) * Math.min(dist, 2.0) * 0.04 * dt;
-            vel[idx + 1] += (dy / dist) * Math.min(dist, 2.0) * 0.04 * dt;
-            vel[idx + 2] += (dz / dist) * Math.min(dist, 2.0) * 0.04 * dt;
+            vel[idx + 0] += (dx / dist) * Math.min(dist, 2.0) * gravityVal * dt;
+            vel[idx + 1] += (dy / dist) * Math.min(dist, 2.0) * gravityVal * dt;
+            vel[idx + 2] += (dz / dist) * Math.min(dist, 2.0) * gravityVal * dt;
 
             // Cursor push
             if (cursorWorld.x !== 999) {
@@ -648,10 +892,10 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
 
               if (cDistSq < cRadSq) {
                 const cDist = Math.sqrt(cDistSq);
-                const ratio = 1 - cDist / 1.75;
-                vel[idx + 0] += cursorVel.x * ratio * 0.05;
-                vel[idx + 1] += cursorVel.y * ratio * 0.05;
-                vel[idx + 2] += cursorVel.z * ratio * 0.05;
+                const ratio = 1 - cDist / cursorRadiusVal;
+                vel[idx + 0] += cursorVel.x * ratio * cursorStrengthVal;
+                vel[idx + 1] += cursorVel.y * ratio * cursorStrengthVal;
+                vel[idx + 2] += cursorVel.z * ratio * cursorStrengthVal;
                 heat[i] = Math.min(heat[i] + cursorVel.length() * 0.8, 1.5);
               }
             }
@@ -666,11 +910,13 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
             vel[idx + 2] *= damp;
             heat[i] *= hDamp;
 
-            dummy.position.set(pos[idx + 0], pos[idx + 1], pos[idx + 2]);
-            dummy.updateMatrix();
-            instancedMesh.setMatrixAt(i, dummy.matrix);
+            // Direct translation-only write (skips quaternion/scale recomputation)
+            const matOff = i * 16;
+            instanceMatArr[matOff + 12] = pos[idx + 0];
+            instanceMatArr[matOff + 13] = pos[idx + 1];
+            instanceMatArr[matOff + 14] = pos[idx + 2];
 
-            // Interpolate color with heat
+            // Interpolate color with motion heat
             currentColor.copy(baseColor).lerp(emissiveFire, Math.min(heat[i], 1.0));
             instancedMesh.setColorAt(i, currentColor);
           }
@@ -681,6 +927,10 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           }
 
           renderer.render(scene, camera);
+
+          stats.end();
+          stats.update();
+
           animationFrameId = requestAnimationFrame(tick);
         };
 
@@ -691,6 +941,7 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           window.removeEventListener('pointermove', onPointerMove);
           window.removeEventListener('pointerleave', onPointerLeave);
           window.removeEventListener('resize', onResize);
+          stats.domElement?.remove();
           geo.dispose();
           mat.dispose();
           instancedMesh.dispose();
@@ -709,12 +960,12 @@ export const SphereParticles404 = forwardRef<SphereParticles404Handle, SpherePar
           cleanupFn();
         }
       };
-    }, []);
+    }, [onReady]);
 
     return (
       <div
         ref={containerRef}
-        className={`relative w-full h-full overflow-hidden select-none bg-[#252028] ${className}`}
+        className={`relative w-full h-full overflow-hidden select-none ${className}`}
       />
     );
   }
