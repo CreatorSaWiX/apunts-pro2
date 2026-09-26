@@ -123,6 +123,9 @@
       "previewSubtitle": "This is how your main menu will look.",
       "addPreview": "Add subjects to see the navbar",
       "notAvailable": "Not available",
+      "notAvailableError": "This subject does not have any notes available currently.",
+      "emptyStateTitle": "No notes available",
+      "emptyStateDesc": "The notes for this subject are currently being drafted or are in progress.",
       "colorOf": "Color of",
       "reset": "Reset to default"
     },

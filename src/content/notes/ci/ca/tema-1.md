@@ -3,7 +3,7 @@ title: "Tema 1: Pins de GPIO (TRIS, LAT, PORT i Tri-State)"
 description: "Simulació interactiva del circuit intern d'un pin GPIO al microcontrolador PIC18F"
 readTime: "5 min"
 order: 1
-draft: false
+draft: true
 ---
 
 ::circuitviz{simulation="pin_gpio"}

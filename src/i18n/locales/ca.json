@@ -123,6 +123,9 @@
       "previewSubtitle": "Així es veurà el teu menú principal.",
       "addPreview": "Afegeix assignatures per veure el navbar",
       "notAvailable": "No disponible",
+      "notAvailableError": "Aquesta assignatura no té apunts disponibles actualment.",
+      "emptyStateTitle": "No hi ha apunts disponibles",
+      "emptyStateDesc": "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.",
       "colorOf": "Color de",
       "reset": "Restablir per defecte"
     },

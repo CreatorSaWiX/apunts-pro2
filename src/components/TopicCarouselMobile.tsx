@@ -544,6 +544,28 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
         }
     }, []);
 
+    if (sortedTopics.length === 0) {
+        return (
+            <div className="w-full flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-xs w-full p-6 rounded-3xl bg-slate-900/40 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col items-center"
+                >
+                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3 text-amber-400">
+                        <Book size={28} />
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2">
+                        {t('subjects.emptyStateTitle', 'No hi ha apunts disponibles')}
+                    </h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                        {t('subjects.emptyStateDesc', "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.")}
+                    </p>
+                </motion.div>
+            </div>
+        );
+    }
+
     return (
         <MotionConfig reducedMotion={!isInteractive ? "always" : "never"}>
             <div className="w-full flex-1 relative group/carousel flex flex-col justify-center pb-2">
@@ -685,7 +707,30 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     }, []);
 
     const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
+
+    if (sortedTopics.length === 0) {
         return (
+            <div className="fixed inset-0 z-0 w-full flex flex-col items-center justify-center p-6 text-center select-none pointer-events-auto">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-sm w-full p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col items-center"
+                >
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3 text-amber-400">
+                        <Book size={24} />
+                    </div>
+                    <h3 className="text-base font-bold text-white mb-1.5">
+                        {t('subjects.emptyStateTitle', 'No hi ha apunts disponibles')}
+                    </h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                        {t('subjects.emptyStateDesc', "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.")}
+                    </p>
+                </motion.div>
+            </div>
+        );
+    }
+
+    return (
             <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
                 <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">

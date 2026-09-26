@@ -363,6 +363,28 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         });
     };
 
+    if (sortedTopics.length === 0) {
+        return (
+            <div className="w-full flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="max-w-md w-full p-8 rounded-3xl bg-slate-900/40 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col items-center"
+                >
+                    <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 text-amber-400">
+                        <Book size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                        {t('subjects.emptyStateTitle', 'No hi ha apunts disponibles')}
+                    </h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                        {t('subjects.emptyStateDesc', "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.")}
+                    </p>
+                </motion.div>
+            </div>
+        );
+    }
+
     return (
         <MotionConfig reducedMotion={isMobile && isMenuOpen ? "always" : "never"}>
             <div className="w-full flex-1 flex flex-col justify-center relative group/carousel">

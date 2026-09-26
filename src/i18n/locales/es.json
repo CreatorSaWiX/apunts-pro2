@@ -123,6 +123,9 @@
       "previewSubtitle": "Así se verá tu menú principal.",
       "addPreview": "Añade asignaturas para ver el navbar",
       "notAvailable": "No disponible",
+      "notAvailableError": "Esta asignatura no tiene apuntes disponibles actualmente.",
+      "emptyStateTitle": "No hay apuntes disponibles",
+      "emptyStateDesc": "Los apuntes de esta asignatura están en proceso de redacción o en borrador.",
       "colorOf": "Color de",
       "reset": "Restablecer por defecto"
     },

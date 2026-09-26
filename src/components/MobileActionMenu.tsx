@@ -5,6 +5,7 @@ import { useSubjectStore, tailwindColors } from '../stores/useSubjectStore';
 import { useSettingsStore, DEFAULT_HOME_SUBJECTS } from '../stores/useSettingsStore';
 import subjectsData from '../data/subjects.json';
 import { useTranslation } from 'react-i18next';
+import { useAvailableSubjects } from '../hooks/useAvailableSubjects';
 
 import { Link } from 'react-router-dom';
 import Spinner from './ui/Spinner';
@@ -26,30 +27,20 @@ const MobileActionMenu: React.FC<{
     const { homeSubjects, customSubjectColors } = useSettingsStore();
     const { t, i18n } = useTranslation();
     const preferredLang = (i18n.resolvedLanguage || i18n.language || 'ca').split('-')[0];
+    const { availableSubjectNames, isLoaded, isSubjectAvailable, sanitizeSubjects } = useAvailableSubjects(preferredLang);
     const [, startTransition] = useTransition();
 
     const displaySubjects = React.useMemo(() => {
-        return homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
-    }, [homeSubjects]);
+        const raw = homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
+        if (!isLoaded || availableSubjectNames.size === 0) return raw;
+        const valid = raw.filter((s: string) => isSubjectAvailable(s));
+        return valid.length > 0 ? valid : sanitizeSubjects(DEFAULT_HOME_SUBJECTS);
+    }, [homeSubjects, isLoaded, availableSubjectNames, isSubjectAvailable, sanitizeSubjects]);
 
-    const isCurrentSubjectValid = displaySubjects.some(
-        s => s.toLowerCase() === (subject || '').toLowerCase()
+    const isCurrentSubjectValid = isSubjectAvailable(subject) && displaySubjects.some(
+        (s: string) => s.toLowerCase() === (subject || '').toLowerCase()
     );
-    const activeSubject = isCurrentSubjectValid ? (subject || '').toLowerCase() : displaySubjects[0].toLowerCase();
-
-    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
-    
-    React.useEffect(() => {
-        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
-    }, []);
-
-    const availableSubjectNames = React.useMemo(() => {
-        return new Set(
-            allPersonalNotes
-                .filter(note => note.lang === preferredLang && !note.draft)
-                .map(note => note.subject.toLowerCase())
-        );
-    }, [allPersonalNotes, preferredLang]);
+    const activeSubject = isCurrentSubjectValid ? (subject || '').toLowerCase() : (displaySubjects[0] || 'PE').toLowerCase();
 
     // Contributors state
     const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -117,8 +108,8 @@ const MobileActionMenu: React.FC<{
                                 {t('settings.subject', 'Assignatura')}
                             </label>
                             <div className="grid grid-cols-3 gap-2 bg-slate-800/50 p-1.5 rounded-2xl border border-white/5 relative">
-                                {displaySubjects.map((sub) => {
-                                    const isAvailable = availableSubjectNames.has(sub.toLowerCase());
+                                {displaySubjects.map((sub: string) => {
+                                    const isAvailable = isSubjectAvailable(sub);
                                     const subjectInfo = subjectsData.find(s => s.name.toLowerCase() === sub.toLowerCase());
                                     const defaultToken = subjectInfo?.colorToken?.split('-')[0] || 'sky';
                                     const colorFamily = customSubjectColors[sub] || defaultToken;

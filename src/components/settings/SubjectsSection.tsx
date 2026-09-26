@@ -9,10 +9,13 @@ import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../../hooks/useShortcut';
 
+import { useAvailableSubjects } from '../../hooks/useAvailableSubjects';
+
 export const SubjectsSection = () => {
     const { t, i18n } = useTranslation();
     const currentLang = i18n.language || 'ca';
     const { homeSubjects, setHomeSubjects, customSubjectColors, setCustomSubjectColors, shortcuts } = useSettingsStore();
+    const { availableSubjectNames, isLoaded, isSubjectAvailable, sanitizeSubjects } = useAvailableSubjects(currentLang);
     const searchShortcut = shortcuts?.searchSubjects || { key: 'k', meta: true };
     const [searchQuery, setSearchQuery] = useState('');
     const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -22,11 +25,15 @@ export const SubjectsSection = () => {
     const [editingSubjectColor, setEditingSubjectColor] = useState<string | null>(null);
     const [previewSubject, setPreviewSubject] = useState<string>('');
     const [subjectError, setSubjectError] = useState<string | null>(null);
-    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
 
+    // Protecció automàtica: Eliminar assignatures de l'Inici que no tinguin apunts disponibles
     useEffect(() => {
-        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
-    }, []);
+        if (!isLoaded || availableSubjectNames.size === 0) return;
+        const sanitized = sanitizeSubjects(homeSubjects);
+        if (sanitized.length !== homeSubjects.length || sanitized.some((s, idx) => s !== homeSubjects[idx])) {
+            setHomeSubjects(sanitized);
+        }
+    }, [isLoaded, availableSubjectNames, homeSubjects, sanitizeSubjects, setHomeSubjects]);
 
     useEffect(() => {
         if (homeSubjects.length > 0 && !homeSubjects.includes(previewSubject)) {
@@ -57,13 +64,6 @@ export const SubjectsSection = () => {
 
     const filteredSubjects = useMemo(() => {
         const query = searchQuery.toLowerCase();
-        
-        // Optimització: Precalculem quines assignatures estan disponibles
-        const availableSubjectNames = new Set(
-            allPersonalNotes
-                .filter(note => note.lang === currentLang && !note.draft)
-                .map(note => note.subject.toLowerCase())
-        );
 
         const filtered = subjectsData.filter(s =>
             s.name.toLowerCase().includes(query) ||
@@ -71,14 +71,14 @@ export const SubjectsSection = () => {
         ).filter(s => !homeSubjects.includes(s.name));
 
         return filtered.sort((a, b) => {
-            const aIsAvailable = availableSubjectNames.has(a.name.toLowerCase());
-            const bIsAvailable = availableSubjectNames.has(b.name.toLowerCase());
+            const aIsAvailable = isSubjectAvailable(a.name);
+            const bIsAvailable = isSubjectAvailable(b.name);
             
             if (aIsAvailable && !bIsAvailable) return -1;
             if (!aIsAvailable && bIsAvailable) return 1;
             return 0;
         });
-    }, [searchQuery, homeSubjects, allPersonalNotes, currentLang]);
+    }, [searchQuery, homeSubjects, isSubjectAvailable]);
 
     const toggleSubject = (subjectId: string) => {
         if (homeSubjects.includes(subjectId)) {
@@ -89,6 +89,10 @@ export const SubjectsSection = () => {
             setSubjectError(null);
             setHomeSubjects(homeSubjects.filter(id => id !== subjectId));
         } else {
+            if (!isSubjectAvailable(subjectId)) {
+                setSubjectError(t('settings.subjects.notAvailableError', "Aquesta assignatura no té apunts disponibles actualment."));
+                return;
+            }
             if (homeSubjects.length >= 6) {
                 setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
                 return;
@@ -143,11 +147,7 @@ export const SubjectsSection = () => {
                                         const defaultColor = subject.colorToken ? subject.colorToken.split('-')[0] : 'sky';
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
                                         
-                                        const isAvailable = allPersonalNotes.some(note => 
-                                            note.subject.toLowerCase() === subject.name.toLowerCase() && 
-                                            note.lang === currentLang && 
-                                            !note.draft
-                                        );
+                                        const isAvailable = isSubjectAvailable(subject.name);
 
                                         return (
                                             <button

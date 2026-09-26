@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo, lazy, Suspense } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useSettingsStore, DEFAULT_HOME_SUBJECTS } from '../stores/useSettingsStore';
+import { useAvailableSubjects } from '../hooks/useAvailableSubjects';
 import Hero from '../components/Hero';
 import { m as motion } from 'framer-motion';
 import TopicCarousel from '../components/TopicCarousel';
@@ -11,19 +12,36 @@ const MobileActionMenu = lazy(() => import('../components/MobileActionMenu'));
 
 const HomePage = () => {
     const { subject, setSubject } = useSubjectStore();
-    const { homeSubjects } = useSettingsStore();
+    const { homeSubjects, setHomeSubjects } = useSettingsStore();
+    const { availableSubjectNames, isLoaded, isSubjectAvailable, sanitizeSubjects } = useAvailableSubjects();
 
-    // Ensure displaySubjects has a fallback and is stable
+    // Ensure displaySubjects only contains available subjects with content
     const displaySubjects = useMemo(() => {
-        return homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
-    }, [homeSubjects]);
+        const raw = homeSubjects.length > 0 ? homeSubjects : DEFAULT_HOME_SUBJECTS;
+        if (!isLoaded || availableSubjectNames.size === 0) return raw;
+        const valid = raw.filter(s => isSubjectAvailable(s));
+        return valid.length > 0 ? valid : sanitizeSubjects(DEFAULT_HOME_SUBJECTS);
+    }, [homeSubjects, isLoaded, availableSubjectNames, isSubjectAvailable, sanitizeSubjects]);
 
-    // If current subject is not in the active subjects list (e.g. deleted from Settings),
-    // immediately fall back to the first available subject.
-    const isCurrentSubjectValid = displaySubjects.some(
-        s => s.toUpperCase() === subject.toUpperCase()
-    );
-    const activeSubject = isCurrentSubjectValid ? subject : displaySubjects[0];
+    // Protecció automàtica: Neteja d'assignatures sense apunts a l'estat global
+    useEffect(() => {
+        if (!isLoaded || availableSubjectNames.size === 0) return;
+        const sanitized = sanitizeSubjects(homeSubjects);
+        if (sanitized.length !== homeSubjects.length || sanitized.some((s, idx) => s !== homeSubjects[idx])) {
+            setHomeSubjects(sanitized);
+        }
+    }, [isLoaded, availableSubjectNames, homeSubjects, sanitizeSubjects, setHomeSubjects]);
+
+    // If current subject is not available or not in active subjects, fall back to first available
+    const isCurrentSubjectValid = useMemo(() => {
+        const isAvailable = isSubjectAvailable(subject);
+        const inDisplay = displaySubjects.some(
+            s => s.toUpperCase() === subject.toUpperCase()
+        );
+        return isAvailable && inDisplay;
+    }, [subject, displaySubjects, isSubjectAvailable]);
+
+    const activeSubject = isCurrentSubjectValid ? subject : (displaySubjects[0] || 'PE');
 
     const [displaySubject, setDisplaySubject] = useState(activeSubject);
     const [prevSubject, setPrevSubject] = useState(activeSubject);
@@ -40,7 +58,7 @@ const HomePage = () => {
         }
     }
 
-    // Sync store if current subject is invalid (e.g. after returning from settings)
+    // Sync store if current subject is invalid (e.g. after returning from settings or note is draft)
     useEffect(() => {
         if (!isCurrentSubjectValid && displaySubjects.length > 0) {
             setSubject(displaySubjects[0]);
@@ -56,6 +74,7 @@ const HomePage = () => {
 
     const handleSubjectChange = (newSubj: string) => {
         if (newSubj.toUpperCase() === activeSubject.toUpperCase() || isExiting) return;
+        if (!isSubjectAvailable(newSubj)) return;
         
         // Canviar colors, targetes i menú instantàniament
         setSubject(newSubj);
