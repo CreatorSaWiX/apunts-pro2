@@ -1,7 +1,7 @@
 ---
 title: "Tema 1: Probabilitat i VAs"
-description: "Probabilitat, Bayes i variables aleatòries discretes i contínues."
-readTime: "22 min"
+description: "Probabilitat, Bayes, variables aleatòries discretes i contínues, indicadors i distribucions bivariants."
+readTime: "30 min"
 order: 1
 draft: false
 ---
@@ -242,6 +242,9 @@ Per comprovar si $A$ i $B$ són independents observant una taula de contingènci
 $$P(A \cap B) \stackrel{?}{=} P(A) \cdot P(B)$$
 Si la igualtat es compleix a totes les cel·les, hi ha **independència estadística**. Si fins i tot una sola cel·la no la compleix, els esdeveniments són **dependents**.
 
+
+---
+
 ## 8. Variables aleatòries
 
 ### 8.1 Motivació conceptual: De conjunts a la recta real
@@ -260,7 +263,7 @@ Segons la naturalesa dels valors que pot prendre $X$, distingim dos grans tipus:
 
 Sigui $X$ una variable aleatòria discreta que pren valors en el conjunt $\{x_1, x_2, \dots\}$. Definim:
 
-#### Funció de probabilitat puntual $p_X(k)$
+**Funció de probabilitat puntual ($p_X(k)$)**  
 Assigna directament la probabilitat exacta a cada valor possible individual $k$:
 $$
 p_X(k) = P(X = k)
@@ -273,7 +276,7 @@ Ha de complir dues condicions fonamentals:
 
 Es representa gràficament mitjançant un **gràfic de bastons**: cada bastó situat sobre el valor $k$ té una alçada igual a $p_X(k)$. **És una alçada pura, no és una àrea**.
 
-#### Funció de distribució acumulada $F_X(x)$
+**Funció de distribució acumulada ($F_X(x)$)**  
 Mesura la probabilitat acumulada de tots els valors menors o iguals a un punt $x$:
 $$
 F_X(x) = P(X \le x) = \sum_{k \le x} p_X(k)
@@ -298,7 +301,7 @@ $$P(a < X \le b) = \sum_{k=a+1}^b p_X(k) \quad \neq \quad P(a \le X \le b) = \su
 
 Sigui $X$ una variable aleatòria contínua que pren valors en un interval o regió de la recta real ($X(\Omega) \subseteq \mathbb{R}$).
 
-#### Funció de densitat de probabilitat $f_X(x)$
+**Funció de densitat de probabilitat ($f_X(x)$)**  
 Descriu com es reparteix la massa de probabilitat sobre la recta real. Perquè una funció pugui ser una funció de densitat vàlida ha de satisfer **obligatòriament dues condicions**:
 1. **No-negativitat**: $f_X(x) \ge 0 \quad \forall x \in \mathbb{R}$ (no té sentit una densitat negativa).
 2. **Àrea total sota la corba igual a 1**:
@@ -312,7 +315,7 @@ $$
 Interpretació infinitesimal: Cada rectangle de Riemann té una base infinitesimal $dx$ i una alçada $f_X(x)$, de manera que la probabilitat infinitesimal d'un tramet és:
 $$d\text{Àrea} = f_X(x)\,dx$$
 
-#### Funció de distribució acumulada $F_X(x)$ i la Regla de Barrow
+**Funció de distribució acumulada ($F_X(x)$) i la Regla de Barrow**  
 A la pràctica, no resolem integrals definides directament per sumes infinitesimals: fem servir la primitiva mitjançant la **funció de distribució**:
 $$
 F_X(x) = P(X \le x) = \int_{-\infty}^x f_X(t)\,dt
@@ -350,3 +353,142 @@ $$
 | **Funció de distribució** | $F_X(x) = \sum_{k \le x} p_X(k)$ *(esglaons a trossos)* | $F_X(x) = \int_{-\infty}^x f_X(t)\,dt$ *(corba contínua suau)* |
 | **Càlcul d'un interval** | $P(a \le X \le b) = \sum_{k=a}^b p_X(k)$ | $P(a \le X \le b) = \int_a^b f_X(x)\,dx = F_X(b) - F_X(a)$ |
 | **Pas de distribució a base** | $p_X(k) = F_X(k) - F_X(k^-)$ *(mida del salt)* | $f_X(x) = \frac{d F_X(x)}{dx}$ *(derivada / pendent)* |
+
+---
+
+### 8.5 Quantils (El problema invers)
+
+Donat un nivell de probabilitat $\alpha \in [0, 1]$, el **quantil $\alpha$** de $X$ (notat $x_\alpha$) és el valor llindar que acumula exactament una probabilitat igual a $\alpha$:
+$$
+F_X(x_\alpha) = P(X \le x_\alpha) = \alpha \iff x_\alpha = F_X^{-1}(\alpha)
+$$
+
+> *«$x_\alpha$ és el valor llindar tal que la probabilitat acumulada que la variable no el superi ($X \le x_\alpha$) és exactament $\alpha$, calculat invertint la funció $F_X^{-1}(\alpha)$»*
+
+És el **problema invers** al càlcul de probabilitats acumulades: en lloc de buscar $p = F_X(x)$ a partir d'un valor $x$, fixem la fracció desitjada $\alpha$ i determinem el llindar $x_\alpha$ resolent l'equació $F_X(x) = \alpha$.
+
+**Casos particulars:**
+- **Mediana ($M = x_{0{,}50} = P_{50}$):** Divideix la distribució en dues meitats iguals ($50\%$).
+- **Quartils:** Divideixen la distribució en quatre parts:
+  - Primer quartil: $Q_1 = x_{0{,}25}$
+  - Segon quartil (mediana): $Q_2 = M = x_{0{,}50}$
+  - Tercer quartil: $Q_3 = x_{0{,}75}$
+- **Percentils:** Divideixen la distribució en cent parts ($P_k = x_{k/100}$, per exemple $P_{90} = x_{0{,}90}$).
+
+---
+
+### 8.6 Indicadors en variables aleatòries
+
+Per caracteritzar numèricament una variable aleatòria sense dependre de tota la distribució funcional, definim indicadors de **tendència central** (valors típics) i de **dispersió** (concentració respecte a la mitjana).
+
+**Probabilitat (Model teòric / Població) vs. Estadística (Dades empíriques / Mostra)**
+
+| Concepte | Probabilitat (Població / Model teòric) | Estadística (Mostra empírica) |
+| :--- | :--- | :--- |
+| **Àmbit** | Espai $\Omega$ complet (cens, dau ideal). | Conjunt de $n$ observacions reals. |
+| **Pesos** | Probabilitat teòrica exacta: $p_i = P(X=x_i)$. | Freqüència relativa observada: $f_i = n_i / n$. |
+| **Tendència central** | **Esperança:** $\mu_X = E(X)$ (paràmetre teòric fix). | **Mitjana mostral:** $\overline{x} = \frac{1}{n}\sum x_i$ (fluctua a cada mostra). |
+| **Dispersió** | **Variància:** $\sigma_X^2 = V(X)$ \quad i \quad Desv. $\sigma_X$. | **Variància mostral:** $s_x^2$ \quad i \quad Desviació mostral $s_x$. |
+| **Connexió** | Model teòric (del paràmetre $\mu,\sigma$ a la probabilitat). | **Inferència:** de la mostra ($\overline{x}, s$) s'estimen $\mu$ i $\sigma$. |
+
+**Mesura de tendència central: Esperança matemàtica ($\mu_X = E(X)$)**  
+Condensa la distribució en un únic valor típic ponderat:
+$$
+\mu_X = E(X) = \sum_{\forall k} k \cdot p_X(k) \quad \text{(VAD)} \qquad \int_{-\infty}^{+\infty} x \cdot f_X(x)\,dx \quad \text{(VAC)}
+$$
+
+Físicament és el **centre de gravetat o punt d'equilibri** dels pesos de probabilitat (per exemple: en un dau equilibrat de 6 cares, $E(X) = \frac{21}{6} = \mathbf{3{,}5}$).
+
+**Insuficiència del valor central:** Conjunts de dades completament diferents (com les notes $\{5,5,5\}$, $\{4,5,6\}$ o $\{0,5,10\}$) comparteixen la mateixa mitjana ($5$). Un valor central mai no és suficient per si sol; cal acompanyar-lo sempre d'una mesura de **dispersió**.
+
+**Mesura de dispersió: Variància ($V(X)$ o $\sigma_X^2$) i Desviació típica ($\sigma_X$)**  
+Quantifiquen el grau de concentració o allunyament dels valors respecte a la mitjana $\mu = E(X)$:
+- **Variància ($V(X)$ o $\sigma_X^2$):** Mesura la dispersió al quadrat (unitats$^2$, per exemple $\text{minuts}^2$ o $\text{euros}^2$).
+- **Desviació típica ($\sigma_X = \sqrt{V(X)}$):** Arrel quadrada de la variància; **recupera les unitats originals** (per exemple $\text{minuts}$ o $\text{euros}$), mesurant la dispersió en l'escala real.
+
+**Fórmula operativa (Relació de Koenig):**
+$$
+\mathbf{V(X) = E(X^2) - [E(X)]^2} \qquad \text{i} \qquad \mathbf{\sigma_X = \sqrt{V(X)}}
+$$
+
+> *«La variància $V(X)$ és la mitjana dels quadrats $E(X^2)$ menys el quadrat de la mitjana $[E(X)]^2$, i la desviació $\sigma_X$ n'és l'arrel per retornar a les unitats originals»*
+
+**Càlcul pas a pas:**
+1. **1r Pas (Esperança):** Calculem $E(X) = \sum k\,p_X(k)$ \quad (o $\int x\,f_X(x)\,dx$).
+2. **2n Pas (Moment d'ordre 2):** Calculem $E(X^2) = \sum k^2\,p_X(k)$ \quad (o $\int x^2\,f_X(x)\,dx$).
+3. **3r Pas (Variància i desviació):** Fem $V(X) = E(X^2) - [E(X)]^2$ \quad i \quad $\sigma_X = \sqrt{V(X)}$.
+
+:::warning[Compte amb la variància]
+La variància **sempre ha de ser $\ge 0$**. Si obtens un valor negatiu, revisa haver restat $[E(X)]^2$ i no $E(X)$!
+:::
+
+---
+
+### 8.7 Propietats de l'esperança i la variància
+
+Siguin $X$ i $Y$ variables aleatòries, i $a, b \in \mathbb{R}$ constants:
+
+| Operació | Esperança $E(\cdot)$ | Variància $V(\cdot)$ |
+| :--- | :--- | :--- |
+| **Desplaçament ($+a$)** | $E(a + X) = a + E(X)$ | $V(a + X) = V(X)$ *(desplaçar les dades no altera la dispersió!)* |
+| **Escalat ($\cdot b$)** | $E(bX) = b \cdot E(X)$ | $V(bX) = b^2 \cdot V(X)$ *(el factor surt al quadrat)* |
+| **Transformació lineal** | $E(a + bX) = a + b E(X)$ | $V(a + bX) = b^2 \cdot V(X)$ |
+| **Suma de dues variables** | $E(X + Y) = E(X) + E(Y)$ | $V(X + Y) = V(X) + V(Y) + 2\,\text{Cov}(X,Y)$ |
+| **Resta de dues variables** | $E(X - Y) = E(X) - E(Y)$ | $V(X - Y) = V(X) + V(Y) - 2\,\text{Cov}(X,Y)$ |
+| **Si $X, Y$ són INDEPENDENTS** | $E(X \cdot Y) = E(X) \cdot E(Y)$ | $\mathbf{V(X \pm Y) = V(X) + V(Y)}$ (**Atenció: SEMPRE amb signe $+$!**) |
+
+Si restem dues variables independents, la variància és $V(X - Y) = V(X) + V(Y)$. Restar variables aleatòries independents **acumula incertesa**, mai no es resten les variàncies!
+
+---
+
+## 9. Parell de variables aleatòries (Distribució bivariant)
+
+Quan en una mateixa experiència aleatòria observem simultàniament dues variables discretes $X$ i $Y$ (per exemple: dos daus o dues mètriques d'un sistema), analitzem el seu comportament conjunt mitjançant una **taula de doble entrada**:
+
+1. **Funció de probabilitat conjunta ($p_{X,Y}(x,y)$):** Probabilitat de cada cel·la interior ($x$ i $y$):
+   $$p(x,y) = P(X=x \cap Y=y)$$
+   La suma de totes les cel·les interiors de la taula és exactament:
+   $$\sum_x \sum_y p(x,y) = 1$$
+
+2. **Distribucions marginals ($p_X(x), p_Y(y)$):** La distribució de cada variable per separat. Es calculen **sumant per files o per columnes** (als *marges* de la taula):
+   $$p_X(x) = \sum_{\forall y} p_{X,Y}(x,y) \quad \text{(sumar columna } x\text{)}, \qquad p_Y(y) = \sum_{\forall x} p_{X,Y}(x,y) \quad \text{(sumar fila } y\text{)}$$
+
+3. **Funció de probabilitat condicionada ($p_{X \mid Y}(x \mid y)$):** Restringir l'estudi a una fila o columna concreta:
+   $$P(X=x \mid Y=y) = \frac{p_{X,Y}(x,y)}{p_Y(y)} = \frac{\text{probabilitat de la cel·la }(x,y)}{\text{total marginal de la fila } y}$$
+
+4. **Condició formal d'independència:** $X$ i $Y$ són independents si i només si **totes les cel·les** són el producte dels seus dos marges:
+   $$p_{X,Y}(x,y) = p_X(x) \cdot p_Y(y) \quad \forall (x,y)$$
+   *(Comprovació: Si hi ha una sola cel·la on $p(x,y) \neq p_X(x) \cdot p_Y(y)$, les variables **NO són independents**).*
+
+### Indicadors bivariants: Covariància ($\text{Cov}(X,Y)$ o $\sigma_{X,Y}$)
+Mesura la tendència d'associació lineal conjunta entre dues variables $X$ i $Y$:
+
+- **Definició teòrica:** Mitjana del producte de les desviacions respecte a les seves mitjanes:
+  $$\text{Cov}(X,Y) = \sum_{\forall x}\sum_{\forall y} (x - E(X))(y - E(Y)) \cdot p_{X,Y}(x,y)$$
+  > *«Suma de com es desvien alhora $x$ i $y$ respecte a les seves mitjanes $E(X)$ i $E(Y)$, ponderada per la probabilitat $p_{X,Y}(x,y)$ que es donin conjuntament»*
+
+- **Fórmula pràctica de càlcul:** S'evita restar mitjanes terme a terme calculant:
+  $$\mathbf{\text{Cov}(X,Y) = E(X \cdot Y) - E(X) \cdot E(Y)}$$
+  > *«La covariància $\text{Cov}(X,Y)$ és la mitjana del producte creuat $E(X \cdot Y)$ menys el producte de les mitjanes individuals $E(X) \cdot E(Y)$»*
+
+- **Interpretació per quadrants:** Desplaçant l'origen al centre de masses $(E(X), E(Y))$, el producte $(x-\mu_X)(y-\mu_Y)$ és positiu als quadrants I i III (relació **directa**) i negatiu als quadrants II i IV (relació **inversa**).
+- **El problema d'escala:** La covariància depèn de les unitats de mesura (per exemple: en metres dóna un valor i en mil·límetres queda multiplicada per $1.000$). No permet comparar intensitats d'associació.
+
+### Coeficient de correlació de Pearson ($\rho_{X,Y}$ o $\rho$)
+Per eliminar la dependència de les unitats, **estandarditzem** la covariància dividint pel producte de les desviacions típiques:
+$$
+\rho_{X,Y} = \frac{\text{Cov}(X,Y)}{\sigma_X \cdot \sigma_Y} \qquad \text{amb} \quad \mathbf{-1 \le \rho_{X,Y} \le 1}
+$$
+
+- **Relació lineal perfecta ($|\rho| = 1$):** Punts sobre una recta $Y = a + bX$ (pendent positiu si $\rho = +1$, negatiu si $\rho = -1$).
+- **Incorrelació ($\rho = 0$):** Sense tendència lineal. Si són independents $\implies \text{Cov} = 0 \implies \mathbf{\rho = 0}$ (la inversa no sempre: relacions corbes simètriques com $Y=X^2$ poden tenir $\rho = 0$ tot i dependre l'una de l'altra).
+
+**Propietats algebraiques:**
+
+| Propietat | Descripció |
+| :--- | :--- |
+| $\text{Cov}(X, X) = V(X), \quad \rho_{X,X} = 1$ | Variància com a autocovariància |
+| $\text{Cov}(X, Y) = \text{Cov}(Y, X)$ | Simetria |
+| $\text{Cov}(aX + c, bY + d) = a \cdot b \cdot \text{Cov}(X,Y)$ | Invariància per desplaçament i escalat |
+| $E(X \cdot Y) = E(X) \cdot E(Y) + \text{Cov}(X,Y)$ | Desglossament de l'esperança del producte |
+| $V(X \pm Y) = V(X) + V(Y) \pm 2\,\text{Cov}(X,Y)$ | Variància de la suma/resta (*si independents:* $V(X \pm Y) = V(X) + V(Y)$) |

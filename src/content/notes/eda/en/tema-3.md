@@ -3,7 +3,7 @@ title: "Tema 3: Graph Algorithms"
 description: "Graph algorithms: graph representation, DFS and BFS traversals, topological sorting, shortest paths (Dijkstra), and minimum spanning trees (MST)."
 readTime: "25 min"
 order: 3
-draft: false
+draft: true
 ---
 
 # Pending content

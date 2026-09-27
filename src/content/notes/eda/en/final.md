@@ -3,7 +3,7 @@ title: "Final EDA"
 description: "Collection of final exam problems from previous EDA courses (Data Structures and Algorithms)."
 readTime: "5 min"
 order: 99
-draft: false
+draft: true
 ---
 
 # Pending content

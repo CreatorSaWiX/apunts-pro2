@@ -3,7 +3,7 @@ title: "Tema 2: Divide and Conquer"
 description: "Algorismes de divideix i venceràs (Divide and Conquer): anàlisi de recurrències, cerca binària avançada, exponenciació ràpida i ordenació."
 readTime: "25 min"
 order: 2
-draft: false
+draft: true
 ---
 
 # 1. Dividir i vèncer

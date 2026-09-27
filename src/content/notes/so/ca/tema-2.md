@@ -3,7 +3,7 @@ title: "Tema 2: Gestió de Processos, Senyals i Planificació"
 description: "Concepte de procés, estructura del PCB, diagrama d'estats (READY, RUN, BLOCKED, ZOMBIE), crides fork, exec, exit, waitpid, IPC amb senyals, màscares, sigsuspend, i planificació Round Robin."
 readTime: "18 min"
 order: 2
-draft: false
+draft: true
 ---
 
 # 2. Gestió de processos, senyals i planificació

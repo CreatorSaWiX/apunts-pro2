@@ -3,7 +3,7 @@ title: "Tema 1: test"
 description: "no hi ha descripció"
 readTime: "40s"
 order: 1
-draft: false
+draft: true
 ---
 
 # Contingut pendent

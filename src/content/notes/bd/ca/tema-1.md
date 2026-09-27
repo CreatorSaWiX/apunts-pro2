@@ -3,7 +3,7 @@ title: "Tema 1: Introducció i Arquitectura dels SGBD"
 description: "Els tres mons de la informació, objectius dels SGBD, transaccions, concurrència, fiabilitat, arquitectura ANSI/SPARC i tipologies d'usuaris."
 readTime: "8 min"
 order: 1
-draft: false
+draft: true
 ---
 
 # 1. Introducció i arquitectura dels SGBD

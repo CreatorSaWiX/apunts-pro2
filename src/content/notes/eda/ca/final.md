@@ -3,7 +3,7 @@ title: "Final EDA"
 description: "Recull de problemes d'exàmens finals de cursos anteriors d'EDA (Estructures de Dades i Algorismes)."
 readTime: "5 min"
 order: 99
-draft: false
+draft: true
 ---
 
 # Contingut pendent

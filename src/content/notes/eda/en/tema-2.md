@@ -3,7 +3,7 @@ title: "Tema 2: Divide and Conquer"
 description: "Divide and conquer algorithms: recurrence relations, advanced binary search, fast exponentiation, and sorting."
 readTime: "15 min"
 order: 2
-draft: false
+draft: true
 ---
 
 # Pending content

@@ -3,7 +3,7 @@ title: "Tema 1: Anàlisi d'Algorismes"
 description: "Eficiència algorísmica, notació asimptòtica (O, Ω, Θ), anàlisi iteratiu i recursiu, i Teoremes Mestres."
 readTime: "20 min"
 order: 1
-draft: false
+draft: true
 ---
 
 # 1. Fonaments d'eficiència i notació asimptòtica

@@ -3,7 +3,7 @@ title: "Tema 2: El Model Relacional de Dades"
 description: "Estructura formal de les relacions, grau i cardinalitat, jerarquia de claus (PK, FK, AK), regles d'integritat i accions compensatòries davant DELETE i UPDATE."
 readTime: "12 min"
 order: 2
-draft: false
+draft: true
 ---
 
 # 2. El model relacional de dades

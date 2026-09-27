@@ -3,7 +3,7 @@ title: "Tema 1: Análisis de Algoritmos"
 description: "Eficiencia algorítmica, notación asintótica (O, Ω, Θ), análisis iterativo y recursivo, Teoremas Maestros, Fibonacci logarítmico y cotas inferiores de ordenación."
 readTime: "25 min"
 order: 1
-draft: false
+draft: true
 ---
 
 ## 1. Eficiencia y Modelos de Coste

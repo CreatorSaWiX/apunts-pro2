@@ -3,7 +3,7 @@ title: "Topic 1: Algorithm Analysis"
 description: "Algorithmic efficiency, asymptotic notation (O, Ω, Θ), iterative and recursive analysis, Master Theorems, logarithmic Fibonacci, and sorting lower bounds."
 readTime: "25 min"
 order: 1
-draft: false
+draft: true
 ---
 
 ## 1. Efficiency and Cost Models

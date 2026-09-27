@@ -3,7 +3,7 @@ title: "Tema 3: Graph Algorithms"
 description: "Algorismes de grafs: representació, recorreguts DFS i BFS, ordenació topològica, camins mínims (Dijkstra) i arbres d'expansió mínima (MST)."
 readTime: "25 min"
 order: 3
-draft: false
+draft: true
 ---
 
 # Contingut pendent

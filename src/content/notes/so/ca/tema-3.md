@@ -3,7 +3,7 @@ title: "Tema 3: Exercicis d'Examen Resolts i Justificats"
 description: "Resolució pas a pas de problemes d'examen de SO (QT i QP 2021-2025): jerarquies de processos recursius, aïllament de memòria en fork, depuració de senyals i timeout (patró watchdog), cues i Round Robin."
 readTime: "22 min"
 order: 3
-draft: false
+draft: true
 ---
 
 # 3. Exercicis d'examen resolts i justificats (Tema 1 i Tema 2)

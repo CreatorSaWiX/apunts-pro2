@@ -3,7 +3,7 @@ title: "Tema 4: Exhaustive Search"
 description: "Exhaustive search and backtracking: generating subsets and permutations, search tree pruning, and constraint satisfaction problems."
 readTime: "20 min"
 order: 4
-draft: false
+draft: true
 ---
 
 # Pending content

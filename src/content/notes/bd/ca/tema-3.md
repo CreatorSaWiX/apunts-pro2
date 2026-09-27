@@ -3,7 +3,7 @@ title: "Tema 3: SQL Cheat Sheet (DDL, DML i DQL)"
 description: "Guia ràpida completa de SQL: definició d'esquemes (DDL), manipulació de dades (DML), consultes d'una i múltiples taules (DQL), funcions d'agregació, subconsultes i tipus temporals."
 readTime: "20 min"
 order: 3
-draft: false
+draft: true
 ---
 
 # 3. SQL Cheat Sheet

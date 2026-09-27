@@ -3,7 +3,7 @@ title: "Tema 1: Introducció al Sistema Operatiu i Crides a Sistema"
 description: "Definició, cicle de vida, modes d'execució de la CPU (usuari vs. kernel), frontera de seguretat, interrupcions HW, excepcions SW i mecanisme intern de les crides a sistema (syscalls)."
 readTime: "12 min"
 order: 1
-draft: false
+draft: true
 ---
 
 # 1. Introducció al sistema operatiu i crides a sistema
