@@ -1,0 +1,31 @@
+# Folders not part of the apunts web application
+others/
+portfolio/
+
+# Build outputs & generated artifacts (built on Vercel)
+dist/
+dist-ssr/
+dev-dist/
+.content-collections/
+
+# Logs
+*.log
+*.log*
+logs/
+classify_errors.log
+
+# Environment files
+.env
+.env*.local
+
+# Editor & OS files
+.DS_Store
+.vscode/
+
+# Scratch & documentation notes in root
+bundle-report.html
+dubtes.md
+production.md
+project_tree.md
+project.md
+SYNTAX_GUIDE.md
