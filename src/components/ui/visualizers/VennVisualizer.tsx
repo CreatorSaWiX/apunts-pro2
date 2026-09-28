@@ -301,6 +301,11 @@ export default function VennVisualizer(props: VennVisualizerProps) {
         return <MiniVennDiagram op={rawOp} />;
     }
 
+    return <InteractiveVennVisualizer {...props} />;
+}
+
+function InteractiveVennVisualizer(props: VennVisualizerProps) {
+    const rawOp = props.op || props.operation;
     const initialPreset = getPresetById(rawOp);
     const [regions, setRegions] = useState(initialPreset.regions || { onlyA: true, intersect: true, onlyB: true, outside: false });
     const [isDisjoint, setIsDisjoint] = useState(!!initialPreset.isDisjoint);

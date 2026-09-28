@@ -7,7 +7,7 @@ import { X, Heart, Share2, Trash2, ChevronLeft, ChevronRight, MessageCircle, Pen
 import ReplySection from './ReplySection';
 import FileViewerRenderer from './viewers/FileViewerRenderer';
 import { useAuth } from '../../contexts/AuthContext';
-import { db } from '../../lib/firebase';
+import { db, getFirebaseAuthToken } from '../../lib/firebase';
 import { doc, updateDoc, deleteField, deleteDoc, collection, getDocs, increment, setDoc, serverTimestamp } from 'firebase/firestore';
 import { HtmlRenderer } from '../ui/typography/HtmlRenderer';
 import { useTranslation } from 'react-i18next';
@@ -345,10 +345,14 @@ const PostDetailModal = ({ post, isOpen, onClose, onNext, onPrev, onDelete, onEd
 
             await deleteDoc(doc(db, 'community_posts', post.id));
 
-            // Sincronitzem l'esborrat amb Algolia
+            // Sincronitzem l'esborrat amb Algolia amb autenticació
+            const token = await getFirebaseAuthToken();
             fetch('/api/sync-algolia', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                },
                 body: JSON.stringify({ action: 'delete', postId: post.id })
             }).catch(console.error);
 

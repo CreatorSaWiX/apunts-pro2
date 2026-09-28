@@ -15,7 +15,11 @@ service cloud.firestore {
       // Qualsevol usuari pot veure perfils individuals (per UI de la comunitat), però es bloqueja el list complet
       allow get: if request.auth.uid != null;
       allow list: if false;
-      allow update: if request.auth.uid == userId;
+      // Un usuari només pot actualitzar el seu propi perfil i no pot modificar el seu propi rol (privilege escalation prevention)
+      allow update: if request.auth.uid == userId && (
+        isModerator() ||
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
+      );
       
       // Els nous usuaris només es poden crear amb el rol per defecte
       allow create: if request.auth.uid == userId && request.resource.data.role == 'invitat';

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense, useCallback, memo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { db } from '../../lib/firebase';
+import { db, getFirebaseAuthToken } from '../../lib/firebase';
 import { collection, addDoc, doc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { getSubjectById, type SubjectType } from '../../config/subjects';
 import { AlertCircle, ChevronDown, Paperclip, X, Maximize2, Minimize2, Eye, ChevronLeft } from 'lucide-react';
@@ -146,6 +146,12 @@ const CreatePostModal = ({ isOpen, onClose, initialSubject, postToEdit }: Create
                 ...(att.isCustomThumbnail !== undefined ? { isCustomThumbnail: att.isCustomThumbnail } : {})
             }));
 
+            const token = await getFirebaseAuthToken();
+            const authHeaders: Record<string, string> = {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            };
+
             if (postToEdit) {
                 const postRef = doc(db, 'community_posts', postToEdit.id);
                 await updateDoc(postRef, {
@@ -156,10 +162,10 @@ const CreatePostModal = ({ isOpen, onClose, initialSubject, postToEdit }: Create
 
                 fetch('/api/sync-algolia', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders,
                     body: JSON.stringify({
                         action: 'update',
-                        post: { id: postToEdit.id, content: finalContent.trim(), subject, attachments: cleanAttachments }
+                        post: { id: postToEdit.id, content: finalContent.trim(), subject, attachments: cleanAttachments, userId: user.id }
                     })
                 }).catch(console.error);
             } else {
@@ -180,7 +186,7 @@ const CreatePostModal = ({ isOpen, onClose, initialSubject, postToEdit }: Create
                 // Notify Algolia via Vercel webhook (fire and forget)
                 fetch('/api/sync-algolia', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders,
                     body: JSON.stringify({
                         action: 'create',
                         post: { id: docRef.id, ...postData }

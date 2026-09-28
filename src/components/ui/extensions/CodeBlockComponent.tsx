@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NodeViewWrapper, NodeViewContent, type NodeViewProps } from '@tiptap/react';
 import { Copy, Check, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 
 export const CodeBlockComponent: React.FC<NodeViewProps> = ({ node, updateAttributes }) => {
     const currentLanguage = node.attrs.language || 'auto';

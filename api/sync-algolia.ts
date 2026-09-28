@@ -29,6 +29,11 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             if (!post || !post.id) {
                 return jsonResponse({ error: 'Post object with id is required' }, 400);
             }
+
+            // Validació d'autorització estricta (Hard check): l'usuari ha d'estar autenticat i coincidir amb l'autor
+            if (!_userId || !post.userId || post.userId !== _userId) {
+                return jsonResponse({ error: 'No autoritzat a sincronitzar posts d\'un altre usuari' }, 403);
+            }
             
             const record = {
                 objectID: post.id,
@@ -47,6 +52,24 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             if (!postId) {
                 return jsonResponse({ error: 'postId is required' }, 400);
             }
+            if (!_userId) {
+                return jsonResponse({ error: 'No autoritzat' }, 401);
+            }
+
+            // Validació d'autorització per a l'eliminació: comprovem si el registre pertany a l'usuari
+            try {
+                const existingRecord = await index.getObject<{ userId?: string }>(postId);
+                if (existingRecord.userId && existingRecord.userId !== _userId) {
+                    return jsonResponse({ error: 'No autoritzat a esborrar posts d\'un altre usuari' }, 403);
+                }
+            } catch (err: any) {
+                // Si el post ja no existia a l'índex (404), considerem l'eliminació com a satisfeta
+                if (err?.status === 404) {
+                    return jsonResponse({ success: true });
+                }
+                throw err;
+            }
+
             await index.deleteObject(postId);
             return jsonResponse({ success: true });
         } else {
