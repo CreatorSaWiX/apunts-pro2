@@ -10,7 +10,8 @@ const APP_DATA: Record<string, { version: string; updated: string }> = {
     pro2: { version: 'v1.9.3', updated: '23/08/2026' },
     m1: { version: 'v1.7.1', updated: '30/05/2026' },
     m2: { version: 'v1.6.7', updated: '03/06/2026' },
-    pe: { version: 'v1.10', updated: '27/09/2026' }
+    pe: { version: 'v1.10', updated: '27/09/2026' },
+    eda: { version: 'v1.10', updated: '29/09/2026' }
 };
 
 const letterContainerVariants = {
@@ -51,7 +52,23 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
     const {
         needRefresh: [needRefresh],
         updateServiceWorker,
-    } = useRegisterSW();
+    } = useRegisterSW({
+        onRegisteredSW(_swUrl, r) {
+            if (!r) return;
+            const checkForUpdate = () => {
+                r.update().catch(() => {});
+            };
+            // Check immediately when user focuses the tab (e.g. returns after deploy)
+            window.addEventListener('focus', checkForUpdate);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    checkForUpdate();
+                }
+            });
+            // Also check periodically every 20 seconds
+            setInterval(checkForUpdate, 20 * 1000);
+        }
+    });
 
     const [isLandscapeMobile, setIsLandscapeMobile] = React.useState(false);
     React.useEffect(() => {

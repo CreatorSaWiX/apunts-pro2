@@ -1,5 +1,6 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
+export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
 export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
