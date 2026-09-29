@@ -1,63 +1,82 @@
-# Apunts PRO2 / M1 / M2
+# Apunts
 
-Platform to share interactive notes, problem solutions from Jutge.org, and academic resources for **Programming 2 (PRO2)** and **Mathematics (M1/M2)** at UPC-FIB.
+An interactive computing and academic platform engineered for computer science and applied mathematics at UPC-FIB. Built for responsiveness, algorithmic rigor, and real-time collaboration.
 
 <p align="center">
-  <img src="public/thumbnail.png" alt="Apunts Platform Screenshot" width="800">
+  <img src="public/thumbnail.webp" alt="Apunts Platform Preview" width="900" />
 </p>
 
-## Tech stack
+---
 
-[![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+## Architectural Highlights
 
-- **Core:** React 19, TypeScript, Vite, PWA
-- **Styles & UI:** Tailwind CSS v4, Framer Motion, Lucide React, React Three Fiber (Three JS)
-- **Routes & states:** React Router v7, Context API nativa
-- **Backend & data:** Firebase (Auth, Firestore)
-- **Content management (Markdown):** `@content-collections` (with Zod), React Markdown, Unifiedjs (Remark/Rehype), KaTeX, PrismJS / CodeMirror
-- **External services:** Vercel Serverless Functions (Proxy for Jutge.org for *scraping*)
+- **Deterministic DAG Engine (`Roadmap`)**  
+  Topological curriculum navigation governed by an acyclic graph invariant. Cycle detection runs in $\mathcal{O}(V + E)$ time via zero-allocation queue traversals, cascading prerequisite states deterministically across academic terms.
 
-## Structure (`src/`)
+- **Greedy Interval Partitioning (`Gantt`)**  
+  Sub-millisecond timeline layout powered by a binary Min-Heap priority queue. Guarantees $\mathcal{O}(N \log K)$ track scheduling and continuous 60/120 FPS rendering without layout thrashing.
 
-- `components/`: Encapsulated UI, featuring simulators integrable in MD (`OOPPlayer`, `AlgoPlayer`, `GraphVisualizer`).
-- `content/`: Static database in Markdown format (`/notes/pro2/`, `/notes/m1/`). Closely compiled by *Content Collections*.
-- `contexts/`: Global states (Auth, Subject).
-- `lib/`: Connections to services and pure logic (`firebase.ts`, simulations).
-- `markdown/`: Advanced rendering tool (Custom directives in Markdown).
-- `pages/`: Views assigned to the Router.
+- **Reactive AST Pipeline (`Markdown`)**  
+  Nine-pass unified syntax compilation with lazy visualizer isolation. Directives, KaTeX mathematical typesetting, and WebGL contexts execute under isolated error boundaries with zero runtime jank.
 
-## Installation and development
+- **Realtime Collaborative Canvas**  
+  Multiplayer vector drawing and presence tracking backed by Firebase Realtime Database. Cursors are throttled at 20 FPS with `requestAnimationFrame` batching to ensure fluid co-presence with minimal network overhead.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/CreatorSaWiX/apunts-pro2.git
-   cd apunts-pro2
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configuration** (Optional)
-   Create a `.env.local` file with your Firebase configuration and optional Jutge credentials.
-
-4. **Run in local**
-   ```bash
-   npm run dev
-   ```
-
-## Contributing
-
-We are an open community! If you want to add notes or improve the platform:
-1. Check that the application compiles correctly (`npm run build`).
-2. Follow strict TypeScript standards (avoid `any`).
-3. Open a Pull Request with a clear description of the change.
+- **Disjoint-Set Comment Architecture**  
+  One-level threaded tree reconstruction operating in $\mathcal{O}(N)$ amortized time with true path compression and cycle-guarded root discovery.
 
 ---
-**License:** MIT | Maintained by [@CreatorSaWiX](https://github.com/CreatorSaWiX)
+
+## System Overview
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Interface** | React 19, TypeScript, Tailwind CSS v4, Framer Motion |
+| **Graphics & Math** | Three.js, React Three Fiber, Mafs, KaTeX, React Force Graph (D3) |
+| **State & Flow** | React Flow (`@xyflow/react`), Zustand (`useShallow`), Native Context |
+| **Content Pipeline** | `@content-collections` (Zod), Remark / Rehype, CodeMirror |
+| **Realtime & Cloud** | Firebase (Auth, Firestore, RTDB), Cloudflare R2, Vercel Serverless |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- npm 10+
+
+### Quickstart
+
+```bash
+# Clone the repository
+git clone https://github.com/CreatorSaWiX/apunts-pro2.git
+cd apunts-pro2
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Production Build
+
+```bash
+# Compile and verify type integrity
+npm run build
+```
+
+---
+
+## Engineering Standards
+
+- **Strict Type Invariants:** Zero compilation errors under `tsc -b`.
+- **Fault Isolation:** Sandboxed error boundaries prevent sub-component failures from bubbling to root views.
+- **Allocation Economy:** Cache-first data structures (`Set`, `Map`, Min-Heap) prioritized over repeated array allocations in performance-critical loops.
+
+---
+
+## License
+
+MIT © [CreatorSaWiX](https://github.com/CreatorSaWiX)
