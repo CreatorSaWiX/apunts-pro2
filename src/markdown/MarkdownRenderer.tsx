@@ -33,6 +33,11 @@ const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/Lis
 const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/PointerVisualizer"));
 const VennVisualizer = React.lazy(() => import("../components/ui/visualizers/VennVisualizer"));
 const ProbTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/ProbTreeVisualizer"));
+const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/AsymptoticVisualizer"));
+const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/GrowthHierarchyVisualizer"));
+const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/DivideConquerVisualizer"));
+const SelectionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/SelectionSortVisualizer"));
+const InsertionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/InsertionSortVisualizer"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -234,6 +239,41 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    asymptoticviz: () => {
+        return (
+            <SafeSuspense>
+                <AsymptoticVisualizer />
+            </SafeSuspense>
+        );
+    },
+    growthviz: () => {
+        return (
+            <SafeSuspense>
+                <GrowthHierarchyVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dncviz: () => {
+        return (
+            <SafeSuspense>
+                <DivideConquerVisualizer />
+            </SafeSuspense>
+        );
+    },
+    selectionsortviz: () => {
+        return (
+            <SafeSuspense>
+                <SelectionSortVisualizer />
+            </SafeSuspense>
+        );
+    },
+    insertionsortviz: () => {
+        return (
+            <SafeSuspense>
+                <InsertionSortVisualizer />
+            </SafeSuspense>
+        );
+    },
     vectorviz: () => {
         return (
             <SafeSuspense>
@@ -410,7 +450,7 @@ const rehypePluginsConfig = [
             'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
-            'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,

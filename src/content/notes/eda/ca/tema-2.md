@@ -6,36 +6,16 @@ order: 2
 draft: true
 ---
 
-# 1. Dividir i vèncer
+El paradigma de **dividir i vèncer** descomposa un problema de mida $n$ en subproblemes menors de la mateixa naturalesa, els resol de forma recursiva i en combina els resultats per obtenir la solució global.
 
-L'estratègia de **dividir i vèncer** és un dels patrons de disseny algorísmic més potents en computació. Consisteix a descompondre un problema de mida $n$ en subproblemes més petits de la mateixa naturalesa, resoldre'ls de forma recursiva i combinar les seves solucions per construir la solució del problema original.
+| Fase | Acció | Cost associat |
+| :--- | :--- | :---: |
+| **1. Dividir** | Descompondre l'entrada en $a \ge 1$ subproblemes de mida $n/b$ amb $b > 1$. | $T_{\text{divisio}}(n)$ |
+| **2. Vèncer** | Resoldre recursivament els $a$ subproblemes (resolució directa $\Theta(1)$ en cas base). | $a \cdot T(n/b)$ |
+| **3. Combinar** | Acoblar les solucions parcials per construir la solució global. | $T_{\text{combinar}}(n)$ |
 
-Qualsevol algorisme basat en aquest paradigma realitza el treball en tres passos:
-1. **Dividir:** Descompondre l'entrada en $a \ge 1$ subproblemes de mida menor (habitualment de mida $n/b$ amb $b > 1$).
-2. **Vèncer (recursivament):** Resoldre cadascun dels subproblemes mitjançant crides recursives. Si el subproblema és prou petit (cas base de mida $\mathcal{O}(1)$), es resol directament sense recursió.
-3. **Combinar:** Fusionar o acoblar les respostes dels subproblemes per obtenir la solució global.
-
-```text
-               ┌─────────────────────────────┐
-               │ Problema original (mida n)  │
-               └──────────────┬──────────────┘
-              ┌───────────────┼───────────────┐
-              ▼               ▼               ▼
-       ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-1.     │Subproblema 1│ │Subproblema 2│ │Subproblema a│  Dividir: T_divisio(n)
-       │  mida n/b   │ │  mida n/b   │ │  mida n/b   │
-       └──────┬──────┘ └──────┬──────┘ └──────┬──────┘
-              │ (rec)         │ (rec)         │ (rec)
-              ▼               ▼               ▼
-       ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-2.     │  Solució 1  │ │  Solució 2  │ │  Solució a  │  Vèncer: a · T(n/b)
-       └──────┬──────┘ └──────┬──────┘ └──────┬──────┘
-              └───────────────┼───────────────┘
-                              ▼
-               ┌─────────────────────────────┐
-3.             │   Solució global combinada  │          Combinar: T_combinar(n)
-               └─────────────────────────────┘
-```
+:::dncviz
+:::
 
 ### Distribució del cost temporal
 El cost total d'un algorisme de dividir i vèncer prové exclusivament de tres fonts:
