@@ -66,6 +66,7 @@ function App() {
                 <Route path="/tema/:id" element={<SuspendedPage><TopicPage /></SuspendedPage>} />
                 <Route path="/tema/:id/test" element={<SuspendedPage><QuizPage /></SuspendedPage>} />
                 <Route path="/tema/:id/solucionaris" element={<ProtectedRoute><SuspendedPage><SolutionsListPage /></SuspendedPage></ProtectedRoute>} />
+                <Route path="/tema/:id/solucionaris/:problemId" element={<ProtectedRoute><SuspendedPage><SolutionDetailPage /></SuspendedPage></ProtectedRoute>} />
                 {/* Temporarily disabled while under development */}
                 <Route path="/comunitat" element={<Navigate to="/" replace />} />
                 <Route path="/community" element={<Navigate to="/" replace />} />
