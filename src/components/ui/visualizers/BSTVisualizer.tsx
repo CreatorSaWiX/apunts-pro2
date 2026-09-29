@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { m as motion } from 'framer-motion';
 
 interface BSTNode {
@@ -22,6 +22,8 @@ const BST_NODES: BSTNode[] = [
     { id: 90, val: 90, x: 430, y: 175 },
 ];
 
+const BST_NODES_MAP = new Map<number, BSTNode>(BST_NODES.map(n => [n.id, n]));
+
 const BST_LINKS = [
     { from: 50, to: 20, type: 'LEFT', label: '<' },
     { from: 50, to: 80, type: 'RIGHT', label: '<' },
@@ -33,21 +35,22 @@ const BST_LINKS = [
 
 const INORDER_TRAVERSAL = [10, 20, 30, 50, 70, 80, 90];
 
-// Helper to get all node IDs in the left/right subtree of a node
-function getSubtreeNodes(nodeId: number, side: 'LEFT' | 'RIGHT'): number[] {
-    const node = BST_NODES.find(n => n.id === nodeId);
-    if (!node) return [];
+// Helper per obtenir els IDs del subarbre esquerre/dret en O(V) amb cua O(1)
+function getSubtreeNodes(nodeId: number, side: 'LEFT' | 'RIGHT'): Set<number> {
+    const node = BST_NODES_MAP.get(nodeId);
+    if (!node) return new Set();
 
     const rootChildId = side === 'LEFT' ? node.left : node.right;
-    if (!rootChildId) return [];
+    if (!rootChildId) return new Set();
 
-    const result: number[] = [];
+    const result = new Set<number>();
     const queue = [rootChildId];
+    let head = 0;
 
-    while (queue.length > 0) {
-        const currId = queue.shift()!;
-        result.push(currId);
-        const currNode = BST_NODES.find(n => n.id === currId);
+    while (head < queue.length) {
+        const currId = queue[head++];
+        result.add(currId);
+        const currNode = BST_NODES_MAP.get(currId);
         if (currNode) {
             if (currNode.left) queue.push(currNode.left);
             if (currNode.right) queue.push(currNode.right);
@@ -59,15 +62,15 @@ function getSubtreeNodes(nodeId: number, side: 'LEFT' | 'RIGHT'): number[] {
 export default function BSTVisualizer() {
     const [selectedId, setSelectedId] = useState<number>(50);
 
-    const leftSubtree = getSubtreeNodes(selectedId, 'LEFT');
-    const rightSubtree = getSubtreeNodes(selectedId, 'RIGHT');
+    const leftSubtree = useMemo(() => getSubtreeNodes(selectedId, 'LEFT'), [selectedId]);
+    const rightSubtree = useMemo(() => getSubtreeNodes(selectedId, 'RIGHT'), [selectedId]);
 
-    const getNodeRole = (id: number) => {
+    const getNodeRole = useCallback((id: number) => {
         if (id === selectedId) return 'SELECTED';
-        if (leftSubtree.includes(id)) return 'LEFT_SUBTREE';
-        if (rightSubtree.includes(id)) return 'RIGHT_SUBTREE';
+        if (leftSubtree.has(id)) return 'LEFT_SUBTREE';
+        if (rightSubtree.has(id)) return 'RIGHT_SUBTREE';
         return 'DEFAULT';
-    };
+    }, [selectedId, leftSubtree, rightSubtree]);
 
     const getRoleColor = (role: string) => {
         switch (role) {
@@ -129,18 +132,18 @@ export default function BSTVisualizer() {
                         const isLeftActive = link.from === selectedId && link.type === 'LEFT';
                         const isRightActive = link.from === selectedId && link.type === 'RIGHT';
                         const isSubtreeLink =
-                            (leftSubtree.includes(link.from) && leftSubtree.includes(link.to)) ||
-                            (rightSubtree.includes(link.from) && rightSubtree.includes(link.to));
+                            (leftSubtree.has(link.from) && leftSubtree.has(link.to)) ||
+                            (rightSubtree.has(link.from) && rightSubtree.has(link.to));
 
                         let strokeColor = '#334155';
                         let textColor = '#64748b';
                         let isHighlighted = false;
 
-                        if (isLeftActive || (isSubtreeLink && leftSubtree.includes(link.to))) {
+                        if (isLeftActive || (isSubtreeLink && leftSubtree.has(link.to))) {
                             strokeColor = '#3b82f6';
                             textColor = '#60a5fa';
                             isHighlighted = true;
-                        } else if (isRightActive || (isSubtreeLink && rightSubtree.includes(link.to))) {
+                        } else if (isRightActive || (isSubtreeLink && rightSubtree.has(link.to))) {
                             strokeColor = '#a855f7';
                             textColor = '#c084fc';
                             isHighlighted = true;

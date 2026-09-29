@@ -35,6 +35,82 @@ function getRulerConfig(zoomLevel: number): { intervalMins: number; label: strin
     return { intervalMins: 60 * 24 * 7, label: 'dd MMM' };
 }
 
+interface TrackSlot {
+    trackIndex: number;
+    endTime: number;
+}
+
+/**
+ * Min-Heap d'alta eficiència per a la cua de prioritat d'Interval Partitioning.
+ * Garanteix temps d'assignació de pistes O(N log K) i espai O(K).
+ */
+class TrackMinHeap {
+    private heap: TrackSlot[] = [];
+
+    get size(): number {
+        return this.heap.length;
+    }
+
+    peek(): TrackSlot | undefined {
+        return this.heap[0];
+    }
+
+    push(item: TrackSlot): void {
+        this.heap.push(item);
+        this.siftUp(this.heap.length - 1);
+    }
+
+    pop(): TrackSlot | undefined {
+        if (this.heap.length === 0) return undefined;
+        const top = this.heap[0];
+        const bottom = this.heap.pop()!;
+        if (this.heap.length > 0) {
+            this.heap[0] = bottom;
+            this.siftDown(0);
+        }
+        return top;
+    }
+
+    private siftUp(idx: number): void {
+        while (idx > 0) {
+            const parent = (idx - 1) >> 1;
+            if (this.heap[idx].endTime < this.heap[parent].endTime) {
+                const tmp = this.heap[idx];
+                this.heap[idx] = this.heap[parent];
+                this.heap[parent] = tmp;
+                idx = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private siftDown(idx: number): void {
+        const length = this.heap.length;
+        const halfLength = length >> 1;
+        while (idx < halfLength) {
+            const left = (idx << 1) + 1;
+            const right = left + 1;
+            let smallest = idx;
+
+            if (this.heap[left].endTime < this.heap[smallest].endTime) {
+                smallest = left;
+            }
+            if (right < length && this.heap[right].endTime < this.heap[smallest].endTime) {
+                smallest = right;
+            }
+            if (smallest !== idx) {
+                const tmp = this.heap[idx];
+                this.heap[idx] = this.heap[smallest];
+                this.heap[smallest] = tmp;
+                idx = smallest;
+            } else {
+                break;
+            }
+        }
+    }
+}
+
 type LayoutTask = Task & { 
     start: Date; 
     end: Date; 
@@ -577,29 +653,27 @@ const GanttView: React.FC = () => {
 
         visibleTasks.sort((a, b) => a.startMs - b.startMs);
 
-        // Algorisme de Greedy Interval Partitioning (Empaquetament òptim de pistes O(N log N))
-        // trackEndTimes[i] emmagatzema l'endMs de l'última tasca assignada a la pista i
-        const trackEndTimes: number[] = [];
+        // Algorisme de Greedy Interval Partitioning via Min-Heap (Empaquetament òptim de pistes O(N log K))
+        const heap = new TrackMinHeap();
+        let nextTrackIndex = 0;
         const BUFFER_GAP_MS = 5 * 60 * 1000; // 5 minuts de marge visual entre tasques consecutives
 
         return visibleTasks.map((item) => {
             const durationMins = Math.max(5, (item.endMs - item.startMs) / 60000);
             const leftMins = (item.startMs - timelineStart.getTime()) / 60000;
 
-            // Trobar la primera pista on la tasca anterior ja hagi finalitzat
-            let assignedTrack = -1;
-            for (let t = 0; t < trackEndTimes.length; t++) {
-                if (trackEndTimes[t] + BUFFER_GAP_MS <= item.startMs) {
-                    assignedTrack = t;
-                    trackEndTimes[t] = item.endMs;
-                    break;
-                }
-            }
+            let assignedTrack: number;
+            const earliest = heap.peek();
 
-            // Si s'encavalca amb totes les pistes existents, en creem una de nova
-            if (assignedTrack === -1) {
-                assignedTrack = trackEndTimes.length;
-                trackEndTimes.push(item.endMs);
+            if (earliest && earliest.endTime + BUFFER_GAP_MS <= item.startMs) {
+                // Reutilitzar la pista que s'ha alliberat abans O(log K)
+                const slot = heap.pop()!;
+                assignedTrack = slot.trackIndex;
+                heap.push({ trackIndex: assignedTrack, endTime: item.endMs });
+            } else {
+                // S'encavalca amb totes les pistes en curs: assignar nova pista O(log K)
+                assignedTrack = nextTrackIndex++;
+                heap.push({ trackIndex: assignedTrack, endTime: item.endMs });
             }
 
             return {

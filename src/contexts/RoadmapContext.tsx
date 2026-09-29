@@ -200,6 +200,47 @@ const checkPrerequisites = (currentNodes: Node<SubjectNodeData>[], currentEdges:
     });
 };
 
+/**
+ * Detecta si afegir una aresta dirigida (source -> target) introduiria un cicle al graf.
+ * En un DAG pur, una aresta (source -> target) crea un cicle si i només si target === source
+ * o ja existeix un camí dirigit previ des de target cap a source (target ~> source).
+ * Temps d'execució: O(V + E) mitjançant cerca en amplada (BFS) amb punter de cua O(1).
+ */
+export const wouldCreateCycle = (source: string, target: string, edges: Edge[]): boolean => {
+    if (!source || !target || source === target) return true;
+
+    const adj = new Map<string, string[]>();
+    for (let i = 0; i < edges.length; i++) {
+        const e = edges[i];
+        if (!e.source || !e.target) continue;
+        const list = adj.get(e.source);
+        if (list) list.push(e.target);
+        else adj.set(e.source, [e.target]);
+    }
+
+    // BFS des de target per comprovar si podem assolir source
+    const visited = new Set<string>([target]);
+    const queue: string[] = [target];
+    let head = 0;
+
+    while (head < queue.length) {
+        const curr = queue[head++];
+        if (curr === source) return true;
+        const neighbors = adj.get(curr);
+        if (neighbors) {
+            for (let i = 0; i < neighbors.length; i++) {
+                const next = neighbors[i];
+                if (!visited.has(next)) {
+                    visited.add(next);
+                    queue.push(next);
+                }
+            }
+        }
+    }
+
+    return false;
+};
+
 const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
     nodes: [],
     edges: [],
@@ -236,8 +277,28 @@ const createRoadmapStore = () => createStore<RoadmapState>((set, get) => ({
         // Don't recompute derived or saveVersion on mere position changes
         return { nodes: newNodes };
     }),
-    onEdgesChange: (changes) => set(state => ({ edges: applyEdgeChanges(changes, state.edges) })),
-    onConnect: (connection) => set(state => ({ edges: addEdge(connection, state.edges) })),
+    onEdgesChange: (changes) => set(state => {
+        const newEdges = applyEdgeChanges(changes, state.edges);
+        const hasEdgeRemoval = changes.some(c => c.type === 'remove');
+        if (hasEdgeRemoval) {
+            const finalNodes = checkPrerequisites(state.nodes, newEdges);
+            const derived = computeDerivedState(finalNodes, state.targetGrade);
+            return { edges: newEdges, nodes: finalNodes, ...derived, saveVersion: state.saveVersion + 1 };
+        }
+        return { edges: newEdges };
+    }),
+    onConnect: (connection) => set(state => {
+        if (!connection.source || !connection.target) return state;
+        // Blindatge matemàtic: Evitar cicles en el DAG acadèmic
+        if (wouldCreateCycle(connection.source, connection.target, state.edges)) {
+            console.warn(`[Roadmap] Connexió descartada: crearia un cicle entre ${connection.source} i ${connection.target}`);
+            return state;
+        }
+        const newEdges = addEdge(connection, state.edges);
+        const finalNodes = checkPrerequisites(state.nodes, newEdges);
+        const derived = computeDerivedState(finalNodes, state.targetGrade);
+        return { edges: newEdges, nodes: finalNodes, ...derived, saveVersion: state.saveVersion + 1 };
+    }),
 
     updateNodeStatus: (nodeId, status) => set(state => {
         const mapped = state.nodes.map(node => {

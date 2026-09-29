@@ -19,6 +19,8 @@ const HEAP_NODES: HeapNodeData[] = [
     { idx: 6, val: 15, x: 305, y: 182 },
 ];
 
+const HEAP_NODES_MAP = new Map<number, HeapNodeData>(HEAP_NODES.map(n => [n.idx, n]));
+
 const TREE_LINKS = [
     { from: 1, to: 2 },
     { from: 1, to: 3 },
@@ -93,8 +95,8 @@ export default function HeapVisualizer() {
                 <svg className="w-full h-full" viewBox="0 0 500 225">
                     {/* CONNECTING LINKS */}
                     {TREE_LINKS.map(link => {
-                        const fromNode = HEAP_NODES.find(n => n.idx === link.from)!;
-                        const toNode = HEAP_NODES.find(n => n.idx === link.to)!;
+                        const fromNode = HEAP_NODES_MAP.get(link.from)!;
+                        const toNode = HEAP_NODES_MAP.get(link.to)!;
                         const isConnectedToSelected =
                             (link.from === selectedIdx && (link.to === leftChildIdx || link.to === rightChildIdx)) ||
                             (link.to === selectedIdx && link.from === parentIdx);

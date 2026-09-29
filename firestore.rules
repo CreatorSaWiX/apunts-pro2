@@ -2,12 +2,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Funció per comprovar si l'usuari és moderador o administrador
+    // Funció per comprovar si l'usuari és moderador, editor o administrador
+    // Prioritza Custom Claims al token JWT (Cost 0 I/O de base de dades i O(1))
+    // amb fallback a una única lectura a Firestore usant l'operador 'in'
     function isModerator() {
-      return request.auth.uid != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderador' || 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor' ||
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      return request.auth.uid != null && (
+        ('role' in request.auth.token && request.auth.token.role in ['moderador', 'editor', 'admin']) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['moderador', 'editor', 'admin'])
+      );
     }
 
     // Usuaris
