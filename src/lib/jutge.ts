@@ -7,12 +7,64 @@ export interface JutgeProblem {
     availableLanguages?: string[];
 }
 
+// --- Pre-scraped static statements (loaded on demand) ---
+// This is the primary source — instant, no network, no errors.
+// Loaded via dynamic import() so it creates a separate lazy chunk instead of bloating useSolutions.
+let cachedStatements: Record<string, { title: string; statement: string; availableLanguages: string[] }> | null = null;
+
+async function getStaticStatement(problemId: string, lang: string): Promise<JutgeProblem | null> {
+    if (!cachedStatements) {
+        try {
+            const mod = await import('../content/data/jutge-statements.json');
+            cachedStatements = (mod.default || mod) as unknown as Record<string, { title: string; statement: string; availableLanguages: string[] }>;
+        } catch (e) {
+            console.warn('[jutge] Failed to load static statements JSON:', e);
+            cachedStatements = {};
+        }
+    }
+
+    const cleanId = problemId.replace(/[^a-zA-Z0-9_]/g, '');
+    const priority = Array.from(new Set([lang, 'ca', 'en', 'es']));
+
+    for (const l of priority) {
+        const key = `${cleanId}_${l}`;
+        const entry = cachedStatements[key];
+        if (entry && entry.statement) {
+            return {
+                id: cleanId,
+                title: entry.title,
+                statement: entry.statement,
+                url: `https://jutge.org/problems/${cleanId}`,
+                source: 'static-prescrape',
+                availableLanguages: entry.availableLanguages
+            };
+        }
+    }
+    return null;
+}
+
 // --- Client-side fallback scraping via CORS proxy ---
 // Replicates the server-side jutgeScraper.ts logic using the native browser DOMParser.
 
-const CORS_PROXIES = [
-    (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+interface CorsProxy {
+    makeUrl: (url: string) => string;
+    extractHtml: (resp: Response) => Promise<string>;
+}
+
+const CORS_PROXIES: CorsProxy[] = [
+    {
+        // allorigins /get returns JSON { contents: "..." } with proper CORS headers
+        makeUrl: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+        extractHtml: async (resp) => {
+            const json = await resp.json();
+            return json.contents || '';
+        },
+    },
+    {
+        // codetabs proxy returns raw HTML
+        makeUrl: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+        extractHtml: async (resp) => resp.text(),
+    },
 ];
 
 async function clientSideScrape(problemId: string, lang: string): Promise<JutgeProblem | null> {
@@ -23,14 +75,14 @@ async function clientSideScrape(problemId: string, lang: string): Promise<JutgeP
     for (const l of uniqueLangs) {
         const jutgeUrl = `https://jutge.org/problems/${cleanId}_${l}`;
 
-        for (const makeProxyUrl of CORS_PROXIES) {
+        for (const proxy of CORS_PROXIES) {
             try {
-                const proxyUrl = makeProxyUrl(jutgeUrl);
+                const proxyUrl = proxy.makeUrl(jutgeUrl);
                 const resp = await fetch(proxyUrl);
                 if (!resp.ok) continue;
 
-                const html = await resp.text();
-                if (html.includes('Login') || html.includes('Wrong URL') || html.length < 200) continue;
+                const html = await proxy.extractHtml(resp);
+                if (!html || html.includes('Login') || html.includes('Wrong URL') || html.length < 200) continue;
 
                 const result = parseJutgeHtml(html, cleanId, l);
                 if (result) {
@@ -158,23 +210,45 @@ function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProbl
 }
 
 // --- Main fetch function ---
-// Strategy: 1) Try Vercel proxy  2) Fallback to client-side CORS proxy scraping
+// Strategy:
+//   1) Instant lookup from pre-scraped static JSON (0ms, always works)
+//   2) Fallback: Vercel proxy (for problems not in static data, e.g. user-uploaded)
+//   3) Fallback: Client-side CORS proxy scraping
 
 export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'): Promise<JutgeProblem | null> => {
-    // 1. Try Vercel serverless proxy first
+    // 1. ⚡ Try pre-scraped static data FIRST (instant, no network)
+    const staticResult = await getStaticStatement(problemId, lang);
+    if (staticResult) {
+        return staticResult;
+    }
+
+    // 2. Try Vercel serverless proxy (returns raw HTML wrapped in JSON)
     try {
-        const response = await fetch(`/api/jutge-proxy?id=${problemId}&lang=${lang}&v=${Date.now()}`);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        const response = await fetch(`/api/jutge-proxy?id=${problemId}&lang=${lang}&v=${Date.now()}`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
 
         if (response.ok) {
             const data = await response.json();
-            return data;
+            if (data.html) {
+                // El proxy retorna { id, lang, html } — parsegem l'HTML al client
+                const result = parseJutgeHtml(data.html, data.id || problemId, data.lang || lang);
+                if (result) {
+                    result.source = 'vercel-proxy';
+                    return result;
+                }
+            }
         }
         console.warn(`[jutge] Vercel proxy returned ${response.status}, trying client-side fallback...`);
     } catch (error) {
         console.warn(`[jutge] Vercel proxy failed:`, error);
     }
 
-    // 2. Fallback: client-side scraping via CORS proxy
+    // 3. Fallback: client-side scraping via CORS proxy
     try {
         const result = await clientSideScrape(problemId, lang);
         if (result) return result;
@@ -182,7 +256,7 @@ export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'):
         console.warn(`[jutge] Client-side scraping also failed:`, error);
     }
 
-    // 3. Return error fallback
+    // 4. Return error fallback
     return {
         id: problemId,
         title: `Error carregant ${problemId}`,

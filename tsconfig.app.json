@@ -24,6 +24,7 @@
     "noUnusedParameters": false,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
       "*": ["./*"],

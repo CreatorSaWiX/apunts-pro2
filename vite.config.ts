@@ -1,4 +1,5 @@
 import { apiDevServerPlugin } from './scripts/api-dev-server.ts';
+import { jutgeAutoSyncPlugin } from './scripts/jutge-sync.ts';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -9,6 +10,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      jutgeAutoSyncPlugin(),
       contentCollections(),
       react(),
       tailwindcss(),

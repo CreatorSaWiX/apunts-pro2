@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:offline-manifest && vite build && tsc -b",
+    "scrape-jutge": "tsx scripts/scrape-jutge-statements.ts",
+    "scrape-jutge:force": "tsx scripts/scrape-jutge-statements.ts --force",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:pdfs": "node scripts/build-pdfs.js",
