@@ -1,8 +1,8 @@
 import { getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
-import { initFirebaseIfNeeded } from './_shared/auth';
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { resetPasswordRequestSchema } from './_shared/schemas';
+import { initFirebaseIfNeeded } from './_shared/auth.js';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { resetPasswordRequestSchema } from './_shared/schemas.js';
 import nodemailer from 'nodemailer';
 
 export const config = {

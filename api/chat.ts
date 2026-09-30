@@ -1,16 +1,16 @@
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
-import { getChatModels, getLiteModels, applyThinkingConfig } from './_shared/models';
-import { withMiddleware } from './_shared/middleware';
-import { chatRequestSchema, type AiSettings } from './_shared/schemas';
-import { CORS_HEADERS } from './_shared/cors';
-import { resolveDynamicNotesContext } from './_shared/notes-router';
-import { buildChatSystemInstruction } from './_shared/prompts';
-import { getGoogleGenAI } from './_shared/gemini';
-import { parseGenAIError } from './_shared/errors';
-import { createSseEmitter, type SseEmitFn } from './_shared/sse';
-import { manageMemoryTool } from './_shared/chat-tools';
-import { logGeminiPrompt } from './_shared/debug';
-import { resolveGroundingChunks } from './_shared/grounding';
+import { getChatModels, getLiteModels, applyThinkingConfig } from './_shared/models.js';
+import { withMiddleware } from './_shared/middleware.js';
+import { chatRequestSchema, type AiSettings } from './_shared/schemas.js';
+import { CORS_HEADERS } from './_shared/cors.js';
+import { resolveDynamicNotesContext } from './_shared/notes-router.js';
+import { buildChatSystemInstruction } from './_shared/prompts.js';
+import { getGoogleGenAI } from './_shared/gemini.js';
+import { parseGenAIError } from './_shared/errors.js';
+import { createSseEmitter, type SseEmitFn } from './_shared/sse.js';
+import { manageMemoryTool } from './_shared/chat-tools.js';
+import { logGeminiPrompt } from './_shared/debug.js';
+import { resolveGroundingChunks } from './_shared/grounding.js';
 
 function truncateAtWordBoundary(text: string, maxLen: number): string {
     if (text.length <= maxLen) return text;

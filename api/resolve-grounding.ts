@@ -1,5 +1,5 @@
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { resolveGroundingChunks } from './_shared/grounding';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { resolveGroundingChunks } from './_shared/grounding.js';
 
 export default withMiddleware(async function handler(req: Request): Promise<Response> {
     if (req.method !== 'POST') {

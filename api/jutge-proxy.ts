@@ -1,5 +1,5 @@
 import { getProblemInfo } from '../src/lib/jutgeScraper.js';
-import { withMiddleware, jsonResponse } from './_shared/middleware';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     if (req.method !== 'GET') {

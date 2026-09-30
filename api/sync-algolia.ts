@@ -1,6 +1,6 @@
 import algoliasearch from 'algoliasearch';
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { algoliaSyncRequestSchema } from './_shared/schemas';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { algoliaSyncRequestSchema } from './_shared/schemas.js';
 
 let algoliaClient: ReturnType<typeof algoliasearch> | null = null;
 

@@ -1,10 +1,10 @@
-import { getLiteModels } from './_shared/models';
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { quizRequestSchema, quizResponseSchema } from './_shared/schemas';
-import { buildQuizPrompt } from './_shared/prompts';
-import { getGoogleGenAI } from './_shared/gemini';
-import { parseGenAIError } from './_shared/errors';
-import { logGeminiPrompt } from './_shared/debug';
+import { getLiteModels } from './_shared/models.js';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { quizRequestSchema, quizResponseSchema } from './_shared/schemas.js';
+import { buildQuizPrompt } from './_shared/prompts.js';
+import { getGoogleGenAI } from './_shared/gemini.js';
+import { parseGenAIError } from './_shared/errors.js';
+import { logGeminiPrompt } from './_shared/debug.js';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));

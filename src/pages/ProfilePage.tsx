@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
-import { LogOut, Upload, Mail, Send, Bell, ExternalLink } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { LogOut, Upload, Mail, Send, Bell, ExternalLink, UserX } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import MailboxModal from '../components/mailing/MailboxModal';
 import ComposeMessageModal from '../components/mailing/ComposeMessageModal';
@@ -26,6 +26,7 @@ const ProfilePage = () => {
     const {
         extendedUser,
         isFetchingUser,
+        userNotFound,
         isOwnProfile,
         userPosts,
         isFetchingPosts,
@@ -52,8 +53,8 @@ const ProfilePage = () => {
         }
     }, []);
 
-    const bannerUrl = resolveMediaUrl(extendedUser?.banner) || `https://picsum.photos/seed/${extendedUser?.username || 'Apunts'}/1920/1080`;
-    const avatarUrl = resolveMediaUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username}`;
+    const bannerUrl = resolveMediaUrl(extendedUser?.banner);
+    const avatarUrl = resolveMediaUrl(extendedUser?.avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${extendedUser?.username || 'User'}`;
     const isBannerVideo = Boolean(bannerUrl && isVideoUrl(bannerUrl));
 
     // Parallax effect for the banner
@@ -102,6 +103,23 @@ const ProfilePage = () => {
         }
     };
 
+    if (userNotFound) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 relative z-10">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 mb-4 shadow-xl">
+                    <UserX size={32} />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-2">{t('profile.notFound', 'Usuari no trobat')}</h1>
+                <p className="text-slate-400 mb-6 max-w-md">
+                    {t('profile.notFoundDesc', 'L\'usuari "@{{username}}" no existeix o el nom s\'ha escrit de forma incorrecta.', { username: username || '' })}
+                </p>
+                <Link to="/" className="px-5 py-2.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-sky-300 border border-primary/30 transition font-medium text-sm">
+                    {t('common.backHome', 'Tornar a l\'inici')}
+                </Link>
+            </div>
+        );
+    }
+
     if (isFetchingUser || !extendedUser) {
         return (
             <div className="min-h-screen flex items-center justify-center w-full">
@@ -116,34 +134,38 @@ const ProfilePage = () => {
             <div className="relative w-full flex flex-col mb-4 md:mb-8 group/hero">
                 <div className="relative w-full h-[220px] md:h-[320px] lg:h-[380px]">
                     <div ref={bannerRef} className="absolute inset-0 apple-mask-hero pointer-events-none select-none overflow-hidden" style={{ transformOrigin: 'top' }}>
-                        {isBannerVideo ? (
-                            <>
-                                <video 
-                                    ref={setupVideo}
-                                    src={bannerUrl} 
-                                    autoPlay 
-                                    loop 
-                                    muted 
-                                    playsInline 
-                                    preload="auto"
-                                    className="absolute inset-0 object-cover w-full h-full opacity-40 blur-2xl scale-110 transition-opacity duration-700" 
-                                />
-                                <video 
-                                    ref={setupVideo}
-                                    src={bannerUrl} 
-                                    autoPlay 
-                                    loop 
-                                    muted 
-                                    playsInline 
-                                    preload="auto"
-                                    className="absolute inset-0 object-cover w-full h-full opacity-70 transition-opacity duration-700" 
-                                />
-                            </>
+                        {bannerUrl ? (
+                            isBannerVideo ? (
+                                <>
+                                    <video 
+                                        ref={setupVideo}
+                                        src={bannerUrl} 
+                                        autoPlay 
+                                        loop 
+                                        muted 
+                                        playsInline 
+                                        preload="auto"
+                                        className="absolute inset-0 object-cover w-full h-full opacity-40 blur-2xl scale-110 transition-opacity duration-700" 
+                                    />
+                                    <video 
+                                        ref={setupVideo}
+                                        src={bannerUrl} 
+                                        autoPlay 
+                                        loop 
+                                        muted 
+                                        playsInline 
+                                        preload="auto"
+                                        className="absolute inset-0 object-cover w-full h-full opacity-70 transition-opacity duration-700" 
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                                    <div className="absolute inset-0 bg-cover bg-center opacity-70 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
+                                </>
+                            )
                         ) : (
-                            <>
-                                <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[40px] scale-110 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
-                                <div className="absolute inset-0 bg-cover bg-center opacity-70 transition-opacity duration-1000" style={{ backgroundImage: `url(${bannerUrl})` }} />
-                            </>
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-sky-950/40 to-[#020617]" />
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent opacity-100" />
                     </div>

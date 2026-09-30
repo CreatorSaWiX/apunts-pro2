@@ -55,7 +55,8 @@ const InlineEditableText = ({
     };
 
     if (!isEditable) {
-        return <span className={className}>{value || placeholder}</span>;
+        if (!value) return null;
+        return <span className={className}>{value}</span>;
     }
 
     if (isEditing) {

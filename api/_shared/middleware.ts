@@ -1,5 +1,5 @@
-import { verifyIdToken } from "./auth";
-import { CORS_HEADERS, handleCors } from "./cors";
+import { verifyIdToken } from "./auth.js";
+import { CORS_HEADERS, handleCors } from "./cors.js";
 
 // ── Rate Limiter en memòria RAM (Sliding Window, 20 req / 1 min) ─────────────
 interface RateLimitRecord {

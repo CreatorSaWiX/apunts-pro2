@@ -750,6 +750,8 @@
       "save": "Desar canvis"
     },
     "defaultUser": "Usuari",
+    "notFound": "Usuari no trobat",
+    "notFoundDesc": "L'usuari @{{username}} no existeix o el nom s'ha escrit de forma incorrecta.",
     "contact": "Contactar",
     "bannerFormatHint": "2MB max (WebP/WebM recomanat)",
     "stats": {

@@ -1,8 +1,8 @@
 import { allPersonalNotes } from '../../.content-collections/generated/index.js';
 import { type GoogleGenAI, ThinkingLevel } from '@google/genai';
-import { getLiteModels } from './models';
-import { logGeminiPrompt } from './debug';
-import subjectsData from '../../src/data/subjects.json';
+import { getLiteModels } from './models.js';
+import { logGeminiPrompt } from './debug.js';
+import subjectsData from '../../src/data/subjects.json' with { type: 'json' };
 
 export interface NotesRouterOptions {
     message: string;

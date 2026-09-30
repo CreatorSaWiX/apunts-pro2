@@ -19,10 +19,14 @@ export function useProfile(username: string | undefined) {
     const { t } = useTranslation();
     const { user: authUser, isLoading: authLoading, updateUser } = useAuth();
     
-    const isOwnProfile = Boolean(!username || (authUser && authUser.username === username));
+    const isOwnProfile = Boolean(
+        !username || 
+        (authUser && authUser.username && username && authUser.username.toLowerCase() === username.toLowerCase())
+    );
 
     const [extendedUser, setExtendedUser] = useState<ExtendedUser | null>(null);
     const [isFetchingUser, setIsFetchingUser] = useState(true);
+    const [userNotFound, setUserNotFound] = useState(false);
 
     const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
     const [isFetchingPosts, setIsFetchingPosts] = useState(true);
@@ -39,47 +43,59 @@ export function useProfile(username: string | undefined) {
             const targetUsername = username || authUser?.username;
             if (targetUsername) {
                 setIsFetchingUser(true);
+                setUserNotFound(false);
                 try {
-                    const [{ db }, { doc, getDoc }] = await Promise.all([
+                    const [{ db }, { doc, getDoc, collection, getDocs }] = await Promise.all([
                         import('../lib/firebase'),
                         import('firebase/firestore')
                     ]);
                     if (!isMounted) return;
                     
-                    // 1. Cerca quin UID correspon a aquest username
-                    const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
-                    let resolvedUid = null;
-                    
-                    if (usernameDoc.exists()) {
-                        resolvedUid = usernameDoc.data().uid;
+                    let resolvedUid: string | null = null;
+
+                    // 1. Si és el nostre propi perfil, usem directament el nostre UID
+                    if (isOwnProfile && authUser?.id) {
+                        resolvedUid = authUser.id;
+                    } else {
+                        // 2. Cerca exacta per targetUsername a 'usernames'
+                        const usernameDoc = await getDoc(doc(db, 'usernames', targetUsername));
+                        if (usernameDoc.exists()) {
+                            resolvedUid = usernameDoc.data().uid;
+                        } else {
+                            // 3. Fallback insensible a majúscules/minúscules
+                            const usernamesSnap = await getDocs(collection(db, 'usernames'));
+                            const matched = usernamesSnap.docs.find(
+                                d => d.id.toLowerCase() === targetUsername.toLowerCase()
+                            );
+                            if (matched) {
+                                resolvedUid = matched.data().uid;
+                            }
+                        }
                     }
                     
-                    // 2. Si l'hem trobat, descarrega l'usuari complet
+                    // 4. Si l'hem trobat, descarrega l'usuari complet
                     if (resolvedUid && isMounted) {
                         const userDocSnap = await getDoc(doc(db, 'users', resolvedUid));
                         if (userDocSnap.exists()) {
                             setExtendedUser({ ...userDocSnap.data(), id: userDocSnap.id } as ExtendedUser);
+                            setUserNotFound(false);
                             return; // Acabem amb èxit
                         }
                     }
                     
                     if (!isMounted) return;
 
-                    // 3. Fallbacks
-                    if (isOwnProfile && authUser) {
-                        setExtendedUser(authUser as ExtendedUser);
-                    } else {
-                        setExtendedUser({
-                            id: targetUsername,
-                            username: targetUsername, // Changed to use targetUsername as fallback for better UX
-                            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${targetUsername}`,
-                        });
-                    }
+                    // 5. L'usuari no existeix
+                    setExtendedUser(null);
+                    setUserNotFound(true);
                 } catch (e) {
                     console.error("Error fetching user profile:", e);
+                    if (isMounted) setUserNotFound(true);
                 } finally {
                     if (isMounted) setIsFetchingUser(false);
                 }
+            } else {
+                if (isMounted) setIsFetchingUser(false);
             }
         };
         
@@ -313,6 +329,7 @@ export function useProfile(username: string | undefined) {
     return {
         extendedUser,
         isFetchingUser,
+        userNotFound,
         isOwnProfile,
         userPosts,
         isFetchingPosts,

@@ -32,8 +32,11 @@ export async function getProblemInfo(id: string, reqLang: string | null) {
             const doc = parser.parseFromString(html, 'text/html');
             
             const h1 = doc.querySelector('h1');
-            const t = h1 ? h1.textContent?.trim() : '';
-            if (t) title = t?.replace(new RegExp(`^${cleanId}\\.?\\s*`, 'i'), '') || title;
+            if (h1) {
+                h1.querySelectorAll('small, .pull-right').forEach((el: any) => el.remove());
+                const t = h1.textContent?.replace(/\s+/g, ' ').trim();
+                if (t) title = t.replace(new RegExp(`^${cleanId}\\.?\\s*`, 'i'), '').replace(new RegExp(`\\s*${cleanId}\\.?$`, 'i'), '').trim() || title;
+            }
 
             const dLangs = new Set<string>();
             doc.querySelectorAll('a[href*="/problems/"]').forEach((el: any) => {

@@ -749,6 +749,8 @@
       "save": "Save changes"
     },
     "defaultUser": "User",
+    "notFound": "User not found",
+    "notFoundDesc": "The user @{{username}} does not exist or the username was typed incorrectly.",
     "contact": "Contact",
     "bannerFormatHint": "2MB max (WebP/WebM recommended)",
     "stats": {

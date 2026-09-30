@@ -1,9 +1,9 @@
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { transcribeRequestSchema } from './_shared/schemas';
-import { getTranscribeModels } from './_shared/models';
-import { getGoogleGenAI } from './_shared/gemini';
-import { parseGenAIError } from './_shared/errors';
-import { logGeminiPrompt } from './_shared/debug';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { transcribeRequestSchema } from './_shared/schemas.js';
+import { getTranscribeModels } from './_shared/models.js';
+import { getGoogleGenAI } from './_shared/gemini.js';
+import { parseGenAIError } from './_shared/errors.js';
+import { logGeminiPrompt } from './_shared/debug.js';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));

@@ -1,12 +1,12 @@
-import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models';
-import { withMiddleware } from './_shared/middleware';
-import { roadmapRequestSchema } from './_shared/schemas';
-import { CORS_HEADERS } from './_shared/cors';
-import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts';
-import { getGoogleGenAI } from './_shared/gemini';
-import { parseGenAIError } from './_shared/errors';
-import { createSseEmitter } from './_shared/sse';
-import { logGeminiPrompt } from './_shared/debug';
+import { getLoadBalancedModels, applyThinkingConfig } from './_shared/models.js';
+import { withMiddleware } from './_shared/middleware.js';
+import { roadmapRequestSchema } from './_shared/schemas.js';
+import { CORS_HEADERS } from './_shared/cors.js';
+import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts.js';
+import { getGoogleGenAI } from './_shared/gemini.js';
+import { parseGenAIError } from './_shared/errors.js';
+import { createSseEmitter } from './_shared/sse.js';
+import { logGeminiPrompt } from './_shared/debug.js';
 
 interface SubjectOfficialData {
     acronim?: string;

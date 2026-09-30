@@ -1,7 +1,7 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { withMiddleware, jsonResponse } from './_shared/middleware';
-import { r2PresignRequestSchema } from './_shared/schemas';
+import { withMiddleware, jsonResponse } from './_shared/middleware.js';
+import { r2PresignRequestSchema } from './_shared/schemas.js';
 
 export default withMiddleware(async function handler(req: Request, _userId?: string): Promise<Response> {
     const rawBody = await req.json().catch(() => ({}));
