@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
     collection, query, orderBy, onSnapshot,
-    addDoc, setDoc, updateDoc, doc, limitToLast,
+    addDoc, setDoc, updateDoc, deleteDoc, doc, limitToLast,
     serverTimestamp, deleteField, type Timestamp
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -70,9 +70,17 @@ export const useComments = ({
         const unsubscribe = onSnapshot(
             q,
             (snapshot) => {
-                const parsed: CommentEntity[] = snapshot.docs.map((d) => {
+                const parsed: CommentEntity[] = [];
+
+                snapshot.docs.forEach((d) => {
                     const data = d.data();
-                    return {
+                    // Prune legacy soft-deleted documents from Firestore and ignore them in UI
+                    if (data.isDeleted) {
+                        deleteDoc(d.ref).catch(() => {});
+                        return;
+                    }
+
+                    parsed.push({
                         id: d.id,
                         userId: data.userId || '',
                         username: data.username || 'Anònim',
@@ -81,12 +89,12 @@ export const useComments = ({
                         createdAt: (data.createdAt as Timestamp) || null,
                         updatedAt: (data.updatedAt as Timestamp) || null,
                         isEdited: !!data.isEdited,
-                        isDeleted: !!data.isDeleted,
+                        isDeleted: false,
                         reactions: (data.reactions as Record<string, CommentReactionUser>) || {},
                         replyCount: data.replyCount || 0,
                         parentId: data.parentId || data.replyTo?.id || null,
                         replyTo: data.replyTo || null
-                    };
+                    });
                 });
 
                 setRawComments(parsed);
@@ -310,18 +318,16 @@ export const useComments = ({
         [user, resourceType, resourceId, subcollectionName, resourceTitle, postAuthorId]
     );
 
-    // 5. Delete Comment (Always Soft-delete to preserve tree integrity and prevent orphaned replies)
+    // 5. Delete Comment: permanently delete from Firestore and optimistic local update
     const deleteComment = useCallback(
         async (commentId: string) => {
             const docRef = doc(db, resourceType, resourceId, subcollectionName, commentId);
 
+            // Optimistically remove comment and any direct local replies
+            setRawComments((prev) => prev.filter((c) => c.id !== commentId && c.parentId !== commentId));
+
             try {
-                await updateDoc(docRef, {
-                    isDeleted: true,
-                    content: '[Aquest comentari ha estat suprimit]',
-                    reactions: {},
-                    updatedAt: serverTimestamp()
-                });
+                await deleteDoc(docRef);
             } catch (err) {
                 console.error('[useComments] Error deleting comment:', err);
                 throw err;

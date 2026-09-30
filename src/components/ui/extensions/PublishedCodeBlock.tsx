@@ -39,6 +39,88 @@ interface PublishedCodeBlockProps {
     children?: React.ReactNode;
 }
 
+const unescapeHtml = (str: string): string => {
+    return str
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&#39;/g, "'");
+};
+
+/**
+ * Enhances highlighted HTML with:
+ * 1. Recognition of commented code lines (e.g. "// T top2() {" or "// }"), preserving syntax colors.
+ * 2. Highlighting of formal contract specification tags (Pre:, Post:, Cost:, Inv:, etc.).
+ * 3. Consistent styling for common generic template types (T, Stack, etc.).
+ */
+const enhanceHighlightedHtml = (html: string, lang: string): string => {
+    return html.replace(/<span class="hljs-comment">([\s\S]*?)<\/span>/g, (_match, content) => {
+        const isCStyle = lang === 'cpp' || lang === 'c' || lang === 'java' || lang === 'typescript' || lang === 'javascript';
+        const isPyStyle = lang === 'python' || lang === 'bash' || lang === 'yaml';
+
+        if (isCStyle) {
+            // Check if comment line is actually commented code
+            const codeMatch = content.match(
+                /^(\/\/\s*)([A-Za-z_][A-Za-z0-9_<>*&:\s]*\s+[A-Za-z0-9_]+\s*\(.*|\s*[\{\}]\s*;?|\s*(?:return|if|for|while|template|using|typedef|class|struct)\b.*)$/
+            );
+            if (codeMatch) {
+                const prefix = codeMatch[1];
+                const rawCodePart = unescapeHtml(codeMatch[2]);
+                try {
+                    let codeHl = hljs.highlight(rawCodePart, { language: lang }).value;
+                    // Highlight generic template types like T before function titles
+                    codeHl = codeHl.replace(
+                        /\b([A-Z][A-Za-z0-9_]*)\b(?=\s+<span class="hljs-title")/g,
+                        '<span class="hljs-type font-semibold">$1</span>'
+                    );
+                    return `<span class="hljs-comment opacity-60 font-mono select-none">${prefix}</span>${codeHl}`;
+                } catch {
+                    // Fallthrough to standard comment formatting
+                }
+            }
+        } else if (isPyStyle) {
+            const pyCodeMatch = content.match(/^([#]\s*)(def\s+.*|class\s+.*|return\b.*|if\b.*)$/);
+            if (pyCodeMatch) {
+                const prefix = pyCodeMatch[1];
+                const rawCodePart = unescapeHtml(pyCodeMatch[2]);
+                try {
+                    const codeHl = hljs.highlight(rawCodePart, { language: lang }).value;
+                    return `<span class="hljs-comment opacity-60 font-mono select-none">${prefix}</span>${codeHl}`;
+                } catch {
+                    // Fallthrough
+                }
+            }
+        }
+
+        // Enhance specification contract tags and standard doc tags inside comments
+        let enriched = content
+            .replace(
+                /\b(Pre|Precondició|Precondition)(\s*:)/gi,
+                '<span class="hljs-doctag font-bold text-emerald-400 not-italic">$1</span><span class="text-emerald-400 font-bold">$2</span>'
+            )
+            .replace(
+                /\b(Post|Postcondició|Postcondition)(\s*:)/gi,
+                '<span class="hljs-doctag font-bold text-sky-400 not-italic">$1</span><span class="text-sky-400 font-bold">$2</span>'
+            )
+            .replace(
+                /\b(Cost|Complexitat|Complexity)(\s*:)/gi,
+                '<span class="hljs-doctag font-bold text-amber-400 not-italic">$1</span><span class="text-amber-400 font-bold">$2</span>'
+            )
+            .replace(
+                /\b(Inv|Invariant)(\s*:)/gi,
+                '<span class="hljs-doctag font-bold text-purple-400 not-italic">$1</span><span class="text-purple-400 font-bold">$2</span>'
+            )
+            .replace(
+                /\b(Entrada|Sortida|Input|Output)(\s*:)/gi,
+                '<span class="hljs-doctag font-bold text-indigo-400 not-italic">$1</span><span class="text-indigo-400 font-bold">$2</span>'
+            );
+
+        return `<span class="hljs-comment">${enriched}</span>`;
+    });
+};
+
 export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) => {
     const [copied, setCopied] = useState(false);
     
@@ -65,6 +147,7 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
                 displayLanguage = 'TEXT';
             }
         }
+        highlightedCode = enhanceHighlightedHtml(highlightedCode, displayLanguage);
     } catch (e) {
         // Fallback to raw code
     }
@@ -95,7 +178,15 @@ export const PublishedCodeBlock = ({ language, code }: PublishedCodeBlockProps) 
                     onTouchEnd={(e) => e.stopPropagation()}
                     className="!m-0 !bg-transparent p-5 pt-12 custom-scrollbar overflow-x-auto text-[14px] leading-relaxed font-mono"
                 >
-                    <code className={`language-${displayLanguage}`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightedCode) }} />
+                    <code 
+                        className={`language-${displayLanguage}`} 
+                        dangerouslySetInnerHTML={{ 
+                            __html: DOMPurify.sanitize(highlightedCode, {
+                                ADD_TAGS: ['span'],
+                                ADD_ATTR: ['class']
+                            }) 
+                        }} 
+                    />
                 </pre>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { resolveMediaUrl } from '../lib/mediaUtils';
 
 export interface UserMention {
     id: string;
@@ -22,11 +23,14 @@ export const useMentions = () => {
             try {
                 const snap = await getDocs(query(collection(db, 'usernames'), limit(200)));
                 if (!isMounted) return;
-                setAllUsers(snap.docs.map(doc => ({ 
-                    id: doc.data().uid, 
-                    username: doc.id, 
-                    avatar: doc.data().avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${doc.id}` 
-                })));
+                setAllUsers(snap.docs.map(doc => {
+                    const rawAvatar = doc.data().avatar;
+                    return { 
+                        id: doc.data().uid, 
+                        username: doc.id, 
+                        avatar: resolveMediaUrl(rawAvatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(doc.id)}` 
+                    };
+                }));
             } catch (err) {
                 console.error("Error fetching users for mentions", err);
             }
@@ -37,10 +41,11 @@ export const useMentions = () => {
 
     const handleInputChange = (val: string, cursorPosition: number) => {
         const textBeforeCursor = val.substring(0, cursorPosition);
-        const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+        const match = textBeforeCursor.match(/(?:^|[\s\n(])@([a-zA-Z0-9_]*)$/);
 
         if (match) {
-            setMentionSearch({ query: match[1], startIdx: match.index! });
+            const atIndex = textBeforeCursor.lastIndexOf('@');
+            setMentionSearch({ query: match[1], startIdx: atIndex });
         } else {
             setMentionSearch(null);
         }
@@ -62,7 +67,17 @@ export const useMentions = () => {
     };
 
     const suggestedUsers = mentionSearch 
-        ? allUsers.filter(u => u.username.toLowerCase().includes(mentionSearch.query.toLowerCase())).slice(0, 5)
+        ? allUsers
+            .filter(u => u.username.toLowerCase().includes(mentionSearch.query.toLowerCase()))
+            .sort((a, b) => {
+                const q = mentionSearch.query.toLowerCase();
+                const aStarts = a.username.toLowerCase().startsWith(q);
+                const bStarts = b.username.toLowerCase().startsWith(q);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.username.localeCompare(b.username);
+            })
+            .slice(0, 6)
         : [];
 
     return {

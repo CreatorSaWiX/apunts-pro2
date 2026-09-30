@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
@@ -39,6 +39,10 @@ const CommentItemComponent = ({
     onNavigateToProfile,
     forceExpanded = false
 }: CommentItemProps) => {
+    if (comment.isDeleted) {
+        return null;
+    }
+
     const { user } = useAuth();
     const { i18n } = useTranslation();
     const [userToggled, setUserToggled] = useState<boolean | null>(null);
@@ -54,7 +58,7 @@ const CommentItemComponent = ({
 
     const isCurrentUser = !!user && comment.userId === user.id;
     const isModerator = user?.role === 'moderador' || user?.role === 'editor' || user?.role === 'admin';
-    const canDelete = !comment.isDeleted && (isCurrentUser || isModerator) && !!onDelete;
+    const canDelete = (isCurrentUser || isModerator) && !!onDelete;
 
     const authorUsername = isCurrentUser ? user.username || comment.username : comment.username;
     const authorAvatar = isCurrentUser ? user.avatar || comment.userAvatar : comment.userAvatar;
@@ -78,47 +82,62 @@ const CommentItemComponent = ({
     // Replies exist only on root comments (depth 1 social-media pattern)
     const hasReplies = !isReply && comment.replies && comment.replies.length > 0;
 
+    // Format markdown content: preserve code blocks, convert emojis and format @mentions to profile links
+    const formattedContent = useMemo(() => {
+        if (!comment.content) return '';
+
+        // Split by code blocks (fenced ```...``` and inline `...`) so we never modify code
+        const parts = comment.content.split(/(```[\s\S]*?```|`[^`]+`)/g);
+        return parts
+            .map((part, index) => {
+                // Odd index = inside code block -> leave untouched
+                if (index % 2 === 1) return part;
+
+                // 1. Replace custom emojis :emoji: -> ![emoji](url)
+                let res = part.replace(/:([a-zA-Z0-9_\-\s]+?):/g, (match, name) => {
+                    const url = getCustomEmojiUrl(name);
+                    return url ? `![${name.trim()}](${url})` : match;
+                });
+
+                // 2. Replace @username mentions -> [@username](/profile/username)
+                res = res.replace(/(^|[^a-zA-Z0-9_])@([a-zA-Z0-9_]+)/g, '$1[@$2](/profile/$2)');
+
+                return res;
+            })
+            .join('');
+    }, [comment.content]);
+
     return (
         <div className="flex flex-col">
             <div className="flex items-start gap-3 group/comment py-1.5">
                 {/* User Avatar */}
-                {comment.isDeleted ? (
-                    <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-white/5 flex items-center justify-center shrink-0">
-                        <span className="text-slate-600 text-xs">✕</span>
-                    </div>
-                ) : (
-                    <Link
-                        to={`/profile/${authorUsername}`}
-                        onClick={handleProfileClick}
-                        className="shrink-0 hover:opacity-85 transition-opacity"
-                    >
-                        <img
-                            loading="lazy"
-                            src={avatarUrl}
-                            alt={authorUsername}
-                            className="w-8 h-8 rounded-full bg-slate-800 object-cover ring-1 ring-white/10"
-                        />
-                    </Link>
-                )}
+                <Link
+                    to={`/profile/${authorUsername}`}
+                    onClick={handleProfileClick}
+                    className="shrink-0 hover:opacity-85 transition-opacity"
+                >
+                    <img
+                        loading="lazy"
+                        src={avatarUrl}
+                        alt={authorUsername}
+                        className="w-8 h-8 rounded-full bg-slate-800 object-cover ring-1 ring-white/10"
+                    />
+                </Link>
 
                 {/* Content Body */}
                 <div className="flex-1 min-w-0">
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                        {comment.isDeleted ? (
-                            <span className="text-xs font-semibold text-slate-500 italic">[Suprimit]</span>
-                        ) : (
-                            <Link
-                                to={`/profile/${authorUsername}`}
-                                onClick={handleProfileClick}
-                                className="font-bold text-slate-200 text-xs sm:text-sm hover:underline hover:text-sky-400 transition-colors"
-                            >
-                                {authorUsername}
-                            </Link>
-                        )}
+                        <Link
+                            to={`/profile/${authorUsername}`}
+                            onClick={handleProfileClick}
+                            className="font-bold text-slate-200 text-xs sm:text-sm hover:underline hover:text-sky-400 transition-colors"
+                        >
+                            {authorUsername}
+                        </Link>
 
                         {/* Recipient tag */}
-                        {isReply && comment.replyTo && comment.replyTo.username && !comment.isDeleted && (
+                        {isReply && comment.replyTo && comment.replyTo.username && (
                             <span className="text-[11px] text-slate-500 font-medium">
                                 ▶ @{comment.replyTo.username}
                             </span>
@@ -140,12 +159,7 @@ const CommentItemComponent = ({
                     </div>
 
                     {/* Comment Body / Markdown */}
-                    {comment.isDeleted ? (
-                        <p className="text-slate-500 text-xs italic py-0.5">
-                            Aquest comentari ha estat suprimit.
-                        </p>
-                    ) : (
-                        <div className="text-xs sm:text-sm text-slate-300 leading-relaxed break-words">
+                    <div className="text-xs sm:text-sm text-slate-300 leading-relaxed break-words">
                             {isGif(comment.content) ? (
                                 <div className="mt-1 mb-2">
                                     <img
@@ -156,7 +170,7 @@ const CommentItemComponent = ({
                                     />
                                 </div>
                             ) : (
-                                <div className="text-xs sm:text-sm text-slate-200 leading-normal break-words [&_pre]:my-1.5 [&_pre]:p-2 [&_pre]:bg-slate-950 [&_pre]:border [&_pre]:border-white/5 [&_pre]:rounded-lg [&_code]:text-sky-300 [&_code]:bg-sky-500/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_a]:text-sky-400 [&_a]:underline">
+                                <div className="text-xs sm:text-sm text-slate-200 leading-normal break-words [&_pre]:my-1.5 [&_pre]:p-2 [&_pre]:bg-slate-950 [&_pre]:border [&_pre]:border-white/5 [&_pre]:rounded-lg [&_code]:text-sky-300 [&_code]:bg-sky-500/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_a]:text-sky-400">
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{
@@ -188,55 +202,68 @@ const CommentItemComponent = ({
                                                     />
                                                 );
                                             },
-                                            a: ({ ...props }) => (
-                                                <a
-                                                    {...props}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-sky-400 hover:underline"
-                                                />
-                                            )
+                                            a: ({ href, children, ...props }) => {
+                                                const isProfileLink = href?.startsWith('/profile/');
+                                                if (isProfileLink) {
+                                                    const username = href?.replace('/profile/', '');
+                                                    return (
+                                                        <Link
+                                                            to={href || '#'}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (username && onNavigateToProfile) {
+                                                                    e.preventDefault();
+                                                                    onNavigateToProfile(username);
+                                                                }
+                                                            }}
+                                                            className="inline-flex items-center font-semibold text-sky-400 hover:text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/20 px-1.5 py-0.5 rounded-md transition-colors duration-150 !no-underline mx-0.5"
+                                                        >
+                                                            {children}
+                                                        </Link>
+                                                    );
+                                                }
+                                                return (
+                                                    <a
+                                                        {...props}
+                                                        href={href}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-sky-400 hover:underline"
+                                                    >
+                                                        {children}
+                                                    </a>
+                                                );
+                                            }
                                         }}
                                     >
-                                        {comment.content
-                                            ? comment.content.replace(
-                                                  /:([a-zA-Z0-9_\-\s]+?):/g,
-                                                  (match, name) => {
-                                                      const url = getCustomEmojiUrl(name);
-                                                      return url ? `![${name.trim()}](${url})` : match;
-                                                  }
-                                              )
-                                            : ''}
+                                        {formattedContent}
                                     </ReactMarkdown>
                                 </div>
                             )}
                         </div>
-                    )}
 
                     {/* Footer Actions: Reply button & Reactions */}
-                    {!comment.isDeleted && (
-                        <div className="flex items-center gap-3 mt-1.5">
-                            {user && (
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setUserToggled(true);
-                                        onReply(comment);
-                                    }}
-                                    className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-                                >
-                                    Respondre
-                                </button>
-                            )}
+                    <div className="flex items-center gap-3 mt-1.5">
+                        {user && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setUserToggled(true);
+                                    onReply(comment);
+                                }}
+                                className="text-xs font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                            >
+                                Respondre
+                            </button>
+                        )}
 
-                            <CommentReactions
-                                commentId={comment.id}
-                                reactions={comment.reactions}
-                                currentUserId={user?.id}
-                                onReact={onReact}
-                            />
-                        </div>
-                    )}
+                        <CommentReactions
+                            commentId={comment.id}
+                            reactions={comment.reactions}
+                            currentUserId={user?.id}
+                            onReact={onReact}
+                        />
+                    </div>
                 </div>
             </div>
 

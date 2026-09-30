@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, memo } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Send, Smile, Image as ImageIcon, X } from 'lucide-react';
@@ -40,6 +40,10 @@ const serializeEditorContent = (root: HTMLElement | null): string => {
             result += node.nodeValue?.replace(/\u00A0/g, ' ') || '';
         } else if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as HTMLElement;
+            if (el.dataset.mention) {
+                result += `${el.dataset.mention} `;
+                return;
+            }
             if (el.tagName === 'IMG') {
                 const emoji = el.dataset.emoji || el.getAttribute('alt')?.replace(/^:|:$/g, '');
                 if (emoji) {
@@ -78,6 +82,8 @@ const CommentInputComponent = ({
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [pickerPosition, setPickerPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
     const [showGifPicker, setShowGifPicker] = useState(false);
+    const gifButtonRef = useRef<HTMLButtonElement>(null);
+    const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
 
     const {
         mentionSearch,
@@ -86,6 +92,10 @@ const CommentInputComponent = ({
         getMentionedUsers,
         suggestedUsers
     } = useMentions();
+
+    useEffect(() => {
+        setSelectedMentionIndex(0);
+    }, [suggestedUsers.length]);
 
     const saveSelection = useCallback(() => {
         const sel = window.getSelection();
@@ -138,6 +148,34 @@ const CommentInputComponent = ({
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.nativeEvent.isComposing) return;
+
+        // Mention popup keyboard navigation
+        if (mentionSearch && suggestedUsers.length > 0) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setSelectedMentionIndex((prev) => (prev + 1) % suggestedUsers.length);
+                return;
+            }
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setSelectedMentionIndex((prev) => (prev - 1 + suggestedUsers.length) % suggestedUsers.length);
+                return;
+            }
+            if (e.key === 'Enter' || e.key === 'Tab') {
+                e.preventDefault();
+                const target = suggestedUsers[selectedMentionIndex] || suggestedUsers[0];
+                if (target) {
+                    handleSelectMention(target.username);
+                }
+                return;
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                setMentionSearch(null);
+                return;
+            }
+        }
+
         if (e.key === 'Enter') {
             if (e.shiftKey) {
                 // Allow shift+enter for multiline comments
@@ -204,12 +242,51 @@ const CommentInputComponent = ({
             range.collapse(false);
         }
 
-        // Replace trigger with mention text
-        const mentionText = document.createTextNode(`@${username} `);
-        range.insertNode(mentionText);
+        // Find the text node containing the '@' trigger before the caret
+        let targetTextNode: Node | null = range.startContainer;
+        let caretOffset = range.startOffset;
 
+        if (targetTextNode.nodeType !== Node.TEXT_NODE) {
+            const child = targetTextNode.childNodes[Math.max(0, caretOffset - 1)];
+            if (child && child.nodeType === Node.TEXT_NODE) {
+                targetTextNode = child;
+                caretOffset = (child.nodeValue || '').length;
+            } else {
+                targetTextNode = null;
+            }
+        }
+
+        if (targetTextNode && targetTextNode.nodeType === Node.TEXT_NODE) {
+            const fullText = targetTextNode.nodeValue || '';
+            const textBefore = fullText.substring(0, caretOffset);
+            const atMatch = textBefore.match(/(?:^|[\s\n(])@([a-zA-Z0-9_]*)$/);
+            if (atMatch) {
+                const atIdx = textBefore.lastIndexOf('@');
+                if (atIdx !== -1) {
+                    range.setStart(targetTextNode, atIdx);
+                    range.setEnd(targetTextNode, caretOffset);
+                    range.deleteContents();
+                }
+            }
+        }
+
+        // Create the blue mention badge chip
+        const mentionSpan = document.createElement('span');
+        mentionSpan.className = 'mention-badge inline-flex items-center text-sky-400 bg-sky-500/15 border border-sky-500/30 font-semibold px-1.5 py-0.5 rounded-md mx-0.5 select-all';
+        mentionSpan.contentEditable = 'false';
+        mentionSpan.dataset.mention = `@${username}`;
+        mentionSpan.dataset.username = username;
+        mentionSpan.textContent = `@${username}`;
+
+        // Trailing non-breaking space for smooth continued typing
+        const space = document.createTextNode('\u00A0');
+
+        range.insertNode(space);
+        range.insertNode(mentionSpan);
+
+        // Move caret after the space
         const newRange = document.createRange();
-        newRange.setStartAfter(mentionText);
+        newRange.setStartAfter(space);
         newRange.collapse(true);
         if (sel) {
             sel.removeAllRanges();
@@ -286,11 +363,13 @@ const CommentInputComponent = ({
 
                 {/* Rich Input Editor Area */}
                 <div className="relative flex-1 min-w-0 flex items-center">
-                    {mentionSearch && (
+                    {mentionSearch && suggestedUsers.length > 0 && (
                         <MentionPopup
                             users={suggestedUsers}
                             onSelect={handleSelectMention}
-                            position="top"
+                            anchorRef={editorRef}
+                            selectedIndex={selectedMentionIndex}
+                            onClose={() => setMentionSearch(null)}
                         />
                     )}
 
@@ -393,8 +472,9 @@ const CommentInputComponent = ({
                     {/* GIF Trigger */}
                     {allowGifs && (
                         <button
+                            ref={gifButtonRef}
                             type="button"
-                            onClick={() => setShowGifPicker(true)}
+                            onClick={() => setShowGifPicker((prev) => !prev)}
                             className="p-1.5 text-slate-400 hover:text-white rounded-full transition-colors cursor-pointer"
                             title="Inserir GIF"
                             aria-label="Inserir GIF"
@@ -423,7 +503,11 @@ const CommentInputComponent = ({
 
             {/* GIF Picker Modal */}
             {showGifPicker && (
-                <GifPicker onSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                <GifPicker
+                    anchorRef={gifButtonRef}
+                    onSelect={handleGifSelect}
+                    onClose={() => setShowGifPicker(false)}
+                />
             )}
         </div>
     );

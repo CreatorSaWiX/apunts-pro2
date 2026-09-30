@@ -27,12 +27,17 @@ export const buildCommentTree = (flatComments: CommentEntity[]): CommentEntity[]
         return [];
     }
 
+    const activeComments = flatComments.filter((c) => !c.isDeleted);
+    if (activeComments.length === 0) {
+        return [];
+    }
+
     const roots: CommentEntity[] = [];
     const byId = new Map<string, CommentEntity>();
 
     // Pass 1: O(N) Indexing with defensive validation and isolated replies array
-    for (let i = 0; i < flatComments.length; i++) {
-        const c = flatComments[i];
+    for (let i = 0; i < activeComments.length; i++) {
+        const c = activeComments[i];
         if (!c || !c.id) continue;
         byId.set(c.id, {
             ...c,
@@ -69,8 +74,8 @@ export const buildCommentTree = (flatComments: CommentEntity[]): CommentEntity[]
     };
 
     // Pass 2: O(N) Direct pointer linkage to root comments
-    for (let i = 0; i < flatComments.length; i++) {
-        const original = flatComments[i];
+    for (let i = 0; i < activeComments.length; i++) {
+        const original = activeComments[i];
         if (!original || !original.id) continue;
         const node = byId.get(original.id);
         if (!node) continue;

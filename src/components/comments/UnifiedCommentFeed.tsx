@@ -189,10 +189,10 @@ export const UnifiedCommentFeed = ({
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleConfirmDelete}
-                title="Eliminar comentari"
-                message="Estàs segur que vols eliminar aquest comentari? Si té respostes anidades, es conservarà el fil mantenint el context de la conversa."
-                confirmText="Eliminar"
-                cancelText="Cancel·lar"
+                title={t('comments.deleteTitle', 'Eliminar comentari')}
+                message={t('comments.deleteConfirm', 'Estàs segur que vols eliminar aquest comentari de forma permanent?')}
+                confirmText={t('common.delete', 'Eliminar')}
+                cancelText={t('common.cancel', 'Cancel·lar')}
                 isDestructive={true}
             />
         </div>
