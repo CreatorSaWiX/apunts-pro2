@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 import type { allPersonalNotes } from 'content-collections';
-import { ArrowRight, Book, Terminal, Calculator, RefreshCw, Sparkles } from 'lucide-react';
+import { Book } from 'lucide-react';
 import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hapticSelection, hapticLight } from '../lib/haptics';
 import { useTopicNotes } from '../hooks/useTopicNotes';
-import { getTopicSolutionRoute, isProgrammingSubject } from '../utils/solutionUtils';
+import { useSeenTopics } from '../hooks/useSeenTopics';
+import { CarouselCard } from './TopicCarouselParts/CarouselCard';
+import { LandscapeTopicCard } from './TopicCarouselParts/LandscapeTopicCard';
 
 import type { MotionValue } from 'framer-motion';
 
@@ -20,7 +23,7 @@ interface PremiumScrubberProps {
     scrollToCard: (index: number, isRealDrag?: boolean) => void;
     scrollX: MotionValue<number>;
     itemWidth: number;
-    t: any;
+    t: TFunction;
 }
 
 const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: PremiumScrubberProps) => {
@@ -140,251 +143,6 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
     );
 });
 
-interface CarouselCardProps {
-    topic: TopicNote;
-    index: number;
-    activeIndex: number;
-    itemWidth: number;
-    scrollX: MotionValue<number>;
-    subject: string;
-    navigate: (to: string) => void;
-    markAsSeen: (slug: string, updateTime: number) => void;
-    isInteractive: boolean;
-    seenNewTopics: Set<string>;
-    seenVersions: Record<string, number>;
-    onCardClick: (index: number) => void;
-    topicMeta?: { hasNew: boolean; newestUpdate: number };
-    t: any;
-}
-
-const CarouselCard = React.memo(({
-    topic, index, activeIndex, itemWidth, scrollX,
-    subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, topicMeta, t
-}: CarouselCardProps) => {
-    
-    // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
-    const input = [
-        (index - 1) * itemWidth,
-        index * itemWidth,
-        (index + 1) * itemWidth
-    ];
-    
-    // Minimal, solid physical transform - NO ROTATION
-    const scale = useTransform(scrollX, input, [0.92, 1, 0.92]);
-    const opacity = useTransform(scrollX, input, [0.5, 1, 0.5]);
-    
-    const isActive = activeIndex === index;
-
-    const hasNewTag = topicMeta?.hasNew ?? false;
-    const newestUpdate = topicMeta?.newestUpdate ?? 0;
-
-    const isTopicNew = hasNewTag && !seenNewTopics.has(topic.slug);
-    const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
-
-    return (
-        <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-4">
-            <motion.div 
-                style={{ scale, opacity, WebkitFontSmoothing: "antialiased" }} 
-                className="w-full h-full max-h-125 min-h-[420px] relative rounded-[32px] transform-gpu flex flex-col"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
-                onClick={(e) => {
-                    if (!isActive) {
-                        e.preventDefault();
-                        onCardClick(index);
-                    } else if (isInteractive) {
-                        markAsSeen(topic.slug, newestUpdate);
-                        navigate(`/tema/${topic.slug}`);
-                    }
-                }}
-            >
-                {/* Premium Glassmorphism Background */}
-                <div 
-                    className={`absolute inset-0 rounded-[32px] overflow-hidden transform-gpu border transition duration-700 ${isActive ? 'bg-slate-900/80 border-primary/30 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/20 backdrop-blur-xl' : 'bg-slate-900/40 border-white/5 shadow-none backdrop-blur-md cursor-pointer'}`}
-                    style={{
-                        WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                        WebkitTransform: 'translateZ(0)',
-                        transform: 'translateZ(0)'
-                    }}
-                >
-                    
-                    {/* Glowing Accent Orb */}
-                    <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
-                    
-                    <div className="relative z-10 h-full flex flex-col p-6 min-[390px]:p-8 pointer-events-none">
-                        
-                        {/* Header Area */}
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={`p-3.5 rounded-2xl border backdrop-blur-md transition duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(56,189,248,0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
-                                <Book size={24} strokeWidth={1.5} />
-                            </div>
-                            <span className={`font-mono text-6xl font-black transition duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
-                                {(() => {
-                                    const match = topic.title.match(/^Tema (\d+)/);
-                                    if (match) return match[1].padStart(2, '0');
-                                    if (topic.title.toLowerCase().includes('parcial')) return 'P1';
-                                    if (topic.title.toLowerCase().includes('final')) return 'EF';
-                                    return String(index + 1).padStart(2, '0');
-                                })()}
-                            </span>
-                        </div>
-
-                        {/* Status Badges */}
-                        {(isTopicNew || isTopicUpdated) && (
-                            <div className={`absolute top-6 right-6 z-30 transition duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
-                                    <Sparkles size={10} className="text-white animate-pulse" />
-                                    <span className="text-[9px] font-extrabold text-white uppercase tracking-wider drop-shadow-sm">
-                                        {isTopicNew ? t('topics.new', 'Nou') : t('topics.updated', 'Actualitzat')}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        <h3 className={`text-2xl min-[390px]:text-[28px] font-bold leading-[1.35] tracking-tight mb-3 pb-1 transition-colors duration-500 line-clamp-2 ${isActive ? 'text-white' : 'text-slate-400'}`}>
-                            {topic.title}
-                        </h3>
-
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className={`h-[2px] rounded-full transition duration-500 ${isActive ? 'w-10 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-6 bg-slate-700'}`} />
-                            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest font-bold">
-                                {topic.readTime || '10 Min'}
-                            </span>
-                        </div>
-
-                        <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 font-medium mb-auto opacity-90">
-                            {topic.description}
-                        </p>
-
-                        {/* Interactive Buttons Footer */}
-                        <div className={`pt-5 mt-auto transition duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
-                            <div className="flex flex-col gap-3">
-                                <motion.div
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
-                                    whileTap={{ scale: 0.96 }}
-                                    onClick={(e) => { 
-                                        e.stopPropagation(); 
-                                        hapticLight();
-                                        markAsSeen(topic.slug, newestUpdate); 
-                                        navigate(`/tema/${topic.slug}`);
-                                    }}
-                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-colors duration-300 cursor-pointer"
-                                >
-                                    <span className="relative z-10 text-[15px] tracking-wide">{t('topics.explore', 'Explorar tema')}</span>
-                                    <div className="relative z-10 bg-white/20 p-1.5 rounded-lg group-hover/btn:bg-white/30 transition-colors">
-                                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
-                                    </div>
-                                </motion.div>
-
-                                <div className="flex items-center gap-2.5">
-                                    <motion.div
-                                        role="button"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
-                                        whileTap={{ scale: 0.96 }}
-                                        onClick={(e) => { 
-                                            e.stopPropagation(); 
-                                            hapticLight();
-                                            markAsSeen(topic.slug, newestUpdate); 
-                                            navigate(`/tema/${topic.slug}/test`);
-                                        }}
-                                        className="flex-1 text-slate-300 hover:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner cursor-pointer"
-                                    >
-                                        <RefreshCw size={14} /> Test
-                                    </motion.div>
-
-                                    <motion.div
-                                        role="button"
-                                        tabIndex={0}
-                                        onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
-                                        whileTap={{ scale: 0.96 }}
-                                        onClick={(e) => { 
-                                            e.stopPropagation(); 
-                                            hapticLight();
-                                            markAsSeen(topic.slug, newestUpdate); 
-                                            navigate(getTopicSolutionRoute(topic.slug));
-                                        }}
-                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
-                                    >
-                                        {isProgrammingSubject(subject) ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
-                                    </motion.div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </div>
-    );
-});
-
-interface LandscapeTopicCardProps {
-    topic: TopicNote;
-    index: number;
-    subject: string;
-    navigate: (to: string) => void;
-    markAsSeen: (slug: string, updateTime?: number) => void;
-    seenNewTopics: Set<string>;
-    seenVersions: Record<string, number>;
-    topicMeta?: { hasNew: boolean; newestUpdate: number };
-    t: any;
-}
-
-const LandscapeTopicCard = React.memo(({ topic, index, subject, navigate, markAsSeen, seenNewTopics, seenVersions, topicMeta, t }: LandscapeTopicCardProps) => {
-    const hasNewTag = topicMeta?.hasNew ?? false;
-    const newestUpdate = topicMeta?.newestUpdate ?? 0;
-
-    const isTopicNew = hasNewTag && !seenNewTopics.has(topic.slug);
-    const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
-
-    return (
-        <motion.div 
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
-            whileTap={{ scale: 0.96 }}
-            onClick={(e) => {
-                e.stopPropagation();
-                hapticLight();
-                markAsSeen(topic.slug, newestUpdate);
-                navigate(`/tema/${topic.slug}`);
-            }}
-            className="group relative w-full h-full bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-primary/30 rounded-[20px] p-5 flex flex-col shadow-lg backdrop-blur-md cursor-pointer transition-colors duration-300 overflow-hidden"
-        >
-            {/* Subtle glow effect on hover */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none -mr-10 -mt-10" />
-
-            <div className="flex items-start justify-between w-full mb-4 relative z-10">
-                <div className="w-11 h-11 bg-primary/10 text-accent rounded-2xl flex items-center justify-center font-bold text-lg border border-primary/20 shadow-sm">
-                    {String(index + 1).padStart(2, '0')}
-                </div>
-                
-                <div className="flex gap-1.5">
-                    {isTopicNew && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase shadow-sm">{t('topics.new', 'Nou')}</span>}
-                    {isTopicUpdated && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase shadow-sm">{t('topics.updated', 'Act')}</span>}
-                </div>
-            </div>
-            
-            <div className="flex-1 min-w-0 relative z-10 flex flex-col">
-                <h3 className="text-white font-bold text-base leading-tight mb-2 line-clamp-2">{topic.title}</h3>
-                <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-2 mb-4">{topic.description}</p>
-                
-                <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/5">
-                    <span className="text-[10px] font-mono text-slate-500 font-semibold tracking-wider uppercase">
-                        {topic.readTime || '10 Min'}
-                    </span>
-                    <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <ArrowRight size={12} className="text-slate-400 group-hover:text-accent group-hover:translate-x-0.5 transition" />
-                    </div>
-                </div>
-            </div>
-        </motion.div>
-    );
-});
-
 interface TopicCarouselProps {
     isMenuOpen?: boolean;
     subjectOverride?: string;
@@ -399,10 +157,9 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     const preferredLang = i18n.language;
     
     const [activeIndex, setActiveIndex] = useState(0);
-    const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const { seenNewTopics, seenVersions, markAsSeen } = useSeenTopics();
     const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
-    const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
-    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+    const [allPersonalNotes, setAllPersonalNotes] = useState<(typeof import('content-collections'))['allPersonalNotes'][number][]>([]);
 
     useEffect(() => {
         import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
@@ -498,51 +255,6 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
         sessionStorage.setItem(`topic-carousel-h-${subject}`, activeIndex.toString());
     }, [activeIndex, subject]);
 
-    useEffect(() => {
-        try {
-            // Migració de claus antigues per no perdre el progrés de l'usuari
-            const oldNew = localStorage.getItem('v1_seen-new-topics');
-            if (oldNew && !localStorage.getItem('seen-new-topics')) {
-                localStorage.setItem('seen-new-topics', oldNew);
-                localStorage.removeItem('v1_seen-new-topics');
-            }
-            
-            const oldVersions = localStorage.getItem('v1_seen-topic-versions');
-            if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
-                localStorage.setItem('seen-topic-versions', oldVersions);
-                localStorage.removeItem('v1_seen-topic-versions');
-            }
-
-            const savedNew = localStorage.getItem('seen-new-topics');
-            if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
-            const savedVersions = localStorage.getItem('seen-topic-versions');
-            if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
-        } catch (e) {
-            console.debug('LocalStorage read silenced:', e);
-        }
-    }, []);
-
-    const markAsSeen = useCallback((slug: string, version?: number) => {
-        try {
-            const savedNew = localStorage.getItem('seen-new-topics');
-            const prevNew = savedNew ? JSON.parse(savedNew) : [];
-            if (!prevNew.includes(slug)) {
-                const updatedNew = [...prevNew, slug];
-                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
-            }
-
-            if (version !== undefined) {
-                const savedVersions = localStorage.getItem('seen-topic-versions');
-                const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
-                if (prevVersions[slug] !== version) {
-                    const updatedVersions = { ...prevVersions, [slug]: version };
-                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
-                }
-            }
-        } catch (e) {
-            console.debug('LocalStorage write silenced:', e);
-        }
-    }, []);
 
     if (sortedTopics.length === 0) {
         return (
@@ -651,60 +363,15 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     
-    const [seenNewTopics, setSeenNewTopics] = useState<string[]>([]);
+    const { seenNewTopics, seenVersions, markAsSeen } = useSeenTopics();
     const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
-    const [seenVersions, setSeenVersions] = useState<Record<string, number>>({});
-    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
+    const [allPersonalNotes, setAllPersonalNotes] = useState<(typeof import('content-collections'))['allPersonalNotes'][number][]>([]);
 
     useEffect(() => {
         import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
     }, []);
     
-    useEffect(() => {
-        try {
-            // Migració de claus antigues per no perdre el progrés de l'usuari
-            const oldNew = localStorage.getItem('v1_seen-new-topics');
-            if (oldNew && !localStorage.getItem('seen-new-topics')) {
-                localStorage.setItem('seen-new-topics', oldNew);
-                localStorage.removeItem('v1_seen-new-topics');
-            }
-            
-            const oldVersions = localStorage.getItem('v1_seen-topic-versions');
-            if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
-                localStorage.setItem('seen-topic-versions', oldVersions);
-                localStorage.removeItem('v1_seen-topic-versions');
-            }
 
-            const savedNew = localStorage.getItem('seen-new-topics');
-            if (savedNew) setSeenNewTopics(JSON.parse(savedNew));
-            const savedVersions = localStorage.getItem('seen-topic-versions');
-            if (savedVersions) setSeenVersions(JSON.parse(savedVersions));
-        } catch (e) {
-            console.debug('LocalStorage read silenced:', e);
-        }
-    }, []);
-
-    const markAsSeen = useCallback((slug: string, version?: number) => {
-        try {
-            const savedNew = localStorage.getItem('seen-new-topics');
-            const prevNew = savedNew ? JSON.parse(savedNew) : [];
-            if (!prevNew.includes(slug)) {
-                const updatedNew = [...prevNew, slug];
-                localStorage.setItem('seen-new-topics', JSON.stringify(updatedNew));
-            }
-
-            if (version !== undefined) {
-                const savedVersions = localStorage.getItem('seen-topic-versions');
-                const prevVersions = savedVersions ? JSON.parse(savedVersions) : {};
-                if (prevVersions[slug] !== version) {
-                    const updatedVersions = { ...prevVersions, [slug]: version };
-                    localStorage.setItem('seen-topic-versions', JSON.stringify(updatedVersions));
-                }
-            }
-        } catch (e) {
-            console.debug('LocalStorage write silenced:', e);
-        }
-    }, []);
 
     const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
 

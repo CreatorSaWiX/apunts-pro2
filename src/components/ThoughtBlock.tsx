@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import type { TFunction } from 'i18next';
 import { Search, Server, AlertCircle, XCircle, Brain, Terminal } from 'lucide-react';
+
+export interface ThoughtBlockItem {
+    icon: string;
+    title: string;
+    content: string;
+}
 
 export const getIcon = (emoji: string) => {
     switch(emoji) {
@@ -12,7 +19,7 @@ export const getIcon = (emoji: string) => {
     }
 };
 
-const translateText = (text: string, t?: any) => {
+const translateText = (text: string, t?: TFunction) => {
     if (!t || !text) return text;
     
     const trimmed = text.trim();
@@ -42,10 +49,10 @@ const translateText = (text: string, t?: any) => {
     return text;
 };
 
-export const parseThoughtText = (text: string, t?: any) => {
-    const blocks: any[] = [];
+export const parseThoughtText = (text: string, t?: TFunction): ThoughtBlockItem[] => {
+    const blocks: ThoughtBlockItem[] = [];
     const lines = text.split('\n');
-    let currentBlock: any = null;
+    let currentBlock: ThoughtBlockItem | null = null;
     
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -78,7 +85,7 @@ export const parseThoughtText = (text: string, t?: any) => {
     return blocks;
 };
 
-export const ThoughtBlock = React.memo(({ block, initiallyOpen = false }: { block: any; initiallyOpen?: boolean }) => {
+export const ThoughtBlock = React.memo(({ block, initiallyOpen = false }: { block: ThoughtBlockItem; initiallyOpen?: boolean }) => {
     const hasContent = block.content.length > 0;
     
     return (

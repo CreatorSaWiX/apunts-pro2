@@ -605,7 +605,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                             <div className={`
                                 transition duration-500 rounded-full
                                 ${activeIndex === i
-                                    ? 'w-12 h-1.5 bg-accent shadow-[0_0_15px_rgba(56,189,248,0.6)]'
+                                    ? 'w-12 h-1.5 bg-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.6)]'
                                     : 'w-2 h-2 bg-slate-600 group-hover:bg-slate-400'
                                 }
                             `} />

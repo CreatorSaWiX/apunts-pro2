@@ -90,8 +90,9 @@ Dígit:`;
             const search = answer.includes('1');
             await emit('thought', { text: search ? `i18n:searchDetected\n\n` : `i18n:searchNotNeeded\n\n` });
             return search;
-        } catch {
+        } catch (e) {
             clearTimeout(timeoutId);
+            console.warn('[classifySearchIntent] Model failed, trying next:', e instanceof Error ? e.message : String(e));
             // Provar el següent model disponible
             continue;
         }
@@ -166,9 +167,9 @@ async function extractUserMemories(
             parentSignal?.removeEventListener('abort', onParentAbort);
 
             const memoryCall = metadataResponse.functionCalls?.find(call => call.name === 'manage_memory');
-            const actions = (memoryCall?.args as any)?.actions;
+            const actions = (memoryCall?.args as Record<string, unknown>)?.actions;
             return { memory_actions: Array.isArray(actions) ? actions : [] };
-        } catch (e: any) {
+        } catch (e: unknown) {
             clearTimeout(timeoutId);
             parentSignal?.removeEventListener('abort', onParentAbort);
 
@@ -408,7 +409,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 await emit('error', { message: finalErrorMsg });
                 await emit('done', {});
 
-            } catch (fatalError: any) {
+            } catch (fatalError: unknown) {
                 console.error("FATAL ERROR PROCESSANT LA PETICIÓ:", fatalError);
                 const parsedFatal = parseGenAIError(fatalError);
                 await emit('error', { message: 'Error fatal processant la petició: ' + (parsedFatal.cleanMessage || String(fatalError)) });

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ThoughtBlock, parseThoughtText } from './ThoughtBlock';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 export type StreamPhase = 'idle' | 'connecting' | 'thinking' | 'writing' | 'done' | 'analyzing_intent' | 'searching_vector' | 'searching_web';
 
@@ -30,7 +31,7 @@ const ElapsedTimer: React.FC<{ startTime: number }> = ({ startTime }) => {
     );
 };
 // ── Memoized thought blocks ──────────────────────────────────────────────────
-const MemoizedThoughtBlocks = React.memo(({ thoughtText, t }: { thoughtText: string; t: any }) => {
+const MemoizedThoughtBlocks = React.memo(({ thoughtText, t }: { thoughtText: string; t: TFunction }) => {
     const blocks = useMemo(() => parseThoughtText(thoughtText, t), [thoughtText, t]);
     return (
         <>

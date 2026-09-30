@@ -38,6 +38,15 @@ const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visu
 const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/DivideConquerVisualizer"));
 const SelectionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/SelectionSortVisualizer"));
 const InsertionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/InsertionSortVisualizer"));
+const MergeVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeVisualizer"));
+const MergeQueueVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeQueueVisualizer"));
+const QuickSortVisualizer = React.lazy(() => import("../components/ui/visualizers/QuickSortVisualizer"));
+const HoarePartitionVisualizer = React.lazy(() => import("../components/ui/visualizers/HoarePartitionVisualizer"));
+const FastPowerVisualizer = React.lazy(() => import("../components/ui/visualizers/FastPowerVisualizer"));
+const MergeSortTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeSortTreeVisualizer"));
+const BinarySearchVisualizer = React.lazy(() => import("../components/ui/visualizers/BinarySearchVisualizer"));
+const HybridMergeVisualizer = React.lazy(() => import("../components/ui/visualizers/HybridMergeVisualizer"));
+const MergeBottomUpVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeBottomUpVisualizer"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -160,7 +169,7 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     videoviz: (props: MarkdownComponentProps) => {
         return (
             <SafeSuspense>
-                <SimulationPlayer type="video" {...(props as any)} />
+                <SimulationPlayer {...(props as unknown as React.ComponentProps<typeof SimulationPlayer>)} type="video" />
             </SafeSuspense>
         );
     },
@@ -271,6 +280,69 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <InsertionSortVisualizer />
+            </SafeSuspense>
+        );
+    },
+    mergeviz: () => {
+        return (
+            <SafeSuspense>
+                <MergeVisualizer />
+            </SafeSuspense>
+        );
+    },
+    mergequeueviz: () => {
+        return (
+            <SafeSuspense>
+                <MergeQueueVisualizer />
+            </SafeSuspense>
+        );
+    },
+    quicksortviz: () => {
+        return (
+            <SafeSuspense>
+                <QuickSortVisualizer />
+            </SafeSuspense>
+        );
+    },
+    hoarepartviz: () => {
+        return (
+            <SafeSuspense>
+                <HoarePartitionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    fastpowerviz: () => {
+        return (
+            <SafeSuspense>
+                <FastPowerVisualizer />
+            </SafeSuspense>
+        );
+    },
+    mergerecviz: () => {
+        return (
+            <SafeSuspense>
+                <MergeSortTreeVisualizer />
+            </SafeSuspense>
+        );
+    },
+    binarysearchviz: () => {
+        return (
+            <SafeSuspense>
+                <BinarySearchVisualizer />
+            </SafeSuspense>
+        );
+    },
+    hybridmergeviz: () => {
+        return (
+            <SafeSuspense>
+                <HybridMergeVisualizer />
+            </SafeSuspense>
+        );
+    },
+    mergebottomupviz: () => {
+        return (
+            <SafeSuspense>
+                <MergeBottomUpVisualizer />
             </SafeSuspense>
         );
     },
@@ -423,7 +495,7 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     mark: ({ ...props }) => (
         <mark className="bg-amber-500/20 text-amber-200 font-medium rounded-sm px-1.5 py-0.5" {...props} />
     ),
-    object: ({ ...props }: any) => {
+    object: ({ ...props }: React.ComponentPropsWithoutRef<'object'> & { src?: string }) => {
         const data = (props.data || props.src) as string;
         const type = (props.type as string) || '';
         const isPdf = type === 'application/pdf' || (typeof data === 'string' && data.toLowerCase().includes('.pdf'));
@@ -450,7 +522,7 @@ const rehypePluginsConfig = [
             'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
@@ -502,8 +574,8 @@ export const MarkdownRenderer = React.memo(
         return (
             <VizErrorBoundary>
                 <ReactMarkdown
-                    rehypePlugins={rehypePluginsConfig as any}
-                    remarkPlugins={remarkPluginsConfig as any}
+                    rehypePlugins={rehypePluginsConfig as import('unified').PluggableList}
+                    remarkPlugins={remarkPluginsConfig as import('unified').PluggableList}
                     components={mergedComponents as unknown as React.ComponentProps<typeof ReactMarkdown>["components"]}
                 >
                     {content}

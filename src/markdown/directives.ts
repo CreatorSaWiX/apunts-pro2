@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -93,4 +93,13 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   dncviz:         makePassthrough("dncviz"),
   selectionsortviz: makePassthrough("selectionsortviz"),
   insertionsortviz: makePassthrough("insertionsortviz"),
+  mergeviz:         makePassthrough("mergeviz"),
+  mergequeueviz:    makePassthrough("mergequeueviz"),
+  quicksortviz:     makePassthrough("quicksortviz"),
+  hoarepartviz:     makePassthrough("hoarepartviz"),
+  fastpowerviz:     makePassthrough("fastpowerviz"),
+  mergerecviz:      makePassthrough("mergerecviz"),
+  binarysearchviz:  makePassthrough("binarysearchviz"),
+  hybridmergeviz:   makePassthrough("hybridmergeviz"),
+  mergebottomupviz: makePassthrough("mergebottomupviz"),
 };
