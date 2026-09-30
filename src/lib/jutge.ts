@@ -157,6 +157,7 @@ function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProbl
             href.includes('.zip') || href.endsWith('/zip') ||
             href.includes('.tar') || href.endsWith('.tgz') ||
             href.includes('trashurl') ||
+            href.includes('/main/') || href.includes('/solution/') ||
             Boolean(href.match(/\.(cc|hh|java|py|cpp|c\+\+)$/));
 
         if (isFileLink) {
@@ -179,6 +180,13 @@ function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProbl
             el.remove();
         } else {
             el.classList.add('content-image', 'block', 'max-w-full', 'h-auto', 'rounded-lg', 'my-6', 'shadow-md', 'border', 'border-white/10', 'mx-auto');
+        }
+    });
+
+    // Remove empty anchor tags left behind by removed icons
+    postDoc.querySelectorAll('a').forEach(el => {
+        if (!el.textContent?.trim() && !el.querySelector('img, svg')) {
+            el.remove();
         }
     });
 

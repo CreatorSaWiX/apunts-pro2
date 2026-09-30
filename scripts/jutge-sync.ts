@@ -173,25 +173,31 @@ function parseJutgeHtml(html: string, problemId: string, lang: string): ScrapedS
         .replace(/<[^>]*class=["'][^"']*(?:navbar|breadcrumb)[^"']*["'][^>]*>[\s\S]*?<\/[^>]+>/gi, '')
         .replace(/\bclass=["']([^"']*)collapse([^"']*)["']/g, 'class="$1$2"')
         .replace(/\bclass=["']([^"']*)in([^"']*)["']/g, 'class="$1$2"')
-        .replace(/src=["']\/(?!\/)/g, 'src="https://jutge.org/')
-        .replace(/href=["']\/(?!\/)/g, 'href="https://jutge.org/')
         .replace(/href=["']problem:\/\/([^"']+)["']/g, (_, id) => `href="https://jutge.org/problems/${id.split('.')[0]}"`)
-        .replace(/<a\s/g, '<a target="_blank" ');
+        // Preserve quote character (' or ") when resolving relative paths
+        .replace(/\bsrc=(["'])\/(?!\/)/gi, 'src=$1https://jutge.org/')
+        .replace(/\bhref=(["'])\/(?!\/)/gi, 'href=$1https://jutge.org/');
 
-    // Remove all file downloads (PDF, ZIP, TAR, TGZ, Code files, trash links) completely
+    // Remove all file downloads (PDF, ZIP, TAR, TGZ, Code files, /main/cc, /solution/cc, trash links) completely
     statementHtml = statementHtml.replace(
-        /<a\b[^>]*href=["'][^"']*(\.pdf|\/pdf|\.zip|\/zip|\.tar|\.tgz|\.tar\.gz|public\.tar|trashurl|\.(cc|hh|java|py|cpp|c\+\+))[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi,
+        /<a\b[^>]*href=(["'])[^"']*?(\.pdf|\/pdf|\.zip|\/zip|\.tar|\.tgz|\.tar\.gz|public\.tar|trashurl|\/main\/|\/solution\/|\.(cc|hh|java|py|cpp|c\+\+))[^"']*?\1[^>]*>[\s\S]*?<\/a>/gi,
         ''
     );
 
     // Remove any leftover file-badge elements
-    statementHtml = statementHtml.replace(/<a\b[^>]*class=["'][^"']*file-badge[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi, '');
+    statementHtml = statementHtml.replace(/<a\b[^>]*class=["'][^"']*file-badge[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
 
     // Remove file icons (pdf, zip, tar, gatet/public icons)
     statementHtml = statementHtml.replace(
-        /<img\b[^>]*src=["'](https:\/\/jutge\.org[^"']*(?:\/icons\/|\/ico\/|ico_|icon_|f_pdf|f_zip|zip\.png|pdf\.png|public\.png)[^"']*)["'][^>]*>/gi,
+        /<img\b[^>]*src=(["'])https:\/\/jutge\.org[^"']*?(?:\/icons\/|\/ico\/|ico_|icon_|f_pdf|f_zip|zip\.png|pdf\.png|public\.png)[^"']*?\1[^>]*>/gi,
         ''
     );
+
+    // Remove empty anchor tags left behind by removed icons
+    statementHtml = statementHtml.replace(/<a\b[^>]*>\s*<\/a>/gi, '');
+
+    // Add target="_blank" to remaining valid links (if not already present)
+    statementHtml = statementHtml.replace(/<a\b(?![^>]*\btarget=)([^>]*)/gi, '<a target="_blank"$1');
 
     // Style content images (diagrams, math charts, graphs)
     statementHtml = statementHtml.replace(
@@ -200,15 +206,22 @@ function parseJutgeHtml(html: string, problemId: string, lang: string): ScrapedS
     );
 
     // Style normal remaining links (e.g. cross-references to other problems)
-    statementHtml = statementHtml.replace(/<a\s([^>]*href=["']([^"']*)["'][^>]*)>([\s\S]*?)<\/a>/gi, (_fullMatch, attrs, _href, content) => {
+    statementHtml = statementHtml.replace(/<a\b([^>]*href=(["'])([^"']*)\2[^>]*)>([\s\S]*?)<\/a>/gi, (_fullMatch, attrs, _q, _href, content) => {
         if (!content.includes('<img')) {
             return `<a ${attrs} class="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 decoration-emerald-500/30 transition-colors">${content}</a>`;
         }
         return `<a ${attrs} class="inline-block no-underline">${content}</a>`;
     });
 
-    // Remove empty paragraphs, leading & trailing breaks / whitespace
-    statementHtml = statementHtml.replace(/<p\b[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/gi, '');
+    // Remove empty paragraphs and empty anchors iteratively
+    let prev;
+    do {
+        prev = statementHtml;
+        statementHtml = statementHtml
+            .replace(/<p\b[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/gi, '')
+            .replace(/<a\b[^>]*>\s*<\/a>/gi, '');
+    } while (statementHtml !== prev);
+
     statementHtml = statementHtml.replace(/^(\s|&nbsp;|<br\s*\/?>)+/gi, '');
     statementHtml = statementHtml.replace(/(\s|&nbsp;|<br\s*\/?>)+$/gi, '');
 
