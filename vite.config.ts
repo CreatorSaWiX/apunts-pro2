@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       VitePWA({
-        registerType: 'prompt',
+        registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png'],
         manifest: {
           name: 'Apunts',
@@ -58,6 +58,9 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           globIgnores: ['**/embeddings*.json', '**/node_modules/**/*'],
           maximumFileSizeToCacheInBytes: 4000000,
