@@ -7,40 +7,195 @@ export interface JutgeProblem {
     availableLanguages?: string[];
 }
 
-// This service connects to our Vercel Serverless Function (api/jutge-proxy.ts)
-// which acts as a bridge to Jutge.org, handling CORS and HTML parsing.
+// --- Client-side fallback scraping via CORS proxy ---
+// Replicates the server-side jutgeScraper.ts logic using the native browser DOMParser.
+
+const CORS_PROXIES = [
+    (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+];
+
+async function clientSideScrape(problemId: string, lang: string): Promise<JutgeProblem | null> {
+    const cleanId = problemId.replace(/[^a-zA-Z0-9_]/g, '');
+    const priority = [lang, 'ca', 'en', 'es'];
+    const uniqueLangs = Array.from(new Set(priority));
+
+    for (const l of uniqueLangs) {
+        const jutgeUrl = `https://jutge.org/problems/${cleanId}_${l}`;
+
+        for (const makeProxyUrl of CORS_PROXIES) {
+            try {
+                const proxyUrl = makeProxyUrl(jutgeUrl);
+                const resp = await fetch(proxyUrl);
+                if (!resp.ok) continue;
+
+                const html = await resp.text();
+                if (html.includes('Login') || html.includes('Wrong URL') || html.length < 200) continue;
+
+                const result = parseJutgeHtml(html, cleanId, l);
+                if (result) {
+                    console.info(`[jutge] Client-side scrape OK via CORS proxy for ${cleanId}_${l}`);
+                    return result;
+                }
+            } catch {
+                continue;
+            }
+        }
+    }
+
+    return null;
+}
+
+function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProblem | null {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Extract title
+    let title = cleanId;
+    const h1 = doc.querySelector('h1');
+    if (h1) {
+        h1.querySelectorAll('small, .pull-right').forEach(el => el.remove());
+        const t = h1.textContent?.replace(/\s+/g, ' ').trim();
+        if (t) {
+            title = t.replace(new RegExp(`^${cleanId}\\.?\\s*`, 'i'), '').replace(new RegExp(`\\s*${cleanId}\\.?$`, 'i'), '').trim() || title;
+        }
+    }
+
+    // Detect available languages
+    const dLangs = new Set<string>();
+    doc.querySelectorAll('a[href*="/problems/"]').forEach(el => {
+        const href = el.getAttribute('href') || '';
+        if (href.endsWith('_ca') || href.endsWith('/ca')) dLangs.add('ca');
+        if (href.endsWith('_en') || href.endsWith('/en')) dLangs.add('en');
+        if (href.endsWith('_es') || href.endsWith('/es')) dLangs.add('es');
+    });
+    if (lang) dLangs.add(lang);
+    const availableLanguages = dLangs.size > 0 ? Array.from(dLangs) : ['ca', 'en', 'es'];
+
+    // Extract statement content
+    const content = doc.querySelector('#txt, .statement-section, .problem-statement, .enunciat, .panel-body');
+    if (!content) return null;
+
+    content.querySelectorAll('h1, button, script, style, nav, header, footer, .navbar, .breadcrumb, #header, #footer, .ui-layout-north, .ui-layout-south, .left-panel, .right-panel').forEach(el => el.remove());
+    content.querySelectorAll('*').forEach(el => {
+        if (el.textContent?.trim() === '' && el.children.length === 0 && el.tagName.toLowerCase() !== 'img') el.remove();
+    });
+
+    let statementHtml = content.innerHTML;
+    if (!statementHtml.trim()) return null;
+
+    // Post-processing (same as server-side jutgeScraper.ts)
+    const postDoc = parser.parseFromString(statementHtml, 'text/html');
+
+    postDoc.querySelectorAll('.collapse').forEach(el => el.classList.remove('collapse'));
+    postDoc.querySelectorAll('.in').forEach(el => el.classList.remove('in'));
+
+    postDoc.querySelectorAll('a[href^="problem://"]').forEach(el => {
+        const parts = (el.getAttribute('href') || '').split('/');
+        const lastPart = parts[parts.length - 1];
+        if (lastPart) el.setAttribute('href', `https://jutge.org/problems/${lastPart.split('.')[0]}`);
+    });
+
+    postDoc.querySelectorAll('a').forEach(el => {
+        const href = (el.getAttribute('href') || '').toLowerCase();
+        if (href.startsWith('/')) el.setAttribute('href', `https://jutge.org${el.getAttribute('href')}`);
+        el.setAttribute('target', '_blank');
+
+        const isPdf = href.includes('.pdf') || href.endsWith('/pdf');
+        const isZip = href.includes('.zip') || href.endsWith('/zip');
+        const isTar = href.includes('.tar') || href.endsWith('.tgz');
+        const isCode = href.match(/\.(cc|hh|java|py|cpp|c\+\+)$/);
+        const isTrash = href.includes('trashurl');
+
+        if (isPdf || isZip || isTar || isCode || isTrash) {
+            el.querySelectorAll('img').forEach(img => img.remove());
+            el.classList.add('file-badge');
+
+            const mkIcon = (svgPath: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">${svgPath}</svg>`;
+            const iPdf = mkIcon('<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>');
+            const iZip = mkIcon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>');
+            const iCode = mkIcon('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>');
+
+            if (isPdf) { el.classList.add('pdf'); el.innerHTML = `${iPdf}<span>PDF</span>`; }
+            else if (isZip) { el.classList.add('zip'); el.innerHTML = `${iZip}<span>ZIP</span>`; }
+            else if (isTar) {
+                el.classList.add('tar', 'bg-amber-500/10', 'text-amber-400', 'border', 'border-amber-500/20', 'hover:bg-amber-500/20', 'hover:border-amber-500/40');
+                el.innerHTML = `${iZip}<span>TAR</span>`;
+            }
+            else if (isCode) { el.classList.add('code'); el.innerHTML = `${iCode}<span>CODI</span>`; }
+            else if (isTrash) { el.remove(); }
+        } else {
+            if (!el.querySelector('img')) {
+                el.classList.add('text-emerald-400', 'hover:text-emerald-300', 'underline', 'underline-offset-4', 'decoration-emerald-500/30', 'transition-colors');
+            } else {
+                el.classList.add('inline-block', 'no-underline');
+            }
+        }
+    });
+
+    postDoc.querySelectorAll('img').forEach(el => {
+        const originalSrc = el.getAttribute('src') || '';
+        if (originalSrc.startsWith('/')) el.setAttribute('src', `https://jutge.org${originalSrc}`);
+
+        const src = (el.getAttribute('src') || '').toLowerCase();
+        if (src.match(/(\/icons\/|\/ico\/|ico_|icon_|f_pdf|f_zip|zip\.png|pdf\.png|public\.png)/)) {
+            el.remove();
+        } else {
+            el.classList.add('content-image', 'block', 'max-w-full', 'h-auto', 'rounded-lg', 'my-6', 'shadow-md', 'border', 'border-white/10', 'mx-auto');
+        }
+    });
+
+    statementHtml = postDoc.body.innerHTML;
+
+    return {
+        id: cleanId,
+        title,
+        statement: statementHtml,
+        url: `https://jutge.org/problems/${cleanId}`,
+        source: 'client-scraping',
+        availableLanguages
+    };
+}
+
+// --- Main fetch function ---
+// Strategy: 1) Try Vercel proxy  2) Fallback to client-side CORS proxy scraping
 
 export const fetchJutgeProblem = async (problemId: string, lang: string = 'ca'): Promise<JutgeProblem | null> => {
+    // 1. Try Vercel serverless proxy first
     try {
-        // En producció, això crida a /api/jutge-proxy
-        // Eliminem cache de service worker localitzada (PWA) afegint un query rand
         const response = await fetch(`/api/jutge-proxy?id=${problemId}&lang=${lang}&v=${Date.now()}`);
 
-        if (!response.ok) {
-            throw new Error(`API Proxy Error: ${response.status}`);
+        if (response.ok) {
+            const data = await response.json();
+            return data;
         }
-
-        const data = await response.json();
-        return data;
-
+        console.warn(`[jutge] Vercel proxy returned ${response.status}, trying client-side fallback...`);
     } catch (error) {
-        console.warn(`Could not fetch problem ${problemId} from proxy:`, error);
-
-        // Retornar error net
-        return {
-            id: problemId,
-            title: `Error carregant ${problemId}`,
-            statement: `<div class="p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
-                <p class="font-bold">No s'ha pogut carregar l'enunciat des del portal web.</p>
-                <p class="text-sm opacity-80 mt-2">És possible que el problema no estigui disponible públicament o hi hagi un error de connexió.</p>
-                <a href="https://jutge.org/problems/${problemId}" target="_blank" class="block mt-4 text-emerald-400 hover:underline">
-                    Veure manualment a Jutge.org &rarr;
-                </a>
-            </div>`,
-            url: `https://jutge.org/problems/${problemId}`,
-            source: 'error'
-        };
+        console.warn(`[jutge] Vercel proxy failed:`, error);
     }
+
+    // 2. Fallback: client-side scraping via CORS proxy
+    try {
+        const result = await clientSideScrape(problemId, lang);
+        if (result) return result;
+    } catch (error) {
+        console.warn(`[jutge] Client-side scraping also failed:`, error);
+    }
+
+    // 3. Return error fallback
+    return {
+        id: problemId,
+        title: `Error carregant ${problemId}`,
+        statement: `<div class="p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
+            <p class="font-bold">No s'ha pogut carregar l'enunciat des del portal web.</p>
+            <p class="text-sm opacity-80 mt-2">És possible que el problema no estigui disponible públicament o hi hagi un error de connexió.</p>
+            <a href="https://jutge.org/problems/${problemId}" target="_blank" class="block mt-4 text-emerald-400 hover:underline">
+                Veure manualment a Jutge.org &rarr;
+            </a>
+        </div>`,
+        url: `https://jutge.org/problems/${problemId}`,
+        source: 'error'
+    };
 };
 
 export const isJutgeProblem = (problemId: string, topicId?: string): boolean => {
