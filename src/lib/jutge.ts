@@ -153,29 +153,14 @@ function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProbl
         if (href.startsWith('/')) el.setAttribute('href', `https://jutge.org${el.getAttribute('href')}`);
         el.setAttribute('target', '_blank');
 
-        const isPdf = href.includes('.pdf') || href.endsWith('/pdf');
-        const isZip = href.includes('.zip') || href.endsWith('/zip');
-        const isTar = href.includes('.tar') || href.endsWith('.tgz');
-        const isCode = href.match(/\.(cc|hh|java|py|cpp|c\+\+)$/);
-        const isTrash = href.includes('trashurl');
+        const isFileLink = href.includes('.pdf') || href.endsWith('/pdf') ||
+            href.includes('.zip') || href.endsWith('/zip') ||
+            href.includes('.tar') || href.endsWith('.tgz') ||
+            href.includes('trashurl') ||
+            Boolean(href.match(/\.(cc|hh|java|py|cpp|c\+\+)$/));
 
-        if (isPdf || isZip || isTar || isCode || isTrash) {
-            el.querySelectorAll('img').forEach(img => img.remove());
-            el.classList.add('file-badge');
-
-            const mkIcon = (svgPath: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">${svgPath}</svg>`;
-            const iPdf = mkIcon('<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>');
-            const iZip = mkIcon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>');
-            const iCode = mkIcon('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>');
-
-            if (isPdf) { el.classList.add('pdf'); el.innerHTML = `${iPdf}<span>PDF</span>`; }
-            else if (isZip) { el.classList.add('zip'); el.innerHTML = `${iZip}<span>ZIP</span>`; }
-            else if (isTar) {
-                el.classList.add('tar', 'bg-amber-500/10', 'text-amber-400', 'border', 'border-amber-500/20', 'hover:bg-amber-500/20', 'hover:border-amber-500/40');
-                el.innerHTML = `${iZip}<span>TAR</span>`;
-            }
-            else if (isCode) { el.classList.add('code'); el.innerHTML = `${iCode}<span>CODI</span>`; }
-            else if (isTrash) { el.remove(); }
+        if (isFileLink) {
+            el.remove();
         } else {
             if (!el.querySelector('img')) {
                 el.classList.add('text-emerald-400', 'hover:text-emerald-300', 'underline', 'underline-offset-4', 'decoration-emerald-500/30', 'transition-colors');
@@ -197,7 +182,14 @@ function parseJutgeHtml(html: string, cleanId: string, lang: string): JutgeProbl
         }
     });
 
-    statementHtml = postDoc.body.innerHTML;
+    // Remove empty paragraphs and whitespace
+    postDoc.querySelectorAll('p').forEach(p => {
+        if (!p.textContent?.trim() && !p.querySelector('img, svg')) {
+            p.remove();
+        }
+    });
+
+    statementHtml = postDoc.body.innerHTML.trim();
 
     return {
         id: cleanId,

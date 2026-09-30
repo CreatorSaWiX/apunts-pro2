@@ -195,26 +195,8 @@ body.player-fullscreen .nav-pill-container {
   @apply max-w-full h-auto rounded-lg my-6 shadow-lg border border-white/10 mx-auto block;
 }
 
-/* Badges d'arxius (PDF, ZIP, CODE) - Substitueixen les icones antigues */
-.jutge-content .file-badge {
-  @apply inline-flex items-center justify-center px-2.5 py-1 mr-2 mb-2 text-[10px] font-bold uppercase tracking-wider rounded border transition-all select-none align-middle;
-  text-decoration: none !important;
-}
-
-.jutge-content .file-badge.pdf {
-  @apply bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-300;
-}
-
-.jutge-content .file-badge.zip {
-  @apply bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 hover:text-blue-300;
-}
-
-.jutge-content .file-badge.code {
-  @apply bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:text-emerald-300;
-}
-
 /* Fallback per imatges que no tenen classe assignada */
-.jutge-content img:not(.file-badge):not(.content-image) {
+.jutge-content img:not(.content-image) {
   @apply max-w-full h-auto rounded-lg my-6 shadow-lg border border-white/10 mx-auto block;
 }
 

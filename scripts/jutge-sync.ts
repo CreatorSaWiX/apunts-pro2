@@ -178,48 +178,41 @@ function parseJutgeHtml(html: string, problemId: string, lang: string): ScrapedS
         .replace(/href=["']problem:\/\/([^"']+)["']/g, (_, id) => `href="https://jutge.org/problems/${id.split('.')[0]}"`)
         .replace(/<a\s/g, '<a target="_blank" ');
 
-    // Process badges (PDF, ZIP, TAR, CODE)
-    statementHtml = processFileLinks(statementHtml);
-
-    // Style images
+    // Remove all file downloads (PDF, ZIP, TAR, TGZ, Code files, trash links) completely
     statementHtml = statementHtml.replace(
-        /src=["'](https:\/\/jutge\.org[^"']*(?:\/icons\/|\/ico\/|ico_|icon_|f_pdf|f_zip|zip\.png|pdf\.png|public\.png)[^"']*)["']/gi,
-        'style="display:none" src="$1"'
+        /<a\b[^>]*href=["'][^"']*(\.pdf|\/pdf|\.zip|\/zip|\.tar|\.tgz|\.tar\.gz|public\.tar|trashurl|\.(cc|hh|java|py|cpp|c\+\+))[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi,
+        ''
     );
+
+    // Remove any leftover file-badge elements
+    statementHtml = statementHtml.replace(/<a\b[^>]*class=["'][^"']*file-badge[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi, '');
+
+    // Remove file icons (pdf, zip, tar, gatet/public icons)
     statementHtml = statementHtml.replace(
-        /<img(?![^>]*style=["']display:none["'])([^>]*)>/gi,
+        /<img\b[^>]*src=["'](https:\/\/jutge\.org[^"']*(?:\/icons\/|\/ico\/|ico_|icon_|f_pdf|f_zip|zip\.png|pdf\.png|public\.png)[^"']*)["'][^>]*>/gi,
+        ''
+    );
+
+    // Style content images (diagrams, math charts, graphs)
+    statementHtml = statementHtml.replace(
+        /<img(?![^>]*class=["'][^"']*content-image)([^>]*)>/gi,
         '<img class="content-image block max-w-full h-auto rounded-lg my-6 shadow-md border border-white/10 mx-auto"$1>'
     );
 
-    return { title, statement: statementHtml, availableLanguages };
-}
-
-function processFileLinks(html: string): string {
-    const mkIcon = (svgPath: string) =>
-        `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">${svgPath}</svg>`;
-    const iPdf = mkIcon('<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>');
-    const iZip = mkIcon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>');
-    const iCode = mkIcon('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>');
-
-    return html.replace(/<a\s([^>]*href=["']([^"']*)["'][^>]*)>([\s\S]*?)<\/a>/gi, (_fullMatch, attrs, href, content) => {
-        const hrefLower = href.toLowerCase();
-        const isPdf = hrefLower.includes('.pdf') || hrefLower.endsWith('/pdf');
-        const isZip = hrefLower.includes('.zip') || hrefLower.endsWith('/zip');
-        const isTar = hrefLower.includes('.tar') || hrefLower.endsWith('.tgz');
-        const isCodeFile = /\.(cc|hh|java|py|cpp|c\+\+)$/i.test(hrefLower);
-        const isTrash = hrefLower.includes('trashurl');
-
-        if (isTrash) return '';
-        if (isPdf) return `<a ${attrs} class="file-badge pdf">${iPdf}<span>PDF</span></a>`;
-        if (isZip) return `<a ${attrs} class="file-badge zip">${iZip}<span>ZIP</span></a>`;
-        if (isTar) return `<a ${attrs} class="file-badge tar bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 hover:border-amber-500/40">${iZip}<span>TAR</span></a>`;
-        if (isCodeFile) return `<a ${attrs} class="file-badge code">${iCode}<span>CODI</span></a>`;
-
+    // Style normal remaining links (e.g. cross-references to other problems)
+    statementHtml = statementHtml.replace(/<a\s([^>]*href=["']([^"']*)["'][^>]*)>([\s\S]*?)<\/a>/gi, (_fullMatch, attrs, _href, content) => {
         if (!content.includes('<img')) {
             return `<a ${attrs} class="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 decoration-emerald-500/30 transition-colors">${content}</a>`;
         }
         return `<a ${attrs} class="inline-block no-underline">${content}</a>`;
     });
+
+    // Remove empty paragraphs, leading & trailing breaks / whitespace
+    statementHtml = statementHtml.replace(/<p\b[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/gi, '');
+    statementHtml = statementHtml.replace(/^(\s|&nbsp;|<br\s*\/?>)+/gi, '');
+    statementHtml = statementHtml.replace(/(\s|&nbsp;|<br\s*\/?>)+$/gi, '');
+
+    return { title, statement: statementHtml.trim(), availableLanguages };
 }
 
 /**
