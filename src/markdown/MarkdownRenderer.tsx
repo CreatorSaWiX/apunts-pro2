@@ -47,6 +47,13 @@ const MergeSortTreeVisualizer = React.lazy(() => import("../components/ui/visual
 const BinarySearchVisualizer = React.lazy(() => import("../components/ui/visualizers/BinarySearchVisualizer"));
 const HybridMergeVisualizer = React.lazy(() => import("../components/ui/visualizers/HybridMergeVisualizer"));
 const MergeBottomUpVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeBottomUpVisualizer"));
+const KaratsubaVisualizer = React.lazy(() => import("../components/ui/visualizers/KaratsubaVisualizer"));
+const NaiveMultVisualizer = React.lazy(() => import("../components/ui/visualizers/NaiveMultVisualizer"));
+const NaiveMatMultVisualizer = React.lazy(() => import("../components/ui/visualizers/NaiveMatMultVisualizer"));
+const StrassenVisualizer = React.lazy(() => import("../components/ui/visualizers/StrassenVisualizer"));
+const HanoiVisualizer = React.lazy(() => import("../components/ui/visualizers/HanoiVisualizer"));
+const MedianVisualizer = React.lazy(() => import("../components/ui/visualizers/MedianVisualizer"));
+const BFPRTVisualizer = React.lazy(() => import("../components/ui/visualizers/BFPRTVisualizer"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -346,6 +353,55 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    karatsubaviz: () => {
+        return (
+            <SafeSuspense>
+                <KaratsubaVisualizer />
+            </SafeSuspense>
+        );
+    },
+    naivemultviz: () => {
+        return (
+            <SafeSuspense>
+                <NaiveMultVisualizer />
+            </SafeSuspense>
+        );
+    },
+    naivematmultviz: () => {
+        return (
+            <SafeSuspense>
+                <NaiveMatMultVisualizer />
+            </SafeSuspense>
+        );
+    },
+    strassenmatmultviz: () => {
+        return (
+            <SafeSuspense>
+                <StrassenVisualizer />
+            </SafeSuspense>
+        );
+    },
+    hanoiviz: () => {
+        return (
+            <SafeSuspense>
+                <HanoiVisualizer />
+            </SafeSuspense>
+        );
+    },
+    medianviz: () => {
+        return (
+            <SafeSuspense>
+                <MedianVisualizer />
+            </SafeSuspense>
+        );
+    },
+    bfprtviz: () => {
+        return (
+            <SafeSuspense>
+                <BFPRTVisualizer />
+            </SafeSuspense>
+        );
+    },
     vectorviz: () => {
         return (
             <SafeSuspense>
@@ -522,7 +578,7 @@ const rehypePluginsConfig = [
             'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
@@ -535,7 +591,7 @@ const rehypePluginsConfig = [
             'circle': ['cx', 'cy', 'r', 'fill', 'stroke', 'strokeWidth', 'className', 'class'],
             'rect': ['x', 'y', 'width', 'height', 'rx', 'ry', 'fill', 'stroke', 'strokeWidth', 'className', 'class'],
             'download': ['href', 'url', 'src', 'label', 'title', 'format', 'type', 'description'],
-            'videoviz': ['src', 'url', 'delay'],
+            'videoviz': ['src', 'url', 'delay', 'transparent'],
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],
             'proofviz': ['proof'],

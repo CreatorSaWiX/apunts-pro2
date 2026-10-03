@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "vennviz" | "probtreeviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -102,4 +102,11 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   binarysearchviz:  makePassthrough("binarysearchviz"),
   hybridmergeviz:   makePassthrough("hybridmergeviz"),
   mergebottomupviz: makePassthrough("mergebottomupviz"),
+  karatsubaviz:     makePassthrough("karatsubaviz"),
+  naivemultviz:     makePassthrough("naivemultviz"),
+  naivematmultviz:    makePassthrough("naivematmultviz"),
+  strassenmatmultviz: makePassthrough("strassenmatmultviz"),
+  hanoiviz:           makePassthrough("hanoiviz"),
+  medianviz:          makePassthrough("medianviz"),
+  bfprtviz:           makePassthrough("bfprtviz"),
 };

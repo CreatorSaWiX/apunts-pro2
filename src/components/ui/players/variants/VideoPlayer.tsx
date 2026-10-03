@@ -5,6 +5,7 @@ interface VideoPlayerProps {
     url?: string;
     src?: string;
     delay?: string | number;
+    transparent?: boolean | string;
 }
 
 const formatTime = (timeInSeconds: number) => {
@@ -14,7 +15,7 @@ const formatTime = (timeInSeconds: number) => {
     return `${m}:${s}`;
 };
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500, transparent }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => 
 
     const delayMs = typeof delay === 'string' ? parseInt(delay, 10) : delay;
     const finalUrl = src || url;
+    const isTransparent =
+        transparent === true ||
+        transparent === 'true' ||
+        transparent === '' ||
+        Boolean(finalUrl?.toLowerCase().includes('transparent'));
 
     useEffect(() => {
         if (videoRef.current) {
@@ -155,12 +161,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, src, delay = 3500 }) => 
     return (
         <div
             ref={containerRef}
-            className="flex flex-col justify-center overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 shadow-2xl mx-auto max-w-5xl group relative min-h-[100px] not-prose"
+            className={`flex flex-col justify-center mx-auto max-w-5xl group relative min-h-[100px] not-prose transition-all duration-300 ${
+                isTransparent
+                    ? 'bg-transparent border-0 shadow-none overflow-visible'
+                    : 'overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 shadow-2xl'
+            }`}
             onMouseMove={handleContainerMouseMove}
             onMouseLeave={() => setIsHovering(false)}
         >
             {finalUrl ? (
-                <div className="relative w-full flex items-center justify-center bg-black/20">
+                <div className={`relative w-full flex items-center justify-center ${isTransparent ? 'bg-transparent' : 'bg-black/20'}`}>
                     <video
                         ref={videoRef}
                         src={finalUrl}
