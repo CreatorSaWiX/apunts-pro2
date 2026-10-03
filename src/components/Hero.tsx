@@ -11,7 +11,7 @@ const APP_DATA: Record<string, { version: string; updated: string }> = {
     m1: { version: 'v1.7.1', updated: '30/05/2026' },
     m2: { version: 'v1.6.7', updated: '03/06/2026' },
     pe: { version: 'v1.10', updated: '27/09/2026' },
-    eda: { version: 'v1.10', updated: '29/09/2026' }
+    eda: { version: 'v1.11', updated: '03/10/2026' }
 };
 
 const letterContainerVariants = {

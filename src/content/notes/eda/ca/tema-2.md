@@ -1,7 +1,7 @@
 ---
-title: "Tema 2: Divide and Conquer"
-description: "Algorismes de dividir i vèncer: anàlisi de recurrències, ordenació (MergeSort, QuickSort), exponenciació ràpida, Karatsuba, Strassen, Torres de Hanoi i selecció lineal (Mediana de medianes)."
-readTime: "40 min"
+title: "Tema 2: Dividir i vèncer"
+description: "Recurrències divisores i subtractives, ordenació (MergeSort, QuickSort), exponenciació ràpida, Karatsuba, Strassen, Torres de Hanoi i selecció lineal (BFPRT)."
+readTime: "45 min"
 order: 2
 draft: false
 ---
