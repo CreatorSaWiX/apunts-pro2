@@ -5,7 +5,7 @@ import { m as motion, useTransform } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
 import type { allPersonalNotes } from 'content-collections';
 import { hapticLight } from '../../lib/haptics';
-import { getTopicSolutionRoute, isProgrammingSubject } from '../../utils/solutionUtils';
+import { getTopicSolutionRoute, getTopicSolutionLabel, isProgrammingSubject } from '../../utils/solutionUtils';
 
 type TopicNote = (typeof allPersonalNotes)[number];
 
@@ -178,7 +178,7 @@ export const CarouselCard = React.memo(({
                                         }}
                                         className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
                                     >
-                                        {isProgrammingSubject(subject) ? <Terminal size={14} /> : <Calculator size={14} />} {t('topic.solutions', 'Solucionaris')}
+                                        {isProgrammingSubject(subject) ? <Terminal size={14} /> : <Calculator size={14} />} {getTopicSolutionLabel(subject, topic.slug, t)}
                                     </motion.div>
                                 </div>
                             </div>

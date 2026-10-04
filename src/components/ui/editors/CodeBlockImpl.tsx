@@ -20,8 +20,12 @@ interface LanguageConfig {
 }
 
 const LANGUAGES: Record<string, LanguageConfig> = {
+    'c': { name: 'C', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
     'cpp': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
     'c++': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'cc': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'h': { name: 'C', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    'hpp': { name: 'C++', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
     'js': { name: 'JS', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
     'javascript': { name: 'JS', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
     'ts': { name: 'TS', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
@@ -35,6 +39,10 @@ const LANGUAGES: Record<string, LanguageConfig> = {
 
 const getLanguageExtension = (langKey: string) => {
     switch (langKey) {
+        case 'c':
+        case 'h':
+        case 'cc':
+        case 'hpp':
         case 'cpp':
         case 'c++': return cpp();
         case 'js':

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Code2, LayoutTemplate } from 'lucide-react';
-import GraphVisualizer from '../../visualizers/GraphVisualizer';
+import GraphVisualizer from '../../visualizers/shared/GraphVisualizer';
 import { graphs as algorithms } from '../../../../lib/simulations/content/graphs';
 import type { Simulation, SimulationStep } from '../../../../lib/simulations/engine/types';
 import { Group, Panel, Separator } from 'react-resizable-panels';

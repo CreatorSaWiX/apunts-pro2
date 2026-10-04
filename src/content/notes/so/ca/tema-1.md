@@ -1,248 +1,210 @@
 ---
-title: "Tema 1: Introducció al Sistema Operatiu i Crides a Sistema"
-description: "Definició, cicle de vida, modes d'execució de la CPU (usuari vs. kernel), frontera de seguretat, interrupcions HW, excepcions SW i mecanisme intern de les crides a sistema (syscalls)."
-readTime: "12 min"
+title: "Tema 1: Shell"
+description: "Comandes, fitxers i permisos."
+readTime: "15 min"
 order: 1
-draft: true
+draft: false
 ---
 
-# 1. Introducció al sistema operatiu i crides a sistema
+## 1.1 Shell i REPL
 
-::callout[type="info" title="Objectiu del Tema"]
-Aquest tema estableix els fonaments de baix nivell de com el programari interactua amb el maquinari físic: el rol del sistema operatiu, els mecanismes hardware de protecció de la CPU, els tipus d'esdeveniments que donen el control al kernel i el camí complet d'execució d'una crida a sistema (*system call*).
-::
+**Shell** = interfície text usuari ↔ Kernel. Per defecte: **Bash**.  Funciona en bucle infinit: llegeix → executa → espera.
 
----
-
-## 1.1. Definició, rol i objectius del SO
-
-El **Sistema Operatiu (SO)** és el software base que controla i administra els recursos de maquinari (*hardware*) disponibles a la màquina i actua d'intermediari transparent entre les aplicacions d'usuari i els circuits físics.
-
-* **Perspectiva interna:** Defineix estructures de dades internes per gestionar els recursos (CPU, memòria RAM, dispositius d'E/S) i algorismes per decidir com compartir-los de forma òptima i equitativa.
-* **Perspectiva externa:** Ofereix una interfície homogènia de serveis i funcions (les **crides a sistema**) perquè les aplicacions puguin accedir als recursos amb seguretat i sense haver de conèixer els detalls d'enginyeria electrònica del hardware.
-
-### Els tres objectius principals del SO
-
-1. ==Usabilitat==: Abstreu la complexitat i les peculiaritats de cada perifèric o processador oferint una interfície uniforme, coherent i intuïtiva per als desenvolupadors i usuaris.
-2. ==Seguretat i protecció==: Protegeix el maquinari d'accessos no autoritzats o erronis i garanteix un aïllament estricte entre processos d'usuaris diferents per evitar interferències mútues.
-3. ==Eficiència==: Maximitza el rendiment dels recursos compartits mitjançant tècniques de multiprogramació, oferint a cada usuari la il·lusió de disposar de la màquina en exclusiva.
-
----
-
-## 1.2. Cicle de vida del Sistema Operatiu
-
-El funcionament d'un sistema operatiu des que s'encén l'ordinador fins que s'apaga passa per tres fases consecutives:
-
-1. ==Arrencada (*Boot / Startup*)==:
-   * El firmware de la placa base (**BIOS / UEFI**) realitza el test de diagnòstic (*POST*) i carrega el gestor d'arrencada (*bootloader*).
-   * Es copia la imatge del nucli del SO des del disc secundari cap a la memòria principal (RAM).
-   * El kernel inicialitza les seves estructures internes, programa els controladors de dispositius físics i captura els **vectors d'interrupció**.
-   * Finalment, engega el procés inicial arrel (`init` o `systemd`, PID 1), el servei de login i la primera intèrpret d'ordres (*shell*).
-2. ==Fase d'ús (*Runtime*)==:
-   * Proporciona l'entorn d'execució de processos d'usuari i gestiona el repartiment just del temps de CPU.
-   * Ofereix serveis de desenvolupament (compiladors, editors de text, shells).
-   * Atén contínuament les crides a sistema dels programes i els esdeveniments asíncrons del maquinari.
-3. ==Finalització (*Shutdown*)==:
-   * Atura ordenadament tots els processos actius enviant senyals de terminació.
-   * Força el buidat de memòries cau cap al disc físic (**sync / flush**) per evitar pèrdua de dades.
-   * Desmunta amb seguretat els sistemes de fitxers (*filesystems*).
-   * Desconnecta el subministrament elèctric del maquinari de manera segura.
-
-```text
-┌────────────────────────────────┐                 ┌────────────────────────────────┐                 ┌────────────────────────────────┐
-│      1. ARRENCADA (Boot)       │                 │      2. FASE D'ÚS (Runtime)    │                 │    3. FINALITZACIÓ (Shutdown)  │
-├────────────────────────────────┤                 ├────────────────────────────────┤                 ├────────────────────────────────┤
-│ • BIOS/UEFI arrenca el HW.     │   SO preparat   │ • Entorn d'execució de procs.  │   Petició fi    │ • Atura processos ordenadament.│
-│ • Copia SO de disc a RAM.      ├────────────────►│ • Repartiment just de CPU.     ├────────────────►│ • Buidat de memòries cau (sync)│
-│ • Inicialitza estructures.     │                 │ • Shell, editors, compiladors. │                 │ • Desmunta fitxers i apaga HW. │
-│ • Captura vectors interrupció. │                 │ • Atenció a syscalls i esdevs. │                 │                                │
-│ • Engega procés inicial (init).│                 │                                │                 │                                │
-└────────────────────────────────┘                 └────────────────────────────────┘                 └────────────────────────────────┘
+```c [shell_loop.c]
+while (1) {
+    comanda = llegir_comanda();
+    executar_comanda(comanda);
+}
 ```
 
+| Tipus | Execució | Exemples | Ajuda |
+| :--- | :--- | :--- | :--- |
+| **Interna** (*built-in*) | Dins el mateix procés Shell (sense `fork`) | `cd`, `export`, `alias`, `exit`, `echo` | `help <cmd>` |
+| **Externa** | La Shell fa `fork` + `exec` per executar-la | `ls`, `mkdir`, `cp`, `rm`, `grep` | `man <cmd>` |
+
+`type <cmd>` → diu si és interna o externa.
+
+:::shellviz{command="type cd" suggestions="type cd,type ls" title="Terminal — Comprovar si una comanda és interna o externa"}
+:::
+
 ---
 
-## 1.3. Modes d'execució de la CPU i protecció del maquinari
+## 1.2 Manual `man`
 
-Per garantir la supervivència i estabilitat del sistema davant d'errors de programari o atacs maliciosos, el processador físic disposa d'un mecanisme hardware de protecció basat en nivells de privilegi (*rings*):
+`man <N> <nom>` → cerca a la secció N. Seccions clau:
 
-* ==Mode usuari (*User Mode* / Ring 3 / No privilegiat)==:
-  * S'hi executen els programes ordinaris de l'usuari (navegadors, editors, jocs, compiladors).
-  * Determinades instruccions màquina estan estrictament prohibides (**instruccions privilegiades**, com canviar els registres de la MMU, aturar la CPU o manipular els vectors d'interrupció).
-  * L'espai d'adreces de memòria accessible està restringit a la pròpia àrea de l'aplicació.
-* ==Mode sistema (*Kernel Mode* / Ring 0 / Privilegiat)==:
-  * S'hi executa exclusivament el nucli (*kernel*) del sistema operatiu.
-  * Té accés il·limitat a tot l'espai físic de memòria RAM i als ports de comunicació.
-  * Pot executar totes les instruccions màquina de l'arquitectura de la CPU.
+:::shellviz{command="man write" suggestions="man write,man 2 write" title="Terminal — Consultar el manual de write (secció 1 vs 2)"}
+:::
 
-### Arquitectura de capes i frontera de seguretat
+| Secció | Contingut | Exemples |
+| :---: | :--- | :--- |
+| **1** | Comandes d'usuari | `ls`, `cp`, `man` |
+| **2** | Crides a sistema (kernel) | `fork`, `write`, `open` |
+| **3** | Funcions de biblioteca C | `printf`, `sprintf`, `strlen` |
+
+`man write` → secció 1 (comanda). `man 2 write` → crida a sistema. Sempre especifica la secció!
+
+**Navegació dins de `man`:** `Espai` avança · `b` retrocedeix · `/patró` cerca · `n` següent · `q` surt.
+
+---
+
+## 1.3 Sistema de Fitxers UNIX
+
+Un únic arbre des de `/` (no hi ha lletres de disc com a Windows).
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        MODE USUARI (Ring 3 / No privilegiat)                           │
-│   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌───────────────────────┐   │
-│   │   Editors    │   │ Compiladors  │   │    Shell     │   │ Aplicacions C / BBDD  │   │
-│   │ (vim, code)  │   │ (gcc, make)  │   │ (bash, zsh)  │   │  (codi d'usuari)      │   │
-│   └──────┬───────┘   └──────┬───────┘   └──────┬───────┘   └──────────┬────────────┘   │
-└──────────┼──────────────────┼──────────────────┼──────────────────────┼────────────────┘
-           ▼                  ▼                  ▼                      ▼
-══════════════════════════════════════════════════════════════════════════════════════════
-       FRONTERA DE SEGURETAT HW: Crides a sistema (syscall / TRAP / sysenter)
-══════════════════════════════════════════════════════════════════════════════════════════
-           │
-           ▼  (Canvi de mode protegit per Hardware)
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        MODE KERNEL (Ring 0 / Privilegiat)                              │
-│   ┌───────────────────┬───────────────────┬────────────────────┬───────────────────┐   │
-│   │  Processos i CPU  │  Memòria Virtual  │ Sistema de Fitxers │    Drivers E/S    │   │
-│   │  Planif, PCB, IPC │  MMU, paginació   │ VFS, inodes, cau   │ Disc, xarxa, tty  │   │
-│   └───────────────────┴───────────────────┴────────────────────┴───────────────────┘   │
-└──────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                           │  ▲
-              Instruccions privilegiades   │  │  Interrupcions HW (IRQ)
-                                           ▼  │
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 MAQUINARI FÍSIC                                        │
-│   ┌───────────────────┬───────────────────┬────────────────────┬───────────────────┐   │
-│   │ Processador (CPU) │   Memòria RAM     │  Controladors E/S  │  Targetes de Xarxa│   │
-│   │ Registres, Timer  │ Espai físic bytes │  Disc, USB, teclat │   Ethernet, WiFi  │   │
-│   └───────────────────┴───────────────────┴────────────────────┴───────────────────┘   │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+/
+├── etc/       configuració del sistema
+├── home/      directoris d'usuaris ($HOME)
+├── dev/       fitxers de dispositius
+└── usr/bin/   programes d'usuari (ls, grep…)
 ```
 
-::callout[type="warning" title="Pregunta d'examen clau [Parcial Teoria QT 2024-2025, Ex. 1.f]"]
-**Per què no podem invocar directament les rutines del kernel com si fossin funcions normals de C?**
+* **Absolut**: comença per `/` → ex: `/home/alumne/S1`
+* **Relatiu**: comença pel directori actual → ex: `../S2`, `Documents/S1`
+* `.` = directori actual · `..` = directori pare
+* Fitxers ocults = comencen per `.` (ex: `.bashrc`) → `ls -a` per veure'ls
 
-1. **Aïllament d'espai lògic:** Les rutines del nucli resideixen a l'espai d'adreces de memòria del kernel, que està totalment protegit i resulta completament invisible i inaccessible per al codi d'usuari.
-2. **Violació de privilegis:** Les funcions del kernel contenen instruccions privilegiades. Si s'intentessin executar estant la CPU en mode usuari, el maquinari llançaria immediatament una excepció per violació de privilegis. Cal forçar un canvi de privilegi controlat pel processador mitjançant una instrucció especial de trap (`syscall`).
-::
+**Comandes clau:**
 
----
-
-## 1.4. Formes d'accedir al codi del kernel
-
-El nucli del sistema operatiu no està en execució contínua; només pren el control de la CPU quan un esdeveniment específic interromp el flux del programa d'usuari.
-
-### Classificació d'esdeveniments
-
-* **Síncron (lligat a la instrucció actual):** Es produeix com a conseqüència directa de la instrucció que la CPU està processant en aquell instant exacte. Si repetim l'execució pas a pas amb les mateixes dades, saltarà **sempre en el mateix cicle**. Exemples: divisió per zero, referència a memòria invàlida o una crida `write()`.
-* **Asíncron (arriba de forma externa):** És generat per un dispositiu físic extern (teclat, rellotge intern, disc dur, targeta de xarxa). Arriba de sobte **entre dues instruccions qualssevol**, sense que la línia de codi actual en tingui cap culpa.
-* **Voluntari vs. Involuntari:** És **voluntari** si el programa d'usuari demana entrar expressament al kernel mitjançant una crida a sistema; és **involuntari** si el canvi és forçat per una fallada de codi o un avís del maquinari.
-
-### Els tres mecanismes hardware d'accés
-
-Existeixen exactament tres vies hardware per transferir el control al nucli (*Parcial 2023-2024 Ex. 1.a i Parcial 2025-2026 Ex. 1*):
-
-| Mecanisme | Voluntarietat | Sincronisme | Causa / Origen | Exemples típics |
-| :--- | :---: | :---: | :--- | :--- |
-| **Interrupció HW** | Involuntari | **Asíncron** | Dispositiu físic extern de maquinari. Arriba entre dues instruccions. | Rellotge del sistema (*timer*), prémer una tecla, recepció de paquet de xarxa, fi de lectura de disc. |
-| **Excepció SW** | Involuntari | **Síncron** | Error greu o condició anòmala generada per la instrucció que s'executa. | Divisió per zero (`x / 0`), adreçament de punter invàlid (`SIGSEGV`), instrucció no permesa. |
-| **Crida al sistema (*trap*)** | **Voluntari** | **Síncron** | Petició intencionada del procés per demanar un servei al kernel. | Invocacions a `write()`, `fork()`, `waitpid()`, `sigsuspend()`. |
-
----
-
-## 1.5. El rellotge del sistema (*timer interrupt*)
-
-Si cap aplicació provoqués excepcions de codi ni realitzés crides a sistema voluntàries, un bucle infinit en mode usuari (`while(1);`) podria monopolitzar la CPU de manera indefinida, penjant tot l'ordinador.
-
-Per evitar-ho, el sistema operatiu programa a l'inici un temporitzador físic (*hardware timer*) perquè emeti una **interrupció de rellotge periòdica** (típicament cada 10 ms):
-
-1. El maquinari suspèn automàticament l'execució del procés d'usuari.
-2. Commuta la CPU a mode kernel i salta a la **Rutina de Servei d'Interrupció (RSI)** del rellotge.
-3. El nucli crida al **planificador (*scheduler*)**, que actualitza els comptadors de temps i decideix si és el moment de retirar la CPU al procés actual per cedir-la a un altre procés preparat.
-
-```text
-Eix temporal:
-────────────────────────────────────────────────────────────────────────────────────────────► Temps
-┌──────────────────────┐ ┌──────────┐ ┌──────────────────────┐ ┌──────────┐ ┌──────────────┐
-│  Procés A (usuari)   │ │Scheduler │ │  Procés B (usuari)   │ │Scheduler │ │  Procés A    │
-└──────────────────────┘ └──────────┘ └──────────────────────┘ └──────────┘ └──────────────┘
-                         ▲                                     ▲
-                    Tick 10 ms                            Tick 20 ms
-              (Interrupció HW del timer)            (Interrupció HW del timer)
-```
-
----
-
-## 1.6. Mecanisme intern de les crides a sistema i llibreries
-
-### Com es genera un executable en C
-
-El codi font que escrivim passa per dues etapes principals abans de poder ser executat pel sistema operatiu:
-
-```text
-┌──────────────┐                  ┌──────────────┐                  ┌──────────────┐
-│ Codi font C  │   Compilació     │ Codi objecte │    Enllaçat      │  Executable  │
-│ (programa.c) ├─────────────────►│ (programa.o) ├─────────────────►│ (binari ELF) │
-└──────────────┘   (gcc -c)       └──────┬───────┘   (linker / ld)  └──────────────┘
-                                         ▲
-                                         │ Combina rutines
-                                  ┌──────┴───────┐
-                                  │ Llibreries   │
-                                  │ (libc.a / .so│
-                                  └──────────────┘
-```
-
-### El paper de la llibreria estàndard (`libc` / `libso`)
-
-Les aplicacions d'usuari no executen directament instruccions màquina de canvi de mode, sinó que invoquen funcions embolcalladores (**wrappers**) de la llibreria de sistema estàndard (`libc`), que s'executa en **mode usuari**:
-
-1. **Ubicació d'arguments:** La funció wrapper col·loca els paràmetres als registres de la CPU segons el conveni de la plataforma (**ABI**, *Application Binary Interface*, com `rdi`, `rsi`, `rdx` en x86-64).
-2. **Càrrega de l'identificador:** Carrega el número únic de la crida a sistema en un registre reservat (ex: `rax = SYS_write`). Per desacoblar les aplicacions de les adreces internes del kernel, aquests nombres indexen la **taula de crides a sistema** (`sys_call_table`).
-3. **Instrucció de canvi de mode:** Executa la instrucció que commuta el processador a mode privilegiat (`syscall`, `sysenter` o la clàssica `int 0x80`).
-4. **Tractament de retorn:** Quan el kernel finalitza i retorna a mode usuari, la funció wrapper recull el valor de retorn. Si hi ha hagut error (valor negatiu), copia el codi d'error a la variable global `errno` i retorna un valor homogeni `-1` a l'aplicació.
-
-::callout[type="info" title="Dependència del Maquinari [Parcial QP 2021-2022 / QP 2022-2023, Ex. 1.a]"]
-La llibreria de sistema estàndard és **fortament dependent del maquinari** perquè ha de conèixer les instruccions específiques de la CPU per al salt a kernel, la distribució exacta dels registres de l'arquitectura i el format de pas de paràmetres per la pila o registres.
-::
-
----
-
-## 1.7. Traça pas a pas d'una crida: `write(1, buf, 5)`
-
-L'esquema següent detalla exactament tot el que succeeix al computador des que invoquem `write()` fins que la funció retorna el control al nostre codi:
-
-```text
-┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                    MODE USUARI (Ring 3 · Espai d'adreces de l'aplicació)                        │
-│                                                                                                 │
-│  ┌──────────────────────────────┐                         ┌──────────────────────────────────┐  │
-│  │ 1. Codi d'usuari (main.c)    │                         │ 2. Wrapper libc (write.c)        │  │
-│  │                              │    1. Invocació C       │                                  │  │
-│  │   char buf[5] = "hola";      ├────────────────────────►│ • Posa args a rdi, rsi, rdx      │  │
-│  │   write(1, buf, 5);          │                         │ • Carrega rax = SYS_write        │  │
-│  │   ...                        │◄────────────────────────┤ • Executa syscall / TRAP         │  │
-│  │   (procés suspès)            │    5. Retorn (bytes / -1│ • Si error: posa errno i -1      │  │
-│  └──────────────────────────────┘                         └───────────────┬──────────────────┘  │
-└───────────────────────────────────────────────────────────────────────────┼─────────────────────┘
-                                                                            │  ▲
-════════════════════════════════════════════════════════════════════════════┼══┼═══════════════════
-       FRONTERA DE SEGURETAT HW: Canvi de mode de privilegi de la CPU       │  │
-════════════════════════════════════════════════════════════════════════════┼══┼═══════════════════
-                                                                            │  │
-                                            2. Instrucció syscall (Ring 0)  │  │ 4. sysexit / sysret
-                                                                            ▼  │    (torna a Ring 3)
-┌──────────────────────────────────────────────────────────────────────────────┴──────────────────┐
-│                    MODE KERNEL (Ring 0 · Espai d'adreces protegit del nucli)                    │
-│                                                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ 3. Nucli del Sistema Operatiu (Kernel)                                                    │  │
-│  │                                                                                           │  │
-│  │  • La CPU commuta per maquinari a mode kernel.                                            │  │
-│  │  • Salva el context del procés d'usuari (tots els registres) a la pila de kernel / PCB.  │  │
-│  │  • Indexa sys_call_table[SYS_write] i invoca la rutina interna sys_write(1, buf, 5).     │  │
-│  │  • El driver del maquinari gestiona el buffer del controlador físic d'E/S.               │  │
-│  │  • Desa el resultat a rax i executa la instrucció sysexit / sysret / iret.               │  │
-│  └───────────────────────────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Taula comparativa: Funció ordinària de C vs. Crida a sistema
-
-| Fase de l'execució | Funció ordinària de C (usuari) | Crida al sistema (*syscall*) |
+| Comanda | Funció | Flags importants |
 | :--- | :--- | :--- |
-| **Pas de paràmetres** | Pila d'usuari (`push`) o registres generals segons ABI de C. | Registres específics acordats per l'arquitectura i el kernel. |
-| **Instrucció de crida** | `call` (es manté sempre el mateix mode de privilegi). | `syscall`, `sysenter` o `int 0x80` (canvi hardware a mode kernel). |
-| **Salvat de context** | Salva només els registres que el conveni obliga a preservar (*callee-saved*). | El kernel salva **tots** els registres de l'usuari a la pila de kernel / PCB. |
-| **Espai d'adreces** | Sempre dins de l'espai de memòria de la pròpia aplicació. | Transició a l'espai de memòria protegit del kernel. |
-| **Instrucció de retorn** | `ret` (continua en mode usuari sense canvis de privilegis). | `sysexit`, `sysret`, `iret` (restaura el mode usuari per hardware). |
+| `pwd` | Mostra ruta actual | — |
+| `cd <dir>` | Canvia directori | `cd` → HOME · `cd -` → anterior |
+| `ls` | Llista contingut | `-a` ocults · `-l` detall · `-i` inodes · `-h` mides |
+| `mkdir` | Crea directori | `-p` crea pares intermedis |
+| `rmdir` | Esborra dir buit | — |
+| `cp <o> <d>` | Copia | `-i` confirma · `-r` recursiu |
+| `mv <o> <d>` | Mou / reanomena | `-i` confirma |
+| `rm <f>` | Elimina fitxer | `-i` confirma · `-r` recursiu · `-f` força |
+
+---
+
+## 1.4 Inodes i Blocs de Dades
+
+Un fitxer = **Inode** (DNI del fitxer) + **contingut real** (el text, la foto, el programa).
+
+**Inode conté:** mida, propietari, grup, permisos, dates, nombre d'enllaços, punters als blocs. **L'Inode NO sap com es diu el fitxer.** Per al sistema, una carpeta o directori és només una llibreta que associa noms amb números d'inode:
+("apunts.txt" → Inode 1441852). El directori és una taula `(nom → nº inode)`.
+
+`stat <fitxer>` → mostra tota la informació de l'inode (mida, blocs, inode nº, Links…).
+
+**Comptador de Links d'un directori:** Un directori nou té **2 links** (l'entrada al pare + `.` intern). Cada subdirectori fill afegeix +1 (per l'entrada `..` del fill).
+
+:::shellviz{command="stat test.txt" suggestions="stat test.txt,stat Documents" title="Terminal — Consultar les metadades de l'Inode amb stat"}
+:::
+
+---
+
+## 1.5 Hard links vs soft links
+
+`ln fitxer enllac` → Hard link · `ln -s fitxer enllac` → soft link (o symbolic link)
+
+Quan crees un **Hard Link** (`ln document.txt copia_hl`), no es crea cap fitxer nou ni es dupliquen les dades al disc. Només s'escriu una segona línia a la llibreta del directori:
+
+```text
+"document.txt" → Inode 1441852
+"copia_hl"     → Inode 1441852
+```
+
+El comptador d'enllaços (Links) de l'inode passa de 1 a 2. Si fas `rm document.txt`, només esborres el primer nom de la llibreta. El comptador baixa a 1. Com que encara no és 0, les dades NO s'esborren. Si fas `cat copia_hl`, el fitxer segueix perfectament viu i intacte.
+
+Quan crees un **Soft Link** (ln -s document.txt `drecera_sl`) es crea un fitxer nou, amb un Inode nou i diferent (ex: 1441999). Dins aquest fitxer nou només guarda un text amb la ruta: "document.txt". Quan obres `drecera_sl`, el sistema llegeix la ruta que té escrita i diu: "D'acord, vaig a buscar document.txt".
+Si fas `rm document.txt`, el fitxer original desapareix. `drecera_sl` continua existint, però el seu text apunta a un nom que ja no existeix al disc.
+És un enllaç trencat (dangling link): si fas cat `drecera_sl`, et donarà error cat: `drecera_sl`: No such file or directory.
+
+| | **Hard Link** | **Soft Link** |
+| :--- | :--- | :--- |
+| **Inode** | Igual que l'original (compartit) | Inode propi i diferent |
+| **Links count** | Incrementa en 1 el de l'inode compartit | Sempre 1 (propi) |
+| **Si s'esborra l'original** | Les dades **sobreviuen** (comptador baixa a 1, no a 0) | Queda **trencat** (*dangling*) → `No such file or directory` |
+| **Pot apuntar a directoris?** | ❌ No | ✅ Sí |
+| **Pot creuar particions?** | ❌ No (inodes locals) | ✅ Sí |
+
+```text
+[ pr.txt ] ──> [ Inode 1441852 ] <── [ hl_pr ]
+                      │
+                 [ Dades disc ]
+                      ▲
+[ sl_pr ] ────────────┘  (inode propi, dades="pr.txt")
+```
+
+**Eines d'inspecció:**
+* `readlink <sl>` → mostra el text de la ruta destí (no retorna res si és hard link).
+* `namei -l <ruta>` → desglossa pas a pas la ruta (dirs, links, permisos) fins a l'inode final.
+
+---
+
+## 1.6 Permisos d'Accés
+
+```text
+- r w x r - x r - -
+┬ ─u─ ─g─ ─o─
+└── Tipus: '-' fitxer · 'd' directori · 'l' soft link
+```
+
+| Permís | Octal | Sobre fitxer | Sobre directori |
+| :---: | :---: | :--- | :--- |
+| `r` | 4 | Llegir contingut | `ls` (llistar noms) |
+| `w` | 2 | Modificar contingut | Crear/esborrar/reanomenar fitxers dins |
+| `x` | 1 | Executar | `cd` (entrar/travessar) |
+
+> **Esborrar un fitxer** no requereix `w` sobre el fitxer sinó `w+x` sobre el **directori pare** (esborrar = treure l'entrada `(nom,inode)` de la llista del directori).
+
+**`chmod`:**
+* Simbòlic: `chmod u=rw,go=r fitxer` · `chmod a-x fitxer`
+* Octal: `chmod 755 fitxer` → `rwxr-xr-x` · `chmod 644` → `rw-r--r--`
+
+:::shellviz{command="chmod u+x SO/lab1.sh" suggestions="chmod u+x SO/lab1.sh,chmod 755 SO/lab1.sh,ls -l SO" title="Terminal — Prova canviar permisos amb chmod"}
+:::
+
+---
+
+## 1.7 Variables d'Entorn i `$PATH`
+
+Variables d'entorn = parells clau-valor heretats de pare a fill en cada `fork`.
+
+* `env` / `printenv` → llistar totes · `echo $VAR` → valor concret
+* `export VAR="valor"` → disponible als processos fills · `source ~/.bashrc` → recarrega configuració
+
+**Variables clau:**
+
+| Variable | Significat |
+| :--- | :--- |
+| `$HOME` | Ruta directori personal (`/home/alumne`) |
+| `$PWD` | Directori de treball actual |
+| `$USER` | Nom d'usuari de la sessió |
+| `$PATH` | Llista de dirs (separats per `:`) on cercar binaris |
+
+**`$PATH` i ordre de cerca** (d'esquerra a dreta, s'atura al primer binari trobat):
+* `export PATH=.:$PATH` → `.` al principi: **PERILL** → un atacant podria posar un binari fals `ls` al directori actual.
+* `export PATH=$PATH:.` → `.` al final: el `ls` del sistema s'executa sempre primer.
+* `which <cmd>` → mostra el path exacte del binari que s'executarà.
+
+:::shellviz{command="echo $PATH" suggestions="echo $PATH,echo $USER,env" title="Terminal — Consultar variables d'entorn"}
+:::
+
+---
+
+## 1.8 Redireccions, Background i Globbing
+
+**Redireccions I/O:**
+* `>` → **sobreescriu** (trunca a 0 bytes o crea el fitxer)
+* `>>` → **afegeix** al final (conserva el contingut previ)
+
+**Background:**
+* `gedit test &` → executa en segon pla; Shell retorna el prompt immediatament mostrant el PID.
+
+**Globbing (comodins):**
+* `*` → zero o més caràcters · `?` → exactament un caràcter
+* **L'expansió la fa la Shell ABANS de cridar la comanda.** El programa mai veu el `*`; rep la llista de fitxers expandida per `argv`.
+  * Ex: `grep hola t*` → Shell substitueix `t*` per `t1.txt t2.c` → `grep` rep `hola t1.txt t2.c`.
+  * Si cap fitxer coincideix → la Shell passa la cadena literal `"t*"`.
+
+**Espai en disc / inodes:**
+* `df -h` → espai lliure de cada partició (columna `Avail`).
+* `df -i` → inodes lliures (columna `IFree`).
+* `mount` → sistemes de fitxers muntats i el seu punt de muntatge.
+
+:::shellviz{command="ls -l > llista.txt" suggestions="ls -l > llista.txt,cat llista.txt,echo 'Nova línia' >> llista.txt" title="Terminal — Prova les redireccions > i >>"}
+:::

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, RotateCcw, Info } from 'lucide-react';
 import { proofs } from '../../../../content/data/proofs';
-import GraphVisualizer from '../../visualizers/GraphVisualizer';
+import GraphVisualizer from '../../visualizers/shared/GraphVisualizer';
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 

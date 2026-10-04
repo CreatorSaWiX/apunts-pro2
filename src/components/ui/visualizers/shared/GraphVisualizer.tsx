@@ -1,12 +1,12 @@
 
 import React, { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react';
 const ForceGraph2D = lazy(() => import('react-force-graph-2d'));
-import { useSubjectStore } from '../../../stores/useSubjectStore';
+import { useSubjectStore } from '../../../../stores/useSubjectStore';
 import { RotateCcw } from 'lucide-react';
 import { useInView } from 'framer-motion';
-import { InteractionLock } from '../system/InteractionLock';
-import { useInteraction } from '../../../contexts/InteractionContext';
-import Spinner from '../Spinner';
+import { InteractionLock } from '../../system/InteractionLock';
+import { useInteraction } from '../../../../contexts/InteractionContext';
+import Spinner from '../../Spinner';
 
 interface GraphNodeObject {
     id: string | number;

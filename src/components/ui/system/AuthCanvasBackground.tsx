@@ -3,7 +3,7 @@ import { m as motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, OrbitControls, Grid, PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
-import GraphVisualizer from '../visualizers/GraphVisualizer';
+import GraphVisualizer from '../visualizers/shared/GraphVisualizer';
 import { Mafs, Coordinates, Plot } from 'mafs';
 interface AuthCanvasBackgroundProps {
     variant?: 'login' | 'register';

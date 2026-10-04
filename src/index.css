@@ -40,10 +40,14 @@ body {
 }
 
 /* Pantalla completa */
-body.player-fullscreen .nav-pill-container {
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0 !important;
+body.player-fullscreen .nav-pill-container,
+body.player-fullscreen .chatbot-fab,
+body.player-fullscreen button[aria-label*="IA"],
+body.player-fullscreen button[aria-label*="assistent"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  z-index: -1 !important;
 }
 
 /* Mobile Safe Area */

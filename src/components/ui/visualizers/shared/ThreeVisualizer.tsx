@@ -2,9 +2,9 @@ import React, { Component, lazy, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid, Stars } from '@react-three/drei';
 import * as THREE from 'three';
-import { useIsMobile } from '../../../hooks/useIsMobile';
-import { InteractionLock } from '../system/InteractionLock';
-import { useInteraction } from '../../../contexts/InteractionContext';
+import { useIsMobile } from '../../../../hooks/useIsMobile';
+import { InteractionLock } from '../../system/InteractionLock';
+import { useInteraction } from '../../../../contexts/InteractionContext';
 
 interface ThreeVisualizerProps {
     type: string;
@@ -52,36 +52,36 @@ class ThreeErrorBoundary extends Component<ThreeErrorBoundaryProps, { hasError: 
     }
 }
 
-const VisPuntsSella = lazy(() => import('../three/VisPuntsSella'));
-const VisParaboloide = lazy(() => import('../three/VisParaboloide'));
-const VisVectorGradient = lazy(() => import('../three/VisVectorGradient'));
-const VisVectorDirectorAngle = lazy(() => import('../three/VisVectorDirectorAngle'));
-const VisTaylor3d = lazy(() => import('../three/VisTaylor3d'));
-const VisDistancia3D = lazy(() => import('../three/VisDistancia3D'));
-const VisEx76c = lazy(() => import('../three/VisEx76c'));
-const VisSuperficiesBasiques3D = lazy(() => import('../three/VisSuperficiesBasiques3D'));
-const VisCorbesNivell3D2D = lazy(() => import('../three/VisCorbesNivell3D2D'));
-const VisDistanciaSync3D2D = lazy(() => import('../three/VisDistanciaSync3D2D'));
-const VisEx73a = lazy(() => import('../three/VisEx73a'));
-const VisSubespai3D = lazy(() => import('../three/VisSubespai3D'));
-const VisKernelImatge3D = lazy(() => import('../three/VisKernelImatge3D'));
-const VisEx78a = lazy(() => import('../three/VisEx78a'));
-const VisEx78b = lazy(() => import('../three/VisEx78b'));
-const VisEx78c = lazy(() => import('../three/VisEx78c'));
-const VisEx73b = lazy(() => import('../three/VisEx73b'));
-const VisDiferencialIncrement = lazy(() => import('../three/VisDiferencialIncrement'));
-const VisExtremsHessiana = lazy(() => import('../three/VisExtremsHessiana'));
-const VisLagrangeMultiplicadors = lazy(() => import('../three/VisLagrangeMultiplicadors'));
-const VisOptimitzacioCompacte = lazy(() => import('../three/VisOptimitzacioCompacte'));
-const VisFitaErrorLagrange = lazy(() => import('../three/VisFitaErrorLagrange'));
-const VisTaylorGrauN = lazy(() => import('../three/VisTaylorGrauN'));
-const VisTeoremaSchwarz = lazy(() => import('../three/VisTeoremaSchwarz'));
-const VisRegularitatHibrida = lazy(() => import('../three/VisRegularitatHibrida'));
-const VisPlaTangentINormalHibrid = lazy(() => import('../three/VisPlaTangentINormalHibrid'));
-const VisDerivadaDireccionalHibrida = lazy(() => import('../three/VisDerivadaDireccionalHibrida'));
-const VisDerivadesParcialsHibrida = lazy(() => import('../three/VisDerivadesParcialsHibrida'));
-const VisRnDimensionality = lazy(() => import('../three/VisRnDimensionality'));
-const VisTransformacionsHibrida = lazy(() => import('../three/VisTransformacionsHibrida'));
+const VisPuntsSella = lazy(() => import('../../three/VisPuntsSella'));
+const VisParaboloide = lazy(() => import('../../three/VisParaboloide'));
+const VisVectorGradient = lazy(() => import('../../three/VisVectorGradient'));
+const VisVectorDirectorAngle = lazy(() => import('../../three/VisVectorDirectorAngle'));
+const VisTaylor3d = lazy(() => import('../../three/VisTaylor3d'));
+const VisDistancia3D = lazy(() => import('../../three/VisDistancia3D'));
+const VisEx76c = lazy(() => import('../../three/VisEx76c'));
+const VisSuperficiesBasiques3D = lazy(() => import('../../three/VisSuperficiesBasiques3D'));
+const VisCorbesNivell3D2D = lazy(() => import('../../three/VisCorbesNivell3D2D'));
+const VisDistanciaSync3D2D = lazy(() => import('../../three/VisDistanciaSync3D2D'));
+const VisEx73a = lazy(() => import('../../three/VisEx73a'));
+const VisSubespai3D = lazy(() => import('../../three/VisSubespai3D'));
+const VisKernelImatge3D = lazy(() => import('../../three/VisKernelImatge3D'));
+const VisEx78a = lazy(() => import('../../three/VisEx78a'));
+const VisEx78b = lazy(() => import('../../three/VisEx78b'));
+const VisEx78c = lazy(() => import('../../three/VisEx78c'));
+const VisEx73b = lazy(() => import('../../three/VisEx73b'));
+const VisDiferencialIncrement = lazy(() => import('../../three/VisDiferencialIncrement'));
+const VisExtremsHessiana = lazy(() => import('../../three/VisExtremsHessiana'));
+const VisLagrangeMultiplicadors = lazy(() => import('../../three/VisLagrangeMultiplicadors'));
+const VisOptimitzacioCompacte = lazy(() => import('../../three/VisOptimitzacioCompacte'));
+const VisFitaErrorLagrange = lazy(() => import('../../three/VisFitaErrorLagrange'));
+const VisTaylorGrauN = lazy(() => import('../../three/VisTaylorGrauN'));
+const VisTeoremaSchwarz = lazy(() => import('../../three/VisTeoremaSchwarz'));
+const VisRegularitatHibrida = lazy(() => import('../../three/VisRegularitatHibrida'));
+const VisPlaTangentINormalHibrid = lazy(() => import('../../three/VisPlaTangentINormalHibrid'));
+const VisDerivadaDireccionalHibrida = lazy(() => import('../../three/VisDerivadaDireccionalHibrida'));
+const VisDerivadesParcialsHibrida = lazy(() => import('../../three/VisDerivadesParcialsHibrida'));
+const VisRnDimensionality = lazy(() => import('../../three/VisRnDimensionality'));
+const VisTransformacionsHibrida = lazy(() => import('../../three/VisTransformacionsHibrida'));
 
 const VISUALIZERS: Record<string, React.ComponentType<Record<string, unknown>>> = {
     'vis_transformacions_hibrida': VisTransformacionsHibrida,

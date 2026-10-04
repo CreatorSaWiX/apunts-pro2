@@ -948,6 +948,57 @@ export const courseStructure: TopicDefinition[] = [
         description: "Guia ràpida completa de SQL: definició d'esquemes (DDL), manipulació de dades (DML), consultes simples, joins, agregats, subconsultes i tipus temporals.",
         description_es: "Guía rápida completa de SQL: definición de esquemas (DDL), manipulación de datos (DML), consultas simples, joins, agregados, subconsultas y tipos temporales.",
         problems: []
+    },
+
+    // --- SO (Sistemes Operatius) ---
+    {
+        id: "so-tema-1",
+        title: "Tema 1: Shell",
+        title_es: "Tema 1: Shell",
+        description: "Comandes, fitxers i permisos.",
+        description_es: "Comandos, archivos y permisos.",
+        problems: []
+    },
+    {
+        id: "so-lab-1",
+        title: "Lab 1: Shell",
+        title_es: "Lab 1: Shell",
+        description: "Exercicis de la sessió 1.",
+        description_es: "Ejercicios de la sesión 1.",
+        problems: []
+    },
+    {
+        id: "so-tema-2",
+        title: "Tema 2: El llenguatge C",
+        title_es: "Tema 2: El lenguaje C",
+        description: "Compilació, makefile i punters.",
+        description_es: "Compilación, makefile y punteros.",
+        problems: []
+    },
+    {
+        id: "so-lab-2",
+        title: "Lab 2: El llenguatge C",
+        title_es: "Lab 2: El lenguaje C",
+        description: "Exercicis de la sessió 2.",
+        description_es: "Ejercicios de la sesión 2.",
+        problems: []
+    },
+    {
+        id: "so-tema-3",
+        title: "Tema 3: Processos",
+        title_es: "Tema 3: Procesos",
+        description: "fork, exec, waitpid i /proc.",
+        description_es: "fork, exec, waitpid y /proc.",
+        problems: []
+    },
+    {
+        id: "so-lab-3",
+        title: "Lab 3: Processos",
+        title_es: "Lab 3: Procesos",
+        description: "Exercicis de la sessió 3.",
+        description_es: "Ejercicios de la sesión 3.",
+        problems: []
     }
 ];
+
 

@@ -332,7 +332,7 @@ export const ChatBot: React.FC = () => {
             onClick={() => setIsOpen(true)}
             title={t('chat.openChat', 'Obrir assistent IA')}
             aria-label={t('chat.openChat', 'Obrir assistent IA')}
-            className="fixed bottom-24 right-4 md:bottom-6 md:right-6 touch-landscape:bottom-4 touch-landscape:right-4 z-[100] w-12 h-12 rounded-full bg-slate-800 text-slate-300 border border-white/10 shadow-lg hover:bg-slate-700 transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+            className="chatbot-fab fixed bottom-24 right-4 md:bottom-6 md:right-6 touch-landscape:bottom-4 touch-landscape:right-4 z-[100] w-12 h-12 rounded-full bg-slate-800 text-slate-300 border border-white/10 shadow-lg hover:bg-slate-700 transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
           >
             <Bot size={22} />
           </motion.button>

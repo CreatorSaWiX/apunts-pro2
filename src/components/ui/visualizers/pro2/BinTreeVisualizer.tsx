@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import GraphVisualizer from './GraphVisualizer';
+import GraphVisualizer from '../shared/GraphVisualizer';
 import { Maximize, Minimize } from 'lucide-react';
 
 type TreeState = "EMPTY" | "SINGLE" | "COMPLEX" | "LEFT_SUB" | "RIGHT_SUB";

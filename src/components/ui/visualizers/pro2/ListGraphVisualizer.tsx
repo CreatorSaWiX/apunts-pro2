@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import GraphVisualizer from './GraphVisualizer';
+import GraphVisualizer from '../shared/GraphVisualizer';
 import { Plus, Minus } from 'lucide-react';
 
 interface GraphNode {

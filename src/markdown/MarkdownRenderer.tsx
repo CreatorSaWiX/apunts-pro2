@@ -20,40 +20,47 @@ const CodeBlock = React.lazy(() => import("../components/ui/editors/CodeBlock"))
 import Callout from "../components/ui/Callout";
 const SimulationPlayer = React.lazy(() => import("../components/ui/players/SimulationPlayer"));
 
-const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/GraphVisualizer"));
-const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/StackVisualizer"));
-const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/QueueVisualizer"));
-const HeapVisualizer = React.lazy(() => import("../components/ui/visualizers/HeapVisualizer"));
-const BSTVisualizer = React.lazy(() => import("../components/ui/visualizers/BSTVisualizer"));
-const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/ListGraphVisualizer"));
-const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/BinTreeVisualizer"));
-const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/MafsVisualizer"));
-const VectorVisualizer = React.lazy(() => import("../components/ui/visualizers/VectorVisualizer"));
-const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/ListVisualizer"));
-const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/PointerVisualizer"));
-const VennVisualizer = React.lazy(() => import("../components/ui/visualizers/VennVisualizer"));
-const ProbTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/ProbTreeVisualizer"));
-const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/AsymptoticVisualizer"));
-const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/GrowthHierarchyVisualizer"));
-const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/DivideConquerVisualizer"));
-const SelectionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/SelectionSortVisualizer"));
-const InsertionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/InsertionSortVisualizer"));
-const MergeVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeVisualizer"));
-const MergeQueueVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeQueueVisualizer"));
-const QuickSortVisualizer = React.lazy(() => import("../components/ui/visualizers/QuickSortVisualizer"));
-const HoarePartitionVisualizer = React.lazy(() => import("../components/ui/visualizers/HoarePartitionVisualizer"));
-const FastPowerVisualizer = React.lazy(() => import("../components/ui/visualizers/FastPowerVisualizer"));
-const MergeSortTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeSortTreeVisualizer"));
-const BinarySearchVisualizer = React.lazy(() => import("../components/ui/visualizers/BinarySearchVisualizer"));
-const HybridMergeVisualizer = React.lazy(() => import("../components/ui/visualizers/HybridMergeVisualizer"));
-const MergeBottomUpVisualizer = React.lazy(() => import("../components/ui/visualizers/MergeBottomUpVisualizer"));
-const KaratsubaVisualizer = React.lazy(() => import("../components/ui/visualizers/KaratsubaVisualizer"));
-const NaiveMultVisualizer = React.lazy(() => import("../components/ui/visualizers/NaiveMultVisualizer"));
-const NaiveMatMultVisualizer = React.lazy(() => import("../components/ui/visualizers/NaiveMatMultVisualizer"));
-const StrassenVisualizer = React.lazy(() => import("../components/ui/visualizers/StrassenVisualizer"));
-const HanoiVisualizer = React.lazy(() => import("../components/ui/visualizers/HanoiVisualizer"));
-const MedianVisualizer = React.lazy(() => import("../components/ui/visualizers/MedianVisualizer"));
-const BFPRTVisualizer = React.lazy(() => import("../components/ui/visualizers/BFPRTVisualizer"));
+// — Shared —
+const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/shared/GraphVisualizer"));
+// — Pro2 (data structures) —
+const StackVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/StackVisualizer"));
+const QueueVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/QueueVisualizer"));
+const HeapVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/HeapVisualizer"));
+const BSTVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/BSTVisualizer"));
+const ListGraphVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/ListGraphVisualizer"));
+const BinTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/BinTreeVisualizer"));
+const VectorVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/VectorVisualizer"));
+const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/ListVisualizer"));
+const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/PointerVisualizer"));
+// — M2 (maths) —
+const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/m2/MafsVisualizer"));
+// — PE (probability & statistics) —
+const VennVisualizer = React.lazy(() => import("../components/ui/visualizers/pe/VennVisualizer"));
+const ProbTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/pe/ProbTreeVisualizer"));
+// — EDA (algorithms) —
+const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AsymptoticVisualizer"));
+const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GrowthHierarchyVisualizer"));
+const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DivideConquerVisualizer"));
+const SelectionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/SelectionSortVisualizer"));
+const InsertionSortVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/InsertionSortVisualizer"));
+const MergeVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MergeVisualizer"));
+const MergeQueueVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MergeQueueVisualizer"));
+const QuickSortVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/QuickSortVisualizer"));
+const HoarePartitionVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HoarePartitionVisualizer"));
+const FastPowerVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/FastPowerVisualizer"));
+const MergeSortTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MergeSortTreeVisualizer"));
+const BinarySearchVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BinarySearchVisualizer"));
+const HybridMergeVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HybridMergeVisualizer"));
+const MergeBottomUpVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MergeBottomUpVisualizer"));
+const KaratsubaVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/KaratsubaVisualizer"));
+const NaiveMultVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/NaiveMultVisualizer"));
+const NaiveMatMultVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/NaiveMatMultVisualizer"));
+const StrassenVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/StrassenVisualizer"));
+const HanoiVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HanoiVisualizer"));
+const MedianVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MedianVisualizer"));
+const BFPRTVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BFPRTVisualizer"));
+// — SO (operating systems) —
+const OpenSUSEShellPlayer = React.lazy(() => import("../components/ui/visualizers/so/OpenSUSEShellPlayer"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -72,7 +79,7 @@ const ThreeFallback = () => {
 };
 
 const ThreeVisualizer = React.lazy(() =>
-    import("../components/ui/visualizers/ThreeVisualizer").catch(() => ({
+    import("../components/ui/visualizers/shared/ThreeVisualizer").catch(() => ({
         default: ThreeFallback
     }))
 );
@@ -476,10 +483,18 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    shellviz: (props: MarkdownComponentProps) => {
+        const { node: _node, ...rest } = props;
+        return (
+            <SafeSuspense>
+                <OpenSUSEShellPlayer {...(rest as any)} />
+            </SafeSuspense>
+        );
+    },
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
-        const match = /language-(\w+)/.exec(className || '');
+        const match = /language-([\w+-]+)/.exec(className || '');
 
         // Access metadata passed by remarkCodeMetadata via hProperties -> props
         const metadata = props.metadata || '';
@@ -575,13 +590,14 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
+            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
             'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
+            'code': [...(defaultSchema.attributes?.code || []), 'metadata'],
             '*': ['className', 'class', 'style', 'id'],
             'a': ['href', 'target', 'rel', 'download', 'className', 'class', 'title'],
             'svg': ['xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class', 'style'],
@@ -592,6 +608,7 @@ const rehypePluginsConfig = [
             'rect': ['x', 'y', 'width', 'height', 'rx', 'ry', 'fill', 'stroke', 'strokeWidth', 'className', 'class'],
             'download': ['href', 'url', 'src', 'label', 'title', 'format', 'type', 'description'],
             'videoviz': ['src', 'url', 'delay', 'transparent'],
+            'shellviz': ['scenario', 'title', 'initialCommand', 'command', 'initialInput', 'suggestions', 'variant', 'compact'],
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],
             'proofviz': ['proof'],
