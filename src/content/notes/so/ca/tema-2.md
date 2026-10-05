@@ -10,9 +10,9 @@ draft: false
 
 El pas de codi font a executable té 3 fases successives:
 
-```text
+<!-- ```text
 Codi font (.c, .h) ──[cpp]──> Codi expandit ──[gcc -c]──> Codi objecte (.o) ──[ld / gcc]──> Executable
-```
+``` -->
 
 | Fase | Eina | Què fa | Fitxers |
 | :--- | :--- | :--- | :--- |
@@ -59,13 +59,13 @@ target: dep1 dep2 ... depN
 	comanda_de_construccio
 ```
 
-* ⚠️ **Sintaxi obligatòria**: La línia de comanda **HA de començar amb TAB** (si poses espais → error `missing separator`).
+* **Sintaxi obligatòria**: La línia de comanda **HA de començar amb TAB** (si poses espais → error `missing separator`).
 * **Dependències de capçaleres (`.h`)**: Si `util.c` fa `#include "util.h"`, la regla de `util.o` **ha d'incloure `util.h` com a dependència**:
   ```makefile
   util.o: util.c util.h
   	gcc -c util.c
   ```
-  > 🚨 **Pregunta d'examen**: Si es modifica `util.h` i no està a les dependències de `util.o`, `make` **no recompilarà** `util.o` i el codi quedarà desactualitzat.
+> Si es modifica `util.h` i no està a les dependències de `util.o`, `make` **no recompilarà** `util.o` i el codi quedarà desactualitzat.
 
 ### Exemple complet de `Makefile`
 ```makefile
@@ -89,7 +89,7 @@ clean:
 
 ---
 
-## 2.4 Flags Fonamentals de `gcc`
+## 2.4 Flags de `gcc`
 
 | Flag | Funció | Exemple / Comportament |
 | :--- | :--- | :--- |
@@ -107,7 +107,7 @@ clean:
 
 ---
 
-## 2.5 Resolució d'Errors de Compilació (Examen)
+## 2.5 Resolució d'Errors de Compilació
 
 Analitzar sempre els errors en **ordre cronològic** (el primer error sovint en genera d'altres de falsos):
 
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
   * `argv[0]`: Nom o ruta de la comanda tal com s'ha invocat (`./prog`).
   * `argv[1]` ... `argv[argc - 1]`: Arguments de l'usuari.
   * `argv[argc]`: Garantit que val `NULL`.
-* ⚠️ **Principi d'examen**: Els arguments arriben **SEMPRE com a text (`char *`)**, mai com a enters. Si passes `./prog 12`, `argv[1]` és `"12"`, no el nombre `12`. Per convertir: `atoi(argv[1])`.
+* **Principi d'examen**: Els arguments arriben **SEMPRE com a text (`char *`)**, mai com a enters. Si passes `./prog 12`, `argv[1]` és `"12"`, no el nombre `12`. Per convertir: `atoi(argv[1])`.
 * **Cometes a la Shell**: Les cometes agrupen paraules amb espais en un sol argument:
   ```bash
   ./prog 12 hola "tres cuatro"
@@ -162,4 +162,4 @@ q = p;       // q ara apunta a 'a' (mateixa adreça que p)
 * **Resultat al final**: `a = 16`, `b = 7`.
 * És cert `p == q`? **SÍ**, perquè contenen la mateixa adreça de memòria (`&a`).
 
-> ⚠️ **Tractament de punters segur**: Sempre comprovar `if (ptr == NULL)` abans de desreferenciar per evitar `Segmentation Fault` (senyal `SIGSEGV`).
+> **Tractament de punters segur**: Sempre comprovar `if (ptr == NULL)` abans de desreferenciar per evitar `Segmentation Fault` (senyal `SIGSEGV`).

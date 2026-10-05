@@ -31,6 +31,13 @@ sprintf(buffer, "El resultat es: %d\n", valor);
 write(1, buffer, strlen(buffer)); // 1 = stdout, 2 = stderr
 ```
 
+> Recordem que `%.` és una variable que el valor és el següent argument.
+> * `%s`: Cadena de caràcters (char *).
+> * `%d`: Enter decimal (int).
+> * `%c`: Un sol caràcter (char), per exemple 'a'.
+> * `%p` o `%x`: Adreces de memòria / hexadecimal (molt útil per veure el valor d'un punter).
+
+
 :::shellviz{command="man 3 sprintf" suggestions="man 3 sprintf,man 2 write,man gcc" title="Terminal — Consultar el manual de sprintf i write"}
 :::
 
@@ -44,7 +51,7 @@ target: dep1 dep2 ... depN
 	comanda
 ```
 
-* ⚠️ **Requisit obligatori**: La línia de la comanda ha de començar amb un **`TAB`**. Els espais produeixen l'error `missing separator`.
+* **Requisit obligatori**: La línia de la comanda ha de començar amb un **`TAB`**. Els espais produeixen l'error `missing separator`.
 
 ```makefile
 all: llistaParametres
@@ -97,7 +104,7 @@ int main(int argc, char *argv[]) {
   * `argv[0]`: Nom o ruta del programa invocat (`./llistaParametres`).
   * `argv[1]` ... `argv[argc-1]`: Paràmetres passats per l'usuari.
   * `argv[argc]`: Val `NULL`.
-* ⚠️ **Regla d'Examen**: Els arguments arriben **SEMPRE com a `char *`**, mai com a enters. Cal fer conversió (`atoi`) per operar numèricament.
+* **Regla d'Examen**: Els arguments arriben **SEMPRE com a `char *`**, mai com a enters. Cal fer conversió (`atoi`) per operar numèricament.
 * **Cometes a la Shell**: `./prog 10 "dos tres"` $\rightarrow$ `argc = 3`: `argv[1]="10"`, `argv[2]="dos tres"`.
 
 :::shellviz{command="./llistaParametros a b c" suggestions="./llistaParametros a b c,./llistaParametros,./llistaParametros 100 200" title="Terminal — Pas d'arguments a través d'argc i argv"}
@@ -140,7 +147,7 @@ int *PA = &A;
 *PA = 4; // Ara A val 4!
 ```
 
-> ⚠️ Comprovar sempre `if (punter == NULL)` abans d'accedir-hi per evitar `Segmentation Fault` (`SIGSEGV`).
+> Comprovar sempre `if (punter == NULL)` abans d'accedir-hi per evitar `Segmentation Fault` (`SIGSEGV`).
 
 :::shellviz{command="./punters" suggestions="./punters,cat test.txt" title="Terminal — Execució de verificació de punters en memòria"}
 :::
