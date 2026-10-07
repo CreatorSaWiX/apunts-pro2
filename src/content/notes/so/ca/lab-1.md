@@ -6,7 +6,7 @@ order: 1.5
 draft: false
 ---
 
-## Guia de la Sessió 1: Shell i Comandes
+## Guia de la sessió 1: shell i comandes
 
 Respostes concises a les preguntes del laboratori (`entrega.txt`) per a l'examen SIMLAB.
 
@@ -16,7 +16,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 1: Navegació i Directoris (P1 a P5)
+## Bloc 1: Navegació i directoris (P1 a P5)
 
 ### Pregunta 1: Crear directoris S1...S5
 * **Comanda:** `mkdir S1 S2 S3 S4 S5` o expansió de claus `mkdir S{1..5}`.
@@ -74,7 +74,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 2: Accés a Fitxers, Processos i Àlies (P6 a P8)
+## Bloc 2: Accés a fitxers, processos i àlies (P6 a P8)
 
 ### Pregunta 6: `cat` vs `less`
 
@@ -106,7 +106,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 3: Permisos d'Accés i Drets (P9)
+## Bloc 3: Permisos d'accés i drets (P9)
 
 ### Pregunta 9: `chmod`, errors de lectura i esborrat
 1. **Només escriptura:** `chmod ugo=w test.txt` o en octal `chmod 222 test.txt`.
@@ -117,13 +117,13 @@ Empaquetar l'entrega:
 :::shellviz{command="chmod 222 test.txt" suggestions="chmod 222 test.txt,cat test.txt,chmod 644 test.txt,stat test.txt" title="Terminal — Comprovació pràctica de permisos amb chmod"}
 :::
 
-> ⚠️ **Regla d'Examen:** Esborrar un fitxer **NO** demana permís d'escriptura sobre el fitxer. Eliminar un fitxer és esborrar la seva entrada `(nom, inode)` de la taula del directori pare; per tant, només cal permís `w+x` sobre el **directori pare**.
+> **Regla d'examen:** Esborrar un fitxer **NO** demana permís d'escriptura sobre el fitxer. Eliminar un fitxer és esborrar la seva entrada `(nom, inode)` de la taula del directori pare; per tant, només cal permís `w+x` sobre el **directori pare**.
 
 ---
 
-## Bloc 4: Inodes i Enllaços (P10 a P16)
+## Bloc 4: Inodes i enllaços (P10 a P16)
 
-### Pregunta 10: Informació d'Inode (`stat`)
+### Pregunta 10: Informació d'inode (`stat`)
 * **Comanda:** `stat test.txt` (o `ls -li test.txt`).
 * **Camps claus:** `Inode:` (identificador únic), `Links:` (comptador d'enllaços durs), `Blocks:` (blocs assignats), `IO Block:` (mida de bloc del FS, típicament 4096 bytes).
 
@@ -132,7 +132,7 @@ Empaquetar l'entrega:
 
 ---
 
-### Pregunta 11: Comptador de links d'un directori
+### Pregunta 11: Comptador d'enllaços d'un directori
 * Un directori acabat de crear (`mkdir S1`) té exactament **2 links**:
   1. El seu nom dins del directori pare (`Documents/S1`).
   2. L'entrada `.` dins d'ell mateix (`Documents/S1/.`).
@@ -154,7 +154,7 @@ Empaquetar l'entrega:
 
 ---
 
-### Pregunta 13: Nombre de links i Inodes compartits
+### Pregunta 13: Nombre d'enllaços i inodes compartits
 
 | Fitxer | Tipus | Inode | Links (`st_nlink`) |
 | :--- | :--- | :--- | :---: |
@@ -189,7 +189,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 5: Sistemes de Fitxers Muntats i Espai (P17 a P19)
+## Bloc 5: Sistemes de fitxers muntats i espai (P17 a P19)
 
 ### Pregunta 17: Sistemes de fitxers muntats
 * **Comanda:** `df -h` (o `mount`, o `df -T` per veure el tipus).
@@ -218,7 +218,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 6: Variables d'Entorn i el PATH (P20 a P26)
+## Bloc 6: Variables d'entorn i el PATH (P20 a P26)
 
 ### Pregunta 20: Significat de PATH, HOME i PWD
 * **`HOME`**: Ruta absoluta al directori personal de l'usuari (`~`).
@@ -259,11 +259,11 @@ Suposant un executable propi `./ls` al directori actual i PATH original `/usr/bi
 :::shellviz{command="which ls" suggestions="which ls,type ls" title="Terminal — Resolució de comandes amb which"}
 :::
 
-> 🚨 **Pregunta 24 (Risc de seguretat):** Posar `.` al PATH és un perill greu de **Trojan / Spoofing**. Si un atacant col·loca un binari maliciós anomenat `ls` o `cd` en un directori públic (com `/tmp`), un administrador que hi entri i teclegi `ls` executaria codi maliciós sense adonar-se'n.
+> **Pregunta 24 (Risc de seguretat):** Posar `.` al PATH és un perill greu de **Trojan / Spoofing**. Si un atacant col·loca un binari maliciós anomenat `ls` o `cd` en un directori públic (com `/tmp`), un administrador que hi entri i teclegi `ls` executaria codi maliciós sense adonar-se'n.
 
 ---
 
-## Bloc 7: Redireccions de Sortida (P27)
+## Bloc 7: Redireccions de sortida (P27)
 
 ### Pregunta 27: Diferència entre `>` i `>>`
 

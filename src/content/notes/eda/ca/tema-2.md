@@ -280,7 +280,7 @@ Tot i compartir un cost asimptòtic de $\Theta(n \log n)$, QuickSort resulta hab
 
 ---
 
-## 2.3 Productes i Exponents: Exponenciació Ràpida
+## 2.3 Productes i exponents: exponenciació ràpida
 
 El càlcul de potències enteres $x^n$ exemplifica com l'estratègia de dividir i vèncer permet reduir la complexitat computacional d'un cost lineal a un cost logarítmic.
 
@@ -649,7 +649,7 @@ $$ -->
 
 <!-- ---
 
-### Algorismes galàctics (*Galactic Algorithms*)
+### Algorismes galàctics (*galactic algorithms*)
 
 Després de Strassen, una successió d'investigacions teòriques van anar rebaixant progressivament l'exponent:
 * **Coppersmith i Winograd (1990):** $\mathcal{O}(n^{2.376})$.
@@ -755,7 +755,7 @@ Aquest cost exponencial és **estrictament mínim**. Per desplaçar el disc de l
 
 ---
 
-## 2.7 Càlcul de la Mediana i Algorismes de Selecció
+## 2.7 Càlcul de la mediana i algorismes de selecció
 
 ### La mediana i la seva robustesa estadística
 
@@ -892,7 +892,7 @@ Gràcies a l'estratègia de la mediana de medianes, **el cas pitjor de selecció
 
 ---
 
-## 2.8 Síntesi de Complexitats del Tema 2
+## 2.8 Síntesi de complexitats del Tema 2
 
 A continuació es resumeix el ventall complet d'algorismes de dividir i vèncer analitzats al llarg del tema:
 

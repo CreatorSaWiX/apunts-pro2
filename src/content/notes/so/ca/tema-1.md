@@ -21,14 +21,14 @@ Sense el SO, cada programador hauria d'escriure instruccions de baix nivell per 
 
 ---
 
-## 1.2 Modes d'Execució: Mode Usuari vs Mode Kernel
+## 1.2 Modes d'execució: mode usuari vs mode kernel
 
 Per evitar que qualsevol programa pugui penjar l'ordinador o accedir a dades privades, el processador físic (la CPU) té **dos modes de treball**:
 
-1. **Mode Usuari (*User Mode*)**:
+1. **Mode usuari (*user mode*)**:
    * És on s'executen els programes que fem nosaltres, el navegador, l'editor o la Shell.
    * La CPU té **restringit l'accés**: no pot tocar el maquinari directament ni llegir memòria que no sigui la seva. Si ho intenta, la CPU s'atura i avisa el sistema.
-2. **Mode Kernel (*Kernel Mode* o Mode Privilegiat)**:
+2. **Mode kernel (*kernel mode* o mode privilegiat)**:
    * És on s'executa exclusivament el nucli del sistema operatiu (*Kernel*).
    * La CPU té **accés total**: pot executar qualsevol instrucció de la màquina, tocar tota la memòria RAM i parlar directament amb els dispositius.
 
@@ -37,17 +37,17 @@ Per evitar que qualsevol programa pugui penjar l'ordinador o accedir a dades pri
 
 ---
 
-## 1.3 Com entrem al Kernel? (3 Portes d'Entrada)
+## 1.3 Com entrem al kernel? (3 portes d'entrada)
 
 El nucli del sistema operatiu (*Kernel*) és un codi que està en repòs i només s'activa quan passa un esdeveniment. Només hi ha **3 maneres d'entrar al Kernel**:
 
 | Esdeveniment | Qui el genera? | Sincronisme | Què és i Exemples |
 | :--- | :--- | :--- | :--- |
-| **Interrupció Hardware** | Dispositiu extern | **Asíncrona** (pot arribar en qualsevol moment, entre dues instruccions) | El maquinari avisa que ha passat alguna cosa: prems una tecla, arriba un missatge de xarxa, el disc acaba de llegir dades, o salta el **rellotge del sistema**. |
-| **Excepció Software** | La pròpia CPU | **Síncrona** (la provoca una instrucció concreta mentre s'executa) | S'ha produït un error al codi: divisió entre zero, intentar tocar memòria no permesa (*Segmentation Fault*), o una fallada de pàgina (*page fault*). |
-| **Crida a Sistema (*Trap*)** | El programa d'usuari | **Síncrona** (la demana expressament el codi) | El programa demana un servei al SO mitjançant una instrucció especial (`syscall`): obrir un fitxer, escriure per pantalla (`write`), o crear un fill (`fork`). |
+| **Interrupció hardware** | Dispositiu extern | **Asíncrona** (pot arribar en qualsevol moment, entre dues instruccions) | El maquinari avisa que ha passat alguna cosa: prems una tecla, arriba un missatge de xarxa, el disc acaba de llegir dades, o salta el **rellotge del sistema**. |
+| **Excepció software** | La pròpia CPU | **Síncrona** (la provoca una instrucció concreta mentre s'executa) | S'ha produït un error al codi: divisió entre zero, intentar tocar memòria no permesa (*Segmentation Fault*), o una fallada de pàgina (*page fault*). |
+| **Crida a sistema (*trap*)** | El programa d'usuari | **Síncrona** (la demana expressament el codi) | El programa demana un servei al SO mitjançant una instrucció especial (`syscall`): obrir un fitxer, escriure per pantalla (`write`), o crear un fill (`fork`). |
 
-### Per a què serveix la Interrupció de Rellotge? (Pregunta d'Examen)
+### Per a què serveix la interrupció de rellotge? (Pregunta d'examen)
 Imagina un programa amb un bucle infinit que no fa cap crida a sistema: `while (1);`. Com pot el sistema operatiu recuperar el control si el programa no li demana res?  
 * Un xip temporitzador de la placa base genera una **interrupció de rellotge periòdica** (per exemple cada 10 mil·lisegons).
 * Cada 10 ms, la CPU s'atura, passa a mode kernel i executa la rutina de rellotge del SO.
@@ -55,11 +55,11 @@ Imagina un programa amb un bucle infinit que no fa cap crida a sistema: `while (
 
 ---
 
-## 1.4 Com funciona una Crida a Sistema per sota?
+## 1.4 Com funciona una crida a sistema per sota?
 
 Quan un programa vol demanar ajuda al Kernel (per exemple per escriure bytes amb `write`), no pot saltar directament a una adreça del Kernel perquè està en mode usuari.
 
-### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari? (Clau d'Examen)
+### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari? (Clau d'examen)
 Quan en C escrius `write(1, buf, len)`, estàs cridant una funció d'usuari que ve amb la biblioteca estàndard de C (`libc`). Aquesta funció fa de pont:
 1. Col·loca els arguments (`1`, `buf`, `len`) als **registres concrets de la CPU** que demana l'arquitectura.
 2. Executa la **instrucció màquina de canvi de mode** de la CPU (`syscall` a 64 bits, `int 0x80` o `sysenter` a 32 bits).
@@ -73,7 +73,7 @@ El Kernel no identifica els serveis per adreces de memòria (que canvien entre a
 
 ---
 
-## 1.5 La Shell i Comandes (Internes vs Externes)
+## 1.5 La shell i comandes (internes vs externes)
 
 La **Shell** (a Linux normalment **Bash**) és l'intèrpret de comandes. Funciona amb un bucle infinit senzill: llegeix el text que escrius, l'interpreta, executa la comanda i torna a mostrar el símbol d'espera (*prompt*).
 
@@ -91,7 +91,7 @@ Hi ha dos tipus de comandes:
 
 ---
 
-## 1.6 El Manual `man` (Les 3 Seccions d'Examen)
+## 1.6 El manual `man` (les 3 seccions d'examen)
 
 Quan consultes `man nom`, el manual està dividit en seccions numerades:
 
@@ -110,11 +110,11 @@ Quan consultes `man nom`, el manual està dividit en seccions numerades:
 
 ---
 
-## 1.7 Com organitza els fitxers UNIX: Inodes i Carpetes
+## 1.7 Com organitza els fitxers UNIX: inodes i carpetes
 
 A UNIX tots els fitxers pengen d'un únic arbre des de l'arrel `/` (no hi ha lletres de disc com `C:` o `D:` de Windows).
 
-### Què és un Inode?
+### Què és un inode?
 A UNIX, un fitxer té dues parts ben diferenciades:
 1. **L'Inode (el DNI del fitxer)**: Una fitxa interna de dades que guarda la informació de gestió: mida en bytes, a quin usuari pertany, permisos (`rwx`), dates de creació/modificació, nombre d'enllaços (*links*), i els punters als blocs del disc on hi ha el contingut real.  
    **Dada clau d'examen: L'Inode NO sap com es diu el fitxer.**
@@ -135,7 +135,7 @@ A UNIX, un fitxer té dues parts ben diferenciades:
 
 ---
 
-## 1.8 Hard Links vs Soft Links (Enllaços)
+## 1.8 Hard links vs soft links (enllaços)
 
 | Característica | Hard Link (`ln fitxer enllac`) | Soft Link (`ln -s fitxer enllac`) |
 | :--- | :--- | :--- |
@@ -143,15 +143,15 @@ A UNIX, un fitxer té dues parts ben diferenciades:
 | **Número d'Inode** | **El mateix** que l'original. | **Diferent** (té el seu propi inode). |
 | **Comptador d'enllaços (*Links*)** | Suma $+1$ a l'inode original. | No afecta l'original (té comptador 1 propi). |
 | **Si esborres l'original amb `rm`** | El contingut **no es perd**. El comptador baixa en 1, però mentre quedi un hard link viu, les dades continuen al disc. | L'enllaç queda **trencat (*dangling*)**. Si intentes obrir-lo dóna error: `No such file or directory`. |
-| **Pot enllaçar carpetes?** | ❌ **No** (per evitar bucles infinits a l'arbre). | ✅ **Sí**. |
-| **Pot saltar entre discs/particions?** | ❌ **No** (els números d'inode només tenen sentit dins del seu disc). | ✅ **Sí** (guarda una ruta de text). |
+| **Pot enllaçar carpetes?** | No (per evitar bucles infinits a l'arbre). | **Sí**. |
+| **Pot saltar entre discs/particions?** | **No** (els números d'inode només tenen sentit dins del seu disc). | **Sí** (guarda una ruta de text). |
 
 * `readlink enllac_soft`: mostra el text de la ruta que té guardat el soft link a dins.
 * `namei -l ruta`: recorre pas a pas tota la ruta comprovant cada carpeta, enllaç i permís.
 
 ---
 
-## 1.9 Permisos d'Accés i Comanda `chmod`
+## 1.9 Permisos d'accés i comanda `chmod`
 
 Els permisos s'organitzen en 1 caràcter pel tipus d'element i 3 grups de 3 caràcters (`rwx`):
 
@@ -199,7 +199,7 @@ Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen autom�
 
 ---
 
-## 1.11 Redireccions d'Entrada/Sortida
+## 1.11 Redireccions d'entrada/sortida
 
 * `>` : Envia la sortida cap a un fitxer. Si el fitxer ja existia, **en buida el contingut anterior**.
 * `>>` : Envia la sortida cap a un fitxer, però **afegint les línies al final**, sense esborrar el que hi havia.
@@ -210,7 +210,7 @@ Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen autom�
 
 ---
 
-## 1.12 Preguntes Típiques d'Examen Resoltes (Tema 1)
+## 1.12 Preguntes típiques d'examen resoltes (Tema 1)
 
 ### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari?
 > **Resposta breu i exacta**:  

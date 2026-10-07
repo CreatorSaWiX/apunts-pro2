@@ -1,12 +1,12 @@
 ---
-title: "Tema 2: El llenguatge C i Eines del Sistema"
+title: "Tema 2: Llenguatge C"
 description: "Cicle de compilació, Makefiles, crides de baix nivell, eines d'inspecció (nm, objdump, strace) i gestió d'errors."
 readTime: "15 min"
 order: 2
 draft: false
 ---
 
-## 2.1 Cicle de Compilació a UNIX
+## 2.1 Cicle de compilació a UNIX
 
 El pas de codi font en C a un fitxer executable es fa en **3 passos consecutius**:
 
@@ -25,14 +25,14 @@ El pas de codi font en C a un fitxer executable es fa en **3 passos consecutius*
 
 ---
 
-## 2.2 Baix Nivell a SO: Canals i `sprintf` + `write`
+## 2.2 Baix nivell a SO: canals i `sprintf` + `write`
 
 Als exàmens i laboratoris de SO **no s'utilitza `printf` ni `cout`** (són funcions d'alt nivell que guarden dades en una memòria intermèdia pròpia abans d'escriure). S'utilitza la combinació directa de baix nivell:
 
 1. **`sprintf(buf, format, ...)`** (`man 3 sprintf`, `<stdio.h>`): Converteix números o variables a una cadena de text ASCII dins del vector `buf`. **Tot el que volem mostrar per pantalla ha de ser text ASCII.**
 2. **`write(fd, buf, nbytes)`** (`man 2 write`, `<unistd.h>`): Crida a sistema que aboca directament el nombre de bytes al dispositiu associat al canal `fd`.
 
-### Els 3 Canals Estàndard oberts per defecte
+### Els 3 canals estàndard oberts per defecte
 Cada cop que s'executa un procés, el sistema li obre **3 canals automàticament**:
 * `fd = 0`: **`stdin`** (entrada estàndard, teclat).
 * `fd = 1`: **`stdout`** (sortida estàndard, pantalla).
@@ -56,18 +56,18 @@ write(1, buf, len);
 
 ---
 
-## 2.3 Makefiles i Automatització de la Compilació
+## 2.3 Makefiles i automatització de la compilació
 
 L'eina `make` serveix per no haver de recompilar tot el projecte sencer cada cop que fem un canvi petit. Compara la data de modificació de l'arxiu que volem crear (*target*) amb la dels arxius dels quals depèn (*dependències*).
 
-### Sintaxi Estricta d'una Regla
+### Sintaxi estricta d'una regla
 ```makefile
 target: dependència1 dependència2 ... dependènciaN
 	comanda_de_generació
 ```
 * **IMPORTANTÍSSIM**: La línia de la comanda **HA de començar obligatòriament amb un TABULADOR (`\t`)**. Si hi poses espais, `make` fallarà amb l'error `missing separator. Stop.`
 
-### Per què cal posar els fitxers `.h` com a dependències? (Pregunta d'Examen)
+### Per què cal posar els fitxers `.h` com a dependències? (Pregunta d'examen)
 Els fitxers capçalera (`.h`) no es compilen directament, però el preprocessador els inclou dins dels `.c`.
 * Si poses només `util.o: util.c`, i demà canvies una definició a `util.h`, `make` **no s'adonarà del canvi** i no recompilarà `util.o`. El teu programa quedarà desactualitzat amb errors estranys de memòria.
 * **Forma correcta**:
@@ -76,7 +76,7 @@ Els fitxers capçalera (`.h`) no es compilen directament, però el preprocessado
   	gcc -c util.c
   ```
 
-### Exemple Complet de Makefile per a Laboratori i Examen
+### Exemple complet de Makefile per a laboratori i examen
 ```makefile
 all: prog
 
@@ -98,7 +98,7 @@ clean:
 
 ---
 
-## 2.4 Flags Fonamentals de `gcc`
+## 2.4 Flags fonamentals de `gcc`
 
 | Flag | Què fa? | Exemple d'Ús |
 | :--- | :--- | :--- |
@@ -112,7 +112,7 @@ clean:
 
 ---
 
-## 2.5 Compilació Estàtica vs Dinàmica (`-static`)
+## 2.5 Compilació estàtica vs dinàmica (`-static`)
 
 Aquesta és una pregunta molt freqüent als exàmens:
 
@@ -126,9 +126,9 @@ Aquesta és una pregunta molt freqüent als exàmens:
 
 ---
 
-## 2.6 Eines per Analitzar Binaris: `nm`, `objdump` i `strace`
+## 2.6 Eines per analitzar binaris: `nm`, `objdump` i `strace`
 
-### 1. `nm <executable>`: La Taula de Símbols
+### 1. `nm <executable>`: la taula de símbols
 Llegeix la llista de funcions i variables globals que conté el fitxer:
 * **`T` / `t`**: Codi / Text (funcions del programa com `main`).
 * **`D` / `d`**: Dades inicialitzades (variables globals amb valor inicial: `int x = 5;`).
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
   * `argv[argc]`: Sempre val `NULL`.
 * **Important**: Els arguments arriben **SEMPRE com a text**. Si escrius `./prog 42`, `argv[1]` és la paraula `"42"`, no el número enter. Per fer càlculs cal convertir-lo abans amb `atoi(argv[1])`.
 
-### Patró de la Funció `Usage()` (Obligatori a Exàmens)
+### Patró de la funció `Usage()` (obligatori a exàmens)
 A tots els exàmens has de comprovar que l'usuari hagi passat els arguments correctes abans de començar a fer res:
 
 ```c
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## 2.8 Control d'Errors amb `perror()`
+## 2.8 Control d'errors amb `perror()`
 
 Totes les crides a sistema a Linux retornen `-1` quan fallen i guarden el motiu de l'error a la variable `errno`.
 
@@ -214,7 +214,7 @@ if (fd < 0) {
 
 ---
 
-## 2.9 Punters i Adreces de Memòria
+## 2.9 Punters i adreces de memòria
 
 Un **punter** és una variable que guarda una adreça de memòria RAM:
 * `&variable`: "A quina adreça de memòria està guardada aquesta variable?".
@@ -232,7 +232,7 @@ int *p = &a; // p guarda l'adreça de 'a'
 
 ---
 
-## 2.10 Preguntes Típiques d'Examen Resoltes (Tema 2)
+## 2.10 Preguntes típiques d'examen resoltes (Tema 2)
 
 ### 1. Per què un executable compilat amb `-static` ocupa tant d'espai comparat amb el normal?
 > **Resposta breu i exacta**:  

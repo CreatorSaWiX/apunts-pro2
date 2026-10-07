@@ -6,7 +6,7 @@ order: 2.5
 draft: false
 ---
 
-## Guia de la Sessió 2: El llenguatge C i compilació
+## Guia de la sessió 2: el llenguatge C i compilació
 
 Respostes concises a les preguntes del laboratori (`entrega.txt`) per a l'examen SIMLAB.
 
@@ -16,7 +16,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 1: Sortida a Baix Nivell (`sprintf` + `write`)
+## Bloc 1: Sortida a baix nivell (`sprintf` + `write`)
 
 A SO **no** s'usa `cout` ni `printf`. Patró estàndard obligatori:
 
@@ -68,7 +68,7 @@ clean:
 
 ---
 
-## Bloc 3: Errors Freqüents del Compilador (Examen)
+## Bloc 3: Errors freqüents del compilador (Examen)
 
 | Error / Avís de `gcc` | Causa | Solució |
 | :--- | :--- | :--- |
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## Bloc 5: Funció `Usage()` i Validació de Paràmetres
+## Bloc 5: Funció `Usage()` i validació de paràmetres
 
 Tots els programes d'examen han de validar el nombre d'arguments rebuts. Si és incorrecte, mostren ajuda i acaben amb `exit(1)`:
 
@@ -154,7 +154,7 @@ int *PA = &A;
 
 ---
 
-## Bloc 7: Conversió de Caràcters a Enters (`suma.c`)
+## Bloc 7: Conversió de caràcters a enters (`suma.c`)
 
 1. **`char2int`**: Resta el valor ASCII del caràcter `'0'`:
    ```c
@@ -175,7 +175,7 @@ int *PA = &A;
 
 ---
 
-## Bloc 8: Modularització i Compilació amb `gcc`
+## Bloc 8: Modularització i compilació amb `gcc`
 
 Divisió en `.h` (prototips públics) i `.c` (implementació):
 
@@ -201,7 +201,7 @@ int mi_atoi(char *s);
 
 ---
 
-## Bloc 9: Comptador de Paraules (`words.c`)
+## Bloc 9: Comptador de paraules (`words.c`)
 
 Una paraula es delimita per espai `' '`, punt `'.' `, coma `','` o salt de línia `'\n'`:
 
@@ -226,7 +226,7 @@ for (int i = 0; str[i] != '\0'; i++) {
 
 ---
 
-## Resum del Paquet d'Entrega (`sessio02.tar.gz`)
+## Resum del paquet d'entrega (`sessio02.tar.gz`)
 
 | Fitxer | Contingut |
 | :--- | :--- |

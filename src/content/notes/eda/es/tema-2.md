@@ -280,7 +280,7 @@ A pesar de compartir un coste asintótico de $\Theta(n \log n)$, QuickSort resul
 
 ---
 
-## 2.3 Productos y Exponentes: Exponenciación Rápida
+## 2.3 Productos y exponentes: exponenciación rápida
 
 El cálculo de potencias enteras $x^n$ ejemplifica cómo la estrategia de divide y vencerás permite reducir la complejidad computacional de un coste lineal a un coste logarítmico.
 
@@ -649,7 +649,7 @@ $$ -->
 
 <!-- ---
 
-### Algoritmos galácticos (*Galactic Algorithms*)
+### Algoritmos galácticos (*galactic algorithms*)
 
 Después de Strassen, una sucesión de investigaciones teóricas fueron rebajando progresivamente el exponente:
 * **Coppersmith y Winograd (1990):** $\mathcal{O}(n^{2.376})$.
@@ -755,7 +755,7 @@ Este coste exponencial es **estrictamente mínimo**. Para desplazar el disco de 
 
 ---
 
-## 2.7 Cálculo de la Mediana y Algoritmos de Selección
+## 2.7 Cálculo de la mediana y algoritmos de selección
 
 ### La mediana y su robustez estadística
 
@@ -892,7 +892,7 @@ Gracias a la estrategia de la mediana de medianas, **el caso peor de selección 
 
 ---
 
-## 2.8 Síntesis de Complejidades del Tema 2
+## 2.8 Síntesis de complejidades del Tema 2
 
 A continuación se resume el abanico completo de algoritmos de divide y vencerás analizados a lo largo del tema:
 

@@ -1,5 +1,5 @@
 ---
-title: "Tema 3: Processos, Planificació i Senyals (Signals)"
+title: "Tema 3: Processos i signals"
 description: "PCB, graf d'estats, canvi de context, planificació (RR i CFS), fork, exec, waitpid i gestió avançada de senyals."
 readTime: "25 min"
 order: 3
@@ -20,7 +20,7 @@ Cada procés té:
 
 ---
 
-## 3.2 El PCB (*Process Control Block*): La Fitxa del Procés
+## 3.2 El PCB (*Process Control Block*): la fitxa del procés
 
 El **PCB** és la **fitxa d'identitat** que el nucli del sistema operatiu (*Kernel*) guarda a la seva memòria per a cada programa en marxa.
 
@@ -40,7 +40,7 @@ Quan un procés deixa d'executar-se a la CPU per deixar pas a un altre, el Kerne
 
 ---
 
-## 3.3 El Cicle de Vida d'un Procés: Graf d'Estats
+## 3.3 El cicle de vida d'un procés: graf d'estats
 
 Un procés va passant per diferents estats durant la seva vida:
 
@@ -48,14 +48,14 @@ Un procés va passant per diferents estats durant la seva vida:
 :::
 
 
-### Els 5 Estats Explicats de Forma Senzilla
+### Els 5 estats explicats de forma senzilla
 * **RUN**: Està executant-se a la CPU en aquest mateix instant.
 * **READY (A punt / Preparat)**: Té tot el que necessita per treballar a la RAM, només està esperant a la cua que el processador quedi lliure per tenir el seu torn.
 * **BLOCKED (Bloquejat / Adormit)**: No pot continuar perquè està esperant una acció externa (que l'usuari teclegi alguna cosa a `read`, que un fill acabi a `waitpid`, o que arribi un senyal a `sigsuspend`). **Mentre està bloquejat no gasta gens de CPU.**
 * **ZOMBIE (Mort pendent de recollir)**: El procés ja ha acabat amb `exit()`. Tota la seva memòria RAM i els seus fitxers ja s'han alliberat, però el seu PCB (la fitxa) continua al Kernel guardant com ha mort fins que el seu pare ho pregunti amb `waitpid()`.
 * **STOPPED (Pausat / Congelat)**: S'ha congelat amb un senyal `SIGSTOP` o prement `Ctrl+Z`. Es queda completament immòbil fins que algú li enviï un senyal `SIGCONT`.
 
-### Preguntes Clau d'Examen sobre Estats
+### Preguntes clau d'examen sobre estats
 * **Quines crides a sistema fan passar un procés de RUN a BLOCKED?**
   1. `waitpid(pid, &st, 0)`: si el fill encara està viu (i no hem posat l'opció `WNOHANG`).
   2. `sigsuspend(&mask)`: si no hi ha cap senyal pendent desbloquejat.
@@ -66,7 +66,7 @@ Un procés va passant per diferents estats durant la seva vida:
 
 ---
 
-## 3.4 El Canvi de Context (*Context Switch*)
+## 3.4 El canvi de context (*context switch*)
 
 Quan la CPU deixa d'executar el procés A per posar-se a executar el procés B, s'executa un **canvi de context**:
 1. La CPU salta a mode Kernel a causa d'una interrupció de rellotge o d'una crida bloquejant.
@@ -81,7 +81,7 @@ Quan la CPU deixa d'executar el procés A per posar-se a executar el procés B, 
 
 ---
 
-## 3.5 Planificació de la CPU (*Scheduling*)
+## 3.5 Planificació de la CPU (*scheduling*)
 
 El **planificador (*scheduler*)** és la part del Kernel que decideix qui agafa la CPU, en quin ordre i durant quant de temps.
 
@@ -109,7 +109,7 @@ Funciona com un torn de paraula en cercle:
 
 ---
 
-## 3.6 Crides a Sistema de Processos
+## 3.6 Crides a sistema de processos
 
 | Crida | Secció `man` | Retorn | Què fa exactament? |
 | :--- | :---: | :--- | :--- |
@@ -122,7 +122,7 @@ Funciona com un torn de paraula en cercle:
 
 ---
 
-## 3.7 La Crida `fork()`: Clonació i Herència
+## 3.7 La crida `fork()`: clonació i herència
 
 Quan crides `fork()`, el Kernel fa una còpia exacta del procés:
 
@@ -141,7 +141,7 @@ int main() {
 }
 ```
 
-### Què s'hereta i què NO s'hereta a `fork()`? (Clau d'Examen)
+### Què s'hereta i què NO s'hereta a `fork()`? (Clau d'examen)
 * **S'HERETA (Còpia idèntica)**:
   * Les variables i la memòria (cada procés té la seva còpia privada).
   * La taula de senyals (si el pare tenia una funció per atendre un senyal, el fill la manté).
@@ -155,7 +155,7 @@ int main() {
   * **Els senyals pendents** (el fill neix net, sense senyals acumulats).
   * **L'alarma** (el temporitzador de l'alarma del fill està desactivat).
 
-### Càlcul de Processos en Bucles de `fork()`
+### Càlcul de processos en bucles de `fork()`
 * **Si els fills NO fan `exit()`**: Cada iteració duplica tots els processos que hi ha vius en aquell moment:
   ```c
   for (int i = 0; i < N; i++) fork();
@@ -175,7 +175,7 @@ int main() {
 
 ---
 
-## 3.8 Mutació de Procés amb `execlp()`
+## 3.8 Mutació de procés amb `execlp()`
 
 `execlp()` no crea cap procés nou. El procés que el crida **es transforma completament** en un altre programa:
 
@@ -196,7 +196,7 @@ error_y_exit("Aixo nomes s'executa si execlp ha fallat!", 1);
 
 ---
 
-## 3.9 Sincronització amb `waitpid()` i Diagnòstic de Mort
+## 3.9 Sincronització amb `waitpid()` i diagnòstic de mort
 
 El pare utilitza `waitpid()` per esperar que un fill acabi i saber per què ha mort:
 
@@ -224,7 +224,7 @@ if (WIFEXITED(status)) {
 
 ---
 
-## 3.10 Esquemes de Programació: Seqüencial vs Concurrent
+## 3.10 Esquemes de programació: seqüencial vs concurrent
 
 ```c
 // 1. ESQUEMA SEQÜENCIAL: Un darrere l'altre
@@ -252,26 +252,26 @@ while (waitpid(-1, NULL, 0) > 0);
 
 ---
 
-## 3.11 El Sistema de Senyals (Signals) a Linux
+## 3.11 El sistema de senyals (signals) a Linux
 
 Un **senyal (*signal*)** és una notificació asíncrona per programari que el sistema operatiu o un altre procés envia a un programa per avisar-lo que ha passat un esdeveniment.
 
-### Taula de Senyals que entren a Examen
+### Taula de senyals que entren a examen
 | Senyal | Codi | Què fa per defecte? | Què el provoca? | Es pot capturar o bloquejar? |
 | :--- | :---: | :---: | :--- | :---: |
-| **`SIGINT`** | 2 | Acaba el programa | Prems `Ctrl+C` a la terminal. | ✅ Sí |
-| **`SIGKILL`** | 9 | Acaba el programa immediatament | Ordre de matar el procés. | ❌ **MAI** (imparable) |
-| **`SIGSTOP`** | 19 | Congela el procés (STOPPED) | Ordre de pausar el procés. | ❌ **MAI** (imparable) |
-| **`SIGCONT`** | 18 | Descongela el procés | Reactiva un procés pausat per `SIGSTOP`. | ✅ Sí |
-| **`SIGALRM`** | 14 | Acaba el programa | S'ha acabat el temporitzador de la crida `alarm()`. | ✅ Sí |
-| **`SIGCHLD`** | 17 | **Ignorar (no fa res)** | Un procés fill ha acabat o s'ha aturat. | ✅ Sí |
-| **`SIGSEGV`** | 11 | Acaba el programa (*Dump*) | Has intentat tocar memòria prohibida (punter nul). | ✅ Sí |
-| **`SIGUSR1`** | 10 | Acaba el programa | Senyal lliure perquè el programador el faci servir per al que vulgui. | ✅ Sí |
-| **`SIGUSR2`** | 12 | Acaba el programa | Segon senyal lliure per al programador. | ✅ Sí |
+| **`SIGINT`** | 2 | Acaba el programa | Prems `Ctrl+C` a la terminal. | Sí |
+| **`SIGKILL`** | 9 | Acaba el programa immediatament | Ordre de matar el procés. |  **MAI** (imparable) |
+| **`SIGSTOP`** | 19 | Congela el procés (STOPPED) | Ordre de pausar el procés. |  **MAI** (imparable) |
+| **`SIGCONT`** | 18 | Descongela el procés | Reactiva un procés pausat per `SIGSTOP`. | Sí |
+| **`SIGALRM`** | 14 | Acaba el programa | S'ha acabat el temporitzador de la crida `alarm()`. | Sí |
+| **`SIGCHLD`** | 17 | **Ignorar (no fa res)** | Un procés fill ha acabat o s'ha aturat. | Sí |
+| **`SIGSEGV`** | 11 | Acaba el programa (*Dump*) | Has intentat tocar memòria prohibida (punter nul). | Sí |
+| **`SIGUSR1`** | 10 | Acaba el programa | Senyal lliure perquè el programador el faci servir per al que vulgui. | Sí |
+| **`SIGUSR2`** | 12 | Acaba el programa | Segon senyal lliure per al programador. | Sí |
 
 ---
 
-## 3.12 Les 4 Estructures de Senyals a la Fitxa del Procés (PCB)
+## 3.12 Les 4 estructures de senyals a la fitxa del procés (PCB)
 
 Dins del PCB de cada procés hi ha 4 coses que controlen els senyals:
 
@@ -287,9 +287,9 @@ Dins del PCB de cada procés hi ha 4 coses que controlen els senyals:
 
 ---
 
-## 3.13 Crides a Sistema de Senyals
+## 3.13 Crides a sistema de senyals
 
-### 1. Enviar un Senyal: `kill(pid, senyal)`
+### 1. Enviar un senyal: `kill(pid, senyal)`
 ```c
 kill(pid_desti, SIGUSR1);
 ```
@@ -309,7 +309,7 @@ sigaction(SIGUSR1, &tractament, NULL);
 * **`SA_RESETHAND`**: Quan arriba el senyal per primera vegada s'executa la teva funció, però automàticament el senyal **torna a la seva acció per defecte (`SIG_DFL`)**. Si arriba un segon cop, el programa morirà.
 * **`SA_RESTART`**: Si el programa estava adormit en una crida com `read` o `waitpid` i arriba un senyal, un cop executada la funció del senyal, **la crida `read` es reprèn automàticament** sense retornar error `EINTR`.
 
-### 3. Gestionar Màscares de Bloqueig (`sigset_t`)
+### 3. Gestionar màscares de bloqueig (`sigset_t`)
 ```c
 sigset_t mascara;
 sigemptyset(&mascara);         // Buidar la màscara
@@ -330,7 +330,7 @@ sigsuspend(&mascara);
 Atura el procés i l'adorm fins que arriba un senyal que **no estigui a `mascara`**.  
 Quan arriba el senyal, s'executa la funció d'atenció, i tot seguit `sigsuspend` acaba i **restaura automàticament la màscara que el procés tenia abans**.
 
-### 5. Programar un Temporitzador: `alarm(segons)`
+### 5. Programar un temporitzador: `alarm(segons)`
 ```c
 alarm(5); // D'aquí a 5 segons rebràs el senyal SIGALRM
 alarm(0); // Cancel·la qualsevol alarma que tinguessis programada
@@ -338,7 +338,7 @@ alarm(0); // Cancel·la qualsevol alarma que tinguessis programada
 
 ---
 
-## 3.14 Trucs i Patrons Clau d'Examen amb Senyals
+## 3.14 Trucs i patrons clau d'examen amb senyals
 
 ### Patró 1: Com aturar un procés i reprendre'l quan vulguis?
 * **Per aturar-se a si mateix**:
@@ -352,7 +352,7 @@ alarm(0); // Cancel·la qualsevol alarma que tinguessis programada
 
 ---
 
-### Patró 2: Com evitar el perill del "Senyal Perdut"? (Cursa Crítica)
+### Patró 2: Com evitar el perill del "senyal perdut"? (cursa crítica)
 Imagina que un pare vol esperar que el seu fill li enviï `SIGUSR1`.  
 Si el pare fa simplement `sigsuspend(&buit)` sense bloquejar res abans, pot passar que el fill acabi tan ràpid que enviï el senyal **abans** que el pare hagi tingut temps d'arribar a la línia de `sigsuspend`. El senyal arriba, s'executa, i quan el pare finalment entra a `sigsuspend`, **es queda adormit per sempre** perquè el senyal ja ha passat!
 
@@ -386,7 +386,7 @@ void tracta_mort_fill(int s) {
 
 ---
 
-## 3.15 Preguntes d'Examen Resoltes (Tema 3)
+## 3.15 Preguntes d'examen resoltes (Tema 3)
 
 ### 1. Un procés orfe rep `SIGKILL`. Pot quedar-se en estat Zombie per sempre?
 > **Resposta breu i exacta**:  

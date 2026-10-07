@@ -6,7 +6,7 @@ order: 3.5
 draft: false
 ---
 
-## Guia de la Sessió 3: Gestió de Processos
+## Guia de la sessió 3: gestió de processos
 
 Respostes concises a les preguntes del laboratori (`entrega.txt`) per a l'examen SIMLAB.
 
@@ -16,7 +16,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 1: Crides a Sistema Fonamentals
+## Bloc 1: Crides a sistema fonamentals
 
 | Crida | Secció manual | Què retorna | Ús típic |
 | :--- | :---: | :--- | :--- |
@@ -33,7 +33,7 @@ Empaquetar l'entrega:
 
 ---
 
-## Bloc 2: Tractament d'Errors amb `perror`
+## Bloc 2: Tractament d'errors amb `perror`
 
 Patró obligatori per a crides que poden fallar:
 
@@ -50,7 +50,7 @@ void error_y_exit(char *msg, int exit_status) {
 
 ---
 
-## Bloc 3: Creació i Mutació de Processos (`myPS.c`)
+## Bloc 3: Creació i mutació de processos (`myPS.c`)
 
 ```c
 void muta_a_PS(char *username) {
@@ -72,7 +72,7 @@ void muta_a_PS(char *username) {
 
 ---
 
-## Bloc 4: Pseudo-Sistema `/proc` (P31 a P36)
+## Bloc 4: Pseudo-sistema `/proc` (P31 a P36)
 
 `/proc` és un sistema de fitxers virtual a memòria RAM generat pel Kernel.
 
@@ -101,7 +101,7 @@ void muta_a_PS(char *username) {
 
 ---
 
-## Bloc 5: Execució Seqüencial (`myPS2.c`)
+## Bloc 5: Execució seqüencial (`myPS2.c`)
 
 El pare crea els fills **d'un en un**, esperant cadascun abans de crear el següent:
 
@@ -122,7 +122,7 @@ for (int i = 0; i < num_fills; i++) {
 
 ---
 
-## Bloc 6: Execució Concurrent (`myPS3.c`)
+## Bloc 6: Execució concurrent (`myPS3.c`)
 
 El pare **crea tots els fills immediatament** i després n'espera la finalització:
 
@@ -152,7 +152,7 @@ while (waitpid(-1, NULL, 0) > 0);
 
 ---
 
-## Bloc 7: Pas d'Arguments amb `execlp` (`parsExec.c`)
+## Bloc 7: Pas d'arguments amb `execlp` (`parsExec.c`)
 
 ```c
 // Exemple d'invocació múltiple amb execlp
@@ -169,7 +169,7 @@ while (waitpid(-1, NULL, 0) > 0);
 
 ---
 
-## Resum del Paquet d'Entrega (`sessio03.tar.gz`)
+## Resum del paquet d'entrega (`sessio03.tar.gz`)
 
 | Fitxer | Rol |
 | :--- | :--- |
