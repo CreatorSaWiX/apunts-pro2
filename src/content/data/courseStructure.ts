@@ -953,10 +953,10 @@ export const courseStructure: TopicDefinition[] = [
     // --- SO (Sistemes Operatius) ---
     {
         id: "so-tema-1",
-        title: "Tema 1: Shell",
-        title_es: "Tema 1: Shell",
-        description: "Comandes, fitxers i permisos.",
-        description_es: "Comandos, archivos y permisos.",
+        title: "Tema 1: Arquitectura del SO i Shell",
+        title_es: "Tema 1: Arquitectura del SO y Shell",
+        description: "Modes d'execució, crides a sistema, Shell, inodes i permisos.",
+        description_es: "Modos de ejecución, llamadas a sistema, Shell, inodos y permisos.",
         problems: []
     },
     {
@@ -969,10 +969,10 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "so-tema-2",
-        title: "Tema 2: El llenguatge C",
-        title_es: "Tema 2: El lenguaje C",
-        description: "Compilació, makefile i punters.",
-        description_es: "Compilación, makefile y punteros.",
+        title: "Tema 2: El llenguatge C i Eines",
+        title_es: "Tema 2: El lenguaje C y Herramientas",
+        description: "Compilació estàtica/dinàmica, Makefile, nm, objdump i strace.",
+        description_es: "Compilación estática/dinámica, Makefile, nm, objdump y strace.",
         problems: []
     },
     {
@@ -985,10 +985,10 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "so-tema-3",
-        title: "Tema 3: Processos",
-        title_es: "Tema 3: Procesos",
-        description: "fork, exec, waitpid i /proc.",
-        description_es: "fork, exec, waitpid y /proc.",
+        title: "Tema 3: Processos i Senyals (Signals)",
+        title_es: "Tema 3: Procesos y Señales (Signals)",
+        description: "PCB, graf d'estats, planificació (RR/CFS), fork, exec, waitpid i senyals.",
+        description_es: "PCB, grafo de estados, planificación (RR/CFS), fork, exec, waitpid y señales.",
         problems: []
     },
     {

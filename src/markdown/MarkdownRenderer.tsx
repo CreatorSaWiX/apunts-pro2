@@ -61,6 +61,9 @@ const MedianVisualizer = React.lazy(() => import("../components/ui/visualizers/e
 const BFPRTVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BFPRTVisualizer"));
 // — SO (operating systems) —
 const OpenSUSEShellPlayer = React.lazy(() => import("../components/ui/visualizers/so/OpenSUSEShellPlayer"));
+const OSMediatorViz = React.lazy(() => import("../components/ui/visualizers/so/OSMediatorViz"));
+const CCompilePipelineViz = React.lazy(() => import("../components/ui/visualizers/so/CCompilePipelineViz"));
+const ProcessStatesViz = React.lazy(() => import("../components/ui/visualizers/so/ProcessStatesViz"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -491,6 +494,27 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    osmediatorviz: () => {
+        return (
+            <SafeSuspense>
+                <OSMediatorViz />
+            </SafeSuspense>
+        );
+    },
+    compileviz: () => {
+        return (
+            <SafeSuspense>
+                <CCompilePipelineViz />
+            </SafeSuspense>
+        );
+    },
+    processviz: () => {
+        return (
+            <SafeSuspense>
+                <ProcessStatesViz />
+            </SafeSuspense>
+        );
+    },
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
@@ -593,7 +617,7 @@ const rehypePluginsConfig = [
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'osmediatorviz', 'compileviz', 'processviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
