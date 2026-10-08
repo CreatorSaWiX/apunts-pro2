@@ -17,3 +17,5 @@ export const SUBJECTS: SubjectConfig[] = subjectsData.map(s => ({
 }));
 
 export const getSubjectById = (id: string) => SUBJECTS.find(s => s.id === id);
+
+export { apuntsDiscord, DISCORD_INVITE_URL, isDiscordSubject } from './discord';

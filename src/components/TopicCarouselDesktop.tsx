@@ -529,7 +529,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                         </h3>
 
                                         <div className="flex items-center gap-2.5">
-                                            <div className={`h-px transition duration-200 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
+                                            <div className={`h-px transition-all duration-300 ${isActive ? 'w-12 bg-primary' : 'w-6 bg-slate-700'}`} />
                                             <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">
                                                 {topic.readTime || '10 Min'}
                                             </span>
@@ -599,11 +599,11 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                         <button type="button"
                             key={sortedTopics[i]?.slug || i}
                             onClick={() => scrollTo(i)}
-                            className="group p-2 cursor-pointer focus:outline-none"
+                            className="group p-2 cursor-pointer focus:outline-none flex items-center justify-center"
                             aria-label={`Go to slide ${i + 1}`}
                         >
                             <div className={`
-                                transition duration-500 rounded-full
+                                transition-all duration-500 ease-out rounded-full
                                 ${activeIndex === i
                                     ? 'w-12 h-1.5 bg-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.6)]'
                                     : 'w-2 h-2 bg-slate-600 group-hover:bg-slate-400'

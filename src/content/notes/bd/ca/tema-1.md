@@ -1,143 +1,286 @@
 ---
-title: "Tema 1: Introducció i Arquitectura dels SGBD"
-description: "Els tres mons de la informació, objectius dels SGBD, transaccions, concurrència, fiabilitat, arquitectura ANSI/SPARC i tipologies d'usuaris."
-readTime: "8 min"
+title: "Tema 1: Consultes SQL (DQL)"
+description: "Sintaxi de SELECT, filtres WHERE, funcions d'agregació, agrupaments (GROUP BY, HAVING), joins multitaula, operacions de conjunts i subconsultes."
+readTime: "12 min"
 order: 1
-draft: true
+draft: false
 ---
 
-# 1. Introducció i arquitectura dels SGBD
+El llenguatge de consulta (**DQL**) s'articula al voltant de la sentència `SELECT` per extreure i transformar la informació emmagatzemada.
 
-::callout[type="info" title="Pes a l'avaluació"]
-El pes de la nota als exàmens es concentra principalment a partir del **Tema 2 (Model Relacional)** i especialment al **Tema 3 (SQL)**. Aleshores, per a aquest primer tema és suficient una lectura comprensiva dels conceptes clau i del resum de síntesi final.
-::
+Per a tots els exemples s'utilitza aquest esquema de referència:
+
+:::sqlviz{simulation="esquema_empresa"}
+:::
 
 ---
 
-## 1.1. Els tres mons i objectius d'un SGBD
+## 1.1. Estructura bàsica de `SELECT`
 
-El procés d'abstracció de la informació dins de les organitzacions s'estructura formalment en **tres nivells** o «mons»:
-
-1. ==Món real==: Objectes, entitats físiques o abstractes i fets del negoci en la realitat quotidiana (persones, factures, comptes bancaris, comandes).
-2. ==Món conceptual==: Abstracció semàntica i formal del negoci independent de qualsevol tecnologia concreta: definició de **classes d'objectes**, els seus **atributs** i les seves **associacions** (modelats mitjançant diagrames de classes UML o diagrames E/R).
-3. ==Món de les representacions==: Estructures de dades lògiques i físiques gestionades pel computador i els sistemes operatius per emmagatzemar la informació de forma permanent (fitxers, taules, tuples, registres, camps i blocs de disc).
-
-```text
-┌────────────────┐       Abstracció        ┌────────────────┐       Implementació       ┌──────────────────────┐
-│    MÓN REAL    │   ─────────────────►   │ MÓN CONCEPTUAL │   ───────────────────►   │ MÓN REPRESENTACIONS  │
-│ (Factures,     │   Classes d'objectes,  │ (Diagrama UML, │   Taules, tuples, camps, │ (Fitxers, discs,     │
-│  comptes, ...) │   atributs, relacions  │  model E/R)    │   estructures físiques)  │  SGBD)               │
-└────────────────┘                        └────────────────┘                          └──────────────────────┘
+```sql [Ordre de les clàusules]
+SELECT [DISTINCT | ALL] col_1, col_2 ...
+FROM taula
+[WHERE condicio]
+[GROUP BY col_a, col_b ...]
+[HAVING condicio_grup]
+[ORDER BY col_x [ASC | DESC] ...];
 ```
 
-### Limitacions dels fitxers ordinaris vs. SGBD
+### Projecció i càlculs:
+* **Totes les columnes:** `SELECT * FROM empleats;`
+* **Columnes específiques:** `SELECT nom_empl, sou FROM empleats;`
+* **Càlculs amb àlies (`AS`):**
+  ```sql
+  SELECT nom_empl, sou * 1.05 AS sou_incrementat FROM empleats;
+  ```
+* **Eliminació de duplicats (`DISTINCT`):**
+  ```sql
+  SELECT DISTINCT ciutat_empl FROM empleats;
+  ```
 
-L'ús de fitxers convencionals del sistema operatiu gestionats directament per programes d'aplicació presenta greus inconvenients: redundància incontrolada de dades, inconsistència entre fitxers, pèrdua d'informació davant fallades del sistema i absència de control d'accessos concurrents simultanis.
-
-Un ==Sistema de Gestió de Bases de Dades (SGBD)== resol aquests problemes aportant cinc propietats fonamentals:
-
-* **Persistència:** Les dades es conserven de manera íntegra i duradora després de la finalització dels processos que les han creat o modificat.
-* **Eficiència i emmagatzematge massiu:** Proporciona estructures d'indexació avançades (arbres B+, taules de dispersió / hash) i mètodes d'accés optimitzats per gestionar volums massius de dades molt superiors a la capacitat de la memòria principal, evitant lectures seqüencials completes de disc.
-* **Accés multiusuari i concurrència:** Coordina l'accés simultani de nombrosos usuaris i aplicacions a les mateixes dades garantint la integritat mitjançant el concepte de **transacció**.
-* **Seguretat i fiabilitat:** Ofereix un control estricte d'autoritzacions i privilegis d'accés, acompanyat de mecanismes de recuperació automàtica davant fallades físiques o lògiques.
-* **Conveniència:** Incorpora un llenguatge declaratiu d'alt nivell (**SQL**) que independitza la formulació de consultes de la seva implementació física i dels algorismes concrets d'accés.
-
----
-
-## 1.2. Transaccions i concurrència
-
-El mecanisme fonamental dels SGBD per gestionar de forma segura els accessos concurrents és la ==transacció==: una seqüència d'operacions sobre la base de dades que s'executa com una **unitat atòmica de treball** (o es completa íntegrament o no s'aplica cap canvi).
-
-Tota transacció finalitza amb una de les dues sentències següents:
-* ==COMMIT==: Confirma la transacció amb èxit. Totes les modificacions esdevenen permanents i visibles a la base de dades.
-* ==ROLLBACK==: Cancel·la o avorta la transacció per error o fallada. L'SGBD desfà automàticament qualsevol modificació intermèdia realitzada, retornant la base de dades a l'estat previ a l'inici de la transacció.
-
-::callout[type="warning" title="Problema de concurrència per manca d'aïllament (Exemple)"]
-Considerem dos comptes bancaris: **$X = 1500$** i **$Y = 2000$** (saldo total del sistema $= 3500$).
-
-La transacció $T_1$ transfereix $1000$ de $X$ a $Y$. Simultàniament, la transacció $T_2$ calcula la suma total dels saldos:
-
-1. $T_1$ resta $1000$ al compte $X$ ($X$ passa a valer $500$).
-2. $T_2$ llegeix el saldo de $Y$ ($2000$).
-3. $T_1$ suma $1000$ al compte $Y$ ($Y$ passa a valer $3000$) i fa `COMMIT`.
-4. $T_2$ llegeix el saldo de $X$ ($500$) i calcula la suma: $2000 + 500 = 2500$.
-
-**El resultat calculat per $T_2$ és incorrecte** ($2500 \neq 3500$) a causa de la lectura d'un estat intermedi inconsistent de $T_1$.
-
-**Mecanisme de resolució:** L'SGBD empra **bloquejos (*locks*)** sobre les dades per restringir l'accés d'altres transaccions fins que la transacció activa confirma el seu resultat final (`COMMIT` o `ROLLBACK`).
-::
-
----
-
-## 1.3. Fiabilitat i recuperació
-
-Per garantir que les dades reflecteixin fidelment la realitat i no es corrompin, l'SGBD disposa de controls i protocols:
-
-* **Regles d'integritat del model:** Condicions estructurals inherents al propi model relacional (com ara la unicitat de la clau primària o la integritat referencial de les claus foranes) que l'SGBD verifica de manera automàtica.
-* **Restriccions d'integritat dels usuaris:** Regles de negoci definides específicament pels dissenyadors per satisfer la semàntica de l'aplicació (per exemple, `CHECK (sou > 80000)` o `edat >= 18`).
-* **Redundàncies controlades:** Emmagatzematge deliberat de dades derivades o duplicades amb l'objectiu d'optimitzar el temps de resposta de determinades consultes crítiques. L'SGBD s'encarrega de mantenir la coherència actualitzant-les automàticament davant qualsevol modificació de les dades origen.
-* **Mecanismes de recuperació:** Enregistrament continu de totes les operacions d'escriptura en un ==dietari (*log*)== emmagatzemat en memòria estable (disc), cosa que permet refer les transaccions confirmades (*redo*) i desfer les transaccions incompletes (*undo*) davant una fallada sobtada del sistema o caiguda elèctrica.
-
----
-
-## 1.4. Arquitectura ANSI/SPARC i la independència de dades
-
-L'arquitectura estàndard ANSI/SPARC defineix **tres nivells d'abstracció** per desacoblar completament les aplicacions d'usuari de les estructures físiques d'emmagatzematge:
-
-```text
- ┌─────────────────┐       ┌─────────────────┐                 ┌─────────────────┐
- │ Esquema ext. 1  │       │ Esquema ext. 2  │      ...        │ Esquema ext. n  │  Nivell Extern
- └────────┬────────┘       └────────┬────────┘                 └────────┬────────┘  (Vistes d'usuaris i apps)
-          │                         │                                   │
-          └─────────────────────────┼───────────────────────────────────┘
-                                    ▼
-                 ┌──────────────────────────────────────┐
-                 │          Esquema Conceptual          │                       Nivell Conceptual
-                 │  (Estructura lògica global de la BD) │                       (Entitats, atributs, relacions)
-                 └──────────────────┬───────────────────┘
-                                    ▲
-                                    │ (Correspondència conceptual / interna)
-                                    ▼
-                 ┌──────────────────────────────────────┐
-                 │            Esquema Intern            │                       Nivell Intern
-                 │ (Fitxers, índexs i mètodes d'accés)  │                       (Emmagatzematge físic a disc)
-                 └──────────────────────────────────────┘
+### Ordenació (`ORDER BY`):
+* `ASC` (ascendent, per defecte) o `DESC` (descendent).
+```sql
+SELECT * FROM empleats 
+ORDER BY num_dpt ASC, sou DESC;
 ```
 
-1. ==Nivell extern==: Format per múltiples **esquemes externs (o vistes)**. Cadascun reflecteix la porció de la base de dades pertinent per a un usuari o grup d'usuaris determinat, amagant les dades no pertinents o confidencials.
-2. ==Nivell conceptual==: L'**esquema conceptual** representa l'estructura lògica completa i comunitària de tota la base de dades (totes les taules, atributs, relacions i restriccions) sense cap referència a detalls tècnics d'emmagatzematge en disc.
-3. ==Nivell intern==: L'**esquema intern** descriu la implementació física real: organització dels fitxers a disc, assignació de blocs de memòria, mètodes d'accés i estructures d'indexació (índexs B+, claus hash).
+---
 
-::callout[type="info" title="Independència física vs. Independència lògica de les dades"]
-Aquesta separació en nivells fa possibles dos tipus decisius d'independència:
+## 1.2. Filtres a la clàusula `WHERE`
 
-* ==Independència física==: Capacitat de modificar l'esquema intern (afegir o suprimir índexs, reorganitzar fitxers a disc o alterar la mida dels blocs) **sense haver d'alterar l'esquema conceptual ni els esquemes externs ni els programes d'aplicació**. Únicament cal ajustar la correspondència (*mapping*) entre el nivell conceptual i el nivell intern.
-* ==Independència lògica==: Capacitat de modificar l'esquema conceptual (afegir noves taules, afegir columnes o modificar relacions) **sense alterar els esquemes externs existents que no facin ús d'aquests elements modificats**. De la mateixa manera, qualsevol canvi en un esquema extern és totalment transparent per a la resta d'esquemes externs.
-::
+| Operador | Ús | Exemple |
+| :--- | :--- | :--- |
+| **Comparació** | `=`, `<>`, `<`, `<=`, `>`, `>=` | `sou > 200000` |
+| **Lògics** | `AND`, `OR`, `NOT` | `num_dpt = 1 AND sou > 150000` |
+| **Rangs** | `BETWEEN a AND b` *(inclusiu)* | `sou BETWEEN 200000 AND 300000` |
+| **Llistes** | `IN (v1, v2...)` / `NOT IN` | `ciutat_empl IN ('VIC', 'MATARO')` |
+| **Text** | `LIKE 'patro'` (`%` $\ge 0$ caràcters, `_` = 1) | `nom_empl LIKE 'J%'` |
+| **Nuls** | `IS NULL` / `IS NOT NULL` | `ciutat_empl IS NOT NULL` |
+
+**Compte amb els NULL a les condicions:** Mai utilitzis `= NULL` o `<> NULL`. En SQL qualsevol comparació directa amb `NULL` avalua a *Unknown* (mai cert en filtres). Utilitza sempre **`IS NULL`** o **`IS NOT NULL`**.
 
 ---
 
-## 1.5. Tipologies d'usuaris d'una base de dades
+## 1.3. Funcions d'agregació
 
-Els usuaris que interactuen amb una base de dades es classifiquen en dues grans categories:
+Processen múltiples files i retornen un **únic valor resum escalar**:
 
-### Usuaris informàtics
-* **Administrador de la Base de Dades (DBA - *Database Administrator*):** Responsable de la gestió global del sistema: monitorització del rendiment, definició de polítiques de seguretat, gestió d'usuaris i privilegis, ajust de l'esquema físic i planificació de còpies de seguretat (*backups*) i recuperacions.
-* **Dissenyadors de BD:** Analitzen els requisits del negoci i elaboren els esquemes conceptuals (UML / E-R) i lògics (relacionals).
-* **Programadors d'aplicacions:** Desenvolupen el programari que interactua amb la BD mitjançant consultes incrustades (SQL) o APIs (JDBC, ORMs).
-* **Implementadors del SGBD:** Enginyers que programen el propi programari motor del SGBD (gestor de transaccions, optimitzador de consultes, gestor de memòria).
+| Funció | Descripció | Comportament amb valors `NULL` |
+| :--- | :--- | :--- |
+| `COUNT(*)` | Total de files retornades | **Compta totes les files** (inclou nuls). |
+| `COUNT(col)` | Files amb valor no nul a `col` | Ignora valors `NULL`. |
+| `COUNT(DISTINCT col)` | Valors diferents i no nuls | Ignora duplicats i valors `NULL`. |
+| `SUM(col)` | Suma aritmètica | Ignora valors `NULL`. |
+| `AVG(col)` | Mitjana aritmètica | Ignora valors `NULL`. |
+| `MIN(col)` / `MAX(col)` | Valor mínim / màxim | Ignora valors `NULL`. |
 
-### Usuaris no informàtics
-* ==Usuaris paramètrics (o predefinits)==: Interactuen amb la base de dades únicament mitjançant interfícies gràfiques o aplicacions predefinides (formularis web, caixers automàtics, punts de venda). **No requereixen coneixements de l'estructura interna ni de llenguatges com SQL**.
-* ==Usuaris finals (o ocasionals)==: Formulen consultes puntuals i directes mitjançant un llenguatge d'alt nivell com **SQL**. **Requereixen conèixer part de l'estructura de la base de dades** (taules i columnes) per expressar el que necessiten.
+* **Comportament amb conjunts buits:** Si cap fila compleix el filtre, `COUNT` retorna **`0`**, mentre que `SUM`, `AVG`, `MIN` i `MAX` retornen **`NULL`**.
+
+```sql [Exemple d'agregació]
+SELECT COUNT(*), AVG(sou), MAX(sou)
+FROM empleats 
+WHERE num_dpt = 2;
+```
 
 ---
 
-::callout[type="tip" title="Resum de Síntesi: Tema 1"]
-* **Nivells d'abstracció:** Món real $\longrightarrow$ Món conceptual (UML / E-R) $\longrightarrow$ Món de les representacions (taules, tuples, dades a disc).
-* **Transacció:** Unitat atòmica d'execució tancada amb `COMMIT` (èxit permanent) o `ROLLBACK` (reversió total). El control d'accessos concurrents es resol amb **bloquejos (*locks*)**.
-* **Arquitectura ANSI/SPARC:** Tres nivells desacoblats: **extern** (vistes d'usuari), **conceptual** (estructura lògica comunitària) i **intern** (físic a disc).
-* **Independència física:** Modificar índexs i organització física a disc sense tocar el nivell conceptual ni els programes.
-* **Independència lògica:** Afegir nous elements al nivell conceptual sense trencar els esquemes externs que no els usen.
-* **Usuaris no informàtics:** L'**usuari paramètric** fa servir interfícies sense conèixer SQL; l'**usuari final** formula consultes directes en SQL sobre l'esquema.
-::
+## 1.4. Agrupaments (`GROUP BY`) i condicions sobre grups (`HAVING`)
+
+### Clàusula `GROUP BY`:
+Divideix les files en grups segons els valors de les columnes indicades.
+
+* **Regla d'or de GROUP BY:** Tota columna individual del `SELECT` **ha d'aparèixer al GROUP BY o bé dins d'una funció d'agregació**. No es poden projectar columnes independents no agrupades.
+
+```sql [Sou mitjà per departament]
+SELECT num_dpt, AVG(sou) AS sou_mig
+FROM empleats 
+GROUP BY num_dpt;
+```
+
+### `WHERE` vs. `HAVING`:
+* `WHERE`: Filtra **files individuals abans** d'agrupar. Mai pot contenir funcions d'agregació.
+* `HAVING`: Filtra **grups resultants després** de l'agrupament. Ideal per a condicions sobre funcions d'agregació (`COUNT`, `AVG`...).
+
+```sql [Combinació WHERE + GROUP BY + HAVING]
+SELECT num_dpt, AVG(sou) AS sou_mig
+FROM empleats
+WHERE sou > 200000        -- 1. Filtra empleats individuals amb sou > 200k
+GROUP BY num_dpt          -- 2. Agrupa per departament
+HAVING COUNT(*) > 1;      -- 3. Manté només departaments amb més d'1 empleat que compleixi el WHERE
+```
+
+---
+
+## 1.5. Consultes multitaula (*Joins*)
+
+Permeten combinar files de múltiples taules relacionades mitjançant claus foranes.
+
+### 1. `INNER JOIN ... ON` (Sintaxi estàndard recomanada)
+```sql [INNER JOIN explícit]
+SELECT e.nom_empl, d.nom_dpt
+FROM empleats e
+INNER JOIN departaments d ON e.num_dpt = d.num_dpt;
+```
+
+:::sqlviz{simulation="select_filtre_join"}
+:::
+
+### 2. `NATURAL INNER JOIN`
+Iguala automàticament les columnes que comparteixen el mateix nom a ambdues taules:
+```sql
+SELECT e.nom_empl, d.nom_dpt
+FROM empleats e
+NATURAL INNER JOIN departaments d;
+```
+
+### 3. Join combinat amb agregació
+```sql [Nom de departament amb sou mig]
+SELECT d.nom_dpt, AVG(e.sou) AS sou_mig
+FROM empleats e
+INNER JOIN departaments d ON e.num_dpt = d.num_dpt
+GROUP BY d.nom_dpt
+HAVING COUNT(*) > 1;
+```
+
+---
+
+## 1.6. Operacions de conjunts (`UNION`)
+
+Combina verticalment els resultats de dos `SELECT` independents en un únic resultat:
+
+```sql [Unió de ciutats]
+SELECT ciutat_dpt AS ciutat FROM departaments
+UNION
+SELECT ciutat_empl AS ciutat FROM empleats;
+```
+
+* `UNION`: Elimina automàticament files duplicades.
+* `UNION ALL`: Conserva els duplicats (més ràpid en execució).
+* **Requisits:** Totes dues consultes han de tenir exactament el mateix nombre de columnes i tipus compatibles. El `ORDER BY` només es pot posar al final de tot.
+
+---
+
+## 1.7. Subconsultes (*Subqueries*)
+
+### Diferència clau: `NOT IN` vs `NOT EXISTS`
+Per trobar els departaments **sense cap empleat**:
+
+#### Amb `NOT IN` (Compte amb els valors `NULL`!):
+```sql
+SELECT * FROM departaments
+WHERE num_dpt NOT IN (
+    SELECT num_dpt FROM empleats
+    WHERE num_dpt IS NOT NULL -- IMPRESCINDIBLE!
+);
+```
+
+**La trampa de NULL amb `NOT IN`:** Si la subconsulta retorna encara que sigui un sol valor `NULL`, l'expressió `NOT IN` retornarà sempre *Unknown* i **la consulta no retornarà cap fila**. Per fer-la segura cal afegir sempre `WHERE col IS NOT NULL`.
+
+#### Amb `NOT EXISTS` (Opció recomanada i segura):
+```sql [Subconsulta correlacionada]
+SELECT * FROM departaments d
+WHERE NOT EXISTS (
+    SELECT * FROM empleats e
+    WHERE e.num_dpt = d.num_dpt
+);
+```
+`NOT EXISTS` només avalua si la subconsulta retorna alguna fila; és completament immune als valors `NULL`.
+
+---
+
+## 1.8. Tipus i funcions temporals
+
+* **Tipus:** `DATE` (`'YYYY-MM-DD'`), `TIME` (`'HH:MM:SS'`), `TIMESTAMP`, `INTERVAL`.
+* **Funcions actuals:** `CURRENT_DATE`, `CURRENT_TIME`, `NOW()`.
+
+### Extracció (`EXTRACT`):
+```sql
+EXTRACT(YEAR FROM data)       -- Any (ex: 2024)
+EXTRACT(MONTH FROM data)      -- Mes (1 a 12)
+EXTRACT(DOW FROM data)        -- Dia setmana (0 = Diumenge)
+```
+
+### Aritmètica d'intervals:
+```sql
+SELECT * FROM viatges
+WHERE moment > (data_sortida + INTERVAL '10 min');
+```
+
+---
+
+## 1.9. Criteris de Qualitat de la FIB (Penalitzacions d'Examen)
+
+Als exàmens de la FIB, encara que una consulta SQL retorni el resultat correcte, **s'apliquen penalitzacions directes** si no compleix aquests criteris de qualitat:
+
+1. **Sense taules innecessàries al `FROM`:** No incloure mai una taula si tots els atributs necessaris (per projectar o filtrar) ja es troben en una altra taula vinculada per clau forana:
+   * ❌ *Malament:* `SELECT e.nom FROM empleats e, departaments d WHERE e.num_dpt = d.num_dpt AND d.num_dpt = 20;`
+   * ✅ *Bé:* `SELECT e.nom FROM empleats e WHERE e.num_dpt = 20;`
+2. **Ús estricte de `DISTINCT`:**
+   * S'ha d'usar **únicament** si la consulta pot generar duplicats per algun contingut vàlid de la BD.
+   * **No s'ha d'usar mai** si la presència d'una clau primària o clau candidata garanteix matemàticament que el resultat no tindrà repetits.
+3. **No usar `GROUP BY` per eliminar duplicats:** Per eliminar repetits s'usa `DISTINCT`, mai un `GROUP BY` sense funcions d'agregació.
+4. **No usar `GROUP BY` sobre un grup únic:** Si una subconsulta filtra per una clau o calcula un agregat sobre tot un conjunt, no s'hi afegeix `GROUP BY`:
+   * ❌ *Malament:* `SELECT AVG(sou) FROM empleats WHERE num_dpt = 5 GROUP BY num_dpt;`
+   * ✅ *Bé:* `SELECT AVG(sou) FROM empleats WHERE num_dpt = 5;`
+5. **Sense condicions trivials o redundants al `HAVING`:** No posar `HAVING COUNT(*) >= 1` si la combinació de taules ja garanteix l'existència de files.
+
+---
+
+## 1.10. Àlgebra Relacional (Pregunta fixa de l'examen parcial)
+
+L'**Àlgebra Relacional** és un llenguatge procedimental formal on les consultes s'especifiquen aplicant operadors sobre relacions per produir noves relacions. Als exàmens val entre **1,5 i 2,5 punts** i s'exigeix escriure una seqüència d'assignacions pas a pas ($R_1 = \dots, R_2 = \dots, \text{Resultat} = \dots$).
+
+### 1. Operadors Fonamentals
+
+| Operador | Notació | Descripció i Requisits |
+| :--- | :---: | :--- |
+| **Selecció** | $\sigma_{condicio}(R)$ | Filtra tuples que compleixen la condició. |
+| **Projecció** | $\pi_{col_1, col_2}(R)$ | Selecciona columnes i **elimina duplicats automàticament**. |
+| **Producte Cartesià** | $R \times S$ | Combina cada fila de $R$ amb cada fila de $S$. |
+| **Unió** | $R \cup S$ | Tuples que són a $R$, a $S$ o a totes dues. Exigeix **esquemes unió-compatibles** (mateix nombre de columnes i mateixos dominis). |
+| **Diferència** | $R - S$ | Tuples que són a $R$ però **NO** a $S$. Exigeix **esquemes unió-compatibles**. |
+| **Renombrament** | $\rho_{S(nou_1, nou_2)}(R)$ | Canvia el nom de la relació o dels seus atributs. |
+
+### 2. Operadors Derivats
+
+* **Reunió Natural ($\bowtie$):** Combina tuples que coincideixen en els atributs amb el mateix nom i en projecta una sola còpia:
+  $$R \bowtie S = \pi_{\dots}(\sigma_{R.a = S.a}(R \times S))$$
+* **Reunió $\theta$ ($\bowtie_\theta$):** Reunió sota una condició explícita:
+  $$R \bowtie_{R.a > S.b} S = \sigma_{R.a > S.b}(R \times S)$$
+* **Intersecció ($\cap$):** $R \cap S = R - (R - S)$.
+
+---
+
+### 3. Patrons Clàssics d'Examen
+
+#### Patró 1: "Únicament", "Mai" o "Cap" (Diferència de conjunts)
+A l'examen demanen sovint entitats que *únicament* han fet una acció o que *mai* han complert una condició. La fórmula és sempre:
+$$\text{Resultat} = (\text{Tots els candidats possibles}) - (\text{Candidats que incompleixen la condició})$$
+
+*Exemple (Metges que només han visitat jubilats $\ge 65$ anys):*
+1. $Tots = \pi_{idMetge}(Visites)$
+2. $Incompleixen = \pi_{idMetge}(Visites \bowtie_{Visites.idPacient = Pacients.idPacient} \sigma_{edat < 65}(Pacients))$
+3. $Bons = Tots - Incompleixen$
+4. $Resultat = \pi_{nom, especialitat}(Metges \bowtie Bons)$
+
+---
+
+#### Patró 2: Simular un recompte mínim fix ($\ge 2$ o $\ge 3$)
+L'àlgebra relacional pura **no té funcions d'agregació** (`COUNT`, `AVG`). Si l'enunciat demana *«vídeos amb almenys 2 usuaris diferents»*:
+* Es fa una **auto-reunió amb desigualtat ($\neq$)**:
+  $$R_1 = \pi_{titol, mail_1}(\rho_{V_1(titol, mail_1)}(Visualitzacions))$$
+  $$R_2 = \pi_{titol, mail_2}(\rho_{V_2(titol, mail_2)}(Visualitzacions))$$
+  $$Parella = \sigma_{mail_1 \neq mail_2}(R_1 \bowtie R_2)$$
+  $$Resultat = \pi_{titol}(Parella)$$
+
+---
+
+### 4. Pregunta teòrica d'expressabilitat: "És possible en àlgebra relacional?"
+Als exàmens sovint pregunten si una consulta SQL es pot expressar en àlgebra relacional:
+* **NO ÉS POSSIBLE** si la consulta necessita:
+  * Càlculs aritmètics sobre conjunts (`AVG`, `SUM`, variàncies).
+  * Recomptes arbitraris o totals (`COUNT(*)`) que depenen de la mida dinàmica de les dades.
+  * Tancament transitiu o recursivitat (ex: jerarquies d'empleats indefinides).
+* **SÍ ÉS POSSIBLE** si només demana un llindar fix xicotet (com $\ge 2$ usuaris diferents) perquè es pot simular amb auto-reunió i $\neq$.
+

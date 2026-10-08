@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { m as motion, AnimatePresence, Reorder } from 'framer-motion';
-import { Search, Command, ChevronRight, X } from 'lucide-react';
+import { Search, Command, ChevronRight, X, ArrowUpRight } from 'lucide-react';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { tailwindColors } from '../../stores/useSubjectStore';
 import subjectsData from '../../data/subjects.json';
@@ -8,6 +8,8 @@ import NavigationPill from '../ui/NavigationPill';
 import Modal from '../ui/modals/Modal';
 import { useTranslation } from 'react-i18next';
 import { useShortcut } from '../../hooks/useShortcut';
+import { DiscordIcon } from '../ui/icons/DiscordIcon';
+import { isDiscordSubject, DISCORD_INVITE_URL } from '../../config/discord';
 
 import { useAvailableSubjects } from '../../hooks/useAvailableSubjects';
 
@@ -148,38 +150,85 @@ export const SubjectsSection = () => {
                                         const colorFamily = customSubjectColors[subject.name] || defaultColor;
                                         
                                         const isAvailable = isSubjectAvailable(subject.name);
+                                        const isDiscord = isDiscordSubject(subject.name);
+                                        const isInteractive = isAvailable || isDiscord;
+                                        const isAlreadyInHome = homeSubjects.includes(subject.name);
 
                                         return (
                                             <button
                                                 type="button"
                                                 key={subject.id}
-                                                disabled={!isAvailable}
+                                                disabled={!isInteractive}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    if (!isAvailable) return;
-                                                    if (homeSubjects.length >= 6) {
-                                                        setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
+                                                    if (isAvailable) {
+                                                        if (isAlreadyInHome) {
+                                                            setSearchQuery('');
+                                                            setIsCommandOpen(false);
+                                                            return;
+                                                        }
+                                                        if (homeSubjects.length >= 6) {
+                                                            setSubjectError(t('settings.subjects.maxError', "Pots tenir un màxim de 6 assignatures a l'Inici."));
+                                                            setSearchQuery('');
+                                                            setIsCommandOpen(false);
+                                                            return;
+                                                        }
+                                                        setHomeSubjects([...homeSubjects, subject.name]);
                                                         setSearchQuery('');
                                                         setIsCommandOpen(false);
-                                                        return;
+                                                        setSubjectError(null);
+                                                    } else if (isDiscord) {
+                                                        window.open(DISCORD_INVITE_URL, '_blank', 'noopener,noreferrer');
                                                     }
-                                                    setHomeSubjects([...homeSubjects, subject.name]);
-                                                    setSearchQuery('');
-                                                    setIsCommandOpen(false);
-                                                    setSubjectError(null);
                                                 }}
-                                                className={`flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item ${!isAvailable ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/5'}`}
-                                                aria-label="Obrir panell">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`w-2.5 h-2.5 rounded-full ${!isAvailable ? 'opacity-50' : ''}`} style={{ backgroundColor: tailwindColors[colorFamily]?.primary || '#0ea5e9' }} />
-                                                    <span className={`font-bold ${!isAvailable ? 'text-slate-400' : 'text-slate-200'}`}>{subject.name}</span>
-                                                    {!isAvailable && (
-                                                        <span className="text-[10px] uppercase font-bold tracking-wider text-rose-400 bg-rose-400/10 px-2 py-0.5 rounded-full ml-2 whitespace-nowrap">
+                                                className={`flex items-center justify-between px-4 py-3 rounded-xl transition text-left group/item ${
+                                                    !isInteractive
+                                                        ? 'opacity-40 cursor-not-allowed'
+                                                        : 'hover:bg-white/5 cursor-pointer'
+                                                }`}
+                                                aria-label={subject.name}>
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div
+                                                        className={`w-2.5 h-2.5 rounded-full shrink-0 ${!isInteractive ? 'opacity-40' : ''}`}
+                                                        style={{ backgroundColor: tailwindColors[colorFamily]?.primary || '#0ea5e9' }}
+                                                    />
+                                                    <span className={`font-bold ${!isInteractive ? 'text-slate-500' : 'text-slate-200'}`}>
+                                                        {subject.name}
+                                                    </span>
+                                                    {isAlreadyInHome && isAvailable && (
+                                                        <span className="text-[10px] font-semibold text-slate-500 tracking-wide bg-white/5 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                                            {t('settings.subjects.added', 'Afegida')}
+                                                        </span>
+                                                    )}
+                                                    {!isInteractive && (
+                                                        <span className="text-[10px] uppercase font-bold tracking-wider text-rose-400 bg-rose-400/10 px-2 py-0.5 rounded-full whitespace-nowrap">
                                                             {t('settings.subjects.notAvailable', 'No disponible')}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <ChevronRight size={18} className={`transition-colors ${!isAvailable ? 'text-slate-700' : 'text-slate-600 group-hover/item:text-white'}`} />
+
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    {isDiscord && (
+                                                        <a
+                                                            href={DISCORD_INVITE_URL}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#5865F2]/10 hover:bg-[#5865F2]/20 active:bg-[#5865F2]/30 text-[#7983f5] hover:text-white border border-[#5865F2]/25 hover:border-[#5865F2]/50 transition-all duration-200 text-xs font-semibold shadow-xs hover:shadow-[0_0_12px_rgba(88,101,242,0.35)] cursor-pointer group/discord"
+                                                            title={t('settings.subjects.discordTooltip', 'Consultar apunts a Discord')}
+                                                            aria-label={`Apunts ${subject.name} a Discord`}
+                                                        >
+                                                            <DiscordIcon className="w-3.5 h-3.5 fill-current text-[#5865F2] group-hover/discord:text-white transition-colors" />
+                                                            <span className="text-[11px] font-semibold tracking-tight text-white/90 group-hover/discord:text-white">Discord</span>
+                                                            <ArrowUpRight size={12} className="opacity-60 text-white/80 group-hover/discord:opacity-100 group-hover/discord:translate-x-0.5 group-hover/discord:-translate-y-0.5 transition-transform" />
+                                                        </a>
+                                                    )}
+                                                    {isAvailable && (
+                                                        <ChevronRight size={18} className="transition-colors text-slate-600 group-hover/item:text-white" />
+                                                    )}
+                                                </div>
                                             </button>
                                         );
                                     })}

@@ -927,28 +927,53 @@ export const courseStructure: TopicDefinition[] = [
     // --- BD (Bases de Dades) ---
     {
         id: "bd-tema-1",
-        title: "Tema 1: Introducció i Arquitectura dels SGBD",
-        title_es: "Tema 1: Introducción y Arquitectura de los SGBD",
-        description: "Els tres mons de la informació, objectius dels SGBD, transaccions, concurrència, fiabilitat i arquitectura ANSI/SPARC.",
-        description_es: "Los tres mundos de la información, objetivos de los SGBD, transacciones, concurrencia, fiabilidad y arquitectura ANSI/SPARC.",
+        title: "Tema 1: Consultes SQL (DQL)",
+        title_es: "Tema 1: Consultas SQL (DQL)",
+        description: "Sintaxi de SELECT, filtres WHERE, funcions d'agregació, agrupaments (GROUP BY, HAVING), joins multitaula, operacions de conjunts i subconsultes.",
+        description_es: "Sintaxis de SELECT, filtros WHERE, funciones de agregación, agrupaciones (GROUP BY, HAVING), joins multitabla, operaciones de conjuntos y subconsultas.",
         problems: []
     },
     {
         id: "bd-tema-2",
-        title: "Tema 2: El Model Relacional de Dades",
-        title_es: "Tema 2: El Modelo Relacional de Datos",
-        description: "Estructura formal de relacions, atributs i tuples, jerarquia de claus (PK, FK, AK), regles d'integritat i accions compensatòries.",
-        description_es: "Estructura formal de relaciones, atributos y tuplas, jerarquía de claves (PK, FK, AK), reglas de integridad y acciones compensatorias.",
+        title: "Tema 2: DDL i DML",
+        title_es: "Tema 2: DDL y DML",
+        description: "Definició d'esquemes amb CREATE TABLE, restriccions d'integritat, accions compensatòries, i manipulació de dades amb INSERT, UPDATE i DELETE.",
+        description_es: "Definición de esquemas con CREATE TABLE, restricciones de integridad, acciones compensatorias, y manipulación de datos con INSERT, UPDATE y DELETE.",
         problems: []
     },
     {
         id: "bd-tema-3",
-        title: "Tema 3: SQL Cheat Sheet (DDL, DML i DQL)",
-        title_es: "Tema 3: SQL Cheat Sheet (DDL, DML y DQL)",
-        description: "Guia ràpida completa de SQL: definició d'esquemes (DDL), manipulació de dades (DML), consultes simples, joins, agregats, subconsultes i tipus temporals.",
-        description_es: "Guía rápida completa de SQL: definición de esquemas (DDL), manipulación de datos (DML), consultas simples, joins, agregados, subconsultas y tipos temporales.",
+        title: "Tema 3: Components Lògics de la BD",
+        title_es: "Tema 3: Componentes Lógicos de la BD",
+        description: "Esquemes, dominis, assercions, vistes (WITH CHECK OPTION), esquema d'informació, gestió de privilegis (GRANT/REVOKE), rols i protecció de dades (RGPD).",
+        description_es: "Esquemas, dominios, aserciones, vistas (WITH CHECK OPTION), esquema de información, gestión de privilegios (GRANT/REVOKE), roles y protección de datos (RGPD).",
         problems: []
     },
+    {
+        id: "bd-tema-4",
+        title: "Tema 4: Procediments Emmagatzemats (PL/pgSQL)",
+        title_es: "Tema 4: Procedimientos Almacenados (PL/pgSQL)",
+        description: "Estructura de funcions a PostgreSQL, paràmetres, retorn escalar i SETOF, variables (%TYPE i nous tipus), control de flux (IF, FOUND, FOR, WHILE) i gestió d'errors (EXCEPTION, RAISE EXCEPTION).",
+        description_es: "Estructura de funciones en PostgreSQL, parámetros, retorno escalar y SETOF, variables (%TYPE y nuevos tipos), control de flujo (IF, FOUND, FOR, WHILE) y gestión de errores (EXCEPTION, RAISE EXCEPTION).",
+        problems: []
+    },
+    {
+        id: "bd-tema-5",
+        title: "Tema 5: Disparadors (Triggers)",
+        title_es: "Tema 5: Disparadores (Triggers)",
+        description: "SGBD actius i regles ECA, sintaxi a PostgreSQL, ordre d'execució (BEFORE/AFTER, ROW/STATEMENT), variables NEW, OLD i TG_OP, auditoria, atributs derivats i INSTEAD OF.",
+        description_es: "SGBD activos y reglas ECA, sintaxis en PostgreSQL, orden de ejecución (BEFORE/AFTER, ROW/STATEMENT), variables NEW, OLD y TG_OP, auditoría, atributos derivados e INSTEAD OF.",
+        problems: []
+    },
+    {
+        id: "bd-tema-6",
+        title: "Tema 6: Disseny Conceptual (UML) i Traducció Relacional",
+        title_es: "Tema 6: Diseño Conceptual (UML) y Traducción Relacional",
+        description: "Etapes del disseny de BD, modelatge conceptual en UML (classes, associacions, ternàries, herència) i regles formals de traducció al model relacional lògic (taules, PK, FK, NOT NULL i UNIQUE).",
+        description_es: "Etapas del diseño de BD, modelado conceptual en UML (clases, asociaciones, ternarias, herencia) y reglas formales de traducción al modelo relacional lógico (tablas, PK, FK, NOT NULL y UNIQUE).",
+        problems: []
+    },
+
 
     // --- SO (Sistemes Operatius) ---
     {

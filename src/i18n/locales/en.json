@@ -127,7 +127,8 @@
       "emptyStateTitle": "No notes available",
       "emptyStateDesc": "The notes for this subject are currently being drafted or are in progress.",
       "colorOf": "Color of",
-      "reset": "Reset to default"
+      "reset": "Reset to default",
+      "discordTooltip": "View notes on Discord"
     },
     "offline": {
       "title": "Offline Storage",

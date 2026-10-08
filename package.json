@@ -24,6 +24,7 @@
     "@codemirror/lang-html": "^6.4.11",
     "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-sql": "^6.10.0",
     "@codemirror/state": "^6.7.0",
     "@codemirror/view": "^6.40.0",
     "@content-collections/core": "^0.13.1",

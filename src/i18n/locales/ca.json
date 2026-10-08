@@ -127,7 +127,8 @@
       "emptyStateTitle": "No hi ha apunts disponibles",
       "emptyStateDesc": "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.",
       "colorOf": "Color de",
-      "reset": "Restablir per defecte"
+      "reset": "Restablir per defecte",
+      "discordTooltip": "Consultar apunts a Discord"
     },
     "offline": {
       "title": "Emmagatzematge Offline",

@@ -127,7 +127,8 @@
       "emptyStateTitle": "No hay apuntes disponibles",
       "emptyStateDesc": "Los apuntes de esta asignatura están en proceso de redacción o en borrador.",
       "colorOf": "Color de",
-      "reset": "Restablecer por defecto"
+      "reset": "Restablecer por defecto",
+      "discordTooltip": "Consultar apuntes en Discord"
     },
     "offline": {
       "title": "Almacenamiento Offline",

@@ -28,11 +28,13 @@ export function PlayerControls({
     return (
         <div className="absolute bottom-4 left-4 right-4 z-30 flex flex-col gap-2 pointer-events-none">
             {/* Description Card */}
-            <div className="bg-slate-900/75 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto transition duration-300 hover:bg-slate-900/85">
-                <p className="text-[12px] sm:text-[13px] text-emerald-300 font-medium leading-[18px] sm:leading-relaxed font-sans shadow-black drop-shadow-md">
-                    {description}
-                </p>
-            </div>
+            {description && (
+                <div className="bg-slate-900/85 backdrop-blur-xl border border-white/10 rounded-2xl py-2 px-3.5 shadow-xl pointer-events-auto transition duration-300 hover:bg-slate-900/95 max-h-24 overflow-y-auto custom-scrollbar">
+                    <p className="m-0 text-[12px] sm:text-[13px] text-emerald-300 font-medium leading-[18px] sm:leading-snug font-sans shadow-black drop-shadow-md">
+                        {description}
+                    </p>
+                </div>
+            )}
 
             {/* Player Controls Card */}
             <div className="bg-slate-900/85 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 shadow-2xl pointer-events-auto">

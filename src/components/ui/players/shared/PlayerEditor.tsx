@@ -2,8 +2,22 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import ReactCodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView, Decoration, type DecorationSet, GutterMarker, lineNumberMarkers } from '@codemirror/view';
-import { Facet, StateField, RangeSet, RangeSetBuilder, EditorState } from '@codemirror/state';
+import { Facet, StateField, RangeSet, RangeSetBuilder, EditorState, Prec, type Extension } from '@codemirror/state';
+import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
+import { tags } from '@lezer/highlight';
 import { cpp } from '@codemirror/lang-cpp';
+
+const grayCommentsHighlight = Prec.highest(
+    syntaxHighlighting(
+        HighlightStyle.define([
+            {
+                tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment],
+                color: '#6b7280',
+                fontStyle: 'italic',
+            },
+        ])
+    )
+);
 
 // --- Shared CodeMirror Extensions for Execution Highlighting ---
 export const executionLineFacet = Facet.define<number, number>({
@@ -54,8 +68,6 @@ export const executionGutterField = StateField.define<RangeSet<GutterMarker>>({
     },
     provide: f => lineNumberMarkers.from(f)
 });
-
-import type { Extension } from '@codemirror/state';
 
 interface PlayerEditorProps {
     code: string;
@@ -164,7 +176,7 @@ export function PlayerEditor({ code, executionLine, language }: PlayerEditorProp
                 editable={false}
                 height="100%"
                 theme={[vscodeDark, customTheme]}
-                extensions={[language ?? cpp(), executionLineFacet.of(executionLine), executionHighlightField, executionGutterField]}
+                extensions={[language ?? cpp(), grayCommentsHighlight, executionLineFacet.of(executionLine), executionHighlightField, executionGutterField]}
                 className="flex-1 font-mono tracking-tight overflow-hidden min-h-0"
                 basicSetup={{
                     lineNumbers: true,

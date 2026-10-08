@@ -1,493 +1,255 @@
 ---
-title: "Tema 3: SQL Cheat Sheet (DDL, DML i DQL)"
-description: "Guia ràpida completa de SQL: definició d'esquemes (DDL), manipulació de dades (DML), consultes d'una i múltiples taules (DQL), funcions d'agregació, subconsultes i tipus temporals."
-readTime: "20 min"
+title: "Tema 3: Components Lògics"
+description: "Esquemes, dominis, assercions, vistes (WITH CHECK OPTION), diccionari de dades, control d'accés (GRANT/REVOKE), rols i protecció de dades (RGPD)."
+readTime: "8 min"
 order: 3
-draft: true
+draft: false
 ---
 
-# 3. SQL Cheat Sheet
-
-Guia de referència ràpida i completa del llenguatge **SQL** per a bases de dades relacionals, estructurada en tres grans àrees: **DDL** (definició de dades), **DML** (manipulació de dades) i **DQL** (consultes de dades).
+Aquest tema completa els components lògics de gestió, estructuració i control d'accés d'una base de dades segons l'estàndard SQL.
 
 ---
 
-## 3.1. DDL i esquema relacional de referència
+## 3.1. Esquemes, Catàlegs i Servidor
 
-### Esquema relacional de referència i dades de mostra
-
-Per a tots els exemples d'aquesta guia utilitzarem l'esquema relacional format per tres taules: `departaments`, `projectes` i `empleats`:
+L'SGBD organitza els recursos en una jerarquia de tres nivells administratius:
 
 ```text
- ┌────────────────────────────────────────────────────────┐       ┌──────────────────────────────────────────────────┐
- │ departaments                                           │       │ projectes                                        │
- ├──────────┬────────────┬─────────┬────────────┬─────────┤       ├──────────┬──────────┬───────────┬────────────────┤
- │ *num_dpt │ nom_dpt    │ planta  │ edifici    │ ciutat  │       │ *num_proj│ nom_proj │ producte  │ pressupost     │
- ├──────────┼────────────┼─────────┼────────────┼─────────┤       ├──────────┼──────────┼───────────┼────────────────┤
- │    1     │ DIRECCIO   │   10    │ PAU CLARIS │BARCELONA│       │    1     │ IBDTEL   │ TELEVISIO │ 1.000.000      │
- │    2     │ DIRECCIO   │    8    │ RIOS ROSAS │ MADRID  │       │    2     │ IBDVID   │ VIDEO     │   500.000      │
- │    3     │ MARQUETING │    1    │ PAU CLARIS │BARCELONA│       │    3     │ IBDTEF   │ TELEFON   │   700.000      │
- └────▲─────┴────────────┴─────────┴────────────┴─────────┘       └────▲─────┴──────────┴───────────┴────────────────┘
-      │                                                                │
-      │ FK1: num_dpt ──► departaments                                  │ FK2: num_proj ──► projectes
-      └──────────────────────────────────┐        ┌────────────────────┘
-                                         │        │
- ┌───────────────────────────────────────┴────────┴────────────────────────────────────────┐
- │ empleats                                                                                │
- ├──────────┬──────────┬───────────┬──────────────┬───────────────────┬────────────────────┤
- │ *num_empl│ nom_empl │ sou       │ ciutat_empl  │ num_dpt (FK1)     │ num_proj (FK2)     │
- ├──────────┼──────────┼───────────┼──────────────┼───────────────────┼────────────────────┤
- │    1     │ CARME    │  400.000  │ MATARO       │         1         │         1          │
- │    2     │ EUGENIA  │  350.000  │ TOLEDO       │         2         │         2          │
- │    3     │ JOSEP    │  250.000  │ SITGES       │         3         │         1          │
- │    4     │ RICARDO  │  400.000  │ BARCELONA    │         1         │         1          │
- │   11     │ NURIA    │  100.000  │ NULL         │         3         │         2          │
- └──────────┴──────────┴───────────┴──────────────┴───────────────────┴────────────────────┘
+Servidor (Cluster)
+└── Catàleg (Grup d'esquemes + Information Schema)
+    └── Esquema (Unitat d'agrupació de taules, vistes, dominis, etc.)
 ```
 
-* ==Clau primària (PK)==: Identifica unívocament cada fila de la taula (valor únic i mai nul; ex: `num_dpt` a `departaments`).
-* ==Clau forana (FK)==: Relaciona files referenciant la clau primària d'una altra taula (ex: `num_dpt` a `empleats` referencia `departaments`).
+### Sentències de definició d'esquema:
+```sql
+-- Creació d'un esquema associat a un propietari
+CREATE SCHEMA nom_esquema [AUTHORIZATION usuari];
+
+-- Esborrat d'un esquema
+DROP SCHEMA nom_esquema RESTRICT; -- Només si està buit (per defecte)
+DROP SCHEMA nom_esquema CASCADE;  -- Esborra l'esquema i tots els seus objectes
+```
 
 ---
 
-### Creació de taules: sintaxi i tipus de dades
+## 3.2. Connexions, Sessions i Transaccions
 
-```sql [Sintaxi CREATE TABLE]
-CREATE TABLE nom_taula (
-    nom_columna tipus_dades [restriccions_col] [DEFAULT {literal | NULL}],
-    [...],
-    [restriccions_taula]
-);
+* **Connexió:** Associació activa entre el client i el servidor de BD.
+* **Sessió:** Context d'execució d'un usuari durant una connexió.
+* **Transacció:** Unitat atòmica d'operacions SQL.
+
+### Gestió de connexió i context:
+```sql
+CONNECT TO nom_servidor [AS nom_connexio] [USER usuari];
+SET SCHEMA nom_esquema;
+DISCONNECT nom_connexio | DEFAULT | CURRENT | ALL;
 ```
 
-#### Tipus de dades SQL estàndard
-* **Enters:** `INTEGER` (o `INT`), `SMALLINT`, `BIGINT`.
-* **Coma flotant:** `FLOAT(p)`, `REAL`, `DOUBLE PRECISION`.
-* **Numèric exacte:** `NUMERIC(p, s)`, `DECIMAL(p, s)` (on $p$ és la precisió total de dígits i $s$ és l'escala o nombre de decimals).
-* **Text:** `CHAR(n)` (longitud fixa de $n$ caràcters, omple amb espais en blanc), `VARCHAR(n)` (longitud variable fins a un màxim de $n$ caràcters).
-* **Temporals:** `DATE` (`'YYYY-MM-DD'`), `TIME` (`'HH:MM:SS'`), `TIMESTAMP`.
-* ==DEFAULT==: Valor per defecte que s'assigna automàticament a la columna si aquesta s'omet en inserir la fila (ex: `DEFAULT 100000` o `DEFAULT NULL`).
+### Control de transaccions:
+```sql
+-- Definició de característiques de la transacció
+START TRANSACTION READ WRITE; -- o READ ONLY
+
+-- Nivells d'aïllament estàndard:
+-- READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+COMMIT;   -- Confirma i fa permanents els canvis
+ROLLBACK; -- Desfà tots els canvis de la transacció
+```
 
 ---
 
-### Restriccions d'integritat: columna vs. taula
+## 3.3. Dominis (`CREATE DOMAIN`)
 
-| Àmbit | Restricció | Sintaxi i Descripció |
-| :--- | :--- | :--- |
-| **Columna** *(s'aplica a una única columna directament en la seva declaració)* | ==NOT NULL== | Prohibeix valors nuls (`NULL`) a la columna. Obliga a donar un valor a cada fila. |
-| | ==UNIQUE== | Prohibeix valors repetits entre files de la taula. Admet un o més `NULL`. |
-| | ==PRIMARY KEY== | La columna és la clau primària (aplica `NOT NULL` i `UNIQUE` implícitament). |
-| | ==REFERENCES== | La columna és una clau forana que referencia una taula pare: `REFERENCES taula(col)`. |
-| | ==CHECK== | Condició lògica de validació que ha de complir el valor: `CHECK (condicio)`. |
-| **Taula** *(es defineix al final; imprescindible per a claus formades per múltiples columnes)* | ==PRIMARY KEY== | Declara la clau primària composta: `PRIMARY KEY (col1, col2)`. |
-| | ==FOREIGN KEY== | Declara una clau forana (simple o composta): `FOREIGN KEY (c1, c2) REFERENCES pare(c1, c2)`. |
-| | ==UNIQUE== | Exigeix valors únics per a la combinació de columnes: `UNIQUE (c1, c2)`. |
-| | ==CHECK== | Condició que pot implicar i comparar diverses columnes de la mateixa fila. |
+Un domini és un **tipus de dades personalitzat** amb regles de validació pròpies que es pot reutilitzar en múltiples columnes:
 
-#### Exemple complet de creació de taula (DDL)
+```sql [Sintaxi i exemple de domini]
+CREATE DOMAIN nom_domini AS tipus_dades
+    [DEFAULT valor]
+    [CONSTRAINT nom_restr CHECK (condicio)];
 
-```sql [Exemple DDL taula empleats]
+-- Exemple:
+CREATE DOMAIN ciutat AS CHAR(15)
+    DEFAULT 'BCN'
+    CONSTRAINT ciutats_valides CHECK (VALUE IN ('BCN', 'MAD', 'VAL'));
+
+-- Ús a la definició de taules:
 CREATE TABLE empleats (
-    num_empl     INTEGER,
-    nom_empl     CHAR(30) NOT NULL,
-    sou          INTEGER DEFAULT 100000 CHECK (sou > 80000),
-    ciutat_empl  CHAR(30),
-    num_dpt      INTEGER,
-    num_proj     INTEGER,
-    PRIMARY KEY (num_empl),
-    FOREIGN KEY (num_dpt) REFERENCES departaments(num_dpt),
-    FOREIGN KEY (num_proj) REFERENCES projectes(num_proj)
+    nemp         INTEGER PRIMARY KEY,
+    ciutat_naix  ciutat,
+    ciutat_treb  ciutat
 );
 ```
 
 ---
 
-## 3.2. DML (manipulació de dades)
+## 3.4. Assercions (`CREATE ASSERTION`)
 
-### Inserció de dades (`INSERT INTO`)
+Les assercions són **restriccions d'integritat globals** que involucren múltiples taules o múltiples files i que no es poden expressar com a restricció d'una sola taula:
 
-#### 1. Inserció posicional
-Cal especificar valors per a **totes** les columnes seguint exactament l'ordre físic en què es van definir a la taula:
+* **Diferència clau amb `CHECK` de taula:** El `CHECK` d'una taula només es comprova quan s'actualitza aquesta taula (mai si la taula està buida). Una `ASSERTION` **es comprova sempre** davant de qualsevol modificació de qualsevol de les taules implicades.
 
-```sql [Inserció posicional]
-INSERT INTO empleats
-VALUES (5, 'FERRAN', 250000, 'MATARO', 1, 1);
+```sql [Sintaxi general]
+CREATE ASSERTION nom_assercio CHECK (condicio);
 ```
 
-#### 2. Inserció amb llista de columnes
-Permet especificar només un subconjunt de columnes. Les columnes no esmentades prenen automàticament el seu valor `DEFAULT` o bé `NULL` (si no tenen restricció `NOT NULL`):
+### Exemple clau d'examen:
+Assegurar que cap empleat resideixi en una ciutat diferent a la del seu departament:
 
-```sql [Inserció amb llista de columnes]
-INSERT INTO departaments (num_dpt, nom_dpt)
-VALUES (4, 'PERSONAL');
-```
-
-#### 3. Inserció massiva amb subconsulta
-Insereix directament el conjunt de files retornat per una consulta `SELECT`:
-
-```sql [Inserció amb subconsulta]
-INSERT INTO proj_importants
-SELECT * FROM projectes
-WHERE pressupost > 2000000;
-```
-
-::callout[type="note" title="Requisit de compatibilitat"]
-La subconsulta ha de retornar exactament el mateix nombre de columnes i amb tipus de dades compatibles amb la taula de destinació.
-::
-
----
-
-### Esborrat de files (`DELETE FROM`)
-
-Sintaxi general:
-```sql [Sintaxi DELETE]
-DELETE FROM taula [WHERE condicio];
-```
-
-::callout[type="warning" title="Omissió de la clàusula WHERE"]
-Si s'executa un `DELETE FROM taula;` **sense clàusula WHERE**, s'esborraran **totes les files** de la taula. La taula queda completament buida però la seva estructura es conserva a la base de dades.
-::
-
-#### Exemples d'esborrat bàsic:
-
-```sql [Esborrats condicionals]
--- Esborra els empleats del departament 2
-DELETE FROM empleats WHERE num_dpt = 2;
-
--- Esborra els empleats amb sou inferior o igual a 250.000
-DELETE FROM empleats WHERE sou <= 250000;
-```
-
-#### Subconsulta correlacionada (`NOT EXISTS`):
-Esborrar els departaments que no tenen cap empleat assignat:
-
-```sql [Esborrat amb subconsulta correlacionada]
-DELETE FROM departaments d
-WHERE NOT EXISTS (
-    SELECT * FROM empleats e
-    WHERE e.num_dpt = d.num_dpt
+```sql [Asserció multitaula]
+CREATE ASSERTION ciutat_emp_dept CHECK (
+    NOT EXISTS (
+        SELECT *
+        FROM empleats e, departaments d
+        WHERE e.num_dpt = d.num_dpt 
+          AND e.ciutat_empl <> d.ciutat_dpt
+    )
 );
 ```
 
 ---
 
-### Modificació de dades (`UPDATE`)
+## 3.5. Vistes (`CREATE VIEW`)
 
-Sintaxi general:
-```sql [Sintaxi UPDATE]
-UPDATE taula
-SET col_1 = expr_1 [, col_2 = expr_2 ...]
-[WHERE condicio];
+Una vista és una **taula virtual derivada** definida a partir d'una consulta SQL. La seva extensió (files) no s'emmagatzema físicament a disc; es computa en temps real quan es consulta.
+
+```sql [Sintaxi general]
+CREATE VIEW nom_vista [(col1, col2...)] AS
+consulta_select
+[WITH CHECK OPTION];
 ```
 
-::callout[type="warning" title="Omissió de la clàusula WHERE"]
-Sense clàusula `WHERE`, la modificació s'aplicarà indiscriminadament a **totes les files** de la taula.
-::
-
-#### 1. Increment acumulatiu:
-```sql [Increment de sou]
-UPDATE empleats
-SET sou = sou + 10000
-WHERE num_dpt = 2;
-```
-
-#### 2. Modificació de múltiples columnes:
-```sql [Actualització de sou i ciutat]
-UPDATE empleats
-SET sou = sou + 10000, ciutat_empl = 'VIC'
-WHERE num_dpt = 2;
-```
-
-#### 3. Subconsulta a la clàusula `WHERE`:
-Modificar el sou dels empleats segons la ciutat del seu departament:
-
-```sql [Update amb subconsulta a WHERE]
-UPDATE empleats 
-SET sou = sou + 10000
-WHERE num_dpt IN (
-    SELECT num_dpt FROM departaments
-    WHERE ciutat_dpt = 'MADRID'
-);
-```
-
-#### 4. Subconsulta a la clàusula `SET`:
-Assignar a l'empleat el sou mitjà del seu departament:
-
-```sql [Update amb subconsulta a SET]
-UPDATE empleats e
-SET sou = (
-    SELECT AVG(sou) FROM empleats
-    WHERE num_dpt = e.num_dpt
-)
-WHERE num_dpt = 2;
-```
-
-::callout[type="danger" title="Restricció d'escalaritat a SET"]
-Una subconsulta a la clàusula `SET` ha de retornar **exactament un únic valor escalar** (1 fila i 1 columna). Si no retorna cap fila s'assigna `NULL`; si en retorna més d'una, la sentència fallarà amb un error d'execució.
-::
-
----
-
-## 3.3. DQL (consultes d'una taula)
-
-### Format bàsic de `SELECT` i projecció
-
-```sql [Estructura general SELECT]
-SELECT [DISTINCT | ALL] col_1, col_2 ...
-FROM taula
-[WHERE condicio]
-[ORDER BY col_a [ASC | DESC] ...];
-```
-
-#### Modalitats de projecció:
-* **Tots els atributs:** `SELECT * FROM empleats;`
-* **Selecció de determinats atributs:** `SELECT nom_empl, sou FROM empleats;`
-* **Expressions aritmètiques (+, -, \*, /):**
-```sql [Projecció amb càlcul]
-SELECT nom_empl, sou * 1.05 AS sou_incrementat FROM empleats;
-```
-
----
-
-### Operadors a la clàusula `WHERE`
-
-| Tipus d'operador | Operadors i Sintaxi | Significat / Exemple |
-| :--- | :--- | :--- |
-| **Comparació** | `=`, `<>`, `<`, `<=`, `>`, `>=` | Comparacions de valors numèrics, cadenes o dates (`<>` equival a diferent). |
-| **Lògics** | `AND`, `OR`, `NOT` | Combinació booleana de condicions (precedència: `NOT` > `AND` > `OR`). |
-| **Rangs** | `BETWEEN v1 AND v2` | Comprovació de rang **inclusiu** ($v_1 \le x \le v_2$). |
-| **Pertinença** | `IN (v1, v2...)`, `NOT IN (v1...)` | Pertinença a una llista finita de valors o subconsulta. |
-| **Patrons de text** | `LIKE 'patró'` | `%` substitueix qualsevol cadena de $\ge 0$ caràcters; `_` substitueix exactament 1 caràcter. |
-| **Valors nuls** | ==IS NULL==, ==IS NOT NULL== | Verificació de valors desconeguts (**mai usar `= NULL`**, ja que sempre avalua a *Unknown*). |
-
-```sql [Exemples de clàusula WHERE]
--- Empleats amb sou entre 200.000 i 300.000
-SELECT nom_empl FROM empleats
-WHERE sou BETWEEN 200000 AND 300000;
-
--- Empleats el nom dels quals comença per 'J' i tenen ciutat coneguda
-SELECT * FROM empleats
-WHERE nom_empl LIKE 'J%' AND ciutat_empl IS NOT NULL;
-```
-
----
-
-### Ordenació i eliminació de duplicats
-
-#### Clàusula `ORDER BY`:
-Ordena el conjunt final de tuples retornat:
-* `ASC`: Ordenació ascendent de menor a major (opció per defecte).
-* `DESC`: Ordenació descendent de major a menor.
-* Admet múltiples criteris separats per coma ordenats per prioritat.
-
-```sql [Exemple ORDER BY múltiple]
-SELECT * FROM empleats 
-ORDER BY num_dpt ASC, sou DESC;
-```
-
-#### Modificadors `DISTINCT` / `ALL`:
-* `ALL`: Manté totes les files resultants, incloent duplicades (comportament per defecte).
-* ==DISTINCT==: Filtra i elimina totes les files repetides del resultat.
-
-```sql [Eliminació de duplicats]
-SELECT DISTINCT ciutat_empl FROM empleats;
-```
-
----
-
-### Funcions d'agregació
-
-Processen una columna sobre un conjunt de files i retornen un **únic valor resum escalar**:
-
-| Funció | Descripció | Tractament de valors `NULL` |
-| :--- | :--- | :--- |
-| ==COUNT(\*)== | Nombre total de files seleccionades | **Compta totes les files**, incloent les que tenen nuls. |
-| ==COUNT(col)== | Nombre de files amb valor **no nul** a `col` | Ignora els valors `NULL`. |
-| ==COUNT(DISTINCT col)== | Nombre de valors **diferents i no nuls** a `col` | Ignora valors repetits i valors `NULL`. |
-| ==SUM(col)== | Suma aritmètica dels valors de la columna | Ignora els valors `NULL`. |
-| ==AVG(col)== | Mitjana aritmètica dels valors de la columna | Ignora els valors `NULL`. |
-| ==MIN(col)== / ==MAX(col)== | Valor mínim / valor màxim de la columna | Ignora els valors `NULL`. |
-
-::callout[type="info" title="Comportament davant conjunts buits"]
-Si el conjunt de files avaluat és buit:
-* `COUNT` retorna **`0`**.
-* `SUM`, `AVG`, `MIN` i `MAX` retornen **`NULL`**.
-::
-
-```sql [Exemple d'agregats]
-SELECT COUNT(*), AVG(sou), MAX(sou)
-FROM empleats 
-WHERE num_dpt = 2;
-```
-
----
-
-### Agrupament (`GROUP BY`) i condicions sobre grups (`HAVING`)
-
-#### Clàusula `GROUP BY`:
-Divideix les files seleccionades en grups homogenis que comparteixen exactament els mateixos valors a les columnes d'agrupament.
-
-::callout[type="danger" title="Regla d'or de GROUP BY"]
-Tota columna individual que aparegui a la llista de projecció del `SELECT` **ha d'aparèixer obligatòriament a la clàusula GROUP BY o bé dins d'una funció d'agregació**. No es poden projectar columnes independents no agrupades.
-::
-
-```sql [Exemple bàsic GROUP BY]
-SELECT num_dpt, AVG(sou) AS sou_mig
-FROM empleats 
-GROUP BY num_dpt;
-```
-
-#### Clàusula `HAVING` vs. `WHERE`:
-* ==WHERE==: Filtra **files individuals abans** de fer l'agrupament. Mai pot contenir funcions d'agregació (ex: `WHERE sou > 200000`).
-* ==HAVING==: Filtra **grups complets després** de l'agrupament. Està dissenyada específicament per avaluar condicions sobre **funcions d'agregació** (ex: `HAVING COUNT(*) > 1`).
-
-```sql [Combinació WHERE + GROUP BY + HAVING]
-SELECT num_dpt, AVG(sou) AS sou_mig
+### Exemple de creació i consulta:
+```sql
+CREATE VIEW empleats_altsous AS
+SELECT num_empl, nom_empl, sou, num_dpt
 FROM empleats
-WHERE sou > 200000
-GROUP BY num_dpt
-HAVING COUNT(*) > 1;
+WHERE sou >= 200000;
+
+-- La vista es consulta exactament com una taula ordinària:
+SELECT * FROM empleats_altsous WHERE num_dpt = 2;
+```
+
+### Actualització de dades a través de vistes
+Una vista només admet `INSERT`, `UPDATE` o `DELETE` si l'SGBD pot traslladar l'operació **de manera unívoca i sense ambigüitats** a la taula base subjacent:
+
+* **Requisits per ser actualitzable:**
+  1. Definida sobre **una única taula** (sense joins).
+  2. Sense funcions d'agregació (`COUNT`, `SUM`, `AVG`...).
+  3. Sense clàusules `DISTINCT` ni `GROUP BY`.
+  4. Per admetre `INSERT`, ha d'incloure totes les columnes `NOT NULL` de la taula base que no tinguin valor `DEFAULT`.
+
+### Clàusula `WITH CHECK OPTION`
+Garanteix que qualsevol fila inserida o modificada a través de la vista **continuï complint la condició `WHERE`** de la vista:
+
+```sql [Exemple WITH CHECK OPTION]
+CREATE VIEW empleats_dep2 AS
+SELECT * FROM empleats
+WHERE num_dpt = 2
+WITH CHECK OPTION;
+
+-- Això fallarà amb error de violació de CHECK OPTION:
+UPDATE empleats_dep2 SET num_dpt = 3 WHERE num_empl = 5;
+```
+
+Sense `WITH CHECK OPTION`, la fila canviaria al departament 3 i desapareixeria de la vista sense error.
+
+---
+
+## 3.6. Esquema d'Informació (*Information Schema*)
+
+És un conjunt estàndard de **vistes de només lectura** que descriu totes les metadades dels objectes definits a la base de dades:
+
+| Vista | Contingut |
+| :--- | :--- |
+| `SCHEMATA` | Llista de tots els esquemes del catàleg. |
+| `TABLES` | Noms i tipus de totes les taules i vistes existents. |
+| `COLUMNS` | Noms, tipus de dades i configuració de cada columna. |
+| `VIEWS` | Sentències SQL de definició de les vistes. |
+| `DOMAINS` | Dominis d'usuari i les seves restriccions. |
+| `TABLE_CONSTRAINTS` | Claus primàries, foranes i restriccions `CHECK`. |
+
+---
+
+## 3.7. Control d'accés: Privilegis i Rols
+
+L'SGBD regula qui pot executar quina operació sobre quin objecte mitjançant el concepte de **privilegi**.
+
+### Tipus de privilegis estàndard
+* **Sobre dades (taules i vistes):** `SELECT`, `INSERT`, `UPDATE`, `DELETE` (poden aplicar-se a tota la taula o a una llista de columnes com `UPDATE(sou)`).
+* **Estructurals i de codi:** `REFERENCES` (dret a referenciar com a FK), `USAGE` (usar dominis), `EXECUTE` (executar codi), `ALL` (tots els privilegis).
+
+### Atorgament (`GRANT`) i Revocació (`REVOKE`)
+```sql
+-- Atorgar privilegis
+GRANT SELECT, UPDATE(sou) ON empleats TO anna;
+
+-- Permetre a Anna concedir aquest privilegi a altres usuaris:
+GRANT SELECT(nom_empl) ON empleats TO anna WITH GRANT OPTION;
+
+-- Revocació de privilegis
+REVOKE SELECT ON empleats FROM anna CASCADE;
+```
+
+* **`CASCADE` a `REVOKE`:** Revoca també en cadena tots els privilegis que Anna hagi atorgat a tercers usuaris mitjançant `WITH GRANT OPTION`.
+* **`RESTRICT` a `REVOKE`:** Falla l'operació si existeixen privilegis dependents atorgats a altres usuaris.
+
+### Diagrama d'Autoritzacions (Graf DAC) i Regles d'Examen
+Als exàmens és habitual demanar el graf d'autoritzacions i analitzar l'efecte de sentències `REVOKE`:
+
+* **Estructura del Graf:**
+  * **Nodes:** Els usuaris del sistema. L'arrel és el **propietari** de la taula (qui té tots els privilegis per defecte).
+  * **Arestes dirigides ($A \rightarrow B$):** Indiquen que l'usuari $A$ ha atorgat un privilegi a $B$.
+  * **Etiqueta de l'aresta:** El tipus de privilegi (ex: `SELECT`, `UPDATE`). Si inclou `WITH GRANT OPTION`, s'afegeix un asterisc o marca `*` (ex: $\text{SELECT}^*$).
+
+```text
+[Propietari] ─── SELECT*, UPDATE* ───> [Usuari A] ─── SELECT ───> [Usuari B]
+     │                                                              ▲
+     └───────────────────────── SELECT ─────────────────────────────┘
+```
+
+#### 📌 Regles d'or per als exàmens:
+1. **Camins alternatius en `REVOKE CASCADE`:** Quan un usuari revoca un permís amb `CASCADE`, s'elimina la seva aresta i es recalculen els camins des del propietari. Si un usuari descendent **encara manté un camí alternatiu vàlid connectat amb el propietari**, aquest usuari **CONSERVA el privilegi**.
+2. **Revocar només la delegació:** `REVOKE GRANT OPTION FOR SELECT ON taula FROM usuari CASCADE` retira el dret a delegar (elimina l'asterisc `*` de les seves arestes d'origen i revoca els descendents que només depenien d'aquesta delegació), però l'usuari manté el permís de consulta per a ell mateix.
+3. **El requisit de `SELECT` per a `UPDATE`:** Per executar un `UPDATE` amb condició (ex: `UPDATE t SET sou = 1000 WHERE sou < 1000`), no n'hi ha prou amb tenir privilegi `UPDATE`: cal tenir **obligatòriament privilegi `SELECT`** sobre les columnes que formen la condició del `WHERE`! Si no el té, la sentència és rebutjada per falta de privilegis.
+
+
+### Rols (`ROLE`)
+Un rol és una **agrupació de privilegis** que es pot assignar a múltiples usuaris com a classe:
+
+```sql [Gestió de rols]
+-- Com a administrador (DBA):
+CREATE ROLE lector;
+GRANT SELECT ON empleats TO lector;
+GRANT SELECT ON departaments TO lector;
+
+-- Assignar el rol als usuaris:
+GRANT lector TO marc, laia;
+
+-- L'usuari activa el seu rol a la sessió:
+SET ROLE lector;
+```
+
+### Privilegis combinats amb Vistes
+Les vistes són el mecanisme principal per aplicar **seguretat a nivell de fila o columna sense alterar la taula base**:
+```sql
+-- Crear una vista amb el sou del propi usuari
+CREATE VIEW el_meu_sou AS
+SELECT num_empl, sou FROM empleats WHERE nom_empl = CURRENT_USER;
+
+-- Donar accés només a la vista:
+GRANT SELECT ON el_meu_sou TO public;
 ```
 
 ---
 
-## 3.4. DQL (consultes multitaula i subconsultes)
+## 3.8. Protecció de dades (RGPD / GDPR)
 
-### Consultes multitaula: combinacions (*joins*)
+Normativa europea (Reglament UE 2016/679) i Llei Orgànica 3/2018 (LOPD-GDD) relativa al tractament de dades personals:
 
-Permeten associar i correlacionar dades distribuïdes en dues o més taules relacionades mitjançant claus foranes.
-
-#### 1. Combinació implícita (clàusula `WHERE`):
-```sql [Join implícit]
-SELECT e.nom_empl, d.nom_dpt
-FROM empleats e, departaments d
-WHERE e.num_dpt = d.num_dpt;
-```
-::callout[type="warning" title="Perill de producte cartesià"]
-Si s'omet la condició d'enllaç al `WHERE`, l'SGBD realitzarà el producte cartesià complet ($n \times m$ files), combinant totes les files de la primera taula amb totes les de la segona.
-::
-
-#### 2. Combinació explícita (`INNER JOIN ... ON`):
-És la sintaxi estàndard moderna recomanada per separar la condició de relació dels filtres de dades:
-
-```sql [INNER JOIN explícit]
-SELECT e.nom_empl, d.nom_dpt
-FROM empleats e
-INNER JOIN departaments d ON e.num_dpt = d.num_dpt;
-```
-
-#### 3. Combinació natural (`NATURAL INNER JOIN`):
-Iguala automàticament totes les columnes de les dues taules que tinguin **exactament el mateix nom** (en el nostre esquema, igualarà per `num_dpt`):
-
-```sql [NATURAL JOIN]
-SELECT e.nom_empl, d.nom_dpt
-FROM empleats e
-NATURAL INNER JOIN departaments d;
-```
-
-#### 4. Multitaula amb agrupament:
-```sql [Join amb GROUP BY i HAVING]
-SELECT d.nom_dpt, AVG(e.sou) AS sou_mig
-FROM empleats e
-INNER JOIN departaments d ON e.num_dpt = d.num_dpt
-GROUP BY d.nom_dpt
-HAVING COUNT(*) > 1;
-```
-
----
-
-### Operacions de conjunts: `UNION`
-
-Permet combinar verticalment els resultats de dues sentències `SELECT` independents en un únic conjunt de tuples:
-
-```sql [Exemple UNION]
-SELECT ciutat_dpt AS ciutat FROM departaments
-UNION
-SELECT ciutat_empl AS ciutat FROM empleats;
-```
-
-::callout[type="info" title="Regles d'ús de UNION"]
-1. Les dues consultes han de projectar **exactament el mateix nombre de columnes** i amb tipus de dades compatibles en cadascuna de les posicions respectives.
-2. `UNION` **elimina duplicats per defecte**. Per mantenir les files repetides i millorar el rendiment, s'utilitza ==UNION ALL==.
-3. La clàusula `ORDER BY` només es pot indicar una vegada, **al final de tot**, i fa referència als noms de columna de la primera sentència `SELECT`.
-::
-
----
-
-### Subconsultes: diferència crucial entre `NOT IN` i `NOT EXISTS`
-
-Suposem que volem obtenir els departaments que **no tenen cap empleat**:
-
-#### Opció A: Amb `NOT IN`
-```sql [NOT IN]
-SELECT * FROM departaments
-WHERE num_dpt NOT IN (
-    SELECT num_dpt FROM empleats
-    WHERE num_dpt IS NOT NULL -- OBLIGATORI!
-);
-```
-
-::callout[type="danger" title="Trampa del valor NULL amb NOT IN"]
-Si la subconsulta retorna com a mínim un sol valor `NULL`, l'expressió `v NOT IN (...)` s'avaluarà com a *Unknown* per a qualsevol valor $v$. En conseqüència, **la consulta no retornarà cap fila**. Per fer servir `NOT IN` de manera segura cal filtrar explícitament `WHERE columna IS NOT NULL`.
-::
-
-#### Opció B: Amb `NOT EXISTS` (Recomanada)
-```sql [NOT EXISTS correlacionada]
-SELECT * FROM departaments d
-WHERE NOT EXISTS (
-    SELECT * FROM empleats e
-    WHERE e.num_dpt = d.num_dpt
-);
-```
-`NOT EXISTS` avalua si la subconsulta correlacionada retorna un conjunt buit o no. És completament **immune a la presència de valors nuls** a la columna filla.
-
----
-
-### Mapa d'ús de subconsultes
-
-Les subconsultes (consultes niades) es poden utilitzar en diversos contextos de l'SQL:
-
-1. **A les clàusules `WHERE` / `HAVING` (com a filtres):**
-   * **Escalar:** Ús d'operadors ordinaris (`=`, `<>`, `<`, `>`, `<=`, `>=`). La subconsulta ha de retornar 1 fila i 1 columna.
-   * **Multivalor:** Ús de `IN`, `NOT IN`, `ANY` (o `SOME`), `ALL`.
-   * **Existència:** Ús de `EXISTS` i `NOT EXISTS` (habitualment en subconsultes correlacionades).
-2. **A la clàusula `SET` d'un `UPDATE`:** Per calcular dinàmicament el nou valor d'un camp (*ha de retornar un únic valor escalar*).
-3. **A la clàusula `INSERT INTO ... SELECT`:** Càrrega massiva de dades a partir d'un conjunt de tuples generat al vol.
-4. **A la clàusula `FROM`:** Com a **taula derivada en memòria** (subconsulta a la qual s'assigna obligatòriament un àlies).
-
----
-
-### Tipus i funcions temporals
-
-#### Tipus de dades per a dates i hores
-* `DATE`: Data de calendari (`'2024-03-15'`).
-* `TIME`: Hora del dia (`'14:30:00'`).
-* `TIMESTAMP`: Data i hora combinades (`'2024-03-15 14:30:00'`).
-* `INTERVAL`: Magnitud o durada temporal (ex: `INTERVAL '10 min'`, `INTERVAL '2 day'`).
-
-#### Funcions de sistema
-* `CURRENT_DATE`: Retorna la data actual del sistema.
-* `CURRENT_TIME`: Retorna l'hora actual del sistema.
-* `CURRENT_TIMESTAMP` / `NOW()`: Retorna la data i hora actuals completes.
-
-#### Extracció de components (`EXTRACT`)
-```sql [Funcions EXTRACT]
-EXTRACT(YEAR FROM data)       -- Any (ex: 2024)
-EXTRACT(MONTH FROM data)      -- Mes (1 a 12)
-EXTRACT(DOW FROM data)        -- Dia de la setmana (0 = Diumenge, 6 = Dissabte)
-EXTRACT(DOY FROM data)        -- Dia de l'any (1 a 366)
-```
-
-#### Format de text (`TO_CHAR`)
-```sql [Formatatge TO_CHAR]
-TO_CHAR(NOW(), 'DD/MM/YYYY')  -- Cadena formatada (ex: '15/03/2024')
-TO_CHAR(data, 'Day')          -- Nom complet del dia (ex: 'Friday')
-```
-
-#### Aritmètica d'intervals
-Permet sumar o restar períodes de temps directament a dates i segells temporals:
-
-```sql [Aritmètica amb dates i intervals]
-SELECT * FROM viatges
-WHERE moment > (data_sortida + hora_prevista + INTERVAL '10 min');
-```
+* **Consentiment:** Ha de ser **inequívoc i explícit**; es prohibeix completament l'acceptació tàcita o premarcada.
+* **Drets dels ciutadans:** Dret d'accés, rectificació, supressió (**dret a l'oblit**), oposició i portabilitat de dades.
+* **Dades d'especial protecció:** Dades biomètriques, genètiques, de salut, religió, ideologia i vida sexual.
+* **Figures clau:** Delegat de Protecció de Dades (**DPO** / DPD) responsable de supervisar el compliment.
+* **Règim sancionador:** Multes de fins a **20 milions d'euros** o el **4% de la facturació anual global** de l'empresa.

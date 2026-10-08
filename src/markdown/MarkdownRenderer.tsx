@@ -223,6 +223,17 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    sqlviz: (props: MarkdownComponentProps) => {
+        return (
+            <SafeSuspense>
+                <SimulationPlayer
+                    type="sql"
+                    simulation={props.simulation as string}
+                    defaultTab={props.defaultTab as any}
+                />
+            </SafeSuspense>
+        );
+    },
     stackviz: () => {
         return (
             <SafeSuspense>
@@ -614,7 +625,7 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz',
+            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
             'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'osmediatorviz', 'compileviz', 'processviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
@@ -635,6 +646,7 @@ const rehypePluginsConfig = [
             'shellviz': ['scenario', 'title', 'initialCommand', 'command', 'initialInput', 'suggestions', 'variant', 'compact'],
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],
+            'sqlviz': ['simulation', 'defaultTab'],
             'proofviz': ['proof'],
             'youtubeviz': ['src', 'caption'],
             'linkedinviz': ['src'],
