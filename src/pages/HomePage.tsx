@@ -41,7 +41,7 @@ const HomePage = () => {
         return isAvailable && inDisplay;
     }, [subject, displaySubjects, isSubjectAvailable]);
 
-    const activeSubject = isCurrentSubjectValid ? subject : (displaySubjects[0] || 'PE');
+    const activeSubject = isCurrentSubjectValid ? subject : (displaySubjects[0] || 'PRO2');
 
     const [displaySubject, setDisplaySubject] = useState(activeSubject);
     const [prevSubject, setPrevSubject] = useState(activeSubject);

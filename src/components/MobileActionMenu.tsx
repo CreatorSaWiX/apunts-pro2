@@ -40,7 +40,7 @@ const MobileActionMenu: React.FC<{
     const isCurrentSubjectValid = isSubjectAvailable(subject) && displaySubjects.some(
         (s: string) => s.toLowerCase() === (subject || '').toLowerCase()
     );
-    const activeSubject = isCurrentSubjectValid ? (subject || '').toLowerCase() : (displaySubjects[0] || 'PE').toLowerCase();
+    const activeSubject = isCurrentSubjectValid ? (subject || '').toLowerCase() : (displaySubjects[0] || 'PRO2').toLowerCase();
 
     // Contributors state
     const [contributors, setContributors] = useState<Contributor[]>([]);

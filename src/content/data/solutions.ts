@@ -36,7 +36,6 @@ import { m2t7Solutions } from './solucionarisM2/ca/t7/index';
 import { m2t8Solutions } from './solucionarisM2/ca/t8/index';
 import { m2t9Solutions } from './solucionarisM2/ca/t9/index';
 import { m2t10Solutions } from './solucionarisM2/ca/t10/index';
-import { peT1Solutions } from './solucionarisPE/ca/t1/index';
 
 
 
@@ -133,10 +132,6 @@ export const allSolutions: TopicSolutions[] = [
     {
         topicId: 'eda-final',
         solutions: []
-    },
-    {
-        topicId: 'pe-tema-1',
-        solutions: peT1Solutions
     }
 ];
 

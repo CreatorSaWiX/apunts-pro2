@@ -34,9 +34,6 @@ const ListVisualizer = React.lazy(() => import("../components/ui/visualizers/pro
 const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/pro2/PointerVisualizer"));
 // — M2 (maths) —
 const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/m2/MafsVisualizer"));
-// — PE (probability & statistics) —
-const VennVisualizer = React.lazy(() => import("../components/ui/visualizers/pe/VennVisualizer"));
-const ProbTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/pe/ProbTreeVisualizer"));
 // — EDA (algorithms) —
 const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AsymptoticVisualizer"));
 const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GrowthHierarchyVisualizer"));
@@ -252,20 +249,6 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <HeapVisualizer />
-            </SafeSuspense>
-        );
-    },
-    vennviz: (props: MarkdownComponentProps) => {
-        return (
-            <SafeSuspense>
-                <VennVisualizer {...(props as unknown as React.ComponentProps<typeof VennVisualizer>)} />
-            </SafeSuspense>
-        );
-    },
-    probtreeviz: (props: MarkdownComponentProps) => {
-        return (
-            <SafeSuspense>
-                <ProbTreeVisualizer {...(props as unknown as React.ComponentProps<typeof ProbTreeVisualizer>)} />
             </SafeSuspense>
         );
     },
@@ -627,7 +610,7 @@ const rehypePluginsConfig = [
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
-            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three', 'vennviz', 'probtreeviz',
+            'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'osmediatorviz', 'compileviz', 'processviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
@@ -652,8 +635,6 @@ const rehypePluginsConfig = [
             'linkedinviz': ['src'],
             'mafs': ['type'],
             'threeviz': ['type'],
-            'vennviz': ['op', 'operation', 'compact', 'interactive', 'className', 'class'],
-            'probtreeviz': ['mode', 'className', 'class'],
             'graph': ['edges', 'nodes', 'height', 'directed'],
             'listviz': ['edges', 'nodes', 'height', 'directed'],
             'accordion': ['title', 'defaultOpen'],
