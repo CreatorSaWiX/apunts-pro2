@@ -2,6 +2,7 @@ export interface GraphVisualState {
     highlights?: Record<string | number, string>;
     nodeLabels?: Record<string | number, string>;
     links?: { source: string | number; target: string | number; label?: string; color?: string; curvature?: number }[];
+    nodePositions?: Record<string | number, { fx?: number; fy?: number; x?: number; y?: number }>;
     [key: string]: unknown;
 }
 

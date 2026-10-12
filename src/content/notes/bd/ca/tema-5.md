@@ -6,7 +6,7 @@ order: 5
 draft: true
 ---
 
-Un **disparador (*trigger*)** és un mecanisme que permet a l'SGBD reaccionar automàticament executant una funció quan es produeix un determinat esdeveniment de manipulació de dades (`INSERT`, `UPDATE` o `DELETE`).
+Un **disparador** és un mecanisme que permet a l'SGBD reaccionar automàticament executant una funció quan es produeix un determinat esdeveniment de manipulació de dades (`INSERT`, `UPDATE` o `DELETE`).
 
 ---
 
@@ -14,26 +14,21 @@ Un **disparador (*trigger*)** és un mecanisme que permet a l'SGBD reaccionar au
 
 Els SGBD convencionals són **passius** (només executen operacions sota petició explícita). Un SGBD **actiu** incorpora comportament reactiu basat en la **regla ECA**:
 
-* **E (Esdeveniment):** L'operació SQL que activa el disparador (`INSERT`, `DELETE`, `UPDATE` o `UPDATE OF columna`).
-* **C (Condició):** Expressió lògica que determina si cal executar l'acció.
-* **A (Acció):** Procediment emmagatzemat específic que conté les instruccions a dur a terme.
+- **E (Esdeveniment):** L'operació SQL que activa el disparador (`INSERT`, `DELETE`, `UPDATE` o `UPDATE OF columna`).
+- **C (Condició):** Expressió lògica que determina si cal executar l'acció.
+- **A (Acció):** Procediment emmagatzemat específic que conté les instruccions a dur a terme.
 
 > *«Quan es produeix l'esdeveniment E, si es compleix la condició C, aleshores s'executa l'acció A.»*
 
-### Àmbits d'aplicació típics
-1. **Auditoria d'operacions:** Registrar qui, quan i què s'ha modificat a la base de dades.
-2. **Manteniment d'atributs derivats:** Recalcular automàticament totals o saldos quan canvien els valors base.
-3. **Validació de regles de negoci complexes:** Restriccions que involucren càlculs globals o múltiples taules que no es poden expressar amb un simple `CHECK`.
-4. **Manteniment d'integritat entre taules:** Sincronitzar o netejar dades relacionades.
+Els àmbits d'aplicació típics són: auditoria d'operacions (registrar qui, quan i què s'ha modificat), manteniment d'atributs derivats (recalcular totals o saldos automàticament), validació de regles de negoci complexes que no es poden expressar amb un `CHECK` simple, i sincronització o neteja de dades relacionades entre taules.
 
 ---
 
 ## 5.2. Sintaxi a PostgreSQL
 
-A PostgreSQL la creació d'un disparador requereix **dos passos independents**:
+A PostgreSQL la creació d'un disparador requereix **dos passos independents**.
 
-### Pas 1: Definir la funció del disparador
-La funció no rep paràmetres i ha de retornar obligatòriament el tipus especial `trigger`:
+**Pas 1: Definir la funció del disparador.** La funció no rep paràmetres i ha de retornar obligatòriament el tipus especial `trigger`:
 
 ```sql
 CREATE FUNCTION nom_funcio() RETURNS trigger AS $$
@@ -44,8 +39,7 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### Pas 2: Definir el disparador (`CREATE TRIGGER`)
-Associa la funció a una taula i a un o més esdeveniments:
+**Pas 2: Definir el disparador (`CREATE TRIGGER`).** Associa la funció a una taula i a un o més esdeveniments:
 
 ```sql [Sintaxi CREATE TRIGGER]
 CREATE TRIGGER nom_trigger
@@ -60,31 +54,29 @@ CREATE TRIGGER nom_trigger
 
 ## 5.3. Ordre d'execució, nivell i visibilitat
 
-### Moment d'execució: `BEFORE` vs. `AFTER` vs. `INSTEAD OF`
-* **`BEFORE`:** S'executa **abans** que la sentència modifiqui la BD i **abans de comprovar les restriccions d'integritat** (`CHECK`, claus foranes). Permet alterar els valors que es desaran a la fila o avortar silenciosament l'operació.
-* **`AFTER`:** S'executa **després** que la modificació física s'hagi produït i després de validar totes les restriccions d'integritat. Ideal per a auditories i propagació de canvis a altres taules.
-* **`INSTEAD OF`:** S'aplica sobre **vistes** per substituir l'operació original i permetre actualitzar vistes complexes.
+**Moment d'execució:**
 
-### Nivell d'execució: `ROW` vs. `STATEMENT`
-* **`FOR EACH ROW`:** La funció s'executa **una vegada per cada fila afectada** per la sentència. Té accés a les dades de la fila (`NEW` i `OLD`).
-* **`FOR EACH STATEMENT`:** La funció s'executa **una sola vegada per tota la sentència**, independentment de si afecta 0, 1 o 1.000 files.
+- `BEFORE`: S'executa **abans** que la sentència modifiqui la BD i **abans de comprovar les restriccions d'integritat** (`CHECK`, claus foranes). Permet alterar els valors que es desaran a la fila o avortar silenciosament l'operació.
+- `AFTER`: S'executa **després** que la modificació física s'hagi produït i després de validar totes les restriccions d'integritat. Ideal per a auditories i propagació de canvis a altres taules.
+- `INSTEAD OF`: S'aplica sobre **vistes** per substituir l'operació original i permetre actualitzar vistes complexes.
 
-### Seqüència completa d'execució per a una sentència:
+**Nivell d'execució:**
+
+- `FOR EACH ROW`: La funció s'executa **una vegada per cada fila afectada** per la sentència. Té accés a les dades de la fila (`NEW` i `OLD`).
+- `FOR EACH STATEMENT`: La funció s'executa **una sola vegada per tota la sentència**, independentment de si afecta 0, 1 o 1.000 files.
+
+**Seqüència completa d'execució per a una sentència:**
 1. Disparadors `BEFORE STATEMENT`
-2. Per a cada fila afectada:
-   * Disparadors `BEFORE FOR EACH ROW`
-   * Comprovació de restriccions d'integritat de la BD
-   * Modificació física de la fila a disc
-   * Disparadors `AFTER FOR EACH ROW`
+2. Per a cada fila afectada: disparadors `BEFORE FOR EACH ROW` → comprovació de restriccions d'integritat → modificació física → disparadors `AFTER FOR EACH ROW`
 3. Disparadors `AFTER STATEMENT`
 
-**Atomicitat:** Tot el bloc (la sentència i tots els disparadors associats) s'executa dins de la mateixa transacció. Si es produeix un error (`RAISE EXCEPTION`), es desfan absolutament tots els canvis (`ROLLBACK`).
+**Atomicitat:** Tot el bloc s'executa dins de la mateixa transacció. Si es produeix un error (`RAISE EXCEPTION`), es desfan absolutament tots els canvis (`ROLLBACK`).
 
 ---
 
 ## 5.4. Variables especials accessibles
 
-Dins del cos de la funció del disparador, PostgreSQL proporciona automàticament les variables següents:
+Dins del cos de la funció del disparador, PostgreSQL proporciona automàticament:
 
 | Variable | Descripció | Valors |
 | :--- | :--- | :--- |
@@ -96,18 +88,12 @@ Dins del cos de la funció del disparador, PostgreSQL proporciona automàticamen
 
 ## 5.5. Valors de retorn (`RETURN NEW | OLD | NULL`)
 
-El valor de retorn té un significat crític segons el moment i nivell del disparador:
+**En triggers `BEFORE FOR EACH ROW`:**
 
-### En triggers `BEFORE FOR EACH ROW`:
-* **A `INSERT` i `UPDATE`:**
-  * **`RETURN NEW;`** $\rightarrow$ S'insereix o es modifica la fila. Si es modifiquen camps de `NEW` dins de la funció (ex: `NEW.sou := 1500;`), la fila es desarà a la taula amb aquests nous valors.
-  * **`RETURN NULL;`** $\rightarrow$ **Cancel·la silenciosament** l'operació sobre aquesta fila concreta (no s'insereix ni es modifica, i no produeix cap error).
-* **A `DELETE`:**
-  * **`RETURN OLD;`** $\rightarrow$ La fila s'elimina normalment.
-  * **`RETURN NULL;`** $\rightarrow$ **Cancel·la l'esborrat** de la fila.
+- A `INSERT` i `UPDATE`: `RETURN NEW;` insereix o modifica la fila (si s'han modificat camps de `NEW` dins la funció, la fila es desarà amb aquests nous valors). `RETURN NULL;` **cancel·la silenciosament** l'operació sobre aquesta fila sense produir cap error.
+- A `DELETE`: `RETURN OLD;` elimina la fila normalment. `RETURN NULL;` **cancel·la l'esborrat** de la fila.
 
-### En triggers `AFTER` o a nivell de `STATEMENT`:
-El valor retornat és ignorat per l'SGBD. Per convenció s'escriu sempre **`RETURN NULL;`**.
+**En triggers `AFTER` o a nivell de `STATEMENT`:** el valor retornat és ignorat. Per convenció s'escriu sempre `RETURN NULL;`.
 
 ---
 
@@ -206,6 +192,4 @@ CREATE TRIGGER trig_insert_vista
 
 ## 5.7. Consideracions de disseny i perills
 
-* **Eficiència incremental:** Per comprovar regles de volum (ex: no augmentar l'estoc total en més del 50%), és molt més eficient avaluar el diferencial `(NEW.qtt - OLD.qtt)` a nivell de fila que rellegir tota la taula sencera amb un `SELECT SUM(...)`.
-* **Triggers en cascada:** Quan l'acció d'un disparador executa un `UPDATE` o `DELETE` sobre una altra taula, pot activar altres disparadors en cadena.
-* **Perill de bucle infinit:** Si el trigger d'una taula $A$ modifica la taula $B$, i el trigger de $B$ modifica la taula $A$, es produeix una recursió infinita fins que l'SGBD esgota la pila i avorta la transacció.
+Per comprovar regles de volum (ex: no augmentar l'estoc total en més del 50%), és molt més eficient avaluar el diferencial `(NEW.qtt - OLD.qtt)` a nivell de fila que rellegir tota la taula sencera amb un `SELECT SUM(...)`. Quan l'acció d'un disparador executa un `UPDATE` o `DELETE` sobre una altra taula, pot activar altres disparadors en cadena. Si el trigger d'una taula $A$ modifica la taula $B$, i el trigger de $B$ modifica la taula $A$, es produeix una recursió infinita fins que l'SGBD esgota la pila i avorta la transacció.

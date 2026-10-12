@@ -17,6 +17,8 @@ interface GraphNode {
     color?: string;
     x?: number;
     y?: number;
+    fx?: number;
+    fy?: number;
 }
 interface GraphLink {
     source: string | number;
@@ -68,13 +70,22 @@ function AlgoPlayerContent({ algo }: { algo: Simulation }) {
         if (step?.visual?.nodeLabels && (step.visual.nodeLabels as any)[n.id]) {
             n.label = (step.visual.nodeLabels as any)[n.id];
         }
+        if (step?.visual?.nodePositions && (step.visual.nodePositions as any)[n.id]) {
+            const pos = (step.visual.nodePositions as any)[n.id];
+            if (pos.fx !== undefined) (n as any).fx = pos.fx;
+            if (pos.fy !== undefined) (n as any).fy = pos.fy;
+        } else {
+            const init = (algo.initialState?.nodes as any[])?.find((i: any) => i.id === n.id);
+            if (init && init.fx !== undefined) (n as any).fx = init.fx;
+            if (init && init.fy !== undefined) (n as any).fy = init.fy;
+        }
     });
 
     // Create a new graph data object for the visualizer to trigger its useEffect
     const currentGraphData = useMemo(() => ({
-        nodes: graphData.nodes,
+        nodes: graphData.nodes.map(n => ({ ...n })),
         links: ((step?.visual?.links || algo.initialState?.links || []) as any[]).map((l: any) => ({ ...l }))
-    }), [graphData.nodes, step?.visual?.links, algo.initialState?.links]);
+    }), [graphData.nodes, step?.visual?.links, step?.visual?.nodePositions, algo.initialState?.links]);
 
     const controls = (
         <PlayerControls

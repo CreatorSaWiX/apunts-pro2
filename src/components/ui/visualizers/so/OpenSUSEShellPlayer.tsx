@@ -149,6 +149,17 @@ const MAN_PAGES: Record<string, { name: string; section: number; synopsis: strin
         ],
         seeAlso: 'top(1), pgrep(1), pstree(1)'
     },
+    'pstree': {
+        name: 'pstree - display a tree of processes',
+        section: 1,
+        synopsis: 'pstree [options] [pid | user]',
+        desc: 'pstree mostra els processos en execució com un arbre jeràrquic amb relacions pare-fill. El procés arrel és systemd (PID 1).',
+        options: [
+            ['-p', 'Mostra els PIDs numèrics entre parèntesis.'],
+            ['-u', 'Mostra les transicions d\'UID/usuari.']
+        ],
+        seeAlso: 'ps(1), top(1)'
+    },
     'fork(2)': {
         name: 'fork - create a child process',
         section: 2,
@@ -243,6 +254,311 @@ const MacOSSymlinkIcon = ({ className = "w-11 h-11" }: { className?: string }) =
         </svg>
     </div>
 );
+
+// --- Virtual /proc Filesystem Mock ---
+const PROC_CPUINFO = `processor\t: 0
+vendor_id\t: GenuineIntel
+cpu family\t: 6
+model_name\t: Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz
+stepping\t: 5
+cpu MHz\t\t: 3792.000
+cache size\t: 16384 KB
+physical id\t: 0
+siblings\t: 8
+core id\t\t: 0
+cpu cores\t: 8
+flags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand
+bogomips\t: 7584.00
+clflush size\t: 64
+cache_alignment\t: 64
+address sizes\t: 39 bits physical, 48 bits virtual`;
+
+const PROC_MEMINFO = `MemTotal:       16384256 kB
+MemFree:         8421340 kB
+MemAvailable:   12104520 kB
+Buffers:          342100 kB
+Cached:          3842100 kB
+SwapCached:            0 kB
+Active:          4251200 kB
+Inactive:        2814500 kB
+SwapTotal:       2097148 kB
+SwapFree:        2097148 kB
+Dirty:                64 kB
+Writeback:             0 kB
+AnonPages:       2901240 kB
+Mapped:           512800 kB
+Shmem:            215400 kB`;
+
+const PROC_VERSION = `Linux version 5.14.21-150400.24.81-default (geeko@buildhost) (gcc version 7.5.0) #1 SMP PREEMPT_DYNAMIC`;
+
+const PROC_LIMITS = `Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max file size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core file size        0                    unlimited            bytes     
+Max resident set          unlimited            unlimited            bytes     
+Max processes             62804                62804                processes 
+Max open files            1024                 1048576              files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max file locks            unlimited            unlimited            bytes     
+Max pending signals       62804                62804                signals   
+Max msgqueue size         819200               819200               bytes     
+Max nice priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime timeout      unlimited            unlimited            us        `;
+
+const PROC_MAPS = `00400000-004ea000 r-xp 00000000 08:01 1441850   /usr/bin/bash
+006ea000-006ee000 r--p 000ea000 08:01 1441850   /usr/bin/bash
+006ee000-006f7000 rw-p 000ee000 08:01 1441850   /usr/bin/bash
+01bf5000-01c38000 rw-p 00000000 00:00 0         [heap]
+7f8a9e200000-7f8a9e3b0000 r-xp 00000000 08:01 1441820 /lib64/libc-2.31.so
+7f8a9e3b0000-7f8a9e5b0000 ---p 001b0000 08:01 1441820 /lib64/libc-2.31.so
+7f8a9e5b0000-7f8a9e5b4000 r--p 001b0000 08:01 1441820 /lib64/libc-2.31.so
+7f8a9e5b4000-7f8a9e5b6000 rw-p 001b4000 08:01 1441820 /lib64/libc-2.31.so
+7fffa89e4000-7fffa8a05000 rw-p 00000000 00:00 0         [stack]
+7fffa8b53000-7fffa8b56000 r--p 00000000 00:00 0         [vvar]
+7fffa8b56000-7fffa8b57000 r-xp 00000000 00:00 0         [vdso]`;
+
+const PROC_STATUS_3412 = `Name:\tbash
+Umask:\t0022
+State:\tS (sleeping)
+Tgid:\t3412
+Ngid:\t0
+Pid:\t3412
+PPid:\t3411
+TracerPid:\t0
+Uid:\t1000\t1000\t1000\t1000
+Gid:\t100\t100\t100\t100
+FDSize:\t256
+Groups:\t100 10 490
+NStgid:\t3412
+NSpid:\t3412
+NSpgid:\t3412
+NSsid:\t3412
+VmPeak:\t   14840 kB
+VmSize:\t   14820 kB
+VmLck:\t       0 kB
+VmPin:\t       0 kB
+VmHWM:\t    3940 kB
+VmRSS:\t    3940 kB
+RssAnon:\t    1820 kB
+RssFile:\t    2120 kB
+RssShmem:\t       0 kB
+VmData:\t    2120 kB
+VmStk:\t     136 kB
+VmExe:\t     960 kB
+VmLib:\t    2840 kB
+VmPTE:\t      48 kB
+VmSwap:\t       0 kB
+Threads:\t1
+SigQ:\t0/62804
+SigPnd:\t0000000000000000
+ShdPnd:\t0000000000000000
+SigBlk:\t0000000000010000
+SigIgn:\t0000000000384004
+SigCgt:\t000000004b813efb
+CapInh:\t0000000000000000
+CapPrm:\t0000000000000000
+CapEff:\t0000000000000000
+CapBnd:\t000001ffffffffff
+CapAmb:\t0000000000000000
+NoNewPrivs:\t0
+Seccomp:\t0
+voluntary_ctxt_switches:\t142
+nonvoluntary_ctxt_switches:\t18`;
+
+interface ProcNode {
+    type: 'dir' | 'file' | 'symlink';
+    permissions: string;
+    links: number;
+    owner: string;
+    group: string;
+    size: number;
+    modifyTime: string;
+    target?: string;
+    content?: string;
+    entries?: string[];
+}
+
+function getProcNode(rawPath: string): { node: ProcNode; path: string; name: string } | null {
+    let clean = rawPath.replace(/\/+/g, '/').replace(/\/$/, '');
+    if (!clean.startsWith('/proc')) {
+        if (clean.startsWith('proc')) clean = '/' + clean;
+        else return null;
+    }
+
+    if (clean === '/proc') {
+        return {
+            path: '/proc',
+            name: 'proc',
+            node: {
+                type: 'dir',
+                permissions: 'dr-xr-xr-x',
+                links: 14,
+                owner: 'root',
+                group: 'root',
+                size: 0,
+                modifyTime: '15:58',
+                entries: [
+                    '1', '2', '3', '4', '612', '1205', '3411', '3412', '3892',
+                    'buddyinfo', 'cgroups', 'cmdline', 'cpuinfo', 'crypto', 'devices',
+                    'diskstats', 'dma', 'driver', 'execdomains', 'filesystems', 'fs',
+                    'interrupts', 'iomem', 'ioports', 'kallsyms', 'kmsg', 'loadavg',
+                    'locks', 'meminfo', 'misc', 'modules', 'mounts', 'net', 'partitions',
+                    'schedstat', 'self', 'slabinfo', 'softirqs', 'stat', 'swaps', 'sys',
+                    'sysrq-trigger', 'timer_list', 'tty', 'uptime', 'version', 'vmstat', 'zoneinfo'
+                ]
+            }
+        };
+    }
+
+    if (clean === '/proc/self') {
+        return {
+            path: '/proc/self',
+            name: 'self',
+            node: {
+                type: 'symlink',
+                permissions: 'lrwxrwxrwx',
+                links: 1,
+                owner: 'root',
+                group: 'root',
+                size: 11,
+                modifyTime: '16:00',
+                target: '3412'
+            }
+        };
+    }
+
+    const norm = clean.replace(/^\/proc\/self(\/|$)/, '/proc/3412$1');
+
+    if (norm === '/proc/3412') {
+        return {
+            path: clean,
+            name: '3412',
+            node: {
+                type: 'dir',
+                permissions: 'dr-xr-xr-x',
+                links: 9,
+                owner: 'alumne',
+                group: 'users',
+                size: 0,
+                modifyTime: '16:00',
+                entries: [
+                    'cmdline', 'cwd', 'environ', 'exe', 'fd', 'limits', 'maps', 'root', 'stat', 'statm', 'status'
+                ]
+            }
+        };
+    }
+
+    if (norm === '/proc/3412/fd') {
+        return {
+            path: clean,
+            name: 'fd',
+            node: {
+                type: 'dir',
+                permissions: 'dr-x------',
+                links: 2,
+                owner: 'alumne',
+                group: 'users',
+                size: 0,
+                modifyTime: '16:00',
+                entries: ['0', '1', '2', '255']
+            }
+        };
+    }
+
+    if (norm.startsWith('/proc/3412/fd/')) {
+        const fdNum = norm.split('/')[4];
+        if (['0', '1', '2', '255'].includes(fdNum)) {
+            return {
+                path: clean,
+                name: fdNum,
+                node: {
+                    type: 'symlink',
+                    permissions: 'lrwx------',
+                    links: 1,
+                    owner: 'alumne',
+                    group: 'users',
+                    size: 64,
+                    modifyTime: '16:00',
+                    target: '/dev/pts/0'
+                }
+            };
+        }
+        return null;
+    }
+
+    if (norm === '/proc/3412/cmdline') {
+        return { path: clean, name: 'cmdline', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: '-bash\n' } };
+    }
+    if (norm === '/proc/3412/cwd') {
+        return { path: clean, name: 'cwd', node: { type: 'symlink', permissions: 'lrwxrwxrwx', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', target: '/home/alumne' } };
+    }
+    if (norm === '/proc/3412/environ') {
+        return { path: clean, name: 'environ', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: 'USER=alumne\nHOME=/home/alumne\nSHELL=/bin/bash\nPATH=/usr/bin:/bin:.\nPWD=/home/alumne\n' } };
+    }
+    if (norm === '/proc/3412/exe') {
+        return { path: clean, name: 'exe', node: { type: 'symlink', permissions: 'lrwxrwxrwx', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', target: '/usr/bin/bash' } };
+    }
+    if (norm === '/proc/3412/root') {
+        return { path: clean, name: 'root', node: { type: 'symlink', permissions: 'lrwxrwxrwx', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', target: '/' } };
+    }
+    if (norm === '/proc/3412/limits') {
+        return { path: clean, name: 'limits', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: PROC_LIMITS + '\n' } };
+    }
+    if (norm === '/proc/3412/maps') {
+        return { path: clean, name: 'maps', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: PROC_MAPS + '\n' } };
+    }
+    if (norm === '/proc/3412/stat') {
+        return { path: clean, name: 'stat', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: '3412 (bash) S 3411 3412 3412 34816 3892 4194304 3120 0 0 0 14 6 0 0 20 0 1 0 128912 15175680 985 18446744073709551615 1 1 0 0 0 0 0 65536 3670020 1260 0 0 0 17 0 0 0 0 0 0\n' } };
+    }
+    if (norm === '/proc/3412/statm') {
+        return { path: clean, name: 'statm', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: '3705 985 820 240 0 450 0\n' } };
+    }
+    if (norm === '/proc/3412/status') {
+        return { path: clean, name: 'status', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'alumne', group: 'users', size: 0, modifyTime: '16:00', content: PROC_STATUS_3412 + '\n' } };
+    }
+
+    if (norm === '/proc/1') {
+        return {
+            path: clean,
+            name: '1',
+            node: {
+                type: 'dir',
+                permissions: 'dr-xr-xr-x',
+                links: 9,
+                owner: 'root',
+                group: 'root',
+                size: 0,
+                modifyTime: '15:58',
+                entries: ['cmdline', 'cwd', 'environ', 'exe', 'fd', 'limits', 'maps', 'stat', 'status']
+            }
+        };
+    }
+    if (norm === '/proc/1/cmdline') {
+        return { path: clean, name: 'cmdline', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '15:58', content: '/sbin/init\n' } };
+    }
+
+    if (clean === '/proc/cpuinfo') {
+        return { path: clean, name: 'cpuinfo', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', content: PROC_CPUINFO + '\n' } };
+    }
+    if (clean === '/proc/meminfo') {
+        return { path: clean, name: 'meminfo', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', content: PROC_MEMINFO + '\n' } };
+    }
+    if (clean === '/proc/version') {
+        return { path: clean, name: 'version', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', content: PROC_VERSION + '\n' } };
+    }
+    if (clean === '/proc/uptime') {
+        return { path: clean, name: 'uptime', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', content: '3845.24 14920.12\n' } };
+    }
+    if (clean === '/proc/loadavg') {
+        return { path: clean, name: 'loadavg', node: { type: 'file', permissions: '-r--r--r--', links: 1, owner: 'root', group: 'root', size: 0, modifyTime: '16:00', content: '0.04 0.08 0.02 1/142 3892\n' } };
+    }
+
+    return null;
+}
 
 // Initial filesystem factory
 const createInitialState = () => {
@@ -690,6 +1006,75 @@ export default function OpenSUSEShellPlayer({
                 const targetPath = resolvePath(targetArg, fsState.cwd);
                 const targetInodeId = fsState.files[targetPath];
 
+                const procTarget = targetArg.startsWith('/proc') || targetArg.startsWith('proc') ? targetArg : null;
+                if (procTarget) {
+                    const resolved = getProcNode(procTarget);
+                    if (!resolved) {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `ls: cannot access '${targetArg}': No such file or directory` });
+                        break;
+                    }
+
+                    const showLong = flags.includes('l');
+                    const showDirAsFile = flags.includes('d');
+
+                    // If user inspected a symlink with -d (e.g. ls -ld /proc/self)
+                    if (resolved.node.type === 'symlink' && showDirAsFile) {
+                        if (showLong) {
+                            newOutputs.push({
+                                id: Math.random().toString(),
+                                type: 'stdout',
+                                text: `${resolved.node.permissions} 1 ${resolved.node.owner} ${resolved.node.group} ${resolved.node.size} ${resolved.node.modifyTime} ${targetArg} -> ${resolved.node.target}`
+                            });
+                        } else {
+                            newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: targetArg });
+                        }
+                        break;
+                    }
+
+                    // For /proc/self without -d, GNU ls follows the symlink to /proc/3412
+                    let effectiveNode = resolved.node;
+                    let effectivePath = resolved.path;
+                    if (resolved.node.type === 'symlink' && resolved.node.target === '3412' && !showDirAsFile) {
+                        const targetDir = getProcNode('/proc/3412');
+                        if (targetDir) {
+                            effectiveNode = targetDir.node;
+                            effectivePath = '/proc/3412';
+                        }
+                    }
+
+                    // Directory listing
+                    if (effectiveNode.type === 'dir' && !showDirAsFile) {
+                        const entries = effectiveNode.entries || [];
+                        if (showLong) {
+                            const lines = entries.map(name => {
+                                const childPath = `${effectivePath}/${name}`;
+                                const child = getProcNode(childPath);
+                                if (child) {
+                                    const sym = child.node.type === 'symlink' ? ` -> ${child.node.target}` : '';
+                                    return `${child.node.permissions} ${child.node.links} ${child.node.owner} ${child.node.group} ${String(child.node.size).padStart(5, ' ')} ${child.node.modifyTime} ${name}${sym}`;
+                                }
+                                return `-r--r--r-- 1 root root 0 16:00 ${name}`;
+                            });
+                            newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: 'total 0\n' + lines.join('\n') });
+                        } else {
+                            newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: entries.join('  ') });
+                        }
+                    } else {
+                        // Single file or symlink treated as single file (e.g. ls -l /proc/self/limits or ls -l /proc/self/fd/0)
+                        if (showLong) {
+                            const sym = effectiveNode.type === 'symlink' ? ` -> ${effectiveNode.target}` : '';
+                            newOutputs.push({
+                                id: Math.random().toString(),
+                                type: 'stdout',
+                                text: `${effectiveNode.permissions} ${effectiveNode.links} ${effectiveNode.owner} ${effectiveNode.group} ${String(effectiveNode.size).padStart(5, ' ')} ${effectiveNode.modifyTime} ${targetArg}${sym}`
+                            });
+                        } else {
+                            newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: targetArg });
+                        }
+                    }
+                    break;
+                }
+
                 if (targetInodeId === undefined) {
                     newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `ls: cannot access '${targetArg}': No such file or directory` });
                     break;
@@ -851,39 +1236,29 @@ export default function OpenSUSEShellPlayer({
                     newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: 'cat: missing file' });
                     break;
                 }
-                if (target.startsWith('/proc')) {
-                    if (target.includes('status')) {
-                        newOutputs.push({
-                            id: Math.random().toString(),
-                            type: 'stdout',
-                            text: 'Name:\tbash\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t3412\nPid:\t3412\nPPid:\t3411\nUid:\t1000\t1000\t1000\t1000\nGid:\t100\t100\t100\t100\nFDSize:\t256\nVmPeak:\t14840 kB\nVmSize:\t14820 kB\nVmData:\t2120 kB\nVmStk:\t136 kB\nVmExe:\t960 kB\nThreads:\t1\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000384004\nSigCgt:\t000000004b813efb'
-                        });
+                if (target.startsWith('/proc') || target.startsWith('proc')) {
+                    const procItem = getProcNode(target);
+                    if (!procItem) {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `cat: ${target}: No such file or directory` });
                         break;
                     }
-                    if (target.includes('cmdline')) {
-                        newOutputs.push({
-                            id: Math.random().toString(),
-                            type: 'stdout',
-                            text: '-bash'
-                        });
+                    if (procItem.node.type === 'dir') {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `cat: ${target}: Is a directory` });
                         break;
                     }
-                    if (target.includes('environ')) {
-                        newOutputs.push({
-                            id: Math.random().toString(),
-                            type: 'stdout',
-                            text: 'USER=alumne\nHOME=/home/alumne\nSHELL=/bin/bash\nPATH=/usr/bin:/bin:.\nPWD=/home/alumne'
-                        });
+                    if (procItem.node.content !== undefined) {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: procItem.node.content.replace(/\n$/, '') });
                         break;
                     }
-                    if (target.includes('stat')) {
-                        newOutputs.push({
-                            id: Math.random().toString(),
-                            type: 'stdout',
-                            text: '3412 (bash) S 3411 3412 3412 34816 3892 4194304 3120 0 0 0 14 6 0 0 20 0 1 0 128912 15175680 985 18446744073709551615 1 1 0 0 0 0 0 65536 3670020 1260 0 0 0 17 0 0 0 0 0 0'
-                        });
-                        break;
+                    if (procItem.node.type === 'symlink') {
+                        const resolvedTarget = getProcNode(resolvePath(procItem.node.target || '', '/proc'));
+                        if (resolvedTarget?.node.type === 'dir') {
+                            newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `cat: ${target}: Is a directory` });
+                            break;
+                        }
                     }
+                    newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: '' });
+                    break;
                 }
 
                 const targetPath = resolvePath(target, fsState.cwd);
@@ -922,6 +1297,28 @@ export default function OpenSUSEShellPlayer({
                 const target = args[1] || '.';
                 const targetPath = resolvePath(target, fsState.cwd);
                 const inodeId = fsState.files[targetPath];
+
+                if (target.startsWith('/proc') || target.startsWith('proc')) {
+                    const procItem = getProcNode(target);
+                    if (!procItem) {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `stat: cannot stat '${target}': No such file or directory` });
+                        break;
+                    }
+                    const n = procItem.node;
+                    const typeStr = n.type === 'dir' ? 'directory' : n.type === 'symlink' ? 'symbolic link' : 'regular file';
+                    const symExtra = n.type === 'symlink' ? ` -> ${n.target}` : '';
+                    const statText = [
+                        `  File: ${target}${symExtra}`,
+                        `  Size: ${n.size}        Blocks: 0          IO Block: 1024   ${typeStr}`,
+                        `Device: 0,4/4d          Inode: 1441860     Links: ${n.links}`,
+                        `Access: (0${n.permissions.startsWith('d') ? '755' : n.permissions.startsWith('l') ? '777' : '444'}/${n.permissions})  Uid: ( 1000/ ${n.owner})   Gid: (  100/   ${n.group})`,
+                        `Access: 2026-10-04 16:00:00.000000000 +0200`,
+                        `Modify: 2026-10-04 ${n.modifyTime}:00.000000000 +0200`,
+                        `Change: 2026-10-04 ${n.modifyTime}:00.000000000 +0200`
+                    ].join('\n');
+                    newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: statText });
+                    break;
+                }
 
                 if (inodeId === undefined) {
                     newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `stat: cannot stat '${target}': No such file or directory` });
@@ -1029,6 +1426,13 @@ export default function OpenSUSEShellPlayer({
             case 'readlink': {
                 const target = args[1];
                 if (!target) break;
+                if (target.startsWith('/proc') || target.startsWith('proc')) {
+                    const procItem = getProcNode(target);
+                    if (procItem?.node.type === 'symlink') {
+                        newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: procItem.node.target || '' });
+                    }
+                    break;
+                }
                 const targetPath = resolvePath(target, fsState.cwd);
                 const inodeId = fsState.files[targetPath];
                 if (inodeId !== undefined && fsState.inodes[inodeId].type === 'symlink') {
@@ -1275,7 +1679,7 @@ export default function OpenSUSEShellPlayer({
                 const builtins = ['cd', 'pwd', 'echo', 'export', 'alias', 'exit', 'help', 'type'];
                 if (builtins.includes(targetCmd)) {
                     newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: `${targetCmd} is a shell builtin` });
-                } else if (['ls', 'mkdir', 'rmdir', 'cp', 'rm', 'mv', 'cat', 'stat', 'ln', 'chmod', 'man', 'clear'].includes(targetCmd)) {
+                } else if (['ls', 'mkdir', 'rmdir', 'cp', 'rm', 'mv', 'cat', 'stat', 'ln', 'chmod', 'man', 'clear', 'ps', 'pstree'].includes(targetCmd)) {
                     newOutputs.push({ id: Math.random().toString(), type: 'stdout', text: `${targetCmd} is /usr/bin/${targetCmd}` });
                 } else {
                     newOutputs.push({ id: Math.random().toString(), type: 'stderr', text: `bash: type: ${targetCmd}: not found` });
@@ -1335,7 +1739,13 @@ export default function OpenSUSEShellPlayer({
 
             case 'ps': {
                 const fullArgs = args.slice(1).join(' ');
-                if (fullArgs.includes('-l')) {
+                if (fullArgs.includes('-ef') || fullArgs.includes('-f') || fullArgs.includes('aux')) {
+                    newOutputs.push({
+                        id: Math.random().toString(),
+                        type: 'stdout',
+                        text: 'UID        PID  PPID  C STIME TTY          TIME CMD\nroot         1     0  0 15:58 ?        00:00:01 /sbin/init\nroot       612     1  0 15:58 ?        00:00:00 /usr/lib/systemd/systemd-journald\nalumne    3411  1205  0 16:00 ?        00:00:00 sshd: alumne@pts/0\nalumne    3412  3411  0 16:00 pts/0    00:00:00 bash\nalumne    3892  3412  0 16:25 pts/0    00:00:00 ps ' + (fullArgs || '-ef')
+                    });
+                } else if (fullArgs.includes('-l')) {
                     newOutputs.push({
                         id: Math.random().toString(),
                         type: 'stdout',
@@ -1355,6 +1765,15 @@ export default function OpenSUSEShellPlayer({
                         text: '  PID TTY          TIME CMD\n 3412 pts/0    00:00:00 bash\n 3892 pts/0    00:00:00 ps'
                     });
                 }
+                break;
+            }
+
+            case 'pstree': {
+                newOutputs.push({
+                    id: Math.random().toString(),
+                    type: 'stdout',
+                    text: 'systemd─┬─cron\n        ├─dbus-daemon\n        ├─sshd───sshd───bash───pstree\n        ├─systemd-journal\n        └─systemd-logind'
+                });
                 break;
             }
 
@@ -1547,7 +1966,8 @@ export default function OpenSUSEShellPlayer({
             const commands = [
                 'ls', 'cd', 'pwd', 'mkdir', 'rmdir', 'rm', 'cat', 'stat', 
                 'chmod', 'ln', 'echo', 'whoami', 'clear', 'export', 'env', 
-                'alias', 'which', 'df', 'mount', 'namei', 'readlink', 'man', 'help'
+                'alias', 'which', 'df', 'mount', 'namei', 'readlink', 'man', 'help',
+                'ps', 'pstree'
             ];
             const matches = commands.filter(c => c.startsWith(raw.toLowerCase()));
             if (matches.length === 1) {

@@ -19,6 +19,11 @@ import Spinner from "../components/ui/Spinner";
 const CodeBlock = React.lazy(() => import("../components/ui/editors/CodeBlock"));
 import Callout from "../components/ui/Callout";
 const SimulationPlayer = React.lazy(() => import("../components/ui/players/SimulationPlayer"));
+const UMLCanvas = React.lazy(() => import("../components/ui/visualizers/sql/uml/UMLCanvas"));
+const UMLToRelationalVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/uml/UMLToRelationalVisualizer"));
+const DMLPlayer = React.lazy(() => import("../components/ui/visualizers/sql/dml/DMLPlayer"));
+const DACVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/dac/DACVisualizer"));
+const ViewVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/views/ViewVisualizer"));
 
 // — Shared —
 const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/shared/GraphVisualizer"));
@@ -35,6 +40,17 @@ const PointerVisualizer = React.lazy(() => import("../components/ui/visualizers/
 // — M2 (maths) —
 const MafsVisualizer = React.lazy(() => import("../components/ui/visualizers/m2/MafsVisualizer"));
 // — EDA (algorithms) —
+const DictVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DictVisualizer"));
+const TADVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/TADVisualizer"));
+const DirectAddressVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DirectAddressVisualizer"));
+const HashVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HashVisualizer"));
+const CollisionVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/CollisionVisualizer"));
+const ChainingVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/ChainingVisualizer"));
+const OpenAddressVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/OpenAddressVisualizer"));
+const TreeTermVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/TreeTermVisualizer"));
+const ABCVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/ABCVisualizer"));
+const ABCDegenerateVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/ABCDegenerateVisualizer"));
+const AVLRotVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AVLRotVisualizer"));
 const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AsymptoticVisualizer"));
 const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GrowthHierarchyVisualizer"));
 const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DivideConquerVisualizer"));
@@ -61,6 +77,22 @@ const OpenSUSEShellPlayer = React.lazy(() => import("../components/ui/visualizer
 const OSMediatorViz = React.lazy(() => import("../components/ui/visualizers/so/OSMediatorViz"));
 const CCompilePipelineViz = React.lazy(() => import("../components/ui/visualizers/so/CCompilePipelineViz"));
 const ProcessStatesViz = React.lazy(() => import("../components/ui/visualizers/so/ProcessStatesViz"));
+const ProcessOverviewViz = React.lazy(() => import("../components/ui/visualizers/so/ProcessOverviewViz"));
+const SignalPcbViz = React.lazy(() => import("../components/ui/visualizers/so/SignalPcbViz"));
+const KillViz = React.lazy(() => import("../components/ui/visualizers/so/KillViz"));
+const SigactionViz = React.lazy(() => import("../components/ui/visualizers/so/SigactionViz"));
+const SigmaskViz = React.lazy(() => import("../components/ui/visualizers/so/SigmaskViz"));
+const SigsuspendViz = React.lazy(() => import("../components/ui/visualizers/so/SigsuspendViz"));
+const AlarmViz = React.lazy(() => import("../components/ui/visualizers/so/AlarmViz"));
+const ForkViz = React.lazy(() => import("../components/ui/visualizers/so/ForkViz"));
+const ExecViz = React.lazy(() => import("../components/ui/visualizers/so/ExecViz"));
+const BlockedViz = React.lazy(() => import("../components/ui/visualizers/so/BlockedViz"));
+const ZombieViz = React.lazy(() => import("../components/ui/visualizers/so/ZombieViz"));
+const StoppedViz = React.lazy(() => import("../components/ui/visualizers/so/StoppedViz"));
+const ContextSwitchViz = React.lazy(() => import("../components/ui/visualizers/so/ContextSwitchViz"));
+const SchedulerViz = React.lazy(() => import("../components/ui/visualizers/so/SchedulerViz"));
+const RoundRobinViz = React.lazy(() => import("../components/ui/visualizers/so/RoundRobinViz"));
+const CFSViz = React.lazy(() => import("../components/ui/visualizers/so/CFSViz"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -231,6 +263,45 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    umlviz: (props: MarkdownComponentProps) => {
+        return (
+            <SafeSuspense>
+                <UMLCanvas
+                    schema={props.schema as string}
+                    title={props.title as string}
+                    height={props.height as string}
+                />
+            </SafeSuspense>
+        );
+    },
+    uml2relviz: () => {
+        return (
+            <SafeSuspense>
+                <UMLToRelationalVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dmlviz: () => {
+        return (
+            <SafeSuspense>
+                <DMLPlayer />
+            </SafeSuspense>
+        );
+    },
+    dacviz: () => {
+        return (
+            <SafeSuspense>
+                <DACVisualizer />
+            </SafeSuspense>
+        );
+    },
+    viewviz: () => {
+        return (
+            <SafeSuspense>
+                <ViewVisualizer />
+            </SafeSuspense>
+        );
+    },
     stackviz: () => {
         return (
             <SafeSuspense>
@@ -256,6 +327,83 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <BSTVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dictviz: () => {
+        return (
+            <SafeSuspense>
+                <DictVisualizer />
+            </SafeSuspense>
+        );
+    },
+    tadviz: () => {
+        return (
+            <SafeSuspense>
+                <TADVisualizer />
+            </SafeSuspense>
+        );
+    },
+    directaddressviz: () => {
+        return (
+            <SafeSuspense>
+                <DirectAddressVisualizer />
+            </SafeSuspense>
+        );
+    },
+    hashviz: () => {
+        return (
+            <SafeSuspense>
+                <HashVisualizer />
+            </SafeSuspense>
+        );
+    },
+    collisionviz: () => {
+        return (
+            <SafeSuspense>
+                <CollisionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    chainingviz: () => {
+        return (
+            <SafeSuspense>
+                <ChainingVisualizer />
+            </SafeSuspense>
+        );
+    },
+    openaddressviz: () => {
+        return (
+            <SafeSuspense>
+                <OpenAddressVisualizer />
+            </SafeSuspense>
+        );
+    },
+    treeterviz: () => {
+        return (
+            <SafeSuspense>
+                <TreeTermVisualizer />
+            </SafeSuspense>
+        );
+    },
+    abcviz: () => {
+        return (
+            <SafeSuspense>
+                <ABCVisualizer />
+            </SafeSuspense>
+        );
+    },
+    abcdegenviz: () => {
+        return (
+            <SafeSuspense>
+                <ABCDegenerateVisualizer />
+            </SafeSuspense>
+        );
+    },
+    avlrotviz: () => {
+        return (
+            <SafeSuspense>
+                <AVLRotVisualizer />
             </SafeSuspense>
         );
     },
@@ -509,6 +657,132 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    procoverviewviz: () => {
+        return (
+            <SafeSuspense>
+                <ProcessOverviewViz />
+            </SafeSuspense>
+        );
+    },
+    processoverviewviz: () => {
+        return (
+            <SafeSuspense>
+                <ProcessOverviewViz />
+            </SafeSuspense>
+        );
+    },
+    signalpcbviz: () => {
+        return (
+            <SafeSuspense>
+                <SignalPcbViz />
+            </SafeSuspense>
+        );
+    },
+    killviz: () => {
+        return (
+            <SafeSuspense>
+                <KillViz />
+            </SafeSuspense>
+        );
+    },
+    sigactionviz: () => {
+        return (
+            <SafeSuspense>
+                <SigactionViz />
+            </SafeSuspense>
+        );
+    },
+    sigprocmaskviz: () => {
+        return (
+            <SafeSuspense>
+                <SigmaskViz />
+            </SafeSuspense>
+        );
+    },
+    sigmaskviz: () => {
+        return (
+            <SafeSuspense>
+                <SigmaskViz />
+            </SafeSuspense>
+        );
+    },
+    sigsuspendviz: () => {
+        return (
+            <SafeSuspense>
+                <SigsuspendViz />
+            </SafeSuspense>
+        );
+    },
+    alarmviz: () => {
+        return (
+            <SafeSuspense>
+                <AlarmViz />
+            </SafeSuspense>
+        );
+    },
+    forkviz: () => {
+        return (
+            <SafeSuspense>
+                <ForkViz />
+            </SafeSuspense>
+        );
+    },
+    execviz: () => {
+        return (
+            <SafeSuspense>
+                <ExecViz />
+            </SafeSuspense>
+        );
+    },
+    blockedviz: () => {
+        return (
+            <SafeSuspense>
+                <BlockedViz />
+            </SafeSuspense>
+        );
+    },
+    zombieviz: () => {
+        return (
+            <SafeSuspense>
+                <ZombieViz />
+            </SafeSuspense>
+        );
+    },
+    stoppedviz: () => {
+        return (
+            <SafeSuspense>
+                <StoppedViz />
+            </SafeSuspense>
+        );
+    },
+    contextswitchviz: () => {
+        return (
+            <SafeSuspense>
+                <ContextSwitchViz />
+            </SafeSuspense>
+        );
+    },
+    schedulerviz: () => {
+        return (
+            <SafeSuspense>
+                <SchedulerViz />
+            </SafeSuspense>
+        );
+    },
+    roundrobinviz: () => {
+        return (
+            <SafeSuspense>
+                <RoundRobinViz />
+            </SafeSuspense>
+        );
+    },
+    cfsviz: () => {
+        return (
+            <SafeSuspense>
+                <CFSViz />
+            </SafeSuspense>
+        );
+    },
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
@@ -608,10 +882,10 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz',
+            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'umlviz', 'uml2relviz', 'dmlviz', 'dacviz', 'viewviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'osmediatorviz', 'compileviz', 'processviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
@@ -630,6 +904,11 @@ const rehypePluginsConfig = [
             'oopviz': ['simulation'],
             'algoviz': ['algorithm'],
             'sqlviz': ['simulation', 'defaultTab'],
+            'umlviz': ['schema', 'title', 'height'],
+            'uml2relviz': [],
+            'dmlviz': [],
+            'dacviz': [],
+            'viewviz': [],
             'proofviz': ['proof'],
             'youtubeviz': ['src', 'caption'],
             'linkedinviz': ['src'],

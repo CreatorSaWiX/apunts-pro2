@@ -1,12 +1,12 @@
 ---
 title: "Tema 1: SO i shell"
-description: "Rol del SO, modes d'execució, crides a sistema, Shell, inodes, enllaços i permisos."
+description: "Rol del SO, modes d'execució, crides a sistema, shell, inodes, enllaços i permisos."
 readTime: "15 min"
 order: 1
 draft: false
 ---
 
-## 1.1 Què fa el Sistema Operatiu?
+## 1.1 Introducció a SO
 
 El **Sistema Operatiu (SO)** és el programa que fa d'intermediari entre les nostres aplicacions i el maquinari de l'ordinador (la CPU, la memòria RAM, el disc dur, el teclat o la pantalla).
 
@@ -19,9 +19,16 @@ Sense el SO, cada programador hauria d'escriure instruccions de baix nivell per 
 :::osmediatorviz
 :::
 
+### L'entorn de l'assignatura: UNIX i POSIX
+
+* **UNIX**: Família de SO (anys 70) que va establir el model modern: jerarquia d'arrel única (`/`), «tot és un fitxer» i eines petites encadenades per canonades. **Linux** i **macOS** en segueixen el disseny (*Unix-like*).
+* **POSIX** (*Portable Operating System Interface*): Estàndard formal (IEEE) que fixa l'API d'un sistema UNIX:
+  * Defineix quines crides a sistema existeixen (`fork`, `write`, `read`, `open`, etc.) i com han de respondre.
+  * **Objectiu**: Garantir la **portabilitat** (el mateix codi en C es compila a qualsevol SO que compleixi POSIX).
+
 ---
 
-## 1.2 Modes d'execució: mode usuari vs mode kernel
+## 1.2 Modes d'execució:
 
 Per evitar que qualsevol programa pugui penjar l'ordinador o accedir a dades privades, el processador físic (la CPU) té **dos modes de treball**:
 
@@ -37,7 +44,7 @@ Per evitar que qualsevol programa pugui penjar l'ordinador o accedir a dades pri
 
 ---
 
-## 1.3 Com entrem al kernel? (3 portes d'entrada)
+## 1.3 Com entrem al kernel? 
 
 El nucli del sistema operatiu (*Kernel*) és un codi que està en repòs i només s'activa quan passa un esdeveniment. Només hi ha **3 maneres d'entrar al Kernel**:
 
@@ -47,7 +54,7 @@ El nucli del sistema operatiu (*Kernel*) és un codi que està en repòs i nomé
 | **Excepció software** | La pròpia CPU | **Síncrona** (la provoca una instrucció concreta mentre s'executa) | S'ha produït un error al codi: divisió entre zero, intentar tocar memòria no permesa (*Segmentation Fault*), o una fallada de pàgina (*page fault*). |
 | **Crida a sistema (*trap*)** | El programa d'usuari | **Síncrona** (la demana expressament el codi) | El programa demana un servei al SO mitjançant una instrucció especial (`syscall`): obrir un fitxer, escriure per pantalla (`write`), o crear un fill (`fork`). |
 
-### Per a què serveix la interrupció de rellotge? (Pregunta d'examen)
+### Per a què serveix la interrupció de rellotge? 
 Imagina un programa amb un bucle infinit que no fa cap crida a sistema: `while (1);`. Com pot el sistema operatiu recuperar el control si el programa no li demana res?  
 * Un xip temporitzador de la placa base genera una **interrupció de rellotge periòdica** (per exemple cada 10 mil·lisegons).
 * Cada 10 ms, la CPU s'atura, passa a mode kernel i executa la rutina de rellotge del SO.
@@ -55,14 +62,14 @@ Imagina un programa amb un bucle infinit que no fa cap crida a sistema: `while (
 
 ---
 
-## 1.4 Com funciona una crida a sistema per sota?
+## 1.4 Com funciona una crida a sistema?
 
 Quan un programa vol demanar ajuda al Kernel (per exemple per escriure bytes amb `write`), no pot saltar directament a una adreça del Kernel perquè està en mode usuari.
 
-### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari? (Clau d'examen)
+### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari? 
 Quan en C escrius `write(1, buf, len)`, estàs cridant una funció d'usuari que ve amb la biblioteca estàndard de C (`libc`). Aquesta funció fa de pont:
 1. Col·loca els arguments (`1`, `buf`, `len`) als **registres concrets de la CPU** que demana l'arquitectura.
-2. Executa la **instrucció màquina de canvi de mode** de la CPU (`syscall` a 64 bits, `int 0x80` o `sysenter` a 32 bits).
+2. Executa la **instrucció màquina de canvi de mode** de la CPU.
 3. Com que cada família de processadors (Intel, AMD, ARM) té instruccions i registres diferents, **el codi d'aquesta biblioteca ha d'estar escrit expressament per al maquinari on s'executa**.
 
 ### 2. Com s'aconsegueix que el codi funcioni entre diferents versions de Linux?
@@ -91,7 +98,7 @@ Hi ha dos tipus de comandes:
 
 ---
 
-## 1.6 El manual `man` (les 3 seccions d'examen)
+## 1.6 El manual `man` 
 
 Quan consultes `man nom`, el manual està dividit en seccions numerades:
 
@@ -115,10 +122,7 @@ Quan consultes `man nom`, el manual està dividit en seccions numerades:
 A UNIX tots els fitxers pengen d'un únic arbre des de l'arrel `/` (no hi ha lletres de disc com `C:` o `D:` de Windows).
 
 ### Què és un inode?
-A UNIX, un fitxer té dues parts ben diferenciades:
-1. **L'Inode (el DNI del fitxer)**: Una fitxa interna de dades que guarda la informació de gestió: mida en bytes, a quin usuari pertany, permisos (`rwx`), dates de creació/modificació, nombre d'enllaços (*links*), i els punters als blocs del disc on hi ha el contingut real.  
-   **Dada clau d'examen: L'Inode NO sap com es diu el fitxer.**
-2. **El Nom del fitxer**: Es guarda dins de les carpetes. Una carpeta és simplement una llista de parells `(nom_del_fitxer, número_inode)`.
+**El DNI del fitxer**. Una fitxa interna de dades que guarda la informació de gestió: mida en bytes, a quin usuari pertany, permisos (`rwx`), dates de creació/modificació, nombre d'enllaços (*links*), i els punters als blocs del disc on hi ha el contingut real. **L'Inode NO sap com es diu el fitxer.** El Nom del fitxer es guarda dins de les carpetes. Una carpeta és simplement una llista de parells `(nom_del_fitxer, número_inode)`.
 
 | Nom del fitxer (a `/home/usuari`) | Núm. Inode | Descripció |
 | :--- | :---: | :--- |
@@ -171,7 +175,6 @@ Els permisos s'organitzen en 1 caràcter pel tipus d'element i 3 grups de 3 car�
 | **`w`** (write) | 2 | Modificar o sobreescriure el fitxer | **Crear, esborrar o canviar de nom** fitxers a dins |
 | **`x`** (execute) | 1 | Executar el programa o script | **Entrar-hi amb `cd`** i accedir als fitxers de dins |
 
-> **Pregunta Clau d'Examen**:  
 > Per **esborrar un fitxer**, necessites permís `w` sobre el mateix fitxer?  
 > **NO**. Esborrar un fitxer és treure el seu nom de la llista de la carpeta on es troba. Per tant, només necessites permisos **`w` i `x` sobre la carpeta pare**. Encara que un fitxer sigui de només lectura (`r--r--r--`), si tens permís `w` a la carpeta, el pots esborrar!
 
@@ -184,7 +187,7 @@ Els permisos s'organitzen en 1 caràcter pel tipus d'element i 3 grups de 3 car�
 
 ---
 
-## 1.10 Variables d'Entorn i `$PATH`
+## 1.10 Variables d'entorn i `$PATH`
 
 Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen automàticament de pares a fills quan es crea un procés.
 * `env`: mostra totes les variables definides.
@@ -194,7 +197,7 @@ Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen autom�
 ### La variable `$PATH`
 És una llista de carpetes (separades per dos punts `:`) on la Shell busca els binaris quan escrius una comanda com `ls` o `gcc`:
 * La Shell busca d'esquerra a dreta i executa el primer que troba.
-* **Perill d'examen**: Si poses `export PATH=.:$PATH`, la Shell buscarà primer a la teva carpeta actual (`.`). Si descarregues un projecte d'Internet que tingui un programa fraudulent anomenat `ls`, la Shell l'executarà abans que el `ls` autèntic del sistema!
+* Si poses `export PATH=.:$PATH`, la Shell buscarà primer a la teva carpeta actual (`.`). Si descarregues un projecte d'Internet que tingui un programa fraudulent anomenat `ls`, la Shell l'executarà abans que el `ls` del sistema.
 * `which <comanda>`: et diu la ruta exacta del fitxer que s'executarà.
 
 ---
@@ -206,24 +209,21 @@ Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen autom�
 * `<` : Fa que el programa llegeixi les dades des d'un fitxer en lloc del teclat.
 * `&` : Posa la comanda en segon pla (*background*); la Shell et torna el control immediatament.
 * **Comodins (*Globbing*)**: `*` (qualsevol grup de lletres) i `?` (una sola lletra).  
-  **Detall d'examen**: **L'expansió del comodí la fa la Shell abans d'executar el programa**. Si fas `grep hola *.c`, el teu programa no rep l'asterisc; rep directament `argv = ["grep", "hola", "a.c", "b.c"]`.
+  **L'expansió del comodí la fa la Shell abans d'executar el programa**. Si fas `grep hola *.c`, el teu programa no rep l'asterisc; rep directament `argv = ["grep", "hola", "a.c", "b.c"]`.
 
 ---
 
 ## 1.12 Preguntes típiques d'examen resoltes (Tema 1)
 
 ### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari?
-> **Resposta breu i exacta**:  
-> Perquè per canviar de mode d'usuari a mode kernel cal executar una instrucció màquina específica de la CPU (`syscall`, `sysenter`, `int 0x80`), i cal posar els paràmetres als registres concrets que demana l'arquitectura del processador.
+Perquè per canviar de mode d'usuari a mode kernel cal executar una instrucció màquina específica de la CPU (`syscall`, `sysenter`, `int 0x80`), i cal posar els paràmetres als registres concrets que demana l'arquitectura del processador.
 
 ### 2. Quins tres tipus d'esdeveniments fan que la CPU entri al Kernel?
-> **Resposta breu i exacta**:  
-> 1. **Interrupció de maquinari**: asíncrona, la genera un dispositiu extern (teclat, disc, rellotge).  
-> 2. **Excepció de programari**: síncrona, la causa una instrucció del programa amb error (divisió per zero, violació de memòria).  
-> 3. **Crida a sistema (*trap*)**: síncrona, la demana expressament el codi per sol·licitar un servei al sistema operatiu.
+1. **Interrupció de maquinari**: asíncrona, la genera un dispositiu extern (teclat, disc, rellotge).  
+2. **Excepció de programari**: síncrona, la causa una instrucció del programa amb error (divisió per zero, violació de memòria).  
+3. **Crida a sistema (*trap*)**: síncrona, la demana expressament el codi per sol·licitar un servei al sistema operatiu.
 
 ### 3. Executem `ln A B`. Sabem que `A` existeix, `B` no existeix, tenim permisos a la carpeta i hi ha espai al disc, però la comanda falla. Per què?
-> **Resposta breu i exacta**:  
-> Per un d'aquests dos motius:  
-> 1. `A` és una **carpeta/directori**, i UNIX no permet crear *hard links* sobre carpetes per evitar cicles a l'arbre de fitxers.  
-> 2. `A` i `B` estan en **particions o discs diferents**, i un *hard link* només pot compartir inodes dins del mateix sistema de fitxers.
+Per un d'aquests dos motius:  
+1. `A` és una **carpeta/directori**, i UNIX no permet crear *hard links* sobre carpetes per evitar cicles a l'arbre de fitxers.  
+2. `A` i `B` estan en **particions o discs diferents**, i un *hard link* només pot compartir inodes dins del mateix sistema de fitxers.

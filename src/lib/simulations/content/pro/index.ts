@@ -21,6 +21,10 @@ import { binary_search } from './implementations/binary_search';
 import { mergesort } from './implementations/mergesort';
 import { quicksort } from './implementations/quicksort';
 import { fast_power } from './implementations/fast_power';
+import { waitpid_diagnosi } from './implementations/waitpid_diagnosi';
+import { diccionari_abc } from './implementations/diccionari_abc';
+import { diccionari_avl } from './implementations/diccionari_avl';
+import { diccionari_esborrar } from './implementations/diccionari_esborrar';
 
 export const pro: Record<string, Simulation> = {
     punt_basic,
@@ -44,5 +48,9 @@ export const pro: Record<string, Simulation> = {
     binary_search,
     mergesort,
     quicksort,
-    fast_power
+    fast_power,
+    waitpid_diagnosi,
+    diccionari_abc,
+    diccionari_avl,
+    diccionari_esborrar
 };

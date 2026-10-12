@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "umlviz" | "uml2relviz" | "dmlviz" | "dacviz" | "viewviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -71,6 +71,11 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   algoviz:        makePassthrough("algoviz"),
   oopviz:         makePassthrough("oopviz"),
   sqlviz:         makePassthrough("sqlviz"),
+  umlviz:         makePassthrough("umlviz"),
+  uml2relviz:     makePassthrough("uml2relviz"),
+  dmlviz:         makePassthrough("dmlviz"),
+  dacviz:         makePassthrough("dacviz"),
+  viewviz:        makePassthrough("viewviz"),
   stackviz:       makePassthrough("stackviz"),
   queueviz:       makePassthrough("queueviz"),
   vectorviz:      makePassthrough("vectorviz"),
@@ -80,6 +85,7 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   bintreeviz:     makePassthrough("bintreeviz"),
   heapviz:        makePassthrough("heapviz"),
   bstviz:         makePassthrough("bstviz"),
+  abcviz:         makePassthrough("abcviz"),
   proofviz:       makePassthrough("proofviz"),
   mafs:           makePassthrough("mafs"),
   videoviz:       makePassthrough("videoviz"),
@@ -87,6 +93,16 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   youtubeviz:     makePassthrough("youtubeviz"),
   threeviz:       makePassthrough("threeviz"),
   three:          makePassthrough("threeviz"), // Alias → maps to same component
+  dictviz:        makePassthrough("dictviz"),
+  tadviz:         makePassthrough("tadviz"),
+  directaddressviz: makePassthrough("directaddressviz"),
+  hashviz:        makePassthrough("hashviz"),
+  collisionviz:   makePassthrough("collisionviz"),
+  chainingviz:    makePassthrough("chainingviz"),
+  openaddressviz: makePassthrough("openaddressviz"),
+  treeterviz:     makePassthrough("treeterviz"),
+  abcdegenviz:    makePassthrough("abcdegenviz"),
+  avlrotviz:      makePassthrough("avlrotviz"),
   asymptoticviz:  makePassthrough("asymptoticviz"),
   growthviz:      makePassthrough("growthviz"),
   dncviz:         makePassthrough("dncviz"),
@@ -112,4 +128,22 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   osmediatorviz:      makePassthrough("osmediatorviz"),
   compileviz:         makePassthrough("compileviz"),
   processviz:         makePassthrough("processviz"),
+  procoverviewviz:    makePassthrough("procoverviewviz"),
+  processoverviewviz: makePassthrough("processoverviewviz"),
+  signalpcbviz:       makePassthrough("signalpcbviz"),
+  killviz:            makePassthrough("killviz"),
+  sigactionviz:       makePassthrough("sigactionviz"),
+  sigprocmaskviz:     makePassthrough("sigprocmaskviz"),
+  sigmaskviz:         makePassthrough("sigprocmaskviz"),
+  sigsuspendviz:      makePassthrough("sigsuspendviz"),
+  alarmviz:           makePassthrough("alarmviz"),
+  forkviz:            makePassthrough("forkviz"),
+  execviz:            makePassthrough("execviz"),
+  blockedviz:         makePassthrough("blockedviz"),
+  zombieviz:          makePassthrough("zombieviz"),
+  stoppedviz:         makePassthrough("stoppedviz"),
+  contextswitchviz:   makePassthrough("contextswitchviz"),
+  schedulerviz:       makePassthrough("schedulerviz"),
+  roundrobinviz:      makePassthrough("roundrobinviz"),
+  cfsviz:             makePassthrough("cfsviz"),
 };

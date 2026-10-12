@@ -178,8 +178,6 @@ La barra $\mid$ separa la part ja ordenada $v[0 \dots k-1]$ (esquerra) de la par
 :::insertionsortviz
 :::
 
-
-
 A diferència de selecció, la inserció és un algorisme **adaptatiu**: el bucle intern s'atura tan bon punt troba un element menor o igual, de manera que el nombre d'operacions depèn de la disposició de les dades.
 
 **Cas millor (vector ja ordenat):** Cada nou element compleix $v[k] \ge v[k-1]$. La condició del bucle intern falla a la primera comprovació i fa $0$ intercanvis:

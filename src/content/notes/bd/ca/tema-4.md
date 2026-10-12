@@ -6,10 +6,7 @@ order: 4
 draft: true
 ---
 
-Un **procediment emmagatzemat** (o funció) és un bloc de codi estructurat que s'emmagatzema i s'executa directament dins de l'SGBD com un objecte de la base de dades.
-
-* **Avantatges:** Redueix el tràfic de xarxa entre client i servidor, centralitza les regles de negoci i optimitza el rendiment d'operacions complexes.
-* **Llenguatge:** A PostgreSQL s'utilitza **PL/pgSQL**, que combina instruccions SQL amb estructures de control imperatiu (variables, condicions, bucles i excepcions).
+Un **procediment emmagatzemat** (o funció) és un bloc de codi que s'emmagatzema i s'executa directament dins de l'SGBD. Redueix el tràfic de xarxa entre client i servidor, centralitza les regles de negoci i optimitza el rendiment d'operacions complexes. A PostgreSQL s'utilitza **PL/pgSQL**, que combina SQL amb estructures de control imperatiu (variables, condicions, bucles i excepcions).
 
 ---
 
@@ -30,8 +27,8 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION nom_funcio(tipus_param);
 ```
 
-### Invocació d'una funció:
-Es pot cridar de manera interactiva des d'una consulta SQL, des d'un programa extern (JDBC) o des d'un altre procediment:
+Es pot cridar des d'una consulta SQL, des d'un programa extern (JDBC) o des d'un altre procediment:
+
 ```sql
 SELECT nom_funcio('paràmetre');
 SELECT * FROM nom_funcio('paràmetre');
@@ -41,8 +38,7 @@ SELECT * FROM nom_funcio('paràmetre');
 
 ## 4.2. Paràmetres i tipus de retorn
 
-### 1. Retorn d'un valor únic (o una tupla)
-Utilitza `RETURNS tipus` i finalitza amb la sentència `RETURN variable;`:
+**Retorn d'un valor únic:** utilitza `RETURNS tipus` i finalitza amb `RETURN variable;`:
 
 ```sql [Exemple: Retorn escalar]
 CREATE FUNCTION trobar_ciutat(dni_client VARCHAR(9)) 
@@ -59,8 +55,8 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### 2. Funció sense retorn (`void`)
-Quan la funció només executa accions d'actualització (`INSERT`, `UPDATE`, `DELETE`):
+**Funció sense retorn (`void`):** quan la funció només executa accions d'actualització (`INSERT`, `UPDATE`, `DELETE`):
+
 ```sql
 CREATE FUNCTION actualitzar_estat(codi_comanda INT) 
 RETURNS void AS $$
@@ -70,11 +66,7 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### 3. Retorn d'un conjunt de tuples (`SETOF`)
-Quan la funció ha de retornar múltiples files:
-* S'especifica `RETURNS SETOF tipus`.
-* S'utilitza la clàusula **`RETURN NEXT variable;`** a cada fila generada (no interromp l'execució de la funció).
-* La funció finalitza amb un **`RETURN;`** buit.
+**Retorn d'un conjunt de tuples (`SETOF`):** quan la funció ha de retornar múltiples files, s'especifica `RETURNS SETOF tipus`, s'utilitza `RETURN NEXT variable;` per afegir cada fila al resultat (no interromp l'execució), i la funció finalitza amb un `RETURN;` buit:
 
 ```sql [Exemple: Generar una seqüència de tuples]
 CREATE FUNCTION exemple_retorn_n_tuples(max INTEGER) 
@@ -96,34 +88,22 @@ $$ LANGUAGE plpgsql;
 
 ## 4.3. Variables i creació de nous tipus
 
-### Declaració de variables
-Totes les variables locals es defineixen al bloc `DECLARE` i s'emmagatzemen a memòria volàtil:
+Totes les variables locals es defineixen al bloc `DECLARE`:
 
 ```sql [Sintaxi de declaració]
 nom_variable [CONSTANT] tipus [NOT NULL] [{DEFAULT | :=} expressio];
 ```
 
-* **Sense inicialitzar:** Prenen valor `NULL` per defecte.
-* **Amb `NOT NULL`:** És obligatori assignar-hi un valor per defecte (`DEFAULT` o `:=`).
-* **Ús de `%TYPE`:** Hereta automàticament el tipus de dada d'una columna de la base de dades. Si el camp de la taula canvia de mida, la variable s'adapta sense tocar el codi:
-  ```sql
-  dni_client clients.dni%TYPE;
-  ```
+Sense inicialitzar, prenen valor `NULL`. Amb `NOT NULL` és obligatori assignar-hi un valor per defecte. `%TYPE` hereta automàticament el tipus d'una columna de la BD; si el camp de la taula canvia de mida, la variable s'adapta sense tocar el codi:
 
-### Assignació de valors a variables
-1. **Assignació directa:** `var := expressio;`
-2. **Assignació mitjançant consulta (`SELECT ... INTO`):**
-   ```sql
-   SELECT ciutat INTO ciutat_client
-   FROM clients
-   WHERE dni = dni_client;
-   ```
-3. **Assignació del resultat d'una altra funció:**
-   ```sql
-   imp_comanda := import_una_com(numero_com);
-   ```
+```sql
+dni_client clients.dni%TYPE;
+```
+
+L'assignació es pot fer de tres maneres: directa (`var := expressio;`), mitjançant consulta (`SELECT ... INTO`), o assignant el resultat d'una altra funció (`imp_comanda := import_una_com(numero_com);`).
 
 ### Creació de tipus compostos (`CREATE TYPE`)
+
 Quan una funció ha de retornar una estructura de diversos atributs que no coincideix amb cap taula existent:
 
 ```sql [Exemple: Tipus compost]
@@ -153,7 +133,6 @@ $$ LANGUAGE plpgsql;
 
 ## 4.4. Sentències condicionals i variable `FOUND`
 
-### Estructura `IF ... THEN ... ELSE`
 ```sql [Sintaxi condicional]
 IF condicio THEN
     -- bloc de sentències
@@ -164,12 +143,7 @@ ELSE
 END IF;
 ```
 
-### La variable automàtica `FOUND`
-PostgreSQL manté una variable local booleana anomenada `FOUND` (inicia en `False`) que reflecteix el resultat de la darrera sentència SQL executada:
-
-* **`SELECT ... INTO`:** Passa a `True` si la consulta troba alguna fila; `False` si retorna cap fila.
-* **`UPDATE`, `INSERT`, `DELETE`:** Passa a `True` si almenys una fila s'ha vist afectada; `False` altrament.
-* **Bucle `FOR`:** Passa a `True` si el bucle itera com a mínim un cop; `False` si el resultat era buit.
+PostgreSQL manté una variable local booleana `FOUND` (inicia en `False`) que reflecteix el resultat de la darrera sentència SQL: passa a `True` si un `SELECT ... INTO` troba alguna fila, si un `UPDATE`/`INSERT`/`DELETE` afecta almenys una fila, o si un bucle `FOR` itera com a mínim un cop.
 
 ```sql [Exemple d'ús de FOUND]
 CREATE FUNCTION calcul_desc_client(dni_client clients.dni%TYPE) 
@@ -200,8 +174,7 @@ $$ LANGUAGE plpgsql;
 
 ## 4.5. Sentències iteratives (Bucles)
 
-### 1. Bucle `FOR` sobre consultes SQL (El més utilitzat)
-Itera automàticament fila per fila sobre el conjunt retornat per una consulta:
+**Bucle `FOR` sobre consultes SQL (el més utilitzat):** itera automàticament fila per fila sobre el conjunt retornat per una consulta:
 
 ```sql [Sintaxi i exemple FOR sobre SELECT]
 CREATE FUNCTION import_totes_com(dni_client clients.dni%TYPE) 
@@ -223,16 +196,16 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### 2. Bucle `FOR` numèric
-Per a un nombre conegut d'iteracions:
+**Bucle `FOR` numèric** (per a un nombre conegut d'iteracions):
+
 ```sql
 FOR i IN [REVERSE] 1..10 LOOP
     -- sentències
 END LOOP;
 ```
 
-### 3. Bucle `WHILE`
-Itera mentre la condició sigui certa:
+**Bucle `WHILE`** (itera mentre la condició sigui certa):
+
 ```sql
 WHILE EXISTS (SELECT * FROM items WHERE preu_unitat < 25) LOOP
     UPDATE items
@@ -241,7 +214,8 @@ WHILE EXISTS (SELECT * FROM items WHERE preu_unitat < 25) LOOP
 END LOOP;
 ```
 
-### 4. Bucle incondicional `LOOP ... EXIT`
+**Bucle incondicional `LOOP ... EXIT`:**
+
 ```sql
 LOOP
     -- sentències
@@ -253,13 +227,7 @@ END LOOP;
 
 ## 4.6. Cursors explícits
 
-Un cursor és un punter que recorre individualment les files resultants d'una consulta SQL. És l'alternativa clàssica al `FOR ... IN SELECT`:
-
-1. **Declarar:** `DECLARE nom_cursor CURSOR FOR consulta;`
-2. **Obrir:** `OPEN nom_cursor;`
-3. **Llegir fila:** `FETCH nom_cursor INTO variable;`
-4. **Comprovar:** `EXIT WHEN NOT FOUND;`
-5. **Tancar:** `CLOSE nom_cursor;`
+Un cursor és un punter que recorre individualment les files resultants d'una consulta SQL. És l'alternativa clàssica al `FOR ... IN SELECT`. El cicle de vida és: declarar, obrir, llegir fila a fila amb `FETCH`, comprovar `NOT FOUND` per sortir, i tancar:
 
 ```sql [Exemple de cursor explícit]
 CREATE FUNCTION clients_ciutat(ciutat_in clients.ciutat%TYPE) 
@@ -284,14 +252,13 @@ $$ LANGUAGE plpgsql;
 
 ## 4.7. Gestió d'errors (`EXCEPTION` i `RAISE EXCEPTION`)
 
-### Provocar un error d'usuari (`RAISE EXCEPTION`)
-Interromp la transacció i llança un missatge d'error personalitzat:
+`RAISE EXCEPTION` interromp la transacció i llança un missatge d'error personalitzat:
+
 ```sql
 RAISE EXCEPTION 'Quantitat % fora de rang permès', qtt;
 ```
 
-### Captura d'errors (`EXCEPTION`)
-S'afegeix al final del bloc de la funció per interceptar fallades i evitar que avortin l'aplicació:
+El bloc `EXCEPTION` s'afegeix al final de la funció per interceptar fallades i evitar que avortin l'aplicació:
 
 ```sql [Estructura del bloc EXCEPTION]
 BEGIN
@@ -308,32 +275,32 @@ EXCEPTION
 END;
 ```
 
-* **Variables de diagnòstic:**
-  * `SQLSTATE`: Codi alfanumèric estàndard de 5 caràcters de l'error.
-  * `SQLERRM`: Cadena amb el text descriptiu de l'error.
+Les variables de diagnòstic `SQLSTATE` (codi alfanumèric de 5 caràcters) i `SQLERRM` (text descriptiu de l'error) estan disponibles dins de cada bloc `WHEN`.
 
 ### Les 4 estratègies de captura d'errors
 
-1. **Captura i re-llançament d'excepció (Neteja i missatge amigable):**
-   ```sql
-   EXCEPTION
-       WHEN foreign_key_violation THEN
-           RAISE EXCEPTION 'La comanda o el producte no existeixen';
-       WHEN OTHERS THEN
-           RAISE EXCEPTION 'Error intern del sistema: %', SQLERRM;
-   ```
-2. **Captura i retorn d'un objecte d'error:**
-   La funció retorna un tipus `TError(codi, motiu)`. Retorna codi `'0'` si té èxit o `SQLSTATE` i `SQLERRM` si falla.
-3. **Captura i inserció a taula d'auditoria d'errors:**
-   ```sql
-   EXCEPTION
-       WHEN OTHERS THEN
-           INSERT INTO t_errors VALUES (SQLSTATE, SQLERRM);
-           RETURN;
-   ```
-4. **Captura i recuperació automàtica dins del procediment:**
-   ```sql
-   EXCEPTION
-       WHEN undefined_table THEN
-           CREATE TABLE prova (a INT PRIMARY KEY, b INT);
-   ```
+**1. Captura i re-llançament (missatge amigable):**
+```sql
+EXCEPTION
+    WHEN foreign_key_violation THEN
+        RAISE EXCEPTION 'La comanda o el producte no existeixen';
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error intern del sistema: %', SQLERRM;
+```
+
+**2. Captura i retorn d'un objecte d'error:** la funció retorna un tipus `TError(codi, motiu)`, retornant codi `'0'` si té èxit o `SQLSTATE` i `SQLERRM` si falla.
+
+**3. Captura i inserció a taula d'auditoria:**
+```sql
+EXCEPTION
+    WHEN OTHERS THEN
+        INSERT INTO t_errors VALUES (SQLSTATE, SQLERRM);
+        RETURN;
+```
+
+**4. Captura i recuperació automàtica dins del procediment:**
+```sql
+EXCEPTION
+    WHEN undefined_table THEN
+        CREATE TABLE prova (a INT PRIMARY KEY, b INT);
+```

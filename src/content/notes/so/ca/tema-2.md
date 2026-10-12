@@ -1,6 +1,6 @@
 ---
 title: "Tema 2: Llenguatge C"
-description: "Cicle de compilació, Makefiles, crides de baix nivell, eines d'inspecció (nm, objdump, strace) i gestió d'errors."
+description: "Makefiles, crides de baix nivell, eines d'inspecció i gestió d'errors."
 readTime: "15 min"
 order: 2
 draft: false
@@ -25,18 +25,17 @@ El pas de codi font en C a un fitxer executable es fa en **3 passos consecutius*
 
 ---
 
-## 2.2 Baix nivell a SO: canals i `sprintf` + `write`
+## 2.2 `sprintf` + `write`
 
-Als exàmens i laboratoris de SO **no s'utilitza `printf` ni `cout`** (són funcions d'alt nivell que guarden dades en una memòria intermèdia pròpia abans d'escriure). S'utilitza la combinació directa de baix nivell:
+`printf` i `cout` són funcions d'alt nivell que guarden dades en una memòria intermèdia pròpia abans d'escriure. Però a SO, s'utilitza la combinació directa de baix nivell:
 
 1. **`sprintf(buf, format, ...)`** (`man 3 sprintf`, `<stdio.h>`): Converteix números o variables a una cadena de text ASCII dins del vector `buf`. **Tot el que volem mostrar per pantalla ha de ser text ASCII.**
-2. **`write(fd, buf, nbytes)`** (`man 2 write`, `<unistd.h>`): Crida a sistema que aboca directament el nombre de bytes al dispositiu associat al canal `fd`.
+2. **`write(fd, buf, nbytes)`** (`man 2 write`, `<unistd.h>`): Crida a sistema que aboca directament els bytes al canal indicat per `fd`.
 
-### Els 3 canals estàndard oberts per defecte
-Cada cop que s'executa un procés, el sistema li obre **3 canals automàticament**:
+`fd` (*file descriptor*) és un **descriptor de fitxer** és simplement un **número enter** que el SO assigna a cada fitxer o dispositiu obert per identificar-lo. Cada procés té oberts per defecte **3 canals**:
 * `fd = 0`: **`stdin`** (entrada estàndard, teclat).
 * `fd = 1`: **`stdout`** (sortida estàndard, pantalla).
-* `fd = 2`: **`stderr`** (sortida d'errors, pantalla per on s'escriuen els missatges d'error).
+* `fd = 2`: **`stderr`** (sortida d'errors, pantalla per defecte).
 
 ```c
 #include <stdio.h>
@@ -56,7 +55,7 @@ write(1, buf, len);
 
 ---
 
-## 2.3 Makefiles i automatització de la compilació
+## 2.3 Makefiles
 
 L'eina `make` serveix per no haver de recompilar tot el projecte sencer cada cop que fem un canvi petit. Compara la data de modificació de l'arxiu que volem crear (*target*) amb la dels arxius dels quals depèn (*dependències*).
 
@@ -65,18 +64,20 @@ L'eina `make` serveix per no haver de recompilar tot el projecte sencer cada cop
 target: dependència1 dependència2 ... dependènciaN
 	comanda_de_generació
 ```
-* **IMPORTANTÍSSIM**: La línia de la comanda **HA de començar obligatòriament amb un TABULADOR (`\t`)**. Si hi poses espais, `make` fallarà amb l'error `missing separator. Stop.`
+La línia de la comanda **HA de començar amb un TABULADOR**. Si hi poses espais, `make` fallarà amb l'error `missing separator. Stop.`
 
-### Per què cal posar els fitxers `.h` com a dependències? (Pregunta d'examen)
-Els fitxers capçalera (`.h`) no es compilen directament, però el preprocessador els inclou dins dels `.c`.
-* Si poses només `util.o: util.c`, i demà canvies una definició a `util.h`, `make` **no s'adonarà del canvi** i no recompilarà `util.o`. El teu programa quedarà desactualitzat amb errors estranys de memòria.
-* **Forma correcta**:
-  ```makefile
-  util.o: util.c util.h
-  	gcc -c util.c
-  ```
+:::shellviz{command="make" suggestions="make,make clean" title="Terminal: Automatització amb make"}
+:::
 
-### Exemple complet de Makefile per a laboratori i examen
+### Per què cal posar els fitxers `.h` com a dependències?
+Els fitxers capçalera (`.h`) no es compilen directament, però el preprocessador els inclou dins dels `.c`. Si poses només `util.o: util.c`, i demà canvies una definició a `util.h`, `make` **no s'adonarà del canvi** i no recompilarà `util.o`. El teu programa quedarà desactualitzat amb errors estranys de memòria.
+
+```makefile
+util.o: util.c util.h
+  gcc -c util.c
+```
+
+### Exemple de makefile:
 ```makefile
 all: prog
 
@@ -92,9 +93,6 @@ util.o: util.c util.h
 clean:
 	rm -f prog *.o
 ```
-
-:::shellviz{command="make" suggestions="make,make clean" title="Terminal: Automatització amb make"}
-:::
 
 ---
 
@@ -136,8 +134,8 @@ Llegeix la llista de funcions i variables globals que conté el fitxer:
 * **`R` / `r`**: Dades de només lectura (constants com `const int c = 1;` o textos entre cometes).
 * **`U`**: Símbols no definits (funcions externes que s'enllaçaran en temps d'execució).
 
-> **Pregunta d'examen**: *Per què les variables locals d'una funció NO apareixen a `nm`?*  
-> Perquè les variables locals no es guarden al fitxer executable del disc. Es creen i es destrueixen al vol dins de la **pila (*stack*)** de la memòria RAM quan s'executa la funció.
+*Per què les variables locals d'una funció NO apareixen a `nm`?*  
+Perquè les variables locals no es guarden al fitxer executable del disc. Es creen i es destrueixen al vol dins de la **pila (*stack*)** de la memòria RAM quan s'executa la funció.
 
 ### 2. `objdump -d <executable>`
 Desassembla el fitxer binari i et mostra les instruccions en llenguatge d'assemblador per veure exactament quines instruccions farà la CPU.
@@ -147,9 +145,7 @@ Executa el programa i et mostra per pantalla **totes les crides a sistema que fa
 * `strace -e read ./prog < fitxer`: filtra per veure només les crides `read`.
 * `strace -o registre.txt ./prog`: guarda la llista en un fitxer de text.
 
-> **Rendiment d'E/S (Pregunta d'examen)**:  
-> Si llegeixes un fitxer de 1024 bytes caràcter a caràcter (`read(0, &c, 1)`), fas **1024 crides a sistema**. Cada crida obliga la CPU a canviar de mode usuari a kernel i salvar registres, fent anar el programa molt lent.  
-> En canvi, si llegeixes amb un búfer de 256 bytes (`read(0, buf, 256)`), només fas **4 crides a sistema**, i el programa funciona molt més ràpid.
+Si llegeixes un fitxer de 1024 bytes caràcter a caràcter (`read(0, &c, 1)`), fas **1024 crides a sistema**. Cada crida obliga la CPU a canviar de mode usuari a kernel i salvar registres, fent anar el programa molt lent. En canvi, si llegeixes amb un búfer de 256 bytes (`read(0, buf, 256)`), només fas **4 crides a sistema**, i el programa funciona molt més ràpid.
 
 ---
 
@@ -166,7 +162,7 @@ int main(int argc, char *argv[])
   * `argv[argc]`: Sempre val `NULL`.
 * **Important**: Els arguments arriben **SEMPRE com a text**. Si escrius `./prog 42`, `argv[1]` és la paraula `"42"`, no el número enter. Per fer càlculs cal convertir-lo abans amb `atoi(argv[1])`.
 
-### Patró de la funció `Usage()` (obligatori a exàmens)
+### Patró de la funció `Usage()`
 A tots els exàmens has de comprovar que l'usuari hagi passat els arguments correctes abans de començar a fer res:
 
 ```c
@@ -235,12 +231,10 @@ int *p = &a; // p guarda l'adreça de 'a'
 ## 2.10 Preguntes típiques d'examen resoltes (Tema 2)
 
 ### 1. Per què un executable compilat amb `-static` ocupa tant d'espai comparat amb el normal?
-> **Resposta breu i exacta**:  
-> Perquè el flag `-static` copia físicament tot el codi màquina de les funcions de biblioteca (com `sprintf`, `strlen`, etc.) dins del propi fitxer executable. En la compilació dinàmica, el fitxer només guarda una petita referència i les biblioteques es comparteixen a la memòria des del sistema.
+ Perquè el flag `-static` copia físicament tot el codi màquina de les funcions de biblioteca (com `sprintf`, `strlen`, etc.) dins del propi fitxer executable. En la compilació dinàmica, el fitxer només guarda una petita referència i les biblioteques es comparteixen a la memòria des del sistema.
 
 ### 2. A quina secció del fitxer binari pertanyen aquestes variables segons `nm`: una constant global, una global inicialitzada a 0, una global inicialitzada a 100, i una variable local de `main`?
-> **Resposta breu i exacta**:  
-> * Constant global: secció **`R` / `r` (*rodata*)** (només lectura).  
-> * Global inicialitzada a 0: secció **`B` / `b` (*bss*)** (sense valor inicial, el sistema la posa a 0 al carregar-la).  
-> * Global inicialitzada a 100: secció **`D` / `d` (*data*)** (dades inicialitzades guardades al binari).  
-> * Variable local de `main`: **No apareix a `nm`**, perquè es crea a la pila (*stack*) de memòria mentre el programa s'executa.
+* Constant global: secció **`R` / `r` (*rodata*)** (només lectura).  
+* Global inicialitzada a 0: secció **`B` / `b` (*bss*)** (sense valor inicial, el sistema la posa a 0 al carregar-la).  
+* Global inicialitzada a 100: secció **`D` / `d` (*data*)** (dades inicialitzades guardades al binari).  
+* Variable local de `main`: **No apareix a `nm`**, perquè es crea a la pila (*stack*) de memòria mentre el programa s'executa.
