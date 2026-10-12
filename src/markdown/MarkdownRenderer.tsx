@@ -22,8 +22,24 @@ const SimulationPlayer = React.lazy(() => import("../components/ui/players/Simul
 const UMLCanvas = React.lazy(() => import("../components/ui/visualizers/sql/uml/UMLCanvas"));
 const UMLToRelationalVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/uml/UMLToRelationalVisualizer"));
 const DMLPlayer = React.lazy(() => import("../components/ui/visualizers/sql/dml/DMLPlayer"));
+const DeletePlayer = React.lazy(() => import("../components/ui/visualizers/sql/dml/DeletePlayer"));
+const UpdatePlayer = React.lazy(() => import("../components/ui/visualizers/sql/dml/UpdatePlayer"));
 const DACVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/dac/DACVisualizer"));
 const ViewVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/views/ViewVisualizer"));
+const ViewUpdatableVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/views/ViewUpdatableVisualizer"));
+const DbHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DbHierarchyVisualizer"));
+const SessionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/SessionVisualizer"));
+const DomainVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DomainVisualizer"));
+const AssertionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/AssertionVisualizer"));
+const DistinctVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DistinctVisualizer"));
+const GroupByVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/GroupByVisualizer"));
+const AggregateVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/AggregateVisualizer"));
+const NaturalJoinVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/NaturalJoinVisualizer"));
+const UnionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/UnionVisualizer"));
+const JoinAggVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/JoinAggVisualizer"));
+const ExtractVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/ExtractVisualizer"));
+const IntervalVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/IntervalVisualizer"));
+const RelationalAlgebraVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/RelationalAlgebraVisualizer"));
 
 // — Shared —
 const GraphVisualizer = React.lazy(() => import("../components/ui/visualizers/shared/GraphVisualizer"));
@@ -263,6 +279,69 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    distinctviz: () => {
+        return (
+            <SafeSuspense>
+                <DistinctVisualizer />
+            </SafeSuspense>
+        );
+    },
+    groupbyviz: () => {
+        return (
+            <SafeSuspense>
+                <GroupByVisualizer />
+            </SafeSuspense>
+        );
+    },
+    aggregateviz: () => {
+        return (
+            <SafeSuspense>
+                <AggregateVisualizer />
+            </SafeSuspense>
+        );
+    },
+    naturaljoinviz: () => {
+        return (
+            <SafeSuspense>
+                <NaturalJoinVisualizer />
+            </SafeSuspense>
+        );
+    },
+    unionviz: () => {
+        return (
+            <SafeSuspense>
+                <UnionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    joinaggviz: () => {
+        return (
+            <SafeSuspense>
+                <JoinAggVisualizer />
+            </SafeSuspense>
+        );
+    },
+    extractviz: () => {
+        return (
+            <SafeSuspense>
+                <ExtractVisualizer />
+            </SafeSuspense>
+        );
+    },
+    intervalviz: () => {
+        return (
+            <SafeSuspense>
+                <IntervalVisualizer />
+            </SafeSuspense>
+        );
+    },
+    relalgviz: () => {
+        return (
+            <SafeSuspense>
+                <RelationalAlgebraVisualizer />
+            </SafeSuspense>
+        );
+    },
     umlviz: (props: MarkdownComponentProps) => {
         return (
             <SafeSuspense>
@@ -281,10 +360,38 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
-    dmlviz: () => {
+    dmlviz: (props: MarkdownComponentProps) => {
+        if (props.operation === 'delete' || props.type === 'delete') {
+            return (
+                <SafeSuspense>
+                    <DeletePlayer />
+                </SafeSuspense>
+            );
+        }
+        if (props.operation === 'update' || props.type === 'update') {
+            return (
+                <SafeSuspense>
+                    <UpdatePlayer />
+                </SafeSuspense>
+            );
+        }
         return (
             <SafeSuspense>
                 <DMLPlayer />
+            </SafeSuspense>
+        );
+    },
+    deleteviz: () => {
+        return (
+            <SafeSuspense>
+                <DeletePlayer />
+            </SafeSuspense>
+        );
+    },
+    updateviz: () => {
+        return (
+            <SafeSuspense>
+                <UpdatePlayer />
             </SafeSuspense>
         );
     },
@@ -299,6 +406,48 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <ViewVisualizer />
+            </SafeSuspense>
+        );
+    },
+    viewupdviz: () => {
+        return (
+            <SafeSuspense>
+                <ViewUpdatableVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dbhierarchyviz: () => {
+        return (
+            <SafeSuspense>
+                <DbHierarchyVisualizer />
+            </SafeSuspense>
+        );
+    },
+    sessionviz: () => {
+        return (
+            <SafeSuspense>
+                <SessionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    txviz: () => {
+        return (
+            <SafeSuspense>
+                <SessionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    domainviz: () => {
+        return (
+            <SafeSuspense>
+                <DomainVisualizer />
+            </SafeSuspense>
+        );
+    },
+    assertionviz: () => {
+        return (
+            <SafeSuspense>
+                <AssertionVisualizer />
             </SafeSuspense>
         );
     },
@@ -882,7 +1031,7 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'umlviz', 'uml2relviz', 'dmlviz', 'dacviz', 'viewviz',
+            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
@@ -906,9 +1055,12 @@ const rehypePluginsConfig = [
             'sqlviz': ['simulation', 'defaultTab'],
             'umlviz': ['schema', 'title', 'height'],
             'uml2relviz': [],
-            'dmlviz': [],
+            'dmlviz': ['operation', 'type'],
+            'deleteviz': [],
+            'updateviz': [],
             'dacviz': [],
             'viewviz': [],
+            'viewupdviz': [],
             'proofviz': ['proof'],
             'youtubeviz': ['src', 'caption'],
             'linkedinviz': ['src'],

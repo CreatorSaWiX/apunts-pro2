@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import { usePWA } from '../../../contexts/PWAContext';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Wifi, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export const SWOfflineIndicator = () => {
     const { t } = useTranslation();
-    const {
-        offlineReady: [offlineReady, setOfflineReady],
-    } = useRegisterSW();
+    const { offlineReady, setOfflineReady } = usePWA();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {

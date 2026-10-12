@@ -13,9 +13,12 @@ import {
 import '@xyflow/react/dist/style.css';
 import { Maximize2, Minimize2, RotateCcw, Layers } from 'lucide-react';
 import { UMLClassNode, type UMLClassNodeType } from './nodes/UMLClassNode';
+import { UMLDiamondNode, type UMLDiamondNodeType } from './nodes/UMLDiamondNode';
 import { UMLEdge } from './edges/UMLEdge';
 import { umlSchemas } from '../../../../../lib/simulations/content/uml/schemas';
 import type { UMLSchema } from '../../../../../lib/simulations/content/uml/types';
+
+export type UMLCanvasNode = UMLClassNodeType | UMLDiamondNodeType;
 
 interface UMLCanvasProps {
     schema?: string | UMLSchema;
@@ -26,7 +29,8 @@ interface UMLCanvasProps {
 }
 
 const nodeTypes: NodeTypes = {
-    umlClass: UMLClassNode
+    umlClass: UMLClassNode,
+    umlDiamond: UMLDiamondNode
 };
 
 const edgeTypes: EdgeTypes = {
@@ -37,7 +41,8 @@ export default function UMLCanvas({
     schema: schemaProp,
     height = 420,
     interactive = true,
-    showHeader = true
+    showHeader = true,
+    title
 }: UMLCanvasProps) {
     const rfInstanceRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -52,12 +57,24 @@ export default function UMLCanvas({
     }, [schemaProp]);
 
     // Converteix classes a Nodes
-    const initialNodes = useMemo<UMLClassNodeType[]>(() => {
+    const initialNodes = useMemo<UMLCanvasNode[]>(() => {
         if (!activeSchema?.classes) return [];
 
-        return activeSchema.classes.map((cls, idx) => {
+        return activeSchema.classes.map((cls, idx): UMLCanvasNode => {
             const defaultX = 80 + (idx % 2) * 380;
             const defaultY = 50 + Math.floor(idx / 2) * 220;
+
+            if (cls.isDiamond) {
+                return {
+                    id: cls.id,
+                    type: 'umlDiamond',
+                    position: { x: cls.x ?? defaultX, y: cls.y ?? defaultY },
+                    data: {
+                        umlClass: cls,
+                        isActive: false
+                    }
+                };
+            }
 
             return {
                 id: cls.id,
@@ -83,6 +100,25 @@ export default function UMLCanvas({
         });
 
         return activeSchema.associations.map((ass) => {
+            // Cas especial: Associació recursiva (self-loop)
+            if (ass.fromClass === ass.toClass) {
+                return {
+                    id: ass.id,
+                    source: ass.fromClass,
+                    target: ass.toClass,
+                    sourceHandle: 'source-top',
+                    targetHandle: 'target-right',
+                    type: 'umlEdge',
+                    data: {
+                        name: ass.name,
+                        fromMultiplicity: ass.fromMultiplicity,
+                        toMultiplicity: ass.toMultiplicity,
+                        type: ass.type || 'association',
+                        dashed: ass.dashed
+                    }
+                };
+            }
+
             const fromPos = classPositions.get(ass.fromClass) || { x: 0, y: 0 };
             const toPos = classPositions.get(ass.toClass) || { x: 0, y: 0 };
 
@@ -119,7 +155,8 @@ export default function UMLCanvas({
                     name: ass.name,
                     fromMultiplicity: ass.fromMultiplicity,
                     toMultiplicity: ass.toMultiplicity,
-                    type: ass.type || 'association'
+                    type: ass.type || 'association',
+                    dashed: ass.dashed
                 }
             };
         });
@@ -177,7 +214,7 @@ export default function UMLCanvas({
                     <div className="flex items-end h-full">
                         <div className="px-3.5 py-2 border-t border-x rounded-t-xl text-[11px] font-mono tracking-wider flex gap-2 items-center shadow-sm relative top-px z-10 bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold whitespace-nowrap">
                             <Layers size={13} className="text-emerald-400 shrink-0" />
-                            <span>Esquema UML</span>
+                            <span>{title || activeSchema?.title || 'Esquema UML'}</span>
                         </div>
                     </div>
 

@@ -11,7 +11,8 @@ export interface UMLEdgeData extends Record<string, unknown> {
     name?: string;
     fromMultiplicity?: string;
     toMultiplicity?: string;
-    type?: 'association' | 'inheritance' | 'aggregation' | 'composition';
+    type?: 'association' | 'inheritance' | 'aggregation' | 'composition' | 'dashed';
+    dashed?: boolean;
 }
 
 export function UMLEdge({
@@ -28,6 +29,7 @@ export function UMLEdge({
 }: EdgeProps) {
     const edgeData = (data || {}) as UMLEdgeData;
     const isInheritance = edgeData.type === 'inheritance';
+    const isDashed = edgeData.type === 'dashed' || Boolean(edgeData.dashed);
 
     const [edgePath, labelX, labelY] = getSmoothStepPath({
         sourceX,
@@ -64,8 +66,9 @@ export function UMLEdge({
                 id={id}
                 path={edgePath}
                 style={{
-                    stroke: isInheritance ? '#818cf8' : '#64748b',
-                    strokeWidth: isInheritance ? 2.5 : 1.75,
+                    stroke: isInheritance ? '#818cf8' : isDashed ? '#a78bfa' : '#64748b',
+                    strokeWidth: isInheritance ? 2.5 : isDashed ? 2 : 1.75,
+                    strokeDasharray: isDashed ? '6 4' : undefined,
                     ...style
                 }}
                 markerEnd={isInheritance ? 'url(#uml-inheritance-arrow)' : markerEnd}

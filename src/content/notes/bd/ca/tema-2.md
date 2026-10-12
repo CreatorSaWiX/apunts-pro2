@@ -8,21 +8,15 @@ draft: false
 
 Aquest tema recull la definició de l'estructura de la base de dades (**DDL**) i la manipulació de les dades que conté (**DML**).
 
----
-
-## 2.1. Conceptes clau del Model Relacional
-
-A l'examen només necessites tenir clars tres conceptes:
-
 - **Taula (Relació):** Formada per **columnes** (atributs) i **files** (tuples amb valors atòmics).
-- **Clau Primària (PK):** Columna (o conjunt de columnes) que **identifica unívocament** cada fila. Mai pot ser repetida ni contenir valors nuls (`NOT NULL`).
+- **Clau Primària (PK):** Columna (o conjunt de columnes) que **identifica** cada fila. Mai pot ser repetida ni contenir valors nuls (`NOT NULL`).
 - **Clau Forana (FK):** Columna que **apunta a la clau primària** d'una altra taula per relacionar-les.
 
 ---
 
-## 2.2. Creació de taules (`CREATE TABLE`)
+## 2.1. Creació de taules (`CREATE TABLE`)
 
-```sql [Sintaxi general]
+```sql
 CREATE TABLE nom_taula (
     columna tipus_dades [restriccions_columna] [DEFAULT valor],
     ...,
@@ -43,9 +37,7 @@ CREATE TABLE nom_taula (
 
 `DEFAULT valor` indica el valor que pren la columna si no s'especifica en fer l'`INSERT`.
 
----
-
-## 2.3. Restriccions d'integritat
+### Restriccions d'integritat
 
 Es poden definir a nivell de **columna** (si només afecten aquella columna) o a nivell de **taula** (obligatori si impliquen més d'una columna, com ara una clau composta):
 
@@ -59,7 +51,7 @@ Es poden definir a nivell de **columna** (si només afecten aquella columna) o a
 
 ---
 
-## 2.4. Integritat referencial: accions compensatòries
+## 2.2. Integritat referencial
 
 Quan s'esborra (`DELETE`) o es modifica (`UPDATE`) una fila a la taula pare que està referenciada per una clau forana, s'aplica una d'aquestes polítiques:
 
@@ -74,67 +66,45 @@ FOREIGN KEY (col_fk) REFERENCES taula_pare(col_pk)
     ON DELETE CASCADE
     ON UPDATE RESTRICT
 ```
-
----
-
-## 2.5. Exemple complet DDL
-
-```sql [Definició de l'esquema d'empleats]
-CREATE TABLE departaments (
-    num_dpt     INTEGER,
-    nom_dpt     CHAR(30) NOT NULL,
-    ciutat_dpt  CHAR(30),
-    PRIMARY KEY (num_dpt)
-);
-
-CREATE TABLE empleats (
-    num_empl     INTEGER,
-    nom_empl     CHAR(30) NOT NULL,
-    sou          INTEGER DEFAULT 100000 CHECK (sou > 80000),
-    ciutat_empl  CHAR(30),
-    num_dpt      INTEGER,
-    num_proj     INTEGER,
-    PRIMARY KEY (num_empl),
-    FOREIGN KEY (num_dpt) REFERENCES departaments(num_dpt)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
-);
-```
+**Exemple:**
 
 :::sqlviz{simulation="ddl_empleats"}
 :::
 
 ---
 
-## 2.6. Inserció de files (`INSERT INTO`)
+## 2.3. Inserció de files (`INSERT INTO`)
 
 **Inserció posicional:** requereix passar valors per a **totes les columnes** en l'ordre exacte de creació de la taula:
 
-```sql [Inserció posicional]
+```sql
 INSERT INTO empleats
 VALUES (5, 'FERRAN', 250000, 'MATARO', 1, 1);
 ```
 
 **Inserció amb llista de columnes:** permet indicar només un subconjunt de columnes; les que no s'indiquin prendran el seu valor `DEFAULT` o bé `NULL`. Si una columna no té `DEFAULT` i té `NOT NULL`, és obligatori incloure-la:
 
-```sql [Inserció amb columnes explícites]
+```sql
 INSERT INTO departaments (num_dpt, nom_dpt)
 VALUES (4, 'PERSONAL');
 ```
 
 **Inserció massiva a partir d'un `SELECT`:** insereix directament el resultat d'una consulta en una taula existent:
 
-```sql [Inserció amb subconsulta]
+```sql
 INSERT INTO proj_importants
 SELECT * FROM projectes
 WHERE pressupost > 2000000;
 ```
 
+:::dmlviz
+:::
+
 ---
 
-## 2.7. Esborrat de files (`DELETE FROM`)
+## 2.4. Esborrat de files (`DELETE FROM`)
 
-```sql [Sintaxi general]
+```sql
 DELETE FROM nom_taula [WHERE condicio];
 ```
 
@@ -150,7 +120,7 @@ DELETE FROM empleats WHERE sou <= 250000;
 
 Per esborrar els departaments que no tenen cap empleat assignat, s'usa `NOT EXISTS`:
 
-```sql [Esborrat amb NOT EXISTS]
+```sql
 DELETE FROM departaments d
 WHERE NOT EXISTS (
     SELECT * FROM empleats e
@@ -158,11 +128,14 @@ WHERE NOT EXISTS (
 );
 ```
 
+:::deleteviz
+:::
+
 ---
 
-## 2.8. Modificació de dades (`UPDATE`)
+## 2.5. Modificació de dades (`UPDATE`)
 
-```sql [Sintaxi general]
+```sql
 UPDATE nom_taula
 SET columna1 = expressio1 [, columna2 = expressio2 ...]
 [WHERE condicio];
@@ -170,7 +143,7 @@ SET columna1 = expressio1 [, columna2 = expressio2 ...]
 
 **Compte amb ometre el WHERE:** Sense clàusula `WHERE`, el canvi s'aplicarà a **totes les files** de la taula.
 
-```sql [Increment de sou i canvi de ciutat]
+```sql
 UPDATE empleats
 SET sou = sou + 10000, 
     ciutat_empl = 'VIC'
@@ -179,7 +152,7 @@ WHERE num_dpt = 2;
 
 **Subconsulta a la clàusula `WHERE`:** per filtrar les files a modificar a partir d'una altra taula:
 
-```sql [UPDATE amb subconsulta a WHERE]
+```sql
 UPDATE empleats 
 SET sou = sou + 10000
 WHERE num_dpt IN (
@@ -190,7 +163,7 @@ WHERE num_dpt IN (
 
 **Subconsulta a la clàusula `SET`:** per calcular el nou valor en funció d'una consulta. La subconsulta ha de retornar **un únic valor** (1 fila i 1 columna); si retorna més d'una fila, la sentència fallarà:
 
-```sql [UPDATE amb subconsulta a SET]
+```sql
 UPDATE empleats e
 SET sou = (
     SELECT AVG(sou) FROM empleats
@@ -199,9 +172,12 @@ SET sou = (
 WHERE num_dpt = 2;
 ```
 
+:::updateviz
+:::
+
 ---
 
-## 2.9. La Matriu de Classificació de Restriccions d'Integritat (Pregunta d'examen de 2-3 punts)
+<!-- ## 2.9. La Matriu de Classificació de Restriccions d'Integritat (Pregunta d'examen de 2-3 punts)
 
 Als exàmens parcials de la FIB es dóna un llistat de regles de negoci i es demana **on i com implementar cadascuna**: com a restricció al `CREATE TABLE`, com a asserció (`CREATE ASSERTION`), o explicar per què no es pot fer de cap de les dues maneres.
 
@@ -240,7 +216,4 @@ Als exàmens s'inclouen exercicis on es mostra una seqüència de sentències `I
 Quan les sentències s'executen d'una en una (comportament per defecte a DBeaver i línia de comandes), **la fallada d'una instrucció NO anul·la les insercions correctes anteriors**. Per calcular el resultat del `SELECT` final cal eliminar mentalment les files que han provocat una excepció i comptabilitzar exclusivament les que s'han inserit amb èxit. Els errors més freqüents a detectar:
 
 - **Clau Primària / `UNIQUE` duplicada:** Si s'intenta inserir una fila amb un valor de PK que ja existeix, la sentència **falla immediatament** (`duplicate key value violates unique constraint`).
-- **Clau Forana inexistent:** Si un `INSERT` referencia un pare que **encara no existeix** o que va fallar en un pas previ, la sentència **és rebutjada** (`violates foreign key constraint`).
-
-:::dmlviz
-:::
+- **Clau Forana inexistent:** Si un `INSERT` referencia un pare que **encara no existeix** o que va fallar en un pas previ, la sentència **és rebutjada** (`violates foreign key constraint`). -->

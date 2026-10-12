@@ -1,6 +1,7 @@
 import React from 'react';
 import { AuthProvider } from './AuthContext';
 import { SettingsSync } from '../components/ui/system/SettingsSync';
+import { PWAProvider } from './PWAContext';
 
 interface AppProvidersProps {
     children: React.ReactNode;
@@ -12,9 +13,11 @@ interface AppProvidersProps {
  */
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
     return (
-        <AuthProvider>
-            <SettingsSync />
-            {children}
-        </AuthProvider>
+        <PWAProvider>
+            <AuthProvider>
+                <SettingsSync />
+                {children}
+            </AuthProvider>
+        </PWAProvider>
     );
 };

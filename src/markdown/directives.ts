@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "umlviz" | "uml2relviz" | "dmlviz" | "dacviz" | "viewviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "distinctviz" | "groupbyviz" | "aggregateviz" | "naturaljoinviz" | "unionviz" | "joinaggviz" | "extractviz" | "intervalviz" | "relalgviz" | "umlviz" | "uml2relviz" | "dmlviz" | "deleteviz" | "updateviz" | "dacviz" | "viewviz" | "viewupdviz" | "dbhierarchyviz" | "sessionviz" | "txviz" | "domainviz" | "assertionviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -71,11 +71,28 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   algoviz:        makePassthrough("algoviz"),
   oopviz:         makePassthrough("oopviz"),
   sqlviz:         makePassthrough("sqlviz"),
+  distinctviz:    makePassthrough("distinctviz"),
+  groupbyviz:     makePassthrough("groupbyviz"),
+  aggregateviz:   makePassthrough("aggregateviz"),
+  naturaljoinviz: makePassthrough("naturaljoinviz"),
+  unionviz:       makePassthrough("unionviz"),
+  joinaggviz:     makePassthrough("joinaggviz"),
+  extractviz:     makePassthrough("extractviz"),
+  intervalviz:    makePassthrough("intervalviz"),
+  relalgviz:      makePassthrough("relalgviz"),
   umlviz:         makePassthrough("umlviz"),
   uml2relviz:     makePassthrough("uml2relviz"),
   dmlviz:         makePassthrough("dmlviz"),
+  deleteviz:      makePassthrough("deleteviz"),
+  updateviz:      makePassthrough("updateviz"),
   dacviz:         makePassthrough("dacviz"),
   viewviz:        makePassthrough("viewviz"),
+  viewupdviz:     makePassthrough("viewupdviz"),
+  dbhierarchyviz: makePassthrough("dbhierarchyviz"),
+  sessionviz:     makePassthrough("sessionviz"),
+  txviz:          makePassthrough("sessionviz"),
+  domainviz:      makePassthrough("domainviz"),
+  assertionviz:   makePassthrough("assertionviz"),
   stackviz:       makePassthrough("stackviz"),
   queueviz:       makePassthrough("queueviz"),
   vectorviz:      makePassthrough("vectorviz"),

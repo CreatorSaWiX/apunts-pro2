@@ -3,7 +3,7 @@ import { m as motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { RefreshCw, GitCommitVertical } from 'lucide-react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import { usePWA } from '../contexts/PWAContext';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const APP_DATA: Record<string, { version: string; updated: string }> = {
@@ -50,26 +50,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
 
 
 
-    const {
-        needRefresh: [needRefresh],
-        updateServiceWorker,
-    } = useRegisterSW({
-        onRegisteredSW(_swUrl, r) {
-            if (!r) return;
-            const checkForUpdate = () => {
-                r.update().catch(() => {});
-            };
-            // Check immediately when user focuses the tab (e.g. returns after deploy)
-            window.addEventListener('focus', checkForUpdate);
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') {
-                    checkForUpdate();
-                }
-            });
-            // Also check periodically every 20 seconds
-            setInterval(checkForUpdate, 20 * 1000);
-        }
-    });
+    const { needRefresh, updateServiceWorker } = usePWA();
 
     const [isLandscapeMobile, setIsLandscapeMobile] = React.useState(false);
     React.useEffect(() => {

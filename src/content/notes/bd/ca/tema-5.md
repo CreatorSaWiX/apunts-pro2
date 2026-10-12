@@ -41,7 +41,7 @@ $$ LANGUAGE plpgsql;
 
 **Pas 2: Definir el disparador (`CREATE TRIGGER`).** Associa la funció a una taula i a un o més esdeveniments:
 
-```sql [Sintaxi CREATE TRIGGER]
+```sql
 CREATE TRIGGER nom_trigger
     { BEFORE | AFTER | INSTEAD OF }
     { INSERT | DELETE | UPDATE [OF col1, col2...] } [OR ...]
@@ -102,7 +102,7 @@ Dins del cos de la funció del disparador, PostgreSQL proporciona automàticamen
 ### Exemple 1: Auditoria d'operacions (`AFTER`)
 Registrar cada canvi de quantitat a la taula `items` dins d'una taula de registre `log_record`:
 
-```sql [Auditoria a nivell de fila]
+```sql
 CREATE TABLE log_record (
     item         INTEGER,
     username     VARCHAR(30),
@@ -128,7 +128,7 @@ CREATE TRIGGER auditar_canvis_estoc
 ### Exemple 2: Manteniment automàtic d'atributs derivats (`BEFORE`)
 Mantenir el camp `preu_total` actualitzat automàticament quan es modifica la quantitat (`qtt`) d'un producte:
 
-```sql [Recàlcul automàtic de camp]
+```sql
 CREATE FUNCTION calcular_nou_total() RETURNS trigger AS $$
 BEGIN
     IF (OLD.qtt <> 0) THEN
@@ -147,7 +147,7 @@ CREATE TRIGGER atribut_derivat_preu
 ### Exemple 3: Precedència i manteniment de restriccions (`BEFORE`)
 Si tenim la regla que «Tot estudiant ha de ser usuari» (amb una clau forana `id_e REFERENCES usuari`), si inserim un estudiant que encara no existeix a `usuari`:
 
-```sql [Garantir FK abans de la validació]
+```sql
 CREATE FUNCTION assegurar_usuari() RETURNS trigger AS $$
 BEGIN
     IF (NOT EXISTS (SELECT * FROM usuari WHERE id_u = NEW.id_e)) THEN
@@ -169,7 +169,7 @@ Si el trigger fos `AFTER`, la sentència fallaria immediatament per violació de
 ### Exemple 4: Actualització de vistes amb `INSTEAD OF`
 Permet fer insercions sobre una vista que d'altra manera no admetria actualitzacions directes:
 
-```sql [Actualització de vista amb INSTEAD OF]
+```sql
 CREATE VIEW empleats_alts AS 
 SELECT num_empl, sou FROM empleats WHERE sou > 200000;
 

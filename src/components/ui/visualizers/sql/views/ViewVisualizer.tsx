@@ -1,238 +1,258 @@
-import React, { useState, useMemo } from 'react';
-import { Eye, HardDrive, Play, RotateCcw, ShieldCheck, ShieldAlert } from 'lucide-react';
+"use client";
 
-interface Row {
+import { useState } from "react";
+
+interface BaseRow {
+    id: number;
     num_empl: number;
     nom_empl: string;
     sou: number;
+    souLabel: string;
     num_dpt: number;
+    ciutat: string;
+    targetIndex: number | null; // index a la vista virtual si passa sou >= 200k
 }
 
-const INITIAL_BASE_ROWS: Row[] = [
-    { num_empl: 1, nom_empl: 'CARME', sou: 400000, num_dpt: 1 },
-    { num_empl: 2, nom_empl: 'EUGENIA', sou: 350000, num_dpt: 2 },
-    { num_empl: 3, nom_empl: 'JOSEP', sou: 250000, num_dpt: 3 },
-    { num_empl: 4, nom_empl: 'RICARDO', sou: 400000, num_dpt: 1 },
-    { num_empl: 11, nom_empl: 'NURIA', sou: 100000, num_dpt: 3 }
+interface ViewRow {
+    targetIndex: number;
+    num_empl: number;
+    nom_empl: string;
+    sou: number;
+    souLabel: string;
+    num_dpt: number;
+    baseId: number;
+}
+
+const BASE_ROWS: BaseRow[] = [
+    { id: 0, num_empl: 1, nom_empl: "CARME", sou: 400000, souLabel: "400k", num_dpt: 1, ciutat: "BCN", targetIndex: 0 },
+    { id: 1, num_empl: 2, nom_empl: "EUGENIA", sou: 350000, souLabel: "350k", num_dpt: 2, ciutat: "MAD", targetIndex: 1 },
+    { id: 2, num_empl: 3, nom_empl: "JOSEP", sou: 150000, souLabel: "150k", num_dpt: 3, ciutat: "BCN", targetIndex: null },
+    { id: 3, num_empl: 4, nom_empl: "RICARDO", sou: 220000, souLabel: "220k", num_dpt: 2, ciutat: "BCN", targetIndex: 2 },
+    { id: 4, num_empl: 11, nom_empl: "NURIA", sou: 100000, souLabel: "100k", num_dpt: 3, ciutat: "MAD", targetIndex: null },
 ];
 
+const VIEW_ROWS: ViewRow[] = [
+    { targetIndex: 0, num_empl: 1, nom_empl: "CARME", sou: 400000, souLabel: "400k", num_dpt: 1, baseId: 0 },
+    { targetIndex: 1, num_empl: 2, nom_empl: "EUGENIA", sou: 350000, souLabel: "350k", num_dpt: 2, baseId: 1 },
+    { targetIndex: 2, num_empl: 4, nom_empl: "RICARDO", sou: 220000, souLabel: "220k", num_dpt: 2, baseId: 3 },
+];
+
+// Càlcul precís de coordenades per a les corbes SVG
+const ROW_HEIGHT = 32;
+const GAP_IN = 8;
+const GAP_OUT = 24;
+const OFFSET_OUT = 24;
+
+const getYIn = (index: number) => index * (ROW_HEIGHT + GAP_IN) + ROW_HEIGHT / 2;
+const getYOut = (index: number) => OFFSET_OUT + index * (ROW_HEIGHT + GAP_OUT) + ROW_HEIGHT / 2;
+
+type Mode = "def" | "filter";
+
 export default function ViewVisualizer() {
-    const [withCheckOption, setWithCheckOption] = useState<boolean>(true);
-    const [actionType, setActionType] = useState<'violating' | 'valid'>('violating');
-    const [isExecuted, setIsExecuted] = useState<boolean>(false);
+    const [mode, setMode] = useState<Mode>("def");
+    const [hoveredBaseId, setHoveredBaseId] = useState<number | null>(null);
+    const [hoveredViewIdx, setHoveredViewIdx] = useState<number | null>(null);
 
-    const baseRows: Row[] = useMemo(() => {
-        if (!isExecuted) return INITIAL_BASE_ROWS;
-
-        if (actionType === 'violating') {
-            if (withCheckOption) {
-                return INITIAL_BASE_ROWS;
-            } else {
-                return INITIAL_BASE_ROWS.map(r =>
-                    r.num_empl === 2 ? { ...r, num_dpt: 3 } : r
-                );
+    // Determina si una fila concreta està activa segons hover o mode
+    const getActiveState = (baseId: number, targetIdx: number | null) => {
+        // En mode consulta filter (WHERE num_dpt = 2):
+        if (mode === "filter") {
+            const isDpt2 = targetIdx !== null && (targetIdx === 1 || targetIdx === 2); // Eugenia i Ricardo
+            if (hoveredBaseId !== null || hoveredViewIdx !== null) {
+                const matchHover =
+                    (hoveredBaseId !== null && hoveredBaseId === baseId) ||
+                    (hoveredViewIdx !== null && hoveredViewIdx === targetIdx);
+                return { isHighlight: matchHover, isDim: !matchHover };
             }
-        } else {
-            return INITIAL_BASE_ROWS.map(r =>
-                r.num_empl === 2 ? { ...r, sou: 380000 } : r
-            );
+            return { isHighlight: isDpt2, isDim: !isDpt2 };
         }
-    }, [isExecuted, actionType, withCheckOption]);
 
-    const viewRows = baseRows.filter(r => r.num_dpt === 2);
+        // En mode definició CREATE VIEW:
+        if (hoveredBaseId !== null || hoveredViewIdx !== null) {
+            const matchHover =
+                (hoveredBaseId !== null && hoveredBaseId === baseId) ||
+                (hoveredViewIdx !== null && hoveredViewIdx === targetIdx);
+            return { isHighlight: matchHover, isDim: !matchHover };
+        }
 
-    const statusMessage = useMemo(() => {
-        if (!isExecuted) {
-            return "Premeu «Executar» per comprovar el comportament de l'UPDATE sobre la vista i la taula base.";
-        }
-        if (actionType === 'violating') {
-            if (withCheckOption) {
-                return "ERROR: Violació de CHECK OPTION. Sentència avortada; taula base protegida.";
-            } else {
-                return "UPDATE aplicat a la taula base. La fila ja no compleix el filtre i desapareix de la vista.";
-            }
-        }
-        return "UPDATE aplicat amb èxit (sou = 380.000). Es reflecteix tant a la base com a la vista.";
-    }, [isExecuted, actionType, withCheckOption]);
+        return { isHighlight: false, isDim: false };
+    };
 
     return (
-        <div className="w-full rounded-2xl border border-slate-800/80 bg-[#0d1117] flex flex-col overflow-hidden shadow-2xl my-6 select-none font-sans">
-            {/* Header d'estil Apple / Linear */}
-            <div className="h-10 border-b border-slate-800/80 flex items-end px-3 shrink-0 bg-[#0a0d14] overflow-x-auto overflow-y-hidden custom-scrollbar">
-                <div className="px-3.5 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex gap-2 items-center bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold whitespace-nowrap shrink-0">
-                    <Eye size={13} className="text-emerald-400 shrink-0" />
-                    <span>Vistes & CHECK OPTION</span>
-                </div>
-
-                <div className="flex items-center gap-1 ml-2">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setActionType('violating');
-                            setIsExecuted(false);
-                        }}
-                        className={`px-3 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex items-center transition-colors whitespace-nowrap shrink-0 cursor-pointer relative top-px ${
-                            actionType === 'violating'
-                                ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold z-10'
-                                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-                        }`}
-                    >
-                        SET num_dpt = 3
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setActionType('valid');
-                            setIsExecuted(false);
-                        }}
-                        className={`px-3 py-2 border-t border-x rounded-t-xl text-[10px] sm:text-[11px] font-mono tracking-wider flex items-center transition-colors whitespace-nowrap shrink-0 cursor-pointer relative top-px ${
-                            actionType === 'valid'
-                                ? 'bg-[#0d1117] border-slate-800/80 text-emerald-400 font-bold z-10'
-                                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-                        }`}
-                    >
-                        SET sou = 380k
-                    </button>
-                </div>
-
-                <div className="flex-1 border-b border-slate-800/80 h-full relative z-0 min-w-5"></div>
-
-                {/* Controls a la dreta del header */}
-                <div className="flex items-center gap-2 pb-1.5 z-10 shrink-0">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setWithCheckOption(!withCheckOption);
-                            setIsExecuted(false);
-                        }}
-                        className={`px-2 py-1 rounded-md text-[10px] font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer border ${
-                            withCheckOption
-                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                                : 'bg-slate-800 text-slate-400 border-slate-700'
-                        }`}
-                    >
-                        {withCheckOption ? <ShieldCheck size={11} /> : <ShieldAlert size={11} />}
-                        <span>CHECK OPTION: {withCheckOption ? 'ON' : 'OFF'}</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setIsExecuted(true)}
-                        className="px-2.5 py-1 rounded-md bg-emerald-500 text-slate-950 font-mono font-bold text-[10px] flex items-center gap-1 hover:bg-emerald-400 transition-colors cursor-pointer"
-                    >
-                        <Play size={10} className="fill-current" />
-                        <span>Executar</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setIsExecuted(false)}
-                        className="p-1 rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer"
-                        title="Reiniciar"
-                    >
-                        <RotateCcw size={12} />
-                    </button>
-                </div>
+        <div className="w-full my-8 not-prose select-none font-mono flex flex-col items-center justify-center">
+            {/* Selector interactiu minimalista */}
+            <div className="flex items-center gap-2 mb-6 text-[11px]">
+                <button
+                    type="button"
+                    onClick={() => {
+                        setMode("def");
+                        setHoveredBaseId(null);
+                        setHoveredViewIdx(null);
+                    }}
+                    className={`px-2.5 py-1 rounded-md transition-colors ${
+                        mode === "def"
+                            ? "bg-emerald-500/15 text-emerald-300 font-semibold"
+                            : "text-slate-500 hover:text-slate-300"
+                    }`}
+                >
+                    CREATE VIEW
+                </button>
+                <span className="text-slate-700">/</span>
+                <button
+                    type="button"
+                    onClick={() => {
+                        setMode("filter");
+                        setHoveredBaseId(null);
+                        setHoveredViewIdx(null);
+                    }}
+                    className={`px-2.5 py-1 rounded-md transition-colors ${
+                        mode === "filter"
+                            ? "bg-sky-500/15 text-sky-300 font-semibold"
+                            : "text-slate-500 hover:text-slate-300"
+                    }`}
+                >
+                    WHERE num_dpt = 2
+                </button>
             </div>
 
-            {/* Panell Dual: Vista Virtual (esquerra) vs Taula Base (dreta) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-800/80 bg-[#090d16]">
-                {/* 1. Vista Virtual */}
-                <div className="flex flex-col min-h-[260px] bg-[#0d1117]">
-                    <div className="h-9 border-b border-slate-800/60 bg-[#0a0d14] flex items-center justify-between px-3 shrink-0">
-                        <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-slate-300">
-                            <Eye size={12} className="text-emerald-400" />
-                            <span>Vista: empleats_dep2</span>
+            {/* Esquema visual de dues taules connectades */}
+            <div className="w-full max-w-3xl overflow-x-auto py-2">
+                <div className="min-w-[580px] flex items-center justify-center gap-0">
+                    {/* TAULA BASE: empleats */}
+                    <div className="flex flex-col flex-1 max-w-[280px]">
+                        <div className="flex items-baseline justify-between mb-2 px-1 text-[11px]">
+                            <span className="font-semibold text-slate-300">empleats</span>
+                            <span className="text-[10px] text-slate-500">taula física</span>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-500">
-                            WHERE num_dpt = 2
-                        </span>
+
+                        {/* Capçaleres */}
+                        <div className="grid grid-cols-5 text-[10px] text-slate-500 font-semibold pb-1.5 px-2 border-b border-white/10 text-center">
+                            <span>num</span>
+                            <span>nom</span>
+                            <span>sou</span>
+                            <span>dpt</span>
+                            <span className="text-slate-600 line-through" title="No projectada al SELECT">ciutat</span>
+                        </div>
+
+                        {/* Files d'entrada */}
+                        <div className="flex flex-col gap-2 mt-2">
+                            {BASE_ROWS.map((row) => {
+                                const { isHighlight, isDim } = getActiveState(row.id, row.targetIndex);
+                                const isExcluded = row.targetIndex === null;
+
+                                return (
+                                    <div
+                                        key={row.id}
+                                        onMouseEnter={() => setHoveredBaseId(row.id)}
+                                        onMouseLeave={() => setHoveredBaseId(null)}
+                                        className={`h-8 px-2 rounded-lg border grid grid-cols-5 items-center text-center text-xs transition-all duration-200 cursor-pointer ${
+                                            isHighlight
+                                                ? "bg-emerald-500/15 border-emerald-400 text-emerald-200 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+                                                : isDim || (isExcluded && hoveredBaseId === null && hoveredViewIdx === null)
+                                                ? "bg-slate-900/10 border-white/5 text-slate-600 opacity-40"
+                                                : "bg-slate-900/40 border-white/10 text-slate-300 hover:border-slate-700"
+                                        }`}
+                                    >
+                                        <span className="font-mono">{row.num_empl}</span>
+                                        <span className="truncate">{row.nom_empl}</span>
+                                        <span className={isExcluded ? "text-slate-600" : "text-amber-400/90 font-medium"}>
+                                            {row.souLabel}
+                                        </span>
+                                        <span>{row.num_dpt}</span>
+                                        <span className="text-slate-600 text-[10px]">{row.ciutat}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
 
-                    <div className="p-3 flex-1 overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left font-mono text-xs border-collapse">
-                            <thead>
-                                <tr className="text-slate-400 border-b border-slate-800 text-[10px]">
-                                    <th className="py-2 px-3">num_empl</th>
-                                    <th className="py-2 px-3">nom_empl</th>
-                                    <th className="py-2 px-3">sou</th>
-                                    <th className="py-2 px-3">num_dpt</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800/40 text-[11px]">
-                                {viewRows.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="py-8 text-center text-slate-600 italic">
-                                            0 files (cap fila compleix num_dpt = 2)
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    viewRows.map(row => (
-                                        <tr key={row.num_empl} className="text-slate-200">
-                                            <td className="py-2 px-3 font-bold">{row.num_empl}</td>
-                                            <td className="py-2 px-3">{row.nom_empl}</td>
-                                            <td className="py-2 px-3">{row.sou}</td>
-                                            <td className="py-2 px-3 font-bold text-emerald-400">{row.num_dpt}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                    {/* CONNECTOR CENTRAL SVG */}
+                    <div className="relative w-20 sm:w-28 h-[192px] shrink-0 mt-8">
+                        <svg
+                            viewBox="0 0 100 192"
+                            className="w-full h-full pointer-events-none overflow-visible"
+                        >
+                            {BASE_ROWS.filter((r) => r.targetIndex !== null).map((row) => {
+                                const y1 = getYIn(row.id);
+                                const y2 = getYOut(row.targetIndex!);
+                                const { isHighlight, isDim } = getActiveState(row.id, row.targetIndex);
+
+                                return (
+                                    <path
+                                        key={row.id}
+                                        d={`M 0,${y1} C 50,${y1} 50,${y2} 100,${y2}`}
+                                        fill="none"
+                                        stroke={
+                                            isHighlight
+                                                ? mode === "filter" ? "#38bdf8" : "#10b981"
+                                                : isDim
+                                                ? "#1e293b"
+                                                : "#334155"
+                                        }
+                                        strokeWidth={isHighlight ? 2 : 1.25}
+                                        strokeOpacity={isDim ? 0.2 : isHighlight ? 1 : 0.6}
+                                        className="transition-all duration-200"
+                                    />
+                                );
+                            })}
+                        </svg>
+
+                        {/* Etiqueta flotant de filtre */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span className="text-[9px] text-slate-500 bg-[#020617] px-1.5 py-0.5 rounded border border-white/10 whitespace-nowrap">
+                                {mode === "filter" ? "dpt = 2" : "sou ≥ 200k"}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* VISTA VIRTUAL: empleats_altsous */}
+                    <div className="flex flex-col flex-1 max-w-[240px]">
+                        <div className="flex items-baseline justify-between mb-2 px-1 text-[11px]">
+                            <span className="font-semibold text-emerald-400">empleats_altsous</span>
+                            <span className="text-[10px] text-emerald-500/80">vista virtual</span>
+                        </div>
+
+                        {/* Capçaleres */}
+                        <div className="grid grid-cols-4 text-[10px] text-slate-500 font-semibold pb-1.5 px-2 border-b border-emerald-500/20 text-center">
+                            <span>num</span>
+                            <span>nom</span>
+                            <span>sou</span>
+                            <span>dpt</span>
+                        </div>
+
+                        {/* Files de sortida */}
+                        <div
+                            className="flex flex-col gap-[24px]"
+                            style={{ paddingTop: `${OFFSET_OUT}px`, paddingBottom: `${OFFSET_OUT}px` }}
+                        >
+                            {VIEW_ROWS.map((row) => {
+                                const { isHighlight, isDim } = getActiveState(row.baseId, row.targetIndex);
+
+                                return (
+                                    <div
+                                        key={row.targetIndex}
+                                        onMouseEnter={() => setHoveredViewIdx(row.targetIndex)}
+                                        onMouseLeave={() => setHoveredViewIdx(null)}
+                                        className={`h-8 px-2 rounded-lg border grid grid-cols-4 items-center text-center text-xs transition-all duration-200 cursor-pointer ${
+                                            isHighlight
+                                                ? mode === "filter"
+                                                    ? "bg-sky-500/20 border-sky-400 text-sky-200 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+                                                    : "bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
+                                                : isDim
+                                                ? "bg-slate-900/10 border-white/5 text-slate-600 opacity-40"
+                                                : "bg-emerald-500/5 border-emerald-500/30 text-emerald-300 hover:border-emerald-400/50"
+                                        }`}
+                                    >
+                                        <span className="font-mono">{row.num_empl}</span>
+                                        <span className="truncate">{row.nom_empl}</span>
+                                        <span className="text-amber-400/90 font-medium">{row.souLabel}</span>
+                                        <span>{row.num_dpt}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
-
-                {/* 2. Taula Base */}
-                <div className="flex flex-col min-h-[260px] bg-[#0d1117]">
-                    <div className="h-9 border-b border-slate-800/60 bg-[#0a0d14] flex items-center justify-between px-3 shrink-0">
-                        <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-slate-300">
-                            <HardDrive size={12} className="text-slate-400" />
-                            <span>Taula Base: empleats</span>
-                        </div>
-                        <span className="text-[10px] font-mono text-slate-500">
-                            {baseRows.length} files
-                        </span>
-                    </div>
-
-                    <div className="p-3 flex-1 overflow-x-auto custom-scrollbar">
-                        <table className="w-full text-left font-mono text-xs border-collapse">
-                            <thead>
-                                <tr className="text-slate-400 border-b border-slate-800 text-[10px]">
-                                    <th className="py-2 px-3">num_empl</th>
-                                    <th className="py-2 px-3">nom_empl</th>
-                                    <th className="py-2 px-3">sou</th>
-                                    <th className="py-2 px-3">num_dpt</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800/40 text-[11px]">
-                                {baseRows.map(row => {
-                                    const isTargetRow = row.num_empl === 2 && isExecuted;
-                                    return (
-                                        <tr
-                                            key={row.num_empl}
-                                            className={isTargetRow ? 'bg-emerald-500/10 text-emerald-300' : 'text-slate-300'}
-                                        >
-                                            <td className="py-2 px-3">{row.num_empl}</td>
-                                            <td className="py-2 px-3">{row.nom_empl}</td>
-                                            <td className="py-2 px-3">{row.sou}</td>
-                                            <td className="py-2 px-3">{row.num_dpt}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            {/* Barra d'estat d'una sola línia */}
-            <div className="h-8 px-3 border-t border-slate-800/80 bg-[#0a0d14] flex items-center shrink-0">
-                <span className={`text-[11px] font-mono truncate ${
-                    isExecuted && actionType === 'violating' && withCheckOption
-                        ? 'text-red-400'
-                        : 'text-emerald-400/90'
-                }`}>
-                    {statusMessage}
-                </span>
             </div>
         </div>
     );

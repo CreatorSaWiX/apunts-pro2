@@ -12,7 +12,7 @@ Un **procediment emmagatzemat** (o funció) és un bloc de codi que s'emmagatzem
 
 ## 4.1. Estructura bàsica d'una funció
 
-```sql [Sintaxi general]
+```sql
 CREATE FUNCTION nom_funcio(nom_param tipus [, ...]) 
 RETURNS tipus_retorn AS $$
 DECLARE
@@ -40,7 +40,7 @@ SELECT * FROM nom_funcio('paràmetre');
 
 **Retorn d'un valor únic:** utilitza `RETURNS tipus` i finalitza amb `RETURN variable;`:
 
-```sql [Exemple: Retorn escalar]
+```sql
 CREATE FUNCTION trobar_ciutat(dni_client VARCHAR(9)) 
 RETURNS VARCHAR(15) AS $$
 DECLARE
@@ -68,7 +68,7 @@ $$ LANGUAGE plpgsql;
 
 **Retorn d'un conjunt de tuples (`SETOF`):** quan la funció ha de retornar múltiples files, s'especifica `RETURNS SETOF tipus`, s'utilitza `RETURN NEXT variable;` per afegir cada fila al resultat (no interromp l'execució), i la funció finalitza amb un `RETURN;` buit:
 
-```sql [Exemple: Generar una seqüència de tuples]
+```sql
 CREATE FUNCTION exemple_retorn_n_tuples(max INTEGER) 
 RETURNS SETOF INTEGER AS $$
 DECLARE
@@ -90,7 +90,7 @@ $$ LANGUAGE plpgsql;
 
 Totes les variables locals es defineixen al bloc `DECLARE`:
 
-```sql [Sintaxi de declaració]
+```sql
 nom_variable [CONSTANT] tipus [NOT NULL] [{DEFAULT | :=} expressio];
 ```
 
@@ -106,7 +106,7 @@ L'assignació es pot fer de tres maneres: directa (`var := expressio;`), mitjan�
 
 Quan una funció ha de retornar una estructura de diversos atributs que no coincideix amb cap taula existent:
 
-```sql [Exemple: Tipus compost]
+```sql
 -- Creació prèvia del tipus compost
 CREATE TYPE TAdressa AS (
     carrer      VARCHAR(20),
@@ -133,7 +133,7 @@ $$ LANGUAGE plpgsql;
 
 ## 4.4. Sentències condicionals i variable `FOUND`
 
-```sql [Sintaxi condicional]
+```sql
 IF condicio THEN
     -- bloc de sentències
 ELSIF condicio THEN
@@ -145,7 +145,7 @@ END IF;
 
 PostgreSQL manté una variable local booleana `FOUND` (inicia en `False`) que reflecteix el resultat de la darrera sentència SQL: passa a `True` si un `SELECT ... INTO` troba alguna fila, si un `UPDATE`/`INSERT`/`DELETE` afecta almenys una fila, o si un bucle `FOR` itera com a mínim un cop.
 
-```sql [Exemple d'ús de FOUND]
+```sql
 CREATE FUNCTION calcul_desc_client(dni_client clients.dni%TYPE) 
 RETURNS INTEGER AS $$
 DECLARE
@@ -176,7 +176,7 @@ $$ LANGUAGE plpgsql;
 
 **Bucle `FOR` sobre consultes SQL (el més utilitzat):** itera automàticament fila per fila sobre el conjunt retornat per una consulta:
 
-```sql [Sintaxi i exemple FOR sobre SELECT]
+```sql
 CREATE FUNCTION import_totes_com(dni_client clients.dni%TYPE) 
 RETURNS void AS $$
 DECLARE
@@ -229,7 +229,7 @@ END LOOP;
 
 Un cursor és un punter que recorre individualment les files resultants d'una consulta SQL. És l'alternativa clàssica al `FOR ... IN SELECT`. El cicle de vida és: declarar, obrir, llegir fila a fila amb `FETCH`, comprovar `NOT FOUND` per sortir, i tancar:
 
-```sql [Exemple de cursor explícit]
+```sql
 CREATE FUNCTION clients_ciutat(ciutat_in clients.ciutat%TYPE) 
 RETURNS SETOF VARCHAR(9) AS $$
 DECLARE
@@ -260,7 +260,7 @@ RAISE EXCEPTION 'Quantitat % fora de rang permès', qtt;
 
 El bloc `EXCEPTION` s'afegeix al final de la funció per interceptar fallades i evitar que avortin l'aplicació:
 
-```sql [Estructura del bloc EXCEPTION]
+```sql
 BEGIN
     -- sentències
 EXCEPTION

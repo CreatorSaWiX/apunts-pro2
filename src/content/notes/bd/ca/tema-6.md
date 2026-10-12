@@ -1,73 +1,38 @@
 ---
 title: "Tema 6: Disseny Conceptual (UML)"
 description: "Modelatge conceptual en UML i traducció al model relacional lògic."
-readTime: "11 min"
+readTime: "8 min"
 order: 6
 draft: false
 ---
 
-El disseny d'una base de dades relacional consisteix a transformar els requisits del món real en una estructura lògica de taules, columnes i restriccions robustes i lliures d'anomalies.
+El disseny de bases de dades transforma els requisits del món real en estructures relacionals lògiques lliures d'anomalies.
 
 ---
 
-## 6.1. Les etapes del disseny i «Els Tres Mons»
+## 6.1. Model Conceptual en UML
 
-El procés d'enginyeria de bases de dades es divideix en tres etapes per separar la complexitat del negoci de la tecnologia concreta:
-
-```text
-[Món Real] 
-    │
-    ▼ (Disseny Conceptual / Especificació)
-[Món Conceptual]  ---> Esquema UML / ER (Independent de la tecnologia)
-    │
-    ▼ (Disseny Lògic / Transformació)
-[Món de les Representacions] ---> Esquema Relacional: Taules, PK, FK (Model SGBD)
-    │
-    ▼ (Disseny Físic / Optimització)
-Fitxers físics, índexs, particions (Específic de l'SGBD: PostgreSQL, Oracle...)
-```
-
-El **Disseny Conceptual** captura l'estructura de la informació en un model gràfic d'alt nivell (UML o diagrama E/R), completament independent del programari final. El **Disseny Lògic** adapta l'esquema conceptual al Model Relacional (taules, claus primàries i claus foranes). El **Disseny Físic** optimitza l'estructura sobre el maquinari i el motor concret (índexs, buffers) per aconseguir la màxima eficiència.
-
----
-
-## 6.2. Punt de partida: Model Conceptual en UML
-
-Una **classe** descriu un conjunt d'objectes del mateix tipus que comparteixen propietats (ex: `Empleat`); cada objecte té identitat pròpia (OID). Els **atributs** són les propietats univaluades compartides pels objectes. La **clau externa** (identificador) és el conjunt mínim d'atributs que identifiquen unívocament cada instància; com que la notació UML no té símbol per a claus, s'especifiquen mitjançant restriccions textuals (ex: *«Clau externa Empleat: dni»*).
+Una **classe** descriu un conjunt d'objectes del mateix tipus que comparteixen propietats (ex: `Empleat`); cada objecte té identitat pròpia (OID). Els **atributs** són les propietats univaluades compartides pels objectes. La **clau externa** (identificador) és el conjunt mínim d'atributs que identifiquen unívocament cada instància, especificada mitjançant restriccions textuals (ex: *«Clau externa Empleat: dni»*).
 
 ### Transformació prèvia: Atributs multivaluats `[*]`
 
-El model relacional **no admet valors multivaluats** (primera forma normal). Tot atribut `atribut[*]` es transforma en una **associació 1\:N** cap a una nova classe:
+El model relacional no admet valors multivaluats (primera forma normal). Tot atribut `atribut[*]` es transforma en una **associació 1\:N** cap a una nova classe:
 
-```text
-[ Empleat ]                                [ Empleat ]
-  dni                                        dni
-  nom                         ===>           nom
-  cognom                                     cognom
-  telefon [*]                                   1 │ Té
-                                                  │ *
-                                           [ Telefon ]
-                                             numTel
-Clau externa Empleat: dni             Clau externa Empleat: dni
-                                      Clau externa Telefon: numTel
-```
+:::umlviz{schema="uml_multivaluat" title="Transformació d'Atribut Multivaluat a Nova Classe (1:N)" height="260"}
+:::
 
 ---
 
-## 6.3. Transformació d'Associacions Binàries
+## 6.2. Transformació d'Associacions Binàries
 
 Un cop transformades les classes a relacions base (on la clau externa d'UML esdevé la **clau primària**), traduïm les associacions segons les seves multiplicitats:
-
-:::umlviz{schema="uml_associacions" title="Diagrama d'Associacions Binàries (1:1, 1:N, M:N)"}
-:::
 
 ### 1. Cas Un a Molts (1\:N)
 
 La multiplicitat és $0..1$ o $1..1$ en un extrem ("un") i $*$ a l'altre ("molts"). S'afegeix una **clau forana (FK)** a la relació de l'extrem **«molts»**, referenciant la clau primària de l'extrem «un». Si la multiplicitat mínima de l'extrem «un» és **$1$ ($1..1$)**, la FK ha de ser **`NOT NULL`**; si és **$0$ ($0..1$)**, admet valors nuls.
 
-```text
-[ Departament ] 1 ────────── * [ Empleat ]
-```
+:::umlviz{schema="uml_1_n" title="Associació 1:N (Departament - Empleat)" height="220"}
+:::
 
 ```sql
 DEPARTAMENT (num_dpt, nom_dpt)
@@ -85,9 +50,8 @@ EMPLEAT (dni, nom, num_dpt)
 
 La multiplicitat màxima a tots dos extrems és $1$ ($0..1$ o $1..1$). S'afegeix una clau forana a **qualsevol de les dues taules**, però la columna FK ha de tenir la restricció **`UNIQUE`** per garantir que cap fila del destí es pugui enllaçar més d'un cop. Si un costat té $1..1$ i l'altre $0..1$, és preferible propagar la clau al costat $1..1$ amb `NOT NULL UNIQUE` per evitar camps nuls.
 
-```text
-[ Delegacio ] 0..1 ── Es situa a ── 0..1 [ Ciutat ]
-```
+:::umlviz{schema="uml_1_1" title="Associació 1:1 (Delegació - Ciutat)" height="220"}
+:::
 
 ```sql
 CIUTAT (nom_ciutat, habitants)
@@ -105,9 +69,8 @@ DELEGACIO (codi_del, nom_del, nom_ciutat)
 
 La multiplicitat màxima a tots dos extrems és $*$ ($0..*$ o $1..*$). Es defineix una **nova relació (taula associativa intermèdia)** amb la PK formada per la **composició de les claus primàries** de les dues entitats relacionades.
 
-```text
-[ Producte ] * ── Es guarda a ── * [ Magatzem ]
-```
+:::umlviz{schema="uml_m_n" title="Associació M:N (Producte - Magatzem)" height="220"}
+:::
 
 ```sql
 PRODUCTE (codi_prod, descripcio)
@@ -124,17 +87,12 @@ EMMAGATZEMATGE (codi_prod, codi_mag)
 
 ---
 
-## 6.4. Transformació d'Associacions N-àries i Ternàries
+## 6.3. Transformació d'Associacions N-àries i Ternàries
 
 Una associació ternària relaciona 3 classes simultàniament. **Sempre es tradueix a una nova relació**, però la seva clau primària varia segons les multiplicitats:
 
-```text
-         [ A ]
-          │ *
-         ◇ Relacio
-       * ╱ ╲ 0..1 (o *)
-     [ B ]  [ C ]
-```
+:::umlviz{schema="uml_ternaria" title="Associació Ternària amb Rombe de Relació" height="340"}
+:::
 
 | Multiplicitats ($A - B - C$) | Composició de la Clau Primària | Restriccions addicionals |
 | :--- | :--- | :--- |
@@ -142,13 +100,14 @@ Una associació ternària relaciona 3 classes simultàniament. **Sempre es tradu
 | **Molts - Molts - Un** ($* - * - 0..1$) | $\text{PK} = (A, B)$ | La clau són els dos extrems «molts». $C$ és atribut simple amb `NOT NULL` (i FK a C). |
 | **Molts - Un - Un** ($* - 0..1 - 0..1$) | Dues claus candidates: $(A, B)$ o $(A, C)$ | Una es tria com a $\text{PK}$ i l'altra es defineix com a `UNIQUE NOT NULL`. |
 
-La regla general: si tots els extrems són «molts», la PK és la concatenació de totes les claus. Si un o més extrems són «un», la PK la formen les claus dels extrems «molts» (excloent els «un»).
-
 ---
 
-## 6.5. Associacions Recursives
+## 6.4. Associacions Recursives
 
-Són associacions on **una mateixa classe participa més d'una vegada** exercint rols diferents. En la variant **1\:N** (ex: Persona és mare de Persona) s'afegeix una clau forana a la mateixa taula que referencia la pròpia clau primària, reanomenant la columna pel seu rol:
+Són associacions on **una mateixa classe participa més d'una vegada** exercint rols diferents. En la variant **1\:N** (ex: Empleat és cap d'altres empleats) s'afegeix una clau forana a la mateixa taula que referencia la pròpia clau primària, reanomenant la columna pel seu rol:
+
+:::umlviz{schema="uml_recursiva" title="Associació Recursiva 1:N (Rols de Cap i Subordinat)" height="240"}
+:::
 
 ```sql
 PERSONA (dni, nom, dni_mare)
@@ -167,16 +126,12 @@ SEGUIMENT (nom_seguidor, nom_seguit)
 
 ---
 
-## 6.6. Classes Associatives
+## 6.5. Classes Associatives
 
 Una **classe associativa** sorgeix quan una associació té atributs propis o participa en altres relacions. La relació creada per a l'associació **absorbeix els atributs propis** de la classe associativa:
 
-```text
-[ Producte ] * ────────────── * [ Magatzem ]
-                       │
-             [ Emmagatzematge ]
-               quantitat
-```
+:::umlviz{schema="uml_classe_associativa" title="Classe Associativa (Emmagatzematge)" height="310"}
+:::
 
 ```sql
 EMMAGATZEMATGE (codi_prod, codi_mag, quantitat)
@@ -187,19 +142,19 @@ EMMAGATZEMATGE (codi_prod, codi_mag, quantitat)
 
 ---
 
-## 6.7. Generalització i Especialització (Herència)
+## 6.6. Generalització i Especialització (Herència)
 
 L'herència reflecteix una superclasse general (atributs comuns) que s'especialitza en una o més subclasses (atributs específics).
 
 :::umlviz{schema="uml_herencia" title="Jerarquia d'Herència de Classes (UML)"}
 :::
 
-### Estratègia estàndard de la FIB: Una taula per classe
+### Estratègia estàndard: Una taula per classe
 
 1. **Taula per a la superclasse:** Té la seva clau primària original i els atributs comuns.
 2. **Taula per a cada subclasse:** Té com a clau primària **la mateixa clau de la superclasse**, que actua **alhora com a Clau Primària i Clau Forana**:
 
-```sql [Traducció relacional de la jerarquia]
+```sql
 CREATE TABLE PERSONA (
     dni VARCHAR(10) PRIMARY KEY,
     nom VARCHAR(50) NOT NULL
@@ -218,9 +173,12 @@ CREATE TABLE ESTUDIANT (
 );
 ```
 
+:::sqlviz{simulation="ddl_empleats"}
+:::
+
 ---
 
-## 6.8. Resum de transformacions i consideracions d'examen
+## 6.7. Resum de transformacions i criteris de disseny
 
 | Element del Model UML | Traducció al Model Relacional |
 | :--- | :--- |
@@ -235,35 +193,50 @@ CREATE TABLE ESTUDIANT (
 :::uml2relviz
 :::
 
-### Punts clau que penalitzen als exàmens
+### Casos especials de modelatge
 
-1. **Entitats febles / Identificadors relatius:** Si una classe no té identificador propi global (ex: *«Planta: no poden existir dues plantes amb el mateix id en una mateixa escola, però sí en escoles diferents»*), la clau primària de `PLANTA` ha de ser **composta**: `PRIMARY KEY (nom_escola, id_planta)`.
-2. **Classes temporals pures:** Classes com `Data`, `Hora` o `Any` que només tenen el valor temporal i cap altre atribut **no es converteixen en taules**: s'emmagatzemen directament com a columnes de tipus `DATE`, `TIME` o `INTEGER` a la taula de la relació.
-3. **Restriccions que NO es poden capturar només amb claus:** Multiplicitats complexes (com ara mínim 2 o màxim 5), restriccions de jerarquia com **disjunta** o **completa**, o condicions entre múltiples taules han d'indicar-se explícitament com a mecanismes externs al DDL bàsic: assercions (`CREATE ASSERTION`) o disparadors (`TRIGGER`).
+1. **Entitats febles / Identificadors relatius**: Si una classe no té identificador global propi (ex: *«no poden existir dues plantes amb el mateix id en una mateixa escola, però sí en escoles diferents»*), la clau primària de `PLANTA` és composta: `PRIMARY KEY (nom_escola, id_planta)`.
+2. **Classes temporals pures**: Classes com `Data`, `Hora` o `Any` que només contenen un valor temporal i cap altre atribut no generen taules pròpies; es tradueixen directament com a columnes de tipus `DATE`, `TIME` o `INTEGER` a la taula associada.
+3. **Classes associatives amb clau pròpia**: Si l'enunciat assigna un identificador extern artificial a la classe associativa (ex: `idMissatge`), aquest atribut esdevé la clau primària simple, mantenint les claus de les classes relacionades com a claus foranes individuals.
+4. **Restriccions no capturades amb claus**: Multiplicitats amb mínim $>1$ o màxim fixat, condicions de cobertura o disjunció en jerarquies, i regles multitaula no es poden definir al DDL bàsic de taula; requereixen assercions (`CREATE ASSERTION`) o disparadors (`TRIGGER`).
 
 ---
 
-## 6.9. Validació Semàntica de Models UML (Preguntes de Cert / Fals d'Examen)
+## 6.8. Validació Semàntica de Models UML (Afirmacions de Cert / Fals)
 
-Als exàmens sovint es plantegen afirmacions sobre el model UML i es demana: dir si l'afirmació és **CERTA** o **FALSA**, i si és certa donar un contingut tabular d'exemple que ho demostri; si és falsa indicar exactament **què hauria de canviar al diagrama UML** perquè fos certa.
+Davant d'afirmacions sobre possibles estats d'un model UML, cal determinar si la situació és compatible amb l'esquema (**CERTA**) o si viola alguna restricció estructural (**FALSA**):
 
 | Aspecte del Model UML | Com interpretar-lo | Si és Falsa, com s'arregla? |
 | :--- | :--- | :--- |
-| **Multiplicitat màxima $1$** | L'objecte **només pot estar relacionat amb un únic element** en aquell rol. | Canviar la multiplicitat màxima de $1$ a $*$. |
-| **Multiplicitat mínima $1$** | L'objecte **ha d'existir obligatòriament associat** a un altre (FK `NOT NULL`). | Canviar la multiplicitat mínima de $1$ a $0$. |
-| **Clau externa global** | L'atribut identifica unívocament la instància a **tota la base de dades**. No pot haver-hi dues instàncies amb el mateix valor, ni en contextos diferents. | Fer que la clau external sigui relativa (identificació feble). |
-| **Clau externa relativa (Classe feble)** | Dues instàncies en contenidors diferents **SÍ que poden repetir el mateix nom/codi**. | Fer la clau externa global única per a tota la classe. |
-| **Estructures cícliques** | Si una associació reflexiva d'ordenació exigeix extrems oberts, prohibeix cicles complets llevat que el model admeti ambdós sentits o no imposi asimetria. | Modificar les multiplicitats dels rols o treure la restricció d'ordre acíclic. |
+| **Multiplicitat màxima $1$** | L'objecte només pot relacionar-se amb un únic element en aquell rol. | Canviar la multiplicitat màxima de $1$ a $*$. |
+| **Multiplicitat mínima $1$** | L'objecte ha d'existir obligatòriament associat a un altre (FK `NOT NULL`). | Canviar la multiplicitat mínima de $1$ a $0$. |
+| **Clau externa global** | L'atribut identifica unívocament la instància a tota la base de dades. | Fer que la clau externa sigui relativa (identificació feble). |
+| **Clau externa relativa (Classe feble)** | Dues instàncies en contextos diferents sí que poden repetir el mateix identificador local. | Fer la clau externa global única per a tota la classe. |
+| **Estructures cícliques** | Una associació reflexiva d'ordenació amb extrems oberts prohibeix circuits tancats. | Modificar les multiplicitats dels rols o suprimir la restricció d'ordre acíclic. |
 
-**Si l'afirmació és CERTA:** dibuixa una instància mínima de les taules que mostri la situació sense violar cap PK, FK ni multiplicitat. **Si l'afirmació és FALSA:** sigues precís, indicant exactament quina multiplicitat o restricció cal canviar i en quin extrem de quina associació.
+Per justificar que una afirmació és **CERTA**, es construeix una instància mínima de dades tabulars que compleixi totes les PK, FK i multiplicitats. Si és **FALSA**, s'indica amb exactitud quin extrem d'associació o restricció del diagrama cal modificar per fer-la possible.
 
 ---
 
-## 6.10. Classificació i Traducció de Restriccions Textuals (R1..Rn)
+## 6.9. Classificació i Traducció de Restriccions Textuals (R1..Rn)
 
-Als enunciats de disseny és comú afegir una llista de restriccions textuals additionals. La seva traducció segueix sempre el mateix patró:
+Les restriccions textuals addicionals s'implementen segons el seu abast:
 
-1. **Identificadors alternatius:** *«No poden existir dos perfils amb el mateix nomUsuari»* → **`UNIQUE (nomUsuari)`** a la taula `PERFIL`.
-2. **Restriccions de domini / estat:** *«L'estat d'una assistència només pot ser 'confirmada' o 'cancel·lada'»* → **restricció de columna**: `CHECK (estat IN ('confirmada', 'cancel·lada'))`.
-3. **Condicions entre atributs de la mateixa fila:** *«Si una assistència és confirmada, ha de tenir una data de registre»* → **restricció de taula**: `CHECK (estat <> 'confirmada' OR dataRegistre IS NOT NULL)`.
-4. **Condicions que creuen múltiples taules:** *«Les actuacions en un esdeveniment han de ser en escenaris contractats per aquest esdeveniment»* → **NO es pot** com a restricció de columna ni de taula perquè involucra dues taules. S'ha d'implementar com a **`CREATE ASSERTION`** (o disparadors).
+1. **Identificadors alternatius:** `UNIQUE (nomUsuari)` a la taula corresponent.
+2. **Restriccions de domini o estat:** restricció de columna `CHECK (estat IN ('confirmada', 'cancel·lada'))`.
+3. **Condicions entre atributs de la mateixa fila (implicació $A \to B \equiv \neg A \lor B$):** restricció de taula `CHECK (estat <> 'confirmada' OR dataRegistre IS NOT NULL)`.
+4. **Condicions que creuen múltiples taules:** no es poden definir com a restriccions de columna ni de taula perquè involucren més d'una taula; requereixen `CREATE ASSERTION` (o disparadors).
+
+---
+
+## 6.10. Cas Global de Referència (UML i Relacional)
+
+Exemple complet d'una organització amb departaments, projectes i empleats:
+
+### Model Conceptual Global (UML)
+:::umlviz{schema="uml_empresa" title="Model Conceptual UML de l'Empresa de Referència" height="420"}
+:::
+
+### Esquema Relacional Resultant (ERD)
+:::sqlviz{simulation="esquema_empresa"}
+:::

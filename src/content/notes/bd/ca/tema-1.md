@@ -36,6 +36,9 @@ SELECT nom_empl, sou * 1.05 AS sou_incrementat FROM empleats;
 SELECT DISTINCT ciutat_empl FROM empleats;
 ```
 
+:::distinctviz
+:::
+
 `ORDER BY` ordena el resultat: `ASC` de menor a major (per defecte), `DESC` de major a menor:
 
 ```sql
@@ -77,11 +80,14 @@ Processen múltiples files i retornen un únic valor resum:
 
 Si cap fila compleix el filtre, `COUNT` retorna `0`, mentre que `SUM`, `AVG`, `MIN` i `MAX` retornen `NULL`.
 
-```sql [Exemple d'agregació]
+```sql
 SELECT COUNT(*), AVG(sou), MAX(sou)
 FROM empleats 
 WHERE num_dpt = 2;
 ```
+
+:::aggregateviz
+:::
 
 ---
 
@@ -89,15 +95,18 @@ WHERE num_dpt = 2;
 
 `GROUP BY` divideix les files en grups segons els valors de les columnes indicades. Tota columna individual del `SELECT` **ha d'aparèixer al `GROUP BY` o bé dins d'una funció d'agregació**; no es pot projectar una columna que no formi part del criteri d'agrupament.
 
-```sql [Sou mitjà per departament]
+```sql
 SELECT num_dpt, AVG(sou) AS sou_mig
 FROM empleats 
 GROUP BY num_dpt;
 ```
 
+:::groupbyviz
+:::
+
 `WHERE` filtra files individuals **abans** d'agrupar i mai pot contenir funcions d'agregació. `HAVING` filtra **grups resultants després** de l'agrupament i és on s'usen condicions sobre `COUNT`, `AVG`, etc.:
 
-```sql [Combinació WHERE + GROUP BY + HAVING]
+```sql
 SELECT num_dpt, AVG(sou) AS sou_mig
 FROM empleats
 WHERE sou > 200000        -- 1. Filtra empleats individuals amb sou > 200k
@@ -114,7 +123,7 @@ HAVING COUNT(*) > 1;      -- 3. Manté només departaments amb més d'1 empleat 
 
 Permeten combinar files de múltiples taules relacionades. La forma estàndard recomanada és `INNER JOIN ... ON`:
 
-```sql [INNER JOIN explícit]
+```sql
 SELECT e.nom_empl, d.nom_dpt
 FROM empleats e
 INNER JOIN departaments d ON e.num_dpt = d.num_dpt;
@@ -131,9 +140,12 @@ FROM empleats e
 NATURAL INNER JOIN departaments d;
 ```
 
+:::naturaljoinviz
+:::
+
 Els joins es poden combinar amb agregació:
 
-```sql [Nom de departament amb sou mig]
+```sql
 SELECT d.nom_dpt, AVG(e.sou) AS sou_mig
 FROM empleats e
 INNER JOIN departaments d ON e.num_dpt = d.num_dpt
@@ -141,17 +153,23 @@ GROUP BY d.nom_dpt
 HAVING COUNT(*) > 1;
 ```
 
+:::joinaggviz
+:::
+
 ---
 
 ## 1.6. Operacions de conjunts (`UNION`)
 
 `UNION` combina verticalment els resultats de dos `SELECT` independents en un únic resultat, eliminant automàticament les files duplicades. `UNION ALL` conserva els duplicats i és més ràpid en execució. Les dues consultes han de tenir exactament el mateix nombre de columnes i tipus compatibles, i el `ORDER BY` només es pot posar al final de tot:
 
-```sql [Unió de ciutats]
+```sql
 SELECT ciutat_dpt AS ciutat FROM departaments
 UNION
 SELECT ciutat_empl AS ciutat FROM empleats;
 ```
+
+:::unionviz
+:::
 
 ---
 
@@ -171,7 +189,7 @@ WHERE num_dpt NOT IN (
 **La trampa de NULL amb `NOT IN`:** Si la subconsulta retorna encara que sigui un sol valor `NULL`, l'expressió `NOT IN` retornarà sempre fals i **la consulta no retornarà cap fila**. Per fer-la segura cal afegir sempre `WHERE col IS NOT NULL`.
 
 #### Amb `NOT EXISTS` (opció recomanada i segura):
-```sql [Subconsulta correlacionada]
+```sql
 SELECT * FROM departaments d
 WHERE NOT EXISTS (
     SELECT * FROM empleats e
@@ -194,6 +212,9 @@ EXTRACT(MONTH FROM data)      -- Mes (1 a 12)
 EXTRACT(DOW FROM data)        -- Dia setmana (0 = Diumenge)
 ```
 
+:::extractviz
+:::
+
 `INTERVAL` permet sumar o restar períodes de temps:
 
 ```sql
@@ -201,9 +222,12 @@ SELECT * FROM viatges
 WHERE moment > (data_sortida + INTERVAL '10 min');
 ```
 
+:::intervalviz
+:::
+
 ---
 
-## 1.9. Criteris de Qualitat de la FIB (Penalitzacions d'Examen)
+## 1.9. Criteris de qualitat
 
 Als exàmens de la FIB, encara que una consulta SQL retorni el resultat correcte, s'apliquen penalitzacions directes si no compleix aquests criteris:
 
@@ -215,7 +239,7 @@ Als exàmens de la FIB, encara que una consulta SQL retorni el resultat correcte
 
 ---
 
-## 1.10. Àlgebra Relacional (Pregunta fixa de l'examen parcial)
+## 1.10. Àlgebra relacional
 
 L'**Àlgebra Relacional** és un llenguatge formal on les consultes s'especifiquen aplicant operadors sobre relacions per produir noves relacions. Als exàmens val entre **1,5 i 2,5 punts** i s'exigeix escriure una seqüència d'assignacions pas a pas ($A = \dots, B = \dots, R = \dots$).
 
@@ -235,9 +259,12 @@ A diferència de SQL, en àlgebra relacional **mai hi ha tuples repetides**: la 
 | **$\theta$-Join** | $T[condicio]S$ | $T \bowtie_{condicio} S$ | Producte cartesià filtrat per condició. |
 | **Natural Join** | $T * S$ | $T \bowtie S$ | Iguala atributs amb mateix nom i elimina duplicats. |
 
+:::relalgviz
+:::
+
 ---
 
-### Patrons Clàssics d'Examen
+<!-- ### Patrons Clàssics d'Examen
 
 #### Patró 1: "Únicament", "Mai" o "Cap" (Diferència de conjunts)
 Quan demanen entitats que *únicament* han fet una acció o que *mai* han incomplert una condició, la lògica és: *candidats possibles* menys *els que incompleixen la regla*.
@@ -301,4 +328,34 @@ Als exàmens sovint es dóna la mida de cada taula en tuples i es demana raonar 
 | **Agregació global sense `GROUP BY`** (ex: `SELECT COUNT(*)`) | $1$ | $1$ | Una consulta agregada global sempre retorna exactament 1 fila, fins i tot si la taula és buida. |
 | **Consulta amb `GROUP BY columna`** | $0$ | $\min(|R|, \text{valors diferents de col})$ | Si cap tupla passa el `WHERE` el resultat és buit. Com a màxim hi haurà tantes files com valors diferents tingui la columna agrupada. |
 
-**Pot donar duplicats?** No pot donar duplicats si la clau primària de la relació principal és al `SELECT`, si s'usa `DISTINCT`, o si l'esquema garanteix cardinalitat 1\:1. Sí pot donar duplicats si es fa un join entre taules amb cardinalitat 1\:N i al `SELECT` només es projecten atributs de la taula pare sense `DISTINCT`, ja que la fila del pare es repetirà tantes vegades com fills tingui.
+**Pot donar duplicats?** No pot donar duplicats si la clau primària de la relació principal és al `SELECT`, si s'usa `DISTINCT`, o si l'esquema garanteix cardinalitat 1\:1. Sí pot donar duplicats si es fa un join entre taules amb cardinalitat 1\:N i al `SELECT` només es projecten atributs de la taula pare sense `DISTINCT`, ja que la fila del pare es repetirà tantes vegades com fills tingui. -->
+<!-- 
+## Test Visualitzadors (src/lib)
+
+### 1. SQL: Esquema Global de l'Empresa (ERD)
+:::sqlviz{simulation="esquema_empresa"}
+:::
+
+### 2. SQL: Consulta amb Filtre i JOIN pas a pas
+:::sqlviz{simulation="select_filtre_join"}
+:::
+
+### 3. SQL: Consulta amb GROUP BY i HAVING pas a pas
+:::sqlviz{simulation="select_group_having"}
+:::
+
+### 4. SQL: DDL Creació de Taules i Restriccions pas a pas
+:::sqlviz{simulation="ddl_empleats"}
+:::
+
+### 5. UML: Associacions Binàries (1\:1, 1\:N, M\:N)
+:::umlviz{schema="uml_associacions" title="Diagrama d'Associacions Binàries (1:1, 1:N, M:N)"}
+:::
+
+### 6. UML: Jerarquia d'Herència (Classes)
+:::umlviz{schema="uml_herencia" title="Jerarquia d'Herència de Classes (UML)"}
+:::
+
+### 7. UML: Model Conceptual de l'Empresa
+:::umlviz{schema="uml_empresa" title="Model Conceptual UML de l'Empresa de Referència"}
+::: -->
