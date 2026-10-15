@@ -34,3 +34,9 @@ production.md
 project_tree.md
 project.md
 SYNTAX_GUIDE.md
+
+# Promo video & motion graphics tooling
+promo/
+*.mp4
+*.wav
+apunts_promo_1080p.mp4

@@ -24,3 +24,9 @@ project_tree.md
 project.md
 others/
 .env*
+
+# Promo video & motion graphics tooling
+promo/
+*.mp4
+*.wav
+apunts_promo_1080p.mp4

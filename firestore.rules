@@ -133,9 +133,9 @@ service cloud.firestore {
       allow read, write: if request.auth.uid == userId;
     }
 
-    // Diccionari de Noms d'Usuari
+    // Diccionari de Noms d'Usuari (comprovació pública d'existència de nick en el registre)
     match /usernames/{usernameId} {
-      allow get: if request.auth.uid != null;
+      allow get: if true;
       allow list: if request.auth.uid != null;
       allow create: if request.auth.uid != null && request.resource.data.uid == request.auth.uid;
       allow update: if request.auth.uid != null && resource.data.uid == request.auth.uid;
