@@ -2,7 +2,7 @@
 title: "Tema 4: Exhaustive Search"
 description: "Cerca exhaustiva i backtracking: generació de subconjunts i permutacions, poda de l'arbre de cerca i problemes de satisfacció de restriccions."
 readTime: "20 min"
-order: 4
+order: 5
 draft: true
 ---
 

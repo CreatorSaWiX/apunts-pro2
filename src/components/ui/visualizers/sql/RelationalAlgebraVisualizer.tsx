@@ -3,22 +3,23 @@
 import { useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 
-type OperatorKey = "select" | "project" | "union" | "diff" | "intersect" | "join" | "product";
+type OperatorKey = "select" | "project" | "rename" | "union" | "diff" | "intersect" | "join" | "product";
 
 interface OperatorMeta {
   key: OperatorKey;
-  symbol: string;
+  name: string;
   fib: string;
 }
 
 const OPERATORS: OperatorMeta[] = [
-  { key: "select", symbol: "σ", fib: "T(c)" },
-  { key: "project", symbol: "π", fib: "T[A,B]" },
-  { key: "union", symbol: "∪", fib: "T ∪ S" },
-  { key: "diff", symbol: "−", fib: "T − S" },
-  { key: "intersect", symbol: "∩", fib: "T ∩ S" },
-  { key: "join", symbol: "⨝", fib: "T * S" },
-  { key: "product", symbol: "×", fib: "T × S" },
+  { key: "select", name: "Selecció", fib: "T(c)" },
+  { key: "project", name: "Projecció", fib: "T[A,B]" },
+  { key: "rename", name: "Reanomenament", fib: "T{A→B}" },
+  { key: "union", name: "Unió", fib: "T ∪ S" },
+  { key: "diff", name: "Diferència", fib: "T − S" },
+  { key: "intersect", name: "Intersecció", fib: "T ∩ S" },
+  { key: "join", name: "Natural Join", fib: "T * S" },
+  { key: "product", name: "Producte Cartesià", fib: "T × S" },
 ];
 
 export default function RelationalAlgebraVisualizer() {
@@ -41,8 +42,10 @@ export default function RelationalAlgebraVisualizer() {
                   : "bg-slate-900/30 border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/10"
               }`}
             >
-              <span className="text-slate-500 mr-1 font-normal">{op.symbol}</span>
-              {op.fib}
+              <span className={isSelected ? "text-sky-300/80 mr-1.5 font-normal" : "text-slate-500 mr-1.5 font-normal"}>
+                {op.name}
+              </span>
+              <span>{op.fib}</span>
             </button>
           );
         })}
@@ -53,6 +56,7 @@ export default function RelationalAlgebraVisualizer() {
         <AnimatePresence mode="wait">
           {activeOp === "select" && <SelectViz key="select" />}
           {activeOp === "project" && <ProjectViz key="project" />}
+          {activeOp === "rename" && <RenameViz key="rename" />}
           {activeOp === "union" && <SetOpViz key="union" op="union" />}
           {activeOp === "diff" && <SetOpViz key="diff" op="diff" />}
           {activeOp === "intersect" && <SetOpViz key="intersect" op="intersect" />}
@@ -109,7 +113,7 @@ function SelectViz() {
       </div>
 
       {/* Fletxa operació */}
-      <ArrowConnector label="B = 'x'" symbol="σ" color="emerald" />
+      <ArrowConnector label="T(B = 'x')" color="emerald" />
 
       {/* Relació Resultat R */}
       <div className="flex flex-col items-center gap-1">
@@ -176,7 +180,7 @@ function ProjectViz() {
       </div>
 
       {/* Fletxa operació */}
-      <ArrowConnector label="[A, B]" symbol="π" color="sky" />
+      <ArrowConnector label="T[A, B]" color="sky" />
 
       {/* Relació Resultat R */}
       <div className="flex flex-col items-center gap-1">
@@ -194,6 +198,67 @@ function ProjectViz() {
             <span className="w-9 py-1">2</span>
             <span className="w-9 py-1">y</span>
           </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// -------------------------------------------------------------
+// 3. REANOMENAMENT: CANVI DE NOM D'ATRIBUTS (MATEIXA EXTENSIÓ)
+// -------------------------------------------------------------
+function RenameViz() {
+  const rows = [
+    { a: "1", b: "x", c: "α" },
+    { a: "2", b: "y", c: "β" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full"
+    >
+      {/* Relació T */}
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-[10px] text-slate-500 font-bold self-start pl-1">T</span>
+        <div className="border border-white/10 rounded-lg overflow-hidden bg-slate-950/40">
+          <div className="grid grid-cols-3 border-b border-white/10 text-[10px] text-center font-bold">
+            <span className="w-10 py-1 text-slate-400 bg-white/5">A</span>
+            <span className="w-10 py-1 bg-cyan-500/20 text-cyan-300">B</span>
+            <span className="w-10 py-1 text-slate-400 bg-white/5">C</span>
+          </div>
+          {rows.map((r, i) => (
+            <div key={i} className="grid grid-cols-3 text-[11px] text-center">
+              <span className="w-10 py-1 text-slate-300">{r.a}</span>
+              <span className="w-10 py-1 bg-cyan-500/10 text-cyan-200 font-semibold">{r.b}</span>
+              <span className="w-10 py-1 text-slate-300">{r.c}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Fletxa operació */}
+      <ArrowConnector label="T{B → NouB}" color="cyan" />
+
+      {/* Relació Resultat R */}
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-[10px] text-cyan-400 font-bold self-start pl-1">R</span>
+        <div className="border border-cyan-500/30 rounded-lg overflow-hidden bg-cyan-950/10 shadow-[0_0_15px_rgba(6,182,212,0.08)]">
+          <div className="grid grid-cols-3 bg-cyan-500/15 border-b border-cyan-500/20 text-[10px] text-cyan-300 font-bold text-center">
+            <span className="w-10 py-1">A</span>
+            <span className="w-10 py-1 text-cyan-200 font-bold">NouB</span>
+            <span className="w-10 py-1">C</span>
+          </div>
+          {rows.map((r, i) => (
+            <div key={i} className="grid grid-cols-3 text-[11px] text-center text-cyan-100 font-semibold">
+              <span className="w-10 py-1">{r.a}</span>
+              <span className="w-10 py-1">{r.b}</span>
+              <span className="w-10 py-1">{r.c}</span>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>
@@ -295,7 +360,7 @@ function SetOpViz({ op }: { op: "union" | "diff" | "intersect" }) {
       </div>
 
       {/* Fletxa operació */}
-      <ArrowConnector symbol={symbol} color={colorTheme} />
+      <ArrowConnector label={op === "union" ? "T ∪ S" : op === "diff" ? "T − S" : "T ∩ S"} color={colorTheme} />
 
       {/* Relació Resultat R */}
       <div className="flex flex-col items-center gap-1">
@@ -404,7 +469,7 @@ function JoinViz() {
         </div>
       </div>
 
-      <ArrowConnector symbol="⨝" color="amber" />
+      <ArrowConnector label="T * S" color="amber" />
 
       {/* R (A, B, C) */}
       <div className="flex flex-col items-center gap-1">
@@ -471,7 +536,7 @@ function ProductViz() {
         </div>
       </div>
 
-      <ArrowConnector symbol="×" color="slate" />
+      <ArrowConnector label="T × S" color="slate" />
 
       {/* R (A, B) */}
       <div className="flex flex-col items-center gap-1">
@@ -508,11 +573,12 @@ function ArrowConnector({
 }: {
   symbol?: string;
   label?: string;
-  color?: "emerald" | "sky" | "violet" | "rose" | "amber" | "slate";
+  color?: "emerald" | "sky" | "cyan" | "violet" | "rose" | "amber" | "slate";
 }) {
   const colorMap = {
     emerald: "text-emerald-400 stroke-emerald-400",
     sky: "text-sky-400 stroke-sky-400",
+    cyan: "text-cyan-400 stroke-cyan-400",
     violet: "text-purple-400 stroke-purple-400",
     rose: "text-rose-400 stroke-rose-400",
     amber: "text-amber-400 stroke-amber-400",

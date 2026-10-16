@@ -67,6 +67,8 @@ const TreeTermVisualizer = React.lazy(() => import("../components/ui/visualizers
 const ABCVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/ABCVisualizer"));
 const ABCDegenerateVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/ABCDegenerateVisualizer"));
 const AVLRotVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AVLRotVisualizer"));
+const AVLInsertVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AVLInsertVisualizer"));
+const AVLDeleteVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AVLDeleteVisualizer"));
 const AsymptoticVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/AsymptoticVisualizer"));
 const GrowthHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GrowthHierarchyVisualizer"));
 const DivideConquerVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DivideConquerVisualizer"));
@@ -556,6 +558,20 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    avlinsertviz: () => {
+        return (
+            <SafeSuspense>
+                <AVLInsertVisualizer />
+            </SafeSuspense>
+        );
+    },
+    avldeleteviz: () => {
+        return (
+            <SafeSuspense>
+                <AVLDeleteVisualizer />
+            </SafeSuspense>
+        );
+    },
     asymptoticviz: () => {
         return (
             <SafeSuspense>
@@ -1034,7 +1050,7 @@ const rehypePluginsConfig = [
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,

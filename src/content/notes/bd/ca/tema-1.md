@@ -1,5 +1,5 @@
 ---
-title: "Tema 1: Consultes SQL"
+title: "Tema 1: SQL i àlgebra relacional"
 description: "DQL, funcions d'agregació, subconsultes i àlgebra relacional."
 readTime: "12 min"
 order: 1
@@ -245,117 +245,35 @@ L'**Àlgebra Relacional** és un llenguatge formal on les consultes s'especifiqu
 
 A diferència de SQL, en àlgebra relacional **mai hi ha tuples repetides**: la projecció elimina duplicats automàticament. Per fer operacions de conjunts ($\cup$, $\cap$, $-$), les dues relacions han de tenir el mateix nombre d'atributs, amb noms idèntics; si no coincideixen, cal reanomenar prèviament.
 
-### Operadors (Notació FIB vs. Notació Clàssica)
+### Operadors
 
-| Operador | Notació FIB | Notació Clàssica | Descripció |
-| :--- | :---: | :---: | :--- |
-| **Selecció** | $T(condicio)$ | $\sigma_{condicio}(T)$ | Filtra les tuples que compleixen la condició. |
-| **Projecció** | $T[A_1, A_2, \dots]$ | $\pi_{A_1, A_2, \dots}(T)$ | Retalla columnes i elimina duplicats. |
-| **Reanomenament** | $T\{A \to B\}$ | $\rho_{T'(B)}(T)$ | Canvia el nom dels atributs. |
-| **Producte Cartesià** | $T \times S$ | $T \times S$ | Concatena cada fila de $T$ amb cada fila de $S$. |
-| **Unió** | $T \cup S$ | $T \cup S$ | Tuples que són a $T$, a $S$ o a totes dues. |
-| **Diferència** | $T - S$ | $T - S$ | Tuples que són a $T$ però NO a $S$. |
-| **Intersecció** | $T \cap S$ | $T \cap S$ | Tuples que pertanyen a $T$ i a $S$. |
-| **$\theta$-Join** | $T[condicio]S$ | $T \bowtie_{condicio} S$ | Producte cartesià filtrat per condició. |
-| **Natural Join** | $T * S$ | $T \bowtie S$ | Iguala atributs amb mateix nom i elimina duplicats. |
+| Operador | Sintaxi | Descripció |
+| :--- | :---: | :--- |
+| **Selecció** | $T(condicio)$ | Filtra les tuples que compleixen la condició. |
+| **Projecció** | $T[A_1, A_2, \dots]$ | Retalla columnes i elimina duplicats. |
+| **Reanomenament** | $T\{A \to B\}$ | Canvia el nom dels atributs. |
+| **Producte Cartesià** | $T \times S$ | Concatena cada fila de $T$ amb cada fila de $S$. |
+| **Unió** | $T \cup S$ | Tuples que són a $T$, a $S$ o a totes dues. |
+| **Diferència** | $T - S$ | Tuples que són a $T$ però NO a $S$. |
+| **Intersecció** | $T \cap S$ | Tuples que pertanyen a $T$ i a $S$. |
+| **$\theta$-Join** | $T[condicio]S$ | Producte cartesià filtrat per condició. |
+| **Natural Join** | $T * S$ | Iguala atributs amb mateix nom i elimina duplicats. |
 
 :::relalgviz
 :::
 
----
+> **Enunciat (LearnSQL - Exercici 4):**  
+> *Doneu una seqüència d'operacions de l'àlgebra relacional per obtenir el número i nom dels departaments que tenen dos o més empleats que viuen a ciutats diferents.*
 
-<!-- ### Patrons Clàssics d'Examen
-
-#### Patró 1: "Únicament", "Mai" o "Cap" (Diferència de conjunts)
-Quan demanen entitats que *únicament* han fet una acció o que *mai* han incomplert una condició, la lògica és: *candidats possibles* menys *els que incompleixen la regla*.
-
-*Exemple (Metges que només han visitat pacients de 65 anys o més a la clínica 'El Remei'):*
-```text
-TotsMetges = Visites[idMetge]
-IncomplidorsEdat = (Visites[Visites.idPacient = Pacients.idPacient] Pacients(edat < 65))[idMetge]
-IncomplidorsClinica = Visites(nomClinica <> 'El Remei')[idMetge]
-MetgesBons = TotsMetges - IncomplidorsEdat - IncomplidorsClinica
-Resultat = (Metges[Metges.idMetge = MetgesBons.idMetge] MetgesBons)[nom, especialitat]
-```
-
----
-
-#### Patró 2: Simular un recompte mínim fix (2 o més)
-Com que l'àlgebra relacional **no disposa de `COUNT()`**, per comprovar que un element té almenys 2 instàncies diferents es fa una **auto-reunió (self-join) comparant que les claus siguin diferents**:
-
-*Exemple (Usuaris que han creat 2 o més playlists de la mateixa temàtica):*
-```text
-P1 = Playlist{idList -> id1, tematica -> tema1, creador -> cr1}
-P2 = Playlist{idList -> id2, tematica -> tema2, creador -> cr2}
-Combinacio = P1[cr1 = cr2, tema1 = tema2, id1 <> id2]P2
-Resultat = Combinacio[cr1]
-```
-
----
-
-#### Patró 3: Condició Universal ("Per a tots") i Divisió Relacional
-Quan una consulta demana seleccionar les tuples de $R$ associades a **tots** els elements de $S$ (per exemple: *«Persones que han organitzat el congrés en les tres edicions 2020, 2021 i 2022»*).
-
-**Estratègia A: Intersecció successiva** (ideal quan el conjunt de referència és fix i petit):
-```text
-Ed2020 = Participants(edicio = 2020 AND rol = 'organitzador')[email, idCongres]
-Ed2021 = Participants(edicio = 2021 AND rol = 'organitzador')[email, idCongres]
-Ed2022 = Participants(edicio = 2022 AND rol = 'organitzador')[email, idCongres]
-OrganitzadorsTotesTres = Ed2020 ∩ Ed2021 ∩ Ed2022
-Resultat = (Persones * OrganitzadorsTotesTres * Congressos)[nomPersona, email, nomCongres]
-```
-
-**Estratègia B: Doble diferència / Divisió formal** (per a un conjunt dinàmic $S$):
-tots els emparellaments possibles menys els que no s'han produït realment, i d'aquí s'extreuen els incomplets; el resultat final és els candidats menys els incomplets.
-
----
-
-### Pregunta teòrica: "És possible en àlgebra relacional?"
-Als exàmens és habitual que preguntin si una sentència SQL donada es pot expressar en àlgebra relacional. **NO ÉS POSSIBLE** si la consulta requereix càlculs aritmètics sobre conjunts (`AVG`, `SUM`), recomptes arbitraris o dinàmics (`COUNT(*) >= N` on $N$ és variable), o consultes recursives (arbres jeràrquics de profunditat arbitrària). **SÍ ÉS POSSIBLE** si només demana un llindar fix i petit (com 2 o 3) perquè es pot descompondre en un producte de relacions amb claus diferents.
-
----
-
-## 1.11. Càlcul de Cardinalitats Mínimes i Màximes (Pregunta d'examen de 1 a 1,5 punts)
-
-Als exàmens sovint es dóna la mida de cada taula en tuples i es demana raonar el **mínim i màxim nombre de tuples** que retornarà una consulta SQL.
-
-| Tipus de consulta | Mínim | Màxim | Justificació |
-| :--- | :---: | :---: | :--- |
-| **Join per clau forana obligatòria (`FK NOT NULL`)** *(S té FK que referencia PK de R)* | $|S|$ | $|S|$ | Cada fila de $S$ té exactament un pare a $R$ per integritat referencial. |
-| **Join per clau forana opcional (FK admet `NULL`)** | $0$ | $|S|$ | Si totes les files de $S$ tenen la FK a `NULL`, cap fila enllaça amb $R$. |
-| **Join pel costat pare ($R$) cap a fills ($S$)** | $0$ | $|S|$ | Un pare a $R$ pot tenir 0 fills associats a $S$. |
-| **Join sense clau forana o condició no unívoca** | $0$ | $|R| \times |S|$ | Si cap tupla coincideix és 0; si totes coincideixen s'obté el producte complet. |
-| **Agregació global sense `GROUP BY`** (ex: `SELECT COUNT(*)`) | $1$ | $1$ | Una consulta agregada global sempre retorna exactament 1 fila, fins i tot si la taula és buida. |
-| **Consulta amb `GROUP BY columna`** | $0$ | $\min(|R|, \text{valors diferents de col})$ | Si cap tupla passa el `WHERE` el resultat és buit. Com a màxim hi haurà tantes files com valors diferents tingui la columna agrupada. |
-
-**Pot donar duplicats?** No pot donar duplicats si la clau primària de la relació principal és al `SELECT`, si s'usa `DISTINCT`, o si l'esquema garanteix cardinalitat 1\:1. Sí pot donar duplicats si es fa un join entre taules amb cardinalitat 1\:N i al `SELECT` només es projecten atributs de la taula pare sense `DISTINCT`, ja que la fila del pare es repetirà tantes vegades com fills tingui. -->
-<!-- 
-## Test Visualitzadors (src/lib)
-
-### 1. SQL: Esquema Global de l'Empresa (ERD)
-:::sqlviz{simulation="esquema_empresa"}
+:::sqlviz{simulation="relalg_empleats_ciutats"}
 :::
 
-### 2. SQL: Consulta amb Filtre i JOIN pas a pas
-:::sqlviz{simulation="select_filtre_join"}
-:::
+Als exàmens escrits a mà s'aplica aquesta notació:
 
-### 3. SQL: Consulta amb GROUP BY i HAVING pas a pas
-:::sqlviz{simulation="select_group_having"}
-:::
+$$A = \text{EMPLEATS}\{\text{CIUTAT\_EMPL} \to \text{C1}, \text{NUM\_DPT} \to \text{D1}\}$$
 
-### 4. SQL: DDL Creació de Taules i Restriccions pas a pas
-:::sqlviz{simulation="ddl_empleats"}
-:::
+$$B = \text{EMPLEATS}[\text{NUM\_DPT} = \text{D1}, \text{CIUTAT\_EMPL} \neq \text{C1}] A$$
 
-### 5. UML: Associacions Binàries (1\:1, 1\:N, M\:N)
-:::umlviz{schema="uml_associacions" title="Diagrama d'Associacions Binàries (1:1, 1:N, M:N)"}
-:::
+$$C = \text{DEPARTAMENTS} * B$$
 
-### 6. UML: Jerarquia d'Herència (Classes)
-:::umlviz{schema="uml_herencia" title="Jerarquia d'Herència de Classes (UML)"}
-:::
-
-### 7. UML: Model Conceptual de l'Empresa
-:::umlviz{schema="uml_empresa" title="Model Conceptual UML de l'Empresa de Referència"}
-::: -->
+$$R = C[\text{NUM\_DPT}, \text{NOM\_DPT}]$$
