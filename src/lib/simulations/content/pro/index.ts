@@ -22,6 +22,7 @@ import { mergesort } from './implementations/mergesort';
 import { quicksort } from './implementations/quicksort';
 import { fast_power } from './implementations/fast_power';
 import { waitpid_diagnosi } from './implementations/waitpid_diagnosi';
+import { fork_alarm_timeout } from './implementations/fork_alarm_timeout';
 import { diccionari_abc } from './implementations/diccionari_abc';
 import { diccionari_avl } from './implementations/diccionari_avl';
 import { diccionari_esborrar } from './implementations/diccionari_esborrar';
@@ -50,6 +51,7 @@ export const pro: Record<string, Simulation> = {
     quicksort,
     fast_power,
     waitpid_diagnosi,
+    fork_alarm_timeout,
     diccionari_abc,
     diccionari_avl,
     diccionari_esborrar

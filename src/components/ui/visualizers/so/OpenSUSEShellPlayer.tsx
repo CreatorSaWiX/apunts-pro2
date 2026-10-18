@@ -211,6 +211,34 @@ const MAN_PAGES: Record<string, { name: string; section: number; synopsis: strin
             ['RETURN VALUE', 'Sempre retorna -1 amb errno = EINTR.']
         ],
         seeAlso: 'sigaction(2), sigprocmask(2), pause(2)'
+    },
+    'signal(7)': {
+        name: 'signal - overview of signals',
+        section: 7,
+        synopsis: '#include <signal.h>',
+        desc: 'Linux suporta tant els senyals estàndard POSIX (senyals fiables i no fiables del 1 al 31) com els senyals en temps real. Un senyal és una notificació asíncrona enviada a un procés pel Kernel o per un altre procés.',
+        options: [
+            ['SIGINT (2)', 'Interrupció des del teclat (Ctrl+C). Acció per defecte: Term.'],
+            ['SIGKILL (9)', 'Matar el procés immediatament. No es pot capturar ni bloquejar.'],
+            ['SIGSEGV (11)', 'Referència de memòria invàlida (segmentation fault). Term + Dump.'],
+            ['SIGALRM (14)', 'Temporitzador d\'alarma expirat (alarm(2)). Acció per defecte: Term.'],
+            ['SIGCHLD (17)', 'Procés fill acabat o aturat. Acció per defecte: Ignorar.'],
+            ['SIGSTOP (19)', 'Atura el procés (congelat). No es pot capturar ni bloquejar.'],
+            ['SIGCONT (18)', 'Continua l\'execució si el procés estava aturat.']
+        ],
+        seeAlso: 'kill(1), kill(2), sigaction(2), sigprocmask(2)'
+    },
+    'kill': {
+        name: 'kill - send a signal to a process',
+        section: 1,
+        synopsis: 'kill [-s signal | -p] [-q sigval] [-a] [--] pid...\nkill -l [signal]',
+        desc: 'kill envia el senyal especificat (per defecte SIGTERM) als processos indicats per PID. L\'opció -l llista tots els senyals disponibles amb el seu número i nom.',
+        options: [
+            ['-l, --list', 'Llista els noms dels senyals suportats pel sistema.'],
+            ['-s, --signal', 'Especifica el senyal a enviar (per nom o número, p. ex. -9 o -KILL).'],
+            ['-L, --table', 'Llista els senyals en format tabular agradable.']
+        ],
+        seeAlso: 'ps(1), signal(7), kill(2)'
     }
 };
 
@@ -1691,12 +1719,12 @@ export default function OpenSUSEShellPlayer({
                 let section: number | null = null;
                 let page = '';
 
-                if (args[1] === '1' || args[1] === '2' || args[1] === '3') {
+                if (/^[1-9]$/.test(args[1])) {
                     section = parseInt(args[1], 10);
                     page = args[2] || '';
                 } else {
                     page = args[1] || '';
-                    if (args[2] === '1' || args[2] === '2' || args[2] === '3') {
+                    if (/^[1-9]$/.test(args[2])) {
                         section = parseInt(args[2], 10);
                     }
                 }
@@ -1711,8 +1739,8 @@ export default function OpenSUSEShellPlayer({
 
                 if (!foundKey && (!section || section === 1) && MAN_PAGES[page]) {
                     foundKey = page;
-                } else if (!foundKey && section === 2 && MAN_PAGES[`${page}(2)`]) {
-                    foundKey = `${page}(2)`;
+                } else if (!foundKey && MAN_PAGES[`${page}(${section || 2})`]) {
+                    foundKey = `${page}(${section || 2})`;
                 }
 
                 if (foundKey && MAN_PAGES[foundKey]) {

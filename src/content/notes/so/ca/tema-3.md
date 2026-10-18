@@ -1,6 +1,6 @@
 ---
-title: "Tema 3: Processos i signals"
-description: "Processos i gestió avançada de senyals."
+title: "Tema 3: Processos"
+description: "Processos"
 readTime: "25 min"
 order: 3
 draft: false
@@ -40,11 +40,7 @@ El **PCB** és la **fitxa d'identitat** que el nucli del sistema operatiu (*Kern
 * **Context de la CPU (Registres)**: Els valors dels registres generals, el punter de la pila (*Stack Pointer*) i el *Program Counter* (la línia de codi exacta per on anava) quan se li retira la CPU.
 * **Espai de memòria**: Rangs de memòria RAM assignats (segment de codi/text, variables globals, heap i pila).
 * **Fitxers oberts**: La taula de descriptors de fitxer (`fd = 0` per teclat, `fd = 1` per pantalla, `fd = 2` per errors, fitxers de disc o canonades).
-* **Estructures de senyals (*Signals*)**:
-  1. *Taula d'accions*: quina funció cal executar si rep cada senyal.
-  2. *Bitmap de pendents*: registre de bits per recordar quins senyals han arribat però encara no s'han tractat.
-  3. *Màscara de bloqueig*: quins senyals té retinguts temporalment.
-  4. *Temporitzador d'alarma*: quants segons li queden per rebre l'alarma.
+* **Estructures de senyals (*Signals*)**: Taula d'accions, bitmap de pendents, màscara de bloqueig i alarma (estudiat a fons al [Tema 4: Signals](./so-tema-4)).
 * **Comptadors de temps (*Accounting*)**: Quant de temps de processador ha gastat i estadístiques d'ús de recursos.
 
 :::shellviz{command="cat /proc/self/status" suggestions="cat /proc/self/status,ls /proc,ls -l /proc/self,ls -l /proc/self/fd" title="Terminal — Radiografia del PCB al Kernel (/proc i /proc/self)"}
@@ -258,6 +254,25 @@ for (int i = 0; i < N; i++) {
 while (waitpid(-1, NULL, 0) > 0);
 ```
 
+### Com executa les comandes el Shell: Primer pla vs Segon pla (`&`)
+
+Quan escrius una comanda al terminal, el Shell (`bash`, `zsh`) fa internament un bucle amb `fork()`, `exec()` i `waitpid()`:
+
+```c
+while (1) {
+    comanda = llegir_comanda();
+    int pid = fork();
+    if (pid == 0) {
+        execlp(comanda, comanda, ..., NULL); // Executa el programa
+    }
+    // Si és en PRIMER PLA:
+    waitpid(pid, &status, 0); // El Shell es bloqueja fins que el programa acabi
+}
+```
+
+* **Primer pla (*Foreground*, `./programa`)**: El Shell es bloqueja a l'espera que el procés fill acabi amb `waitpid()`. Com que el Shell està adormit, el teclat queda pres pel programa i no pots introduir noves comandes. Per això, si el programa triga o s'adorm, cal obrir una altra pestanya o finestra de terminal per enviar-li senyals o consultar `ps`.
+* **Segon pla (*Background*, `./programa &`)**: Afegint un ampersand `&` al final, el Shell llança el procés fill però **no fa `waitpid()` bloquejant** d'immediat. Et torna el control del teclat a l'instant mostrant el número de feina i el PID (ex: `[1] 20226`), permetent-te continuar executant altres comandes a la mateixa terminal mentre el programa corre de fons.
+
 ---
 
 ## 3.4 Canvi de context i planificació (*scheduling*)
@@ -328,193 +343,3 @@ Funciona com un torn de paraula en cercle:
 | **Esdeveniment llest** | `BLOCKED` $\rightarrow$ `READY` | Arriben les dades o mor el fill esperat. |
 | **Finalització** | `RUN` $\rightarrow$ `ZOMBIE` | El procés acaba (**`exit()`**); manté PCB fins que el pare faci `waitpid`. |
 | **Alliberament** | `ZOMBIE` $\rightarrow$ `Eliminat` | El pare el recull amb **`waitpid()`** i el Kernel esborra el seu PCB. |
-
----
-
-## 3.5 Signals
-
-Un **senyal (*signal*)** és una **interrupció per programari (*software interrupt*)**: quan arriba, el Kernel atura a l'instant el programa principal per atendre l'esdeveniment (i després el reprèn exactament on era, si no ha mort).
-
-### Taula de senyals
-| Senyal | Codi | Què fa per defecte? | Què el provoca? | Es pot capturar o bloquejar? |
-| :--- | :---: | :---: | :--- | :---: |
-| **`SIGINT`** | 2 | Acaba el programa | Prems `Ctrl+C` a la terminal. | Sí |
-| **`SIGKILL`** | 9 | Acaba el programa immediatament | Ordre de matar el procés. |  **MAI** (imparable) |
-| **`SIGSTOP`** | 19 | Congela el procés (STOPPED) | Ordre de pausar el procés. |  **MAI** (imparable) |
-| **`SIGCONT`** | 18 | Descongela el procés | Reactiva un procés pausat per `SIGSTOP`. | Sí |
-| **`SIGALRM`** | 14 | Acaba el programa | S'esgota un compte enrere per programari (`alarm(segons)`). | Sí |
-| **`SIGCHLD`** | 17 | **Ignorar (no fa res)** | Un procés fill ha acabat o s'ha aturat. | Sí |
-| **`SIGSEGV`** | 11 | Acaba el programa (*Dump*) | Has intentat tocar memòria prohibida (punter nul). | Sí |
-| **`SIGUSR1`** | 10 | Acaba el programa | Senyal lliure perquè el programador el faci servir per al que vulgui. | Sí |
-| **`SIGUSR2`** | 12 | Acaba el programa | Segon senyal lliure per al programador. | Sí |
-
----
-
-## 3.6 Com gestiona el procés un senyal? 
-
-:::signalpcbviz
-:::
-
-Quan arriba un senyal, el Kernel consulta aquestes 4 estructures guardades a la fitxa (PCB) del procés seguint aquest ordre:
-
-1. **Filtre inicial $\rightarrow$ Màscara de bloqueig**:
-   * Si el senyal està a la màscara, està "retingut" temporalment i **no s'executa ara**.
-2. **Bústia d'espera $\rightarrow$ Bitmap de pendents**:
-   * On s'apunten els senyals retinguts (bit a `1`).
-   * **No és un comptador**: si reps 5 cops el mateix senyal mentre està bloquejat, els repetits es descarten. En desbloquejar-lo només s'executarà **1 cop**.
-3. **Què fem quan s'atén $\rightarrow$ Taula d'accions**:
-   * Si el senyal no està bloquejat (o en el moment de desbloquejar-se), es mira quina resposta té configurada:
-     * `SIG_DFL`: L'acció per defecte de Linux (morir, congelar-se o ignorar).
-     * `SIG_IGN`: Ignorar-lo (es descarta).
-     * Funció pròpia: El Kernel salta a executar la funció de C (`handler`) que hem programat.
-4. **I les alarmes? $\rightarrow$ Temporitzador d'alarma**:
-   * Un compte enrere intern que, en arribar a 0, envia un senyal `SIGALRM` al propi procés. Només hi ha **1 alarma activa per procés** (programar-ne una de nova cancel·la l'anterior).
-
----
-
-## 3.7 Crides a sistema de senyals
-
-### 1. Enviar un senyal: `kill(pid, senyal)`
-
-:::killviz
-:::
-
-Envia qualsevol senyal al procés amb identificador `pid_desti` (no només serveix per matar, serveix per enviar qualsevol senyal):
-```c
-kill(pid_desti, SIGINT);  // Envia un Ctrl+C al procés
-kill(pid_desti, SIGKILL); // Mata el procés forçosament
-kill(pid_desti, SIGUSR1); // Envia el senyal d'usuari 1 (definit pel programador)
-```
-* Des de la terminal: `kill -SIGINT 1234` o `kill -9 1234` (`9` és el codi de `SIGKILL`).
-
-### 2. Canviar la resposta d'un senyal: `sigaction()`
-
-:::sigactionviz
-:::
-
-Configura què ha de fer el procés quan rep un senyal determinat (ex: quan rebi `SIGINT` en lloc de morir):
-```c
-struct sigaction tractament;
-tractament.sa_handler = la_meva_funcio; // La funció en C que s'executarà
-sigemptyset(&tractament.sa_mask);        // No bloquegis cap altre senyal mentre s'atén
-tractament.sa_flags = 0;
-
-// Ara, en prémer Ctrl+C (SIGINT), s'executarà la_meva_funcio en lloc de tancar el programa:
-sigaction(SIGINT, &tractament, NULL);
-```
-
-Els dos flags clau de `sa_flags`:
-* **`SA_RESETHAND`**: S'atén el senyal un sol cop amb la teva funció; immediatament després, l'acció torna a la per defecte (`SIG_DFL`). Un segon senyal matarà el programa.
-* **`SA_RESTART`**: Si el programa estava aturat en una lectura (`read`) o espera (`waitpid`) i arriba el senyal, un cop executada la teva funció, **la lectura es reprèn automàticament** sense retornar error.
-
-### 3. Gestionar màscares de bloqueig (`sigset_t`)
-
-:::sigprocmaskviz
-:::
-
-Permet definir quins senyals volem retenir temporalment:
-```c
-sigset_t mascara;
-sigemptyset(&mascara);         // Inicialitza la màscara buida
-sigaddset(&mascara, SIGINT);   // Afegeix SIGINT a la llista de bloquejats
-sigdelset(&mascara, SIGINT);   // Treu SIGINT de la llista
-```
-
-* **Bloquejar o Desbloquejar amb `sigprocmask()`**:
-  ```c
-  sigprocmask(SIG_BLOCK, &mascara, NULL);   // Bloqueja els senyals de la màscara
-  sigprocmask(SIG_UNBLOCK, &mascara, NULL); // Desbloqueja els senyals
-  ```
-
-### 4. Esperar un senyal de forma segura: `sigsuspend()`
-
-:::sigsuspendviz
-:::
-
-```c
-sigsuspend(&mascara);
-```
-Atura el procés i l'adorm fins que arriba un senyal que **no estigui a `mascara`**.  
-Quan arriba el senyal, s'executa la funció d'atenció, i tot seguit `sigsuspend` acaba i **restaura automàticament la màscara que el procés tenia abans**.
-
-### 5. Programar un temporitzador: `alarm(segons)`
-
-:::alarmviz
-:::
-
-`alarm(N)` programa un compte enrere de $N$ segons al Kernel.
-
-* **El programa NO s'atura a esperar**: Continua executant les següents línies de codi a l'instant mentre el Kernel compta en segon pla.
-* **Què passa quan passen els $N$ segons?** El Kernel envia un senyal `SIGALRM` al procés:
-  1. **Per defecte (sense capturar)**: El senyal `SIGALRM` **mata el procés** (`exit`). S'utilitza com a límit de temps (*timeout*) perquè el programa no es quedi penjat.
-  2. **Si l'has capturat amb `sigaction`**: En complir-se els segons, s'interromp momentàniament el programa, s'executa la teva funció (*handler*) i després el programa **continua treballant normalment**.
-
-```c
-alarm(5); // Programa el SIGALRM per d'aquí a 5 segons
-alarm(0); // Desactiva qualsevol alarma pendent abans que soni
-```
-
----
-
-## 3.8 Trucs i patrons amb senyals
-
-### Patró 1: Com aturar un procés i reprendre'l quan vulguis?
-* **Per aturar-se a si mateix**:
-  ```c
-  kill(getpid(), SIGSTOP); // Es posa en estat STOPPED a l'instant
-  ```
-* **Per reprendre'l**: Des d'una altra terminal o un altre procés:
-  ```bash
-  kill -SIGCONT <PID>
-  ```
-
----
-
-### Patró 2: Com evitar el perill del "senyal perdut"? (cursa crítica)
-Imagina que un pare vol esperar que el seu fill li enviï `SIGUSR1`.  
-Si el pare fa simplement `sigsuspend(&buit)` sense bloquejar res abans, pot passar que el fill acabi tan ràpid que enviï el senyal **abans** que el pare hagi tingut temps d'arribar a la línia de `sigsuspend`. El senyal arriba, s'executa, i quan el pare finalment entra a `sigsuspend`, **es queda adormit per sempre** perquè el senyal ja ha passat!
-
-**Com es resol a l'examen?**
-1. **Bloqueges el senyal ABANS de fer el `fork`**:
-   ```c
-   sigset_t mask, mask_suspend;
-   sigemptyset(&mask);
-   sigaddset(&mask, SIGUSR1);
-   sigprocmask(SIG_BLOCK, &mask, NULL); // SIGUSR1 queda bloquejat!
-   ```
-2. Crees el fill amb `fork()`. Si el fill envia el senyal ara, no es perd: es queda retingut al bitmap de pendents.
-3. El pare s'adorm amb `sigsuspend(&mask_suspend)`, on `mask_suspend` té `SIGUSR1` desbloquejat. `sigsuspend` desbloqueja el senyal i s'adorm en una única acció atòmica: el senyal pendent es processa i el pare es desperta correctament!
-
----
-
-### Patró 3: Com recollir els fills morts en segon pla sense bloquejar el pare?
-Si el pare està fent feina i no vol aturar-se amb `waitpid()`, programa el senyal `SIGCHLD`:
-
-```c
-void tracta_mort_fill(int s) {
-    int status;
-    // Bucle obligatori amb WNOHANG!
-    while (waitpid(-1, &status, WNOHANG) > 0) {
-        // Recull el cadàver de cada fill que hagi mort
-    }
-}
-```
-**Per què cal el bucle `while (waitpid(-1, &st, WNOHANG) > 0)`?**  
-Perquè si moren 3 fills alhora mentre s'està executant la funció, el sistema només posa a 1 el bit de `SIGCHLD`. Si fessis un sol `waitpid`, només en recolliries un i els altres dos es quedarien com a Zombies per sempre. El bucle `while` amb `WNOHANG` recull tots els fills que hagin mort fins que no en queda cap (retorna 0) i no bloqueja el pare.
-
----
-
-## 3.9 Preguntes d'examen resoltes (Tema 3)
-
-### 1. Un procés orfe rep `SIGKILL`. Pot quedar-se en estat Zombie per sempre?
-**NO**. Quan un procés es queda orfe, és adoptat immediatament pel procés `init` (PID 1). Aquest procés té la funció d'anar fent `waitpid()` de tots els processos que adopta, de manera que allibera el seu PCB tan bon punt moren.
-
-### 2. Què li passa a les estructures de senyals d'un pare quan fa `fork()`?
-**Absolutament res**. L'execució de `fork()` crea un procés fill nou i no modifica cap de les dades del procés pare (la seva taula de senyals, el seu bitmap de pendents, la seva màscara de bloqueig i la seva alarma es queden exactament igual).
-
-### 3. Què canvia i què es manté a les estructures de senyals quan un procés fa `execlp()`?
-* **Canvia**: La taula d'accions es restableix a l'acció per defecte (`SIG_DFL`) per a totes les funcions d'usuari (perquè el codi nou ja no conté les funcions velles).  
-* **Es manté**: La màscara de senyals bloquejats, la llista de senyals pendents i l'alarma es mantenen intactes.
-
-### 4. Amb Round Robin, 3 processos i un quàntum de 10 ms, pot un procés executar-se dues vegades en menys de 30 ms?
-**SÍ**. Si qualsevol dels altres dos processos fa una crida bloquejant (com llegir del teclat amb `read`, fer `waitpid` o esperar un senyal) abans d'esgotar els seus 10 ms, allibera la CPU immediatament i el torn passa al següent abans d'hora.
