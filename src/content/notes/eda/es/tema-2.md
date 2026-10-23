@@ -1,6 +1,6 @@
 ---
-title: "Tema 2: Divide y Vencerás"
-description: "Paradigma de divide y vencerás: recurrencias divisorias y subtractivas, ordenación (MergeSort, QuickSort), exponenciación rápida, Karatsuba, Strassen, Torres de Hanói y selección lineal (BFPRT)."
+title: "Tema 2: Divide y vencerás"
+description: "Recurrencias divisoras y sustractivas, ordenación (MergeSort, QuickSort), exponenciación rápida, Karatsuba, Strassen, Torres de Hanoi y selección lineal (BFPRT)."
 readTime: "45 min"
 order: 2
 draft: false
@@ -12,7 +12,7 @@ El paradigma de **divide y vencerás** descompone un problema de tamaño $n$ en 
 | :--- | :--- | :---: |
 | **1. Dividir** | Descomponer la entrada en $a \ge 1$ subproblemas de tamaño $n/b$ con $b > 1$. | $T_{\text{division}}(n)$ |
 | **2. Vencer** | Resolver recursivamente los $a$ subproblemas (resolución directa $\Theta(1)$ en caso base). | $a \cdot T(n/b)$ |
-| **3. Combinar** | Ensamblar las soluciones parciales para construir la solución global. | $T_{\text{combinar}}(n)$ |
+| **3. Combinar** | Acoplar las soluciones parciales para construir la solución global. | $T_{\text{combinar}}(n)$ |
 
 :::dncviz
 :::
@@ -21,10 +21,10 @@ El paradigma de **divide y vencerás** descompone un problema de tamaño $n$ en 
 El coste total de un algoritmo de divide y vencerás proviene exclusivamente de tres fuentes:
 
 $$
-T(n) = \underbrace{T_{\text{division}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusión/ensamblaje}}
+T(n) = \underbrace{T_{\text{division}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusion/acoplamiento}}
 $$
 
-Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisorias**.
+Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
 
 ### Ejemplo introductorio: Búsqueda binaria (dicotómica)
 Dado un vector $A[0 \dots n-1]$ **ordenado**, queremos determinar si un elemento $x$ pertenece a él. En cada paso comparamos $x$ con el elemento central $A[m]$: si coinciden hemos terminado; si $x < A[m]$, buscamos recursivamente en la mitad izquierda; si $x > A[m]$, en la mitad derecha.
@@ -35,7 +35,7 @@ Dado un vector $A[0 \dots n-1]$ **ordenado**, queremos determinar si un elemento
 :::oopviz{simulation="binary_search"}
 :::
 
-El parámetro de recursión es $n = j - i + 1$. En cada nivel se realiza solo **una** llamada recursiva ($a = 1$) sobre un subvector de tamaño mitad ($b = 2$), y el trabajo no recursivo (cálculo del punto medio y comparaciones) es constante ($g(n) \in \Theta(1) \implies k = 0$).
+El parámetro de recursión es $n = j - i + 1$. En cada nivel se realiza solo **una** llamada recursiva ($a = 1$) sobre un subvector de tamaño mitad ($b = 2$), y el trabajo no recursivo (cálculo del medio y comparaciones) es constante ($g(n) \in \Theta(1) \implies k = 0$).
 
 $$ 
 T(n) = T(n/2) + \Theta(1) 
@@ -64,15 +64,15 @@ El algoritmo de **ordenación por fusión** (*MergeSort*) es un esquema de divid
 
 ### Estabilidad y ordenación multicriterio
 
-Un algoritmo es **estable** si para cualquier par de elementos con claves idénticas ($x = y$), si $x$ precede a $y$ en la entrada, $x$ también precede a $y$ en la salida.
+Un algoritmo es **estable** si para cualquier pareja de elementos con claves idénticas ($x = y$), si $x$ precede a $y$ en la entrada, $x$ también precede a $y$ en la salida.
 
-Esta propiedad permite la **ordenación multicriterio**: para ordenar un conjunto de datos según múltiples claves de distinta prioridad, se aplica el algoritmo estable de manera sucesiva desde el criterio menos prioritario hasta el más prioritario.
+Esta propiedad permite la **ordenación multicriterio**: para ordenar un conjunto de datos según múltiples claves de prioridad distinta, se aplica el algoritmo estable de forma sucesiva desde el criterio menos prioritario hasta el más prioritario.
 
 | Paso | Criterio aplicado | Secuencia resultante |
 | :---: | :--- | :--- |
 | **0** | Entrada desordenada | $\langle 6, 7 \rangle,\; \langle 3, 2 \rangle,\; \langle 1, 4 \rangle,\; \langle 3, 1 \rangle,\; \langle 1, 6 \rangle,\; \langle 4, 7 \rangle$ |
-| **1** | Ordenar por la 2.ª componente | $\langle 3, \mathbf{1} \rangle,\; \langle 3, \mathbf{2} \rangle,\; \langle 1, \mathbf{4} \rangle,\; \langle 1, \mathbf{6} \rangle,\; \langle 6, \mathbf{7} \rangle,\; \langle 4, \mathbf{7} \rangle$ |
-| **2** | Ordenación estable por la 1.ª componente | $\langle \mathbf{1}, 4 \rangle,\; \langle \mathbf{1}, 6 \rangle,\; \langle \mathbf{3}, 1 \rangle,\; \langle \mathbf{3}, 2 \rangle,\; \langle \mathbf{4}, 7 \rangle,\; \langle \mathbf{6}, 7 \rangle$ |
+| **1** | Ordenar por la 2ª componente | $\langle 3, \mathbf{1} \rangle,\; \langle 3, \mathbf{2} \rangle,\; \langle 1, \mathbf{4} \rangle,\; \langle 1, \mathbf{6} \rangle,\; \langle 6, \mathbf{7} \rangle,\; \langle 4, \mathbf{7} \rangle$ |
+| **2** | Ordenación estable por la 1ª componente | $\langle \mathbf{1}, 4 \rangle,\; \langle \mathbf{1}, 6 \rangle,\; \langle \mathbf{3}, 1 \rangle,\; \langle \mathbf{3}, 2 \rangle,\; \langle \mathbf{4}, 7 \rangle,\; \langle \mathbf{6}, 7 \rangle$ |
 
 ---
 
@@ -91,7 +91,7 @@ La fusión combina dos subvectores contiguos previamente ordenados, $T[e \dots m
 | **Estabilidad** | `if (T[i] <= T[j])` | En caso de empate ($T[i] = T[j]$), prioriza el elemento de la izquierda, preservando el orden original. |
 | **Bucles residuales** | `while (i <= m)`, `while (j <= d)` | Copian los elementos restantes. Son mutuamente excluyentes (exactamente un índice llega al límite). |
 | **Desplazamiento (*shift*)** | `T[e + k] = B[k]` | Reubica el contenido de $B[0 \dots n-1]$ en la ventana original $T[e \dots d]$. |
-| **Coste de fusión** | $T_{\text{merge}}(n) \in \Theta(n)$ | Realiza como máximo $n - 1$ comparaciones y exactamente $2n$ asignaciones ($n$ a $B$ y $n$ de retorno a $T$). |
+| **Coste de fusión** | $T_{\text{merge}}(n) \in \Theta(n)$ | Hace como máximo $n - 1$ comparaciones y exactamente $2n$ asignaciones ($n$ a $B$ y $n$ de retorno a $T$). |
 
 :::oopviz{simulation="mergesort"}
 :::
@@ -126,15 +126,15 @@ $$
 
 ### Variantes de optimización
 
-### Hibridación por tamaño crítico
+### Hibridación por umbral crítico
 Para subvectores de tamaño pequeño ($n < k_0 \approx 50$), la inserción supera a la fusión en la práctica gracias a factores constantes inferiores y a la ausencia de gestión de memoria dinámica. Cuando el intervalo cae por debajo del umbral crítico, se interrumpe la recursión y se aplica inserción:
 
 :::hybridmergeviz
 :::
 
 ```cpp
-const int tamano_critico = 50;
-if (d - e < tamano_critico) ordena_insercion(T, e, d);
+const int talla_critica = 50;
+if (d - e < talla_critica) ordena_insercio(T, e, d);
 else {
     int m = (e + d) / 2;
     mergesort(T, e, m);
@@ -144,7 +144,7 @@ else {
 ```
 
 ### MergeSort iterativo con cola (*bottom-up*)
-Construye la solución de abajo hacia arriba sin recursión: encola cada elemento como un vector unitario y fusiona sucesivamente las parejas extraídas de la cabeza de la cola hasta que solo queda uno:
+Construye la solución de abajo a arriba sin recursión: encola cada elemento como un vector unitario y fusiona sucesivamente las parejas extraídas de la cabeza de la cola hasta que solo queda uno:
 
 :::mergequeueviz
 :::
@@ -153,10 +153,10 @@ Construye la solución de abajo hacia arriba sin recursión: encola cada element
 function mergesort_queue(a[1...n]):
     Q = cola vacía
     para cada elemento x de a:
-        encolar(Q, [x])
-    mientras tamaño(Q) > 1:
-        encolar(Q, merge(desencolar(Q), desencolar(Q)))
-    retorna desencolar(Q)
+        encola(Q, [x])
+    mientras tamano(Q) > 1:
+        encola(Q, merge(desencola(Q), desencola(Q)))
+    retorna desencola(Q)
 ```
 
 ### MergeSort iterativo sobre vector (*bottom-up*)
@@ -222,7 +222,7 @@ La partición clásica de Hoare opera sin ningún vector auxiliar. Utiliza dos p
 
 | Aspecto técnico | Descripción formal |
 | :--- | :--- |
-| **Punteros y preoperadores** | Se inicializan en $i = e - 1$ y $j = d + 1$. Los preincrementos (`++i`) y predecrementos (`--j`) garantizan que la primera evaluación opere exactamente sobre los extremos $e$ y $d$. |
+| **Punteros y pre-operadores** | Se inicializan en $i = e - 1$ y $j = d + 1$. Los pre-incrementos (`++i`) y pre-decrementos (`--j`) garantizan que la primera evaluación opere exactamente sobre los extremos $e$ y $d$. |
 | **Postcondición** | Al retornar el índice $q = j$, se cumple $\forall k \in [e \dots q], T[k] \le x$ y $\forall k \in [q+1 \dots d], T[k] \ge x$. |
 | **Coste computacional** | Tiempo lineal $\mathbf{\Theta(n)}$ (cada elemento es evaluado un número constante de veces, con $\le n/2$ intercambios) y memoria auxiliar $\mathbf{\Theta(1)}$ (*in-place*). |
 
@@ -235,14 +235,14 @@ Dado que la partición de Hoare toma como referencia el elemento $T[e]$, cualqui
 | :--- | :--- | :--- | :--- |
 | **Primer elemento ($x = T[e]$)** | Selección directa del primer índice. | Coste de elección nulo ($\Theta(1)$). | Degenera a $\Theta(n^2)$ si la entrada ya está ordenada o invertida. |
 | **Pivote aleatorio** | Elección aleatoria $p \in [e, d]$ y `swap(T[e], T[p])`. | Elimina correlaciones con ordenaciones previas de los datos. | Sobrecarga en la generación de valores pseudoaleatorios. |
-| **Mediana de tres** | Mediana entre $T[e]$, $T[\lfloor(e+d)/2\rfloor]$ y $T[d]$. | Asegura que el pivote nunca es ninguno de los dos valores extremos absolutos. | Requiere 3 comparaciones e intercambios previos por partición. |
+| **Mediana de tres** | Mediana entre $T[e]$, $T[\lfloor(e+d)/2\rfloor]$ y $T[d]$. | Asegura que el pivote nunca sea ninguno de los dos valores extremos absolutos. | Requiere 3 comparaciones e intercambios previos por partición. |
 | **Hibridación por inserción** | Conmutación a inserción cuando $d - e < 20$. | Reduce la sobrecarga recursiva en subvectores de tamaño reducido. | Precisa calibrar el tamaño crítico según la arquitectura. |
 
 Código para la estrategia de la mediana de tres:
 ```cpp
-int centro = (e + d) / 2;
-if (T[e] < T[centro]) swap(T[centro], T[e]);
-if (T[d] < T[centro]) swap(T[centro], T[d]);
+int centre = (e + d) / 2;
+if (T[e] < T[centre]) swap(T[centre], T[e]);
+if (T[d] < T[centre]) swap(T[centre], T[d]);
 if (T[d] < T[e]) swap(T[e], T[d]);
 // La mediana queda situada en T[e]
 ```
@@ -312,7 +312,7 @@ Almacenando el resultado intermedio de la subpotencia en una variable local (`y 
 | Parámetro del Teorema Maestro | Valor | Justificación matemática |
 | :--- | :---: | :--- |
 | **Número de subproblemas ($a$)** | $1$ | Una sola llamada recursiva gracias al almacenamiento del término intermedio. |
-| **Factor de división ($b$)** | $2$ | El exponente se divide por la mitad en cada paso. |
+| **Factor de división ($b$)** | $2$ | El exponente se divide a la mitad en cada paso. |
 | **Trabajo no recursivo ($g(n)$)** | $\Theta(1)$ | Paridad del exponente y un máximo de dos multiplicaciones escalares ($k = 0$). |
 
 Recurrencia:
@@ -335,7 +335,7 @@ $$ \mathbf{T(n) \in \Theta(\log n)} $$
 
 ## 2.4 Multiplicación de enteros grandes: Algoritmo de Karatsuba
 
-La multiplicación de dos números enteros de $n$ dígitos (o bits) es una operación fundamental en aritmética computacional y criptografía. 
+La multiplicación de dos números enteros de $n$ dígitos (o bits) es una operación fundamental en aritmética computacional y criptografía.
 En el método tradicional escolar, se multiplica el primer número por cada uno de los $n$ dígitos del segundo, desplazando cada fila parcial una posición hacia la izquierda:
 
 $$
@@ -364,12 +364,12 @@ $$ T_{\text{escolar}}(n) = \Theta(n^2) + \Theta(n^2) = \mathbf{\Theta(n^2)} $$
 
 ### Descomposición recursiva ingenua (4 subproductos)
 
-En 1952, **Andréi Kolmogórov** conjeturó que cualquier algoritmo para multiplicar dos números de $n$ dígitos requería una cota inferior asintótica infranqueable de $\Omega(n^2)$ operaciones.
+En 1952, **Andrei Kolmogorov** conjeturó que cualquier algoritmo para multiplicar dos números de $n$ dígitos requería una cota inferior asintótica infranqueable de $\Omega(n^2)$ operaciones.
 
 :::naivemultviz
 :::
 
-Representando dos números naturales $x$ e $y$ de $n$ bits (asumiendo $n$ par) divididos en su mitad superior ($E$) e inferior ($D$):
+Representando dos números naturales $x$ e $y$ de $n$ bits (asumiendo $n$ par) divididos en la mitad superior ($E$) e inferior ($D$):
 
 $$ 
 x = 2^{n/2} x_E + x_D, \qquad y = 2^{n/2} y_E + y_D 
@@ -403,12 +403,12 @@ La descomposición directa no reduce la clase asintótica respecto al algoritmo 
 
 ---
 
-### La reducción de Karatsuba (1960) e identidad de Gauss
+### La reducción de Karatsuba (1960) y la identidad de Gauss
 
 :::karatsubaviz
 :::
 
-En 1960, **Anatoli Karatsuba** refutó la conjetura de Kolmogórov inspirándose en la identidad de Gauss para el producto de números complejos:
+En 1960, **Anatolii Karatsuba** refutó la conjetura de Kolmogorov inspirándose en la identidad de Gauss para el producto de números complejos:
 
 $$ 
 (a + bi)(c + di) = (ac - bd) + (bc + ad)i 
@@ -479,13 +479,6 @@ Dado que $n^{1.585} \in o(n^2)$, este resultado demuestra formalmente que **la m
 | **Divide y vencerás ingenuo** | 4 de tamaño $n/2$ | $T(n) = 4T(n/2) + \Theta(n)$ | $\Theta(n^2)$ |
 | **Karatsuba** | 3 de tamaño $n/2$ | $T(n) = 3T(n/2) + \Theta(n)$ | $\mathbf{\Theta(n^{\log_2 3}) \approx \Theta(n^{1.585})}$ |
 
-<!-- ### Consideraciones prácticas de implementación
-
-| Aspecto de implementación | Descripción técnica |
-| :--- | :--- |
-| **Precisión arbitraria (`BigInt`)** | La CPU multiplica números de tamaño nativo (32 o 64 bits) en hardware en tiempo constante $\Theta(1)$. El algoritmo de Karatsuba se aplica a tipos de datos de longitud arbitraria representados mediante vectores de dígitos (`vector<uint32_t>`). |
-| **Umbral crítico (*threshold*)** | Debido a la constante multiplicativa de las llamadas recursivas y de la gestión de memoria dinámica, el algoritmo escolar es más eficiente para números inferiores a 1000-2000 bits. Las bibliotecas de alto rendimiento (como GNU MP) emplean un enfoque híbrido que conmuta al algoritmo clásico por debajo de este umbral. | -->
-
 ---
 
 ## 2.5 Multiplicación de matrices: Algoritmo de Strassen
@@ -501,7 +494,7 @@ $$
 La implementación directa de esta definición requiere 3 bucles anidados:
 
 ```cpp
-matrix<int> producto_estandar(const matrix<int>& A, const matrix<int>& B) {
+matrix<int> producte_estandard(const matrix<int>& A, const matrix<int>& B) {
     int n = A.numrows();
     matrix<int> C(n, n, 0);
     for (int i = 0; i < n; ++i)
@@ -512,7 +505,7 @@ matrix<int> producto_estandar(const matrix<int>& A, const matrix<int>& B) {
 }
 ```
 
-Cada celda $Z_{ij}$ precisa $n$ multiplicaciones y $n - 1$ sumas escalares ($\Theta(n)$ operaciones). Llenar las $n \times n = n^2$ celdas tiene un coste de:
+Cada celda $Z_{ij}$ precisa $n$ multiplicaciones y $n - 1$ sumas escalares ($\Theta(n)$ operaciones). Rellenar las $n \times n = n^2$ celdas tiene un coste de:
 
 $$
 T(n) = n^2 \cdot \Theta(n) = \mathbf{\Theta(n^3)}
@@ -563,7 +556,7 @@ La división directa por bloques mantiene la misma clase asintótica cúbica.
 :::strassenmatmultviz
 :::
 
-En 1969, **Volker Strassen** demostró que el producto de bloques se puede calcular empleando únicamente **7 multiplicaciones** de submatrices en lugar de 8, aumentando el número de sumas y restas lineales:
+En 1969, **Volker Strassen** demostró que el producto de bloques se puede calcular empleando únicamente **7 multiplicaciones** de submatrices en vez de 8, aumentando el número de sumas y restas lineales:
 
 $$
 \begin{aligned}
@@ -623,45 +616,11 @@ $$
 | **Bloques ingenuo ($2 \times 2$)** | 8 de tamaño $n/2$ | $T(n) = 8T(n/2) + \Theta(n^2)$ | $\Theta(n^3)$ |
 | **Strassen** | 7 de tamaño $n/2$ | $T(n) = 7T(n/2) + \Theta(n^2)$ | $\mathbf{\Theta(n^{\log_2 7}) \approx \Theta(n^{2.807})}$ |
 
-<!-- ---
-
-### Reducción del producto lógico de matrices booleanas
-
-El **producto booleano** de dos matrices $A, B \in \{0, 1\}^{n \times n}$ se define como:
-
-$$
-P_{ij} = \bigvee_{k=1}^n (A_{ik} \wedge B_{kj})
-$$
-
-Se puede reducir a una multiplicación matricial estándar:
-
-| Fase de reducción | Operación | Complejidad |
-| :--- | :--- | :---: |
-| **1. Conversión a enteros** | Interpretar las matrices booleanas $A, B$ como matrices sobre $\mathbb{Z}$ | $\Theta(n^2)$ |
-| **2. Multiplicación con Strassen** | Calcular el producto entero $M = A \cdot B$ | $\Theta(n^{2.807})$ |
-| **3. Umbral booleano** | Evaluar $P_{ij} = (M_{ij} > 0)$ | $\Theta(n^2)$ |
-
-Dado que $M_{ij} = \sum_{k=1}^n A_{ik} B_{kj}$ cuenta exactamente el número de índices $k$ tales que $A_{ik} = 1$ y $B_{kj} = 1$, la condición $M_{ij} > 0$ equivale a la disyunción $\bigvee_{k=1}^n (A_{ik} \wedge B_{kj})$. El coste dominante es el de la multiplicación:
-
-$$
-T(n) = \Theta(n^{2.807}) + \Theta(n^2) = \mathbf{\Theta(n^{2.807})}
-$$ -->
-
-<!-- ---
-
-### Algoritmos galácticos (*galactic algorithms*)
-
-Después de Strassen, una sucesión de investigaciones teóricas fueron rebajando progresivamente el exponente:
-* **Coppersmith y Winograd (1990):** $\mathcal{O}(n^{2.376})$.
-* **Avances recientes (Vassilevska Williams et al., 2023):** $\mathcal{O}(n^{2.371})$.
-
-Estos métodos modernos pertenecen a la categoría conocida como **algoritmos galácticos**: algoritmos que poseen un orden asintótico demostrablemente superior, pero cuyas constantes multiplicativas ocultas en la notación $\mathcal{O}$ son tan inmensas que solo superarían a los algoritmos prácticos (como Strassen o el clásico por bloques optimizado con memoria caché) para matrices con dimensiones que excederían la cantidad total de átomos de la galaxia visible. Por esta razón, Strassen y sus variantes adaptadas a memoria caché continúan siendo la referencia práctica para matrices grandes. -->
-
 ---
 
-## 2.6 Las Torres de Hanói
+## 2.6 Las Torres de Hanoi
 
-El juego de las **Torres de Hanói** ilustra la aplicación de divide y vencerás sobre recurrencias de carácter **subtractivo**, donde el tamaño del problema se reduce por una constante en lugar de un factor divisor.
+El juego de las **Torres de Hanoi** ilustra la aplicación de divide y vencerás sobre recurrencias de carácter **sustractivo**, donde el tamaño del problema se reduce por una constante en lugar de un factor divisor.
 
 :::hanoiviz
 :::
@@ -678,7 +637,7 @@ Para trasladar $n$ discos de la varilla origen $A$ a la varilla destino $C$ util
 void hanoi(int n, char a, char b, char c) {
     if (n > 0) {
         hanoi(n - 1, a, c, b); // Mover n-1 discos de origen (a) a auxiliar (b) usando destino (c)
-        cout << a << " -> " << c << "\n"; // Movimiento elemental del disco mayor
+        cout << a << " -> " << c << "\n"; // Movimiento elemental del disco más grande
         hanoi(n - 1, b, a, c); // Mover n-1 discos de auxiliar (b) a destino (c) usando origen (a)
     }
 }
@@ -731,9 +690,9 @@ $$
 
 ---
 
-### Análisis asintótico mediante el Teorema Maestro subtractivo
+### Análisis asintótico mediante el Teorema Maestro sustractivo
 
-La recurrencia de las Torres de Hanói se ajusta a la forma general subtractiva:
+La recurrencia de las Torres de Hanoi se ajusta a la forma general sustractiva:
 
 $$
 T(n) = a T(n - b) + g(n)
@@ -745,7 +704,7 @@ $$
 | **Paso de decremento ($b$)** | $1$ | El tamaño disminuye en una unidad ($n \to n - 1$). |
 | **Coste no recursivo ($g(n)$)** | $\Theta(1)$ | Una única operación elemental de escritura o movimiento ($k = 0$). |
 
-Por el Teorema Maestro de recurrencias subtractivas, al ser $a = 2 > 1$, la solución es de tipo exponencial:
+Por el Teorema Maestro de recurrencias sustractivas, al ser $a = 2 > 1$, la solución es de tipo exponencial:
 
 $$
 \mathbf{T(n) \in \Theta(a^{n/b}) = \Theta(2^n)}
@@ -770,51 +729,6 @@ A diferencia de la media aritmética ($\bar{x} = \frac{1}{n}\sum x_i$), la media
 1. **Pertenencia garantizada:** La mediana siempre es uno de los valores reales presentes en el conjunto original de datos.
 2. **Robustez ante valores atípicos (*outliers*):** Si medimos tiempos de ejecución de un proceso y obtenemos la secuencia $[1, 1, 1, 1, 1, 1, 1, 1, 1, 100]$, la media es $10.9$ (un valor engañoso que no describe el comportamiento típico), mientras que la mediana es $1$, permaneciendo completamente inmune a la perturbación puntual.
 
-<!-- ### El problema general de selección
-
-En algorítmica, calcular la mediana es un caso particular del **problema de selección**:
-$$\text{seleccion}(S, k)$$
-Dado un vector $S$ de $n$ elementos y un natural $1 \le k \le n$, encontrar el $k$-ésimo elemento más pequeño de $S$.
-* Para la mediana: $k = \lfloor(n + 1) / 2\rfloor$.
-* Para el primer cuartil: $k = \lfloor(n + 1) / 4\rfloor$.
-* Para el mínimo absoluto: $k = 1$.
-* Para el máximo absoluto: $k = n$.
-
-#### La ineficiencia de ordenar previamente:
-La solución trivial consiste en ordenar el vector completo con MergeSort o HeapSort en tiempo $\Theta(n \log n)$ y consultar la posición $k - 1$. No obstante, ordenar realiza un trabajo redundante: a nosotros no nos hace falta que los elementos a la izquierda o a la derecha del resultado estén ordenados entre sí; únicamente necesitamos situar el elemento correcto en la frontera.
-
----
-
-### Algoritmo QuickSelect (Hoare, 1962)
-
-Tony Hoare adaptó el mecanismo de partición de QuickSort para resolver la selección sin ordenar todo el vector:
-
-```cpp
-int quickselect(vector<int>& A, int l, int r, int k) {
-    if (l == r) return A[l];
-    int q = partition(A, l, r); // Partición de Hoare o Lomuto
-    int len_left = q - l + 1;    // Tamaño del subvector izquierdo (elementos <= pivote)
-    
-    if (k <= len_left) {
-        return quickselect(A, l, q, k);
-    } else {
-        return quickselect(A, q + 1, r, k - len_left);
-    }
-}
-```
-
-A diferencia de QuickSort, que llama recursivamente sobre **ambos** lados de la partición ($2$ llamadas), QuickSelect descarta inmediatamente la mitad donde sabe seguro que no se encuentra el elemento buscado, realizando **una sola llamada recursiva**.
-
-#### Análisis del coste de QuickSelect:
-* **Caso medio:** Si el pivote produce una partición razonablemente equilibrada, el tamaño se divide aproximadamente por la mitad en cada paso:
-  $$ T(n) = T(n/2) + \Theta(n) $$
-  Por el Teorema Maestro divisor ($a = 1, b = 2, k = 1 \implies \alpha = \log_2 1 = 0 < k = 1$):
-  $$ T_{\text{medio}}(n) \in \mathbf{\Theta(n)} $$
-* **Caso peor:** Si el pivote elegido resulta ser siempre el elemento mínimo o máximo y la búsqueda avanza hacia la parte grande, el subvector solo se reduce en 1 elemento:
-  $$ T(n) = T(n - 1) + \Theta(n) $$
-  Por el Teorema Maestro subtractivo ($a = 1, b = 1, k = 1 \implies \Theta(n^{k+1})$):
-  $$ T_{\max}(n) \in \mathbf{\Theta(n^2)} $$ -->
-
 ---
 
 ### Algoritmo de la Mediana de Medianas (BFPRT, 1973)
@@ -831,31 +745,9 @@ En 1973, Manuel Blum, Robert Floyd, Vaughan Pratt, Ronald Rivest y Robert Tarjan
 3. **Cálculo recursivo del pivote:** Se aplica recursivamente el propio algoritmo de selección para encontrar la **mediana de las $n/5$ medianas** obtenidas en el paso anterior. Este valor central recibe el nombre de **pseudomediana** o pivote garantizado $p$.
    $$ \text{Coste(encontrar pivote)} = T(n/5) $$
 4. **Partición del vector original:** Se utiliza el pivote $p$ para partir el vector original de tamaño $n$ en dos mitades mediante la partición estándar, con coste lineal $\Theta(n)$.
-5. **Llamada recursiva final:** Se determina en cuál de los dos subvectores reside el $k$-ésimo elemento y se hace una única llamada recursiva sobre él.
+5. **Llamada recursiva final:** Se determina en cuál de los dos subvectores se encuentra el $k$-ésimo elemento y se realiza una única llamada recursiva.
 
 ---
-<!-- 
-### Demostración formal de la cota de balanceo del pivote
-
-Determinamos cuántos elementos tenemos la garantía absoluta de que serán inferiores (o superiores) al pivote $p$:
-
-1. Como $p$ es la mediana del conjunto de medianas de bloques, $p$ es estrictamente mayor o igual que como mínimo la mitad de las medianas de bloque:
-   $$ \text{Número de medianas } \le p \quad \ge \quad \frac{1}{2} \left(\frac{n}{q}\right) = \frac{n}{2q} $$
-2. Cada una de estas medianas de bloque es, por la propia definición de mediana dentro de su bloque de tamaño $q$, mayor o igual que la mitad de los elementos de dicho bloque:
-   $$ \text{Elementos por bloque } \le \text{mediana de bloque} \quad \ge \quad \frac{q}{2} $$
-3. Multiplicando ambas cotas:
-   $$ \text{Elementos garantizados } \le p \quad \ge \quad \left(\frac{1}{2} \cdot \frac{n}{q}\right) \times \left(\frac{q}{2}\right) = \mathbf{\frac{n}{4}} $$
-
-> **Resultado fundamental:** El factor $q$ se simplifica algebraicamente. El pivote $p$ tiene la garantía matemática de que **como mínimo una cuarta parte ($\frac{1}{4}n$) de los elementos son $\le p$** y, por pura simetría, **como mínimo una cuarta parte ($\frac{1}{4}n$) de los elementos son $\ge p$**.
-
-En consecuencia, en el caso más desfavorable posible, el subvector restante sobre el cual tendrá que operar la llamada recursiva final tendrá como máximo:
-$$ 
-\text{Tamaño máximo del subvector restante} \le n - \frac{n}{4} = \mathbf{\frac{3n}{4}} 
-$$
-
-El algoritmo elimina por completo la posibilidad de un desequilibrio extremo de tamaño $n - 1$.
-
---- -->
 
 ### Recurrencia global y la condición de linealidad
 
@@ -868,7 +760,7 @@ $$
 \mathbf{C(n) = C\left(\frac{n}{5}\right) + C\left(\frac{3n}{4}\right) + \Theta(n)} 
 $$
 
-Esta ecuación no es directamente resoluble por el Teorema Maestro porque los tamaños de los subproblemas son asimétricos ($n/5$ y $3n/4$). No obstante, una recurrencia de la familia $T(n) = T(\alpha n) + T(\beta n) + \Theta(n)$ converge a una solución lineal $\Theta(n)$ **si y solo si la suma de los coeficientes de contracción es estrictamente menor que 1**:
+Esta ecuación no es directamente resoluble por el Teorema Maestro porque los tamaños de los subproblemas son asimétricos ($n/5$ y $3n/4$). Sin embargo, una recurrencia de la familia $T(n) = T(\alpha n) + T(\beta n) + \Theta(n)$ converge a una solución lineal $\Theta(n)$ **si y solo si la suma de los coeficientes de contracción es estrictamente menor que 1**:
 
 $$ 
 \alpha + \beta < 1 \iff \frac{1}{q} + \frac{3}{4} < 1 
@@ -878,11 +770,11 @@ $$
 
 | Valor de $q$ | Suma de fracciones $\frac{1}{q} + \frac{3}{4}$ | Condición $< 1$ | Comportamiento asintótico resultante |
 | :---: | :---: | :---: | :--- |
-| **$q = 3$** | $\frac{1}{3} + \frac{3}{4} = \frac{4 + 9}{12} = \mathbf{\frac{13}{12} \approx 1.083}$ | Falso ($> 1$) | **No lineal.** La cantidad de trabajo acumulado crece en cada nivel, resultando en un coste superlineal $\omega(n)$. |
+| **$q = 3$** | $\frac{1}{3} + \frac{3}{4} = \frac{4 + 9}{12} = \mathbf{\frac{13}{12} \approx 1.083}$ | Falso ($> 1$) | **No lineal.** La cantidad de trabajo acumulada crece en cada nivel, resultando en un coste superlineal $\omega(n)$. |
 | **$q = 5$** | $\frac{1}{5} + \frac{3}{4} = 0.20 + 0.75 = \mathbf{0.95}$ | **Cierto ($< 1$)** | **Estrictamente lineal $\mathbf{\Theta(n)}$.** |
 | **$q = 7$** | $\frac{1}{7} + \frac{3}{4} \approx 0.143 + 0.75 = \mathbf{0.893}$ | **Cierto ($< 1$)** | Lineal $\Theta(n)$, pero aumenta el coste constante de ordenar cada bloque de 7 elementos. |
 
-Para $q = 5$, en cada nivel recursivo la cantidad agregada de elementos a procesar se reduce por un factor $0.95$ respecto al nivel anterior ($n, 0.95n, (0.95)^2n, \dots$). El trabajo total es una serie geométrica convergente:
+Para $q = 5$, en cada nivel recursivo la cantidad agregada de elementos a procesar es un factor $0.95$ respecto al nivel anterior ($n, 0.95n, (0.95)^2n, \dots$). El trabajo total es una serie geométrica convergente:
 
 $$ 
 C(n) \le c \cdot n \sum_{i=0}^\infty (0.95)^i = c \cdot n \left(\frac{1}{1 - 0.95}\right) = 20 c \cdot n \in \mathbf{\Theta(n)} 
@@ -903,11 +795,11 @@ A continuación se resume el abanico completo de algoritmos de divide y vencerá
 | **MergeSort** | Ordenación estable | $T(n) = 2T(n/2) + \Theta(n)$ | División ($a=2, b=2, k=1 \implies \alpha = k$) | $\Theta(n \log n)$ | $\Theta(n)$ |
 | **QuickSort (caso mejor/medio)** | Ordenación *in-place* | $T(n) = 2T(n/2) + \Theta(n)$ | División ($a=2, b=2, k=1 \implies \alpha = k$) | $\Theta(n \log n)$ | $\Theta(\log n)$ |
 | **QuickSort (caso peor)** | Ordenación *in-place* | $T(n) = T(n-1) + \Theta(n)$ | Sustracción ($a=1, b=1, k=1$) | $\Theta(n^2)$ | $\Theta(n)$ |
-| **Multiplicación escolar** | Producto de dos enteros de $n$ bits | — | Análisis iterativo de rejilla de dígitos | $\Theta(n^2)$ | $\Theta(n)$ |
+| **Multiplicación escolar** | Producto de dos enteros de $n$ bits | — | Análisis iterativo de cuadrícula de dígitos | $\Theta(n^2)$ | $\Theta(n)$ |
 | **Karatsuba** | Producto de dos enteros de $n$ bits | $T(n) = 3T(n/2) + \Theta(n)$ | División ($a=3, b=2, k=1 \implies \alpha > k$) | $\mathbf{\Theta(n^{\log_2 3}) \approx \Theta(n^{1.585})}$ | $\Theta(n)$ |
 | **Matrices estándar** | Producto de matrices $n \times n$ | — | 3 bucles anidados | $\Theta(n^3)$ | $\Theta(n^2)$ |
 | **Strassen** | Producto de matrices $n \times n$ | $T(n) = 7T(n/2) + \Theta(n^2)$ | División ($a=7, b=2, k=2 \implies \alpha > k$) | $\mathbf{\Theta(n^{\log_2 7}) \approx \Theta(n^{2.807})}$ | $\Theta(n^2)$ |
-| **Torres de Hanói** | Traslado de $n$ discos | $T(n) = 2T(n-1) + \Theta(1)$ | Sustracción ($a=2, b=1, k=0 \implies a > 1$) | $\mathbf{\Theta(2^n)}$ (exacto: $2^n - 1$) | $\Theta(n)$ |
+| **Torres de Hanoi** | Traslado de $n$ discos | $T(n) = 2T(n-1) + \Theta(1)$ | Sustracción ($a=2, b=1, k=0 \implies a > 1$) | $\mathbf{\Theta(2^n)}$ (exacto: $2^n - 1$) | $\Theta(n)$ |
 | **QuickSelect (caso medio)** | Selección del $k$-ésimo elemento | $T(n) = T(n/2) + \Theta(n)$ | División ($a=1, b=2, k=1 \implies \alpha < k$) | $\Theta(n)$ | $\Theta(\log n)$ |
 | **QuickSelect (caso peor)** | Selección del $k$-ésimo elemento | $T(n) = T(n-1) + \Theta(n)$ | Sustracción ($a=1, b=1, k=1$) | $\Theta(n^2)$ | $\Theta(n)$ |
 | **Mediana de Medianas (BFPRT)** | Selección del $k$-ésimo (caso peor) | $T(n) = T(n/5) + T(3n/4) + \Theta(n)$ | Contracción asimétrica ($1/5 + 3/4 = 0.95 < 1$) | $\mathbf{\Theta(n)}$ | $\Theta(\log n)$ |

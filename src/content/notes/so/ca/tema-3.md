@@ -8,7 +8,7 @@ draft: false
 
 ## 3.1 Què és un Procés?
 
-Un **procés** és un programa en marxa. Un fitxer binari guardat al disc (com `programa.exe` o `a.out`) és com una recepta de cuina escrita en un paper; el procés és el cuiner executant la recepta a la cuina real (utilitzant la CPU i la memòria RAM).
+Quan fas doble clic a un programa o l'executes a la terminal, el sistema operatiu crea un procés (un programa en marxa a la memòria). Cada procés té un identificador únic (un DNI o número enter) anomenat PID (Process Identifier).
 
 :::procoverviewviz
 :::
@@ -319,7 +319,7 @@ Funciona com un torn de paraula en cercle:
 * **Mida del quàntum**:
   * Si el quàntum és **gegant**: es converteix en un ordre per ordre d'arribada (*First-Come First-Served*, FCFS).
   * Si el quàntum és **massa petit** (p. ex. 0,1 ms): la CPU es passa més temps fent canvis de context que executant programes útils.
-* **Què passa si un procés es bloqueja abans d'esgotar els 10 ms? 
+* Què passa si un procés es bloqueja abans d'esgotar els 10 ms? 
   Allibera la CPU immediatament (passa a `BLOCKED`) i **el planificador avança el torn al següent procés a l'instant**, sense haver d'esperar que passin els 10 ms.
 
 ### Completely Fair Scheduler (CFS de Linux)
