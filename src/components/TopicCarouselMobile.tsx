@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 import type { allPersonalNotes } from 'content-collections';
 import { Book } from 'lucide-react';
-import { m as motion, MotionConfig, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import { m as motion, MotionConfig, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hapticSelection, hapticLight } from '../lib/haptics';
 import { useTopicNotes } from '../hooks/useTopicNotes';
 import { useSeenTopics } from '../hooks/useSeenTopics';
+import { loadAllPersonalNotes, getCachedNotes } from '../hooks/useAvailableSubjects';
 import { CarouselCard } from './TopicCarouselParts/CarouselCard';
 import { LandscapeTopicCard } from './TopicCarouselParts/LandscapeTopicCard';
 
@@ -29,72 +30,98 @@ interface PremiumScrubberProps {
 const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, scrollX, itemWidth, t }: PremiumScrubberProps) => {
     const trackRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
-    const [pointerDownX, setPointerDownX] = useState<number | null>(null);
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+    const isDraggingRef = useRef(false);
+    const pointerDownXRef = useRef<number | null>(null);
+    const lastTriggeredIndexRef = useRef<number>(activeIndex);
 
-    const handlePointerDown = (e: React.PointerEvent) => {
+    useEffect(() => {
+        lastTriggeredIndexRef.current = activeIndex;
+    }, [activeIndex]);
+
+    const getIndexFromPointer = useCallback((clientX: number) => {
+        if (!trackRef.current || sortedTopics.length <= 1) return 0;
+        const rect = trackRef.current.getBoundingClientRect();
+        if (rect.width <= 0) return 0;
+        const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+        const percentage = x / rect.width;
+        const rawIndex = Math.round(percentage * (sortedTopics.length - 1));
+        return Math.max(0, Math.min(rawIndex, sortedTopics.length - 1));
+    }, [sortedTopics.length]);
+
+    const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+        isDraggingRef.current = true;
         setIsDragging(true);
-        setPointerDownX(e.clientX);
-        (e.target as HTMLElement).setPointerCapture(e.pointerId);
-        handlePointerMove(e, true);
+        pointerDownXRef.current = e.clientX;
+
+        try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+            // ignore
+        }
+
+        const newIndex = getIndexFromPointer(e.clientX);
+        setHoverIndex(newIndex);
+        lastTriggeredIndexRef.current = newIndex;
+        scrollToCard(newIndex, false);
         hapticSelection();
     };
 
-    const handlePointerMove = (e: React.PointerEvent, forceScroll = false) => {
-        if (!trackRef.current) return;
-        const rect = trackRef.current.getBoundingClientRect();
-        let x = e.clientX - rect.left;
-        x = Math.max(0, Math.min(x, rect.width));
-        
-        const percentage = x / rect.width;
-        let newIndex = Math.round(percentage * (sortedTopics.length - 1));
-        newIndex = Math.max(0, Math.min(newIndex, sortedTopics.length - 1));
-        
+    const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+        if (!isDraggingRef.current) return;
+        const newIndex = getIndexFromPointer(e.clientX);
         setHoverIndex(newIndex);
-        
-        let isRealDrag = false;
-        if (pointerDownX !== null && Math.abs(e.clientX - pointerDownX) > 5) {
-             isRealDrag = true;
-        }
-        
-        if (isDragging || forceScroll) {
-            if (newIndex !== activeIndex) {
-                 scrollToCard(newIndex, isRealDrag);
-                 if (isRealDrag) hapticLight();
-            }
+
+        const isRealDrag = pointerDownXRef.current !== null && Math.abs(e.clientX - pointerDownXRef.current) > 3;
+
+        if (newIndex !== lastTriggeredIndexRef.current) {
+            lastTriggeredIndexRef.current = newIndex;
+            scrollToCard(newIndex, isRealDrag);
+            if (isRealDrag) hapticLight();
         }
     };
 
-    const handlePointerUp = (e: React.PointerEvent) => {
+    const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+        if (!isDraggingRef.current) return;
+        isDraggingRef.current = false;
         setIsDragging(false);
-        setPointerDownX(null);
+        pointerDownXRef.current = null;
         setHoverIndex(null);
-        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+
+        try {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        } catch {
+            // ignore
+        }
     };
 
     // The PHYSICAL position of the thumb is strictly bound to the real carousel scroll
-    const scrollPercentage = useTransform(scrollX, [0, Math.max(1, sortedTopics.length - 1) * itemWidth], [0, 100]);
-    const scrollTooltipX = useTransform(scrollPercentage, p => `${Math.max(0, Math.min(p as number, 100))}%`);
+    const maxScroll = Math.max(1, (sortedTopics.length - 1) * Math.max(1, itemWidth));
+    const scrollPercentage = useTransform(scrollX, currentScroll => {
+        const pct = (currentScroll / maxScroll) * 100;
+        return Math.max(0, Math.min(pct, 100));
+    });
+    const scrollTooltipX = useTransform(scrollPercentage, p => `${p}%`);
 
     if (sortedTopics.length <= 1) return null;
 
     // The text in the floating tooltip uses hoverIndex during drag, or activeIndex
     const displayIndex = isDragging && hoverIndex !== null ? hoverIndex : activeIndex;
-    const safeDisplayIndex = Math.min(displayIndex, Math.max(0, sortedTopics.length - 1));
+    const safeDisplayIndex = Math.min(Math.max(0, displayIndex), Math.max(0, sortedTopics.length - 1));
     const tooltipTextX = `${(safeDisplayIndex / Math.max(1, sortedTopics.length - 1)) * 100}%`;
 
     return (
         <div className="w-full flex justify-center mt-4 mb-2 px-6 z-40 touch-none pointer-events-auto">
             <div 
                 ref={trackRef}
-                className="relative w-full max-w-70 h-10 flex items-center cursor-grab active:cursor-grabbing group"
+                className="relative w-full max-w-70 h-10 flex items-center cursor-grab active:cursor-grabbing select-none group touch-none"
                 onPointerDown={handlePointerDown}
-                onPointerMove={isDragging ? handlePointerMove : undefined}
+                onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
             >
                 {/* Ultra-sleek Track */}
-                <div className="absolute left-0 right-0 h-1.5 bg-slate-800/80 rounded-full overflow-hidden backdrop-blur-md border border-white/5">
+                <div className="absolute left-0 right-0 h-1.5 bg-slate-800/80 rounded-full overflow-hidden backdrop-blur-md border border-white/5 pointer-events-none">
                      <motion.div 
                         className="absolute top-0 bottom-0 left-0 bg-linear-to-r from-primary to-accent rounded-full"
                         style={{ width: scrollTooltipX }}
@@ -143,140 +170,133 @@ const PremiumScrubber = React.memo(({ sortedTopics, activeIndex, scrollToCard, s
     );
 });
 
-interface TopicCarouselProps {
-    isMenuOpen?: boolean;
-    subjectOverride?: string;
+PremiumScrubber.displayName = 'PremiumScrubber';
+
+interface PortraitCarouselProps {
+    sortedTopics: TopicNote[];
+    topicMeta: Map<string, { hasNew: boolean; newestUpdate: number }>;
+    isMenuOpen: boolean;
+    subject: string;
 }
 
-const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: TopicCarouselProps) => {
+const getInitialMeasurements = () => {
+    if (typeof window === 'undefined') return { width: 320, padding: 30 };
+    const width = Math.round(Math.min(window.innerWidth * 0.82, 380));
+    const padding = Math.max(0, Math.round((window.innerWidth - width) / 2));
+    return { width, padding };
+};
+
+const PortraitCarousel = React.memo(({ sortedTopics, topicMeta, isMenuOpen, subject }: PortraitCarouselProps) => {
     const isMobile = useIsMobile();
     const navigate = useNavigate();
-    const { subject: contextSubject } = useSubjectStore();
-    const subject = (subjectOverride || contextSubject || '').toLowerCase();
-    const { t, i18n } = useTranslation();
-    const preferredLang = i18n.language;
+    const { t } = useTranslation();
     
-    const [activeIndex, setActiveIndex] = useState(0);
     const { seenNewTopics, seenVersions, markAsSeen } = useSeenTopics();
     const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
-    const [allPersonalNotes, setAllPersonalNotes] = useState<(typeof import('content-collections'))['allPersonalNotes'][number][]>([]);
 
-    useEffect(() => {
-        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
-    }, []);
+    const getSavedIndex = useCallback(() => {
+        const saved = sessionStorage.getItem(`topic-carousel-h-${subject}`);
+        if (saved) {
+            const index = parseInt(saved, 10);
+            if (!isNaN(index) && index >= 0 && index < sortedTopics.length) {
+                return index;
+            }
+        }
+        return 0;
+    }, [subject, sortedTopics.length]);
+
+    const [activeIndex, setActiveIndex] = useState(getSavedIndex);
+    const activeIndexRef = useRef(activeIndex);
     
     const isInteractive = !(isMobile && isMenuOpen);
 
-    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
+    const [measurements, setMeasurements] = useState(getInitialMeasurements);
+    const { width: itemWidth, padding: paddingOffset } = measurements;
 
     const carouselRef = useRef<HTMLDivElement>(null);
-    const { scrollX } = useScroll({ container: carouselRef });
-    
-    const [itemWidth, setItemWidth] = useState(0);
-    const [paddingOffset, setPaddingOffset] = useState(0);
+    const scrollX = useMotionValue(activeIndex * itemWidth);
+    const resetScrollBehaviorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const updateMeasurements = () => {
-            if (typeof window !== 'undefined') {
-                // Perfect Apple App Store proportions: 82vw
-                const idealWidth = Math.min(window.innerWidth * 0.82, 380);
-                setItemWidth(idealWidth);
-                setPaddingOffset((window.innerWidth - idealWidth) / 2);
-            }
+            setMeasurements(getInitialMeasurements());
         };
-        updateMeasurements();
-        window.addEventListener('resize', updateMeasurements);
+        window.addEventListener('resize', updateMeasurements, { passive: true });
         return () => window.removeEventListener('resize', updateMeasurements);
     }, []);
 
-    useMotionValueEvent(scrollX, "change", (latest) => {
-        if (!isInteractive || itemWidth === 0) return;
-        const newIndex = Math.round(latest / itemWidth);
-        if (newIndex !== activeIndex && newIndex >= 0 && newIndex < sortedTopics.length) {
-            setActiveIndex(newIndex);
-            hapticSelection();
-        }
-    });
-
-    const scrollToCard = useCallback((index: number, instant = false) => {
-        if (!isInteractive || !carouselRef.current) return;
-        if (index >= 0 && index < sortedTopics.length) {
-            if (instant) {
-                carouselRef.current.style.scrollBehavior = 'auto';
-                carouselRef.current.scrollTo({ left: index * itemWidth, behavior: 'auto' });
-                // Reset back to smooth for normal interactions
-                setTimeout(() => {
-                    if (carouselRef.current) carouselRef.current.style.scrollBehavior = 'smooth';
-                }, 10);
-            } else {
-                carouselRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
-            }
-        }
-    }, [isInteractive, sortedTopics.length, itemWidth]);
-
-
-
-    const lastRestoredSubject = useRef('');
-    useEffect(() => {
+    // Sync active index & scroll position on initial layout or restoration
+    useLayoutEffect(() => {
         if (carouselRef.current && itemWidth > 0) {
-            let newIndex = activeIndex;
-            
-            // Only load from session storage if subject actually changed
-            if (lastRestoredSubject.current !== subject) {
-                const saved = sessionStorage.getItem(`topic-carousel-h-${subject}`);
-                if (saved) {
-                    const index = parseInt(saved, 10);
-                    if (!isNaN(index) && index >= 0 && index < sortedTopics.length) {
-                        newIndex = index;
-                    }
-                }
-                lastRestoredSubject.current = subject;
-            } else {
-                newIndex = Math.min(activeIndex, Math.max(0, sortedTopics.length - 1));
-            }
-            
-            // Disable scroll animation for instant subject switch snap or remount snap
+            const initialLeft = activeIndexRef.current * itemWidth;
             carouselRef.current.style.scrollBehavior = 'auto';
-            carouselRef.current.scrollLeft = newIndex * itemWidth;
-            
-            // Force layout reflow
-            void carouselRef.current.offsetWidth;
-            
+            carouselRef.current.scrollLeft = initialLeft;
+            scrollX.set(initialLeft);
             carouselRef.current.style.scrollBehavior = 'smooth';
-            
-            if (newIndex !== activeIndex) {
-                setActiveIndex(newIndex);
-            }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [subject, itemWidth, sortedTopics.length]); // removed isLandscape
+    }, [itemWidth, scrollX]);
 
+    // Save active position to session storage
     useEffect(() => {
         sessionStorage.setItem(`topic-carousel-h-${subject}`, activeIndex.toString());
     }, [activeIndex, subject]);
 
+    // Direct, ultra-responsive scroll handler that guarantees synchronization
+    const handleScroll = useCallback(() => {
+        if (!carouselRef.current || itemWidth <= 0) return;
+        const currentScrollLeft = carouselRef.current.scrollLeft;
+        scrollX.set(currentScrollLeft);
 
-    if (sortedTopics.length === 0) {
-        return (
-            <div className="w-full flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="max-w-xs w-full p-6 rounded-3xl bg-slate-900/40 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col items-center"
-                >
-                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3 text-amber-400">
-                        <Book size={28} />
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                        {t('subjects.emptyStateTitle', 'No hi ha apunts disponibles')}
-                    </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                        {t('subjects.emptyStateDesc', "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.")}
-                    </p>
-                </motion.div>
-            </div>
-        );
-    }
+        const newIndex = Math.round(currentScrollLeft / itemWidth);
+        const clampedIndex = Math.max(0, Math.min(newIndex, sortedTopics.length - 1));
+        if (clampedIndex !== activeIndexRef.current) {
+            activeIndexRef.current = clampedIndex;
+            setActiveIndex(clampedIndex);
+            hapticSelection();
+        }
+    }, [itemWidth, sortedTopics.length, scrollX]);
+
+    // Attach native scroll listener to guarantee 0-lag updates on all mobile browsers
+    useEffect(() => {
+        const el = carouselRef.current;
+        if (!el) return;
+        el.addEventListener('scroll', handleScroll, { passive: true });
+        return () => el.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
+
+    const scrollToCard = useCallback((index: number, instant = false) => {
+        if (!isInteractive || !carouselRef.current || itemWidth <= 0) return;
+        const clampedIndex = Math.max(0, Math.min(index, sortedTopics.length - 1));
+
+        // Immediately update active index so active card styles & buttons activate without waiting
+        setActiveIndex(clampedIndex);
+        activeIndexRef.current = clampedIndex;
+
+        const targetLeft = clampedIndex * itemWidth;
+
+        if (instant) {
+            carouselRef.current.style.scrollBehavior = 'auto';
+            carouselRef.current.scrollLeft = targetLeft;
+            scrollX.set(targetLeft);
+            if (resetScrollBehaviorTimeoutRef.current) {
+                clearTimeout(resetScrollBehaviorTimeoutRef.current);
+            }
+            resetScrollBehaviorTimeoutRef.current = setTimeout(() => {
+                if (carouselRef.current) carouselRef.current.style.scrollBehavior = 'smooth';
+            }, 80);
+        } else {
+            carouselRef.current.style.scrollBehavior = 'smooth';
+            carouselRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+        }
+    }, [isInteractive, sortedTopics.length, itemWidth, scrollX]);
+
+    useEffect(() => {
+        return () => {
+            if (resetScrollBehaviorTimeoutRef.current) {
+                clearTimeout(resetScrollBehaviorTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <MotionConfig reducedMotion={!isInteractive ? "always" : "never"}>
@@ -285,18 +305,15 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
                 {/* Horizontal Cinematic Snap Container (App Store Style) */}
                 <div 
                     ref={carouselRef}
+                    onScroll={handleScroll}
                     className="relative w-full h-[60dvh] min-h-[420px] flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                     style={{ 
-                        scrollBehavior: 'smooth', 
                         WebkitOverflowScrolling: 'touch',
                         paddingLeft: `${paddingOffset}px`,
                         paddingRight: `${paddingOffset}px`
                     }}
                 >
-                    {/* Placeholder to prevent layout shift while calculating measurements */}
-                    {itemWidth === 0 && <div className="h-full w-full shrink-0" />}
-
-                    {itemWidth > 0 && sortedTopics.map((topic, index) => (
+                    {sortedTopics.map((topic, index) => (
                         <CarouselCard
                             key={topic.slug}
                             topic={topic}
@@ -331,12 +348,53 @@ const PortraitCarousel = React.memo(({ isMenuOpen = false, subjectOverride }: To
     );
 });
 
+PortraitCarousel.displayName = 'PortraitCarousel';
+
+const EmptyTopicsView: React.FC<{ t: TFunction }> = ({ t }) => (
+    <div className="w-full flex-1 flex flex-col items-center justify-center p-6 text-center select-none">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-xs w-full p-6 rounded-3xl bg-slate-900/40 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col items-center"
+        >
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-3 text-amber-400">
+                <Book size={28} />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">
+                {t('subjects.emptyStateTitle', 'No hi ha apunts disponibles')}
+            </h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+                {t('subjects.emptyStateDesc', "Els apunts d'aquesta assignatura estan en procés de redacció o en esborrany.")}
+            </p>
+        </motion.div>
+    </div>
+);
+
 interface TopicCarouselProps {
     isMenuOpen?: boolean;
     subjectOverride?: string;
 }
 
 const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = false, subjectOverride }) => {
+    const { subject: contextSubject } = useSubjectStore();
+    const subject = (subjectOverride || contextSubject || '').toLowerCase();
+    const { t, i18n } = useTranslation();
+    const preferredLang = i18n.language;
+
+    const [allPersonalNotes, setAllPersonalNotes] = useState<TopicNote[]>(() => (getCachedNotes() || []) as TopicNote[]);
+
+    useEffect(() => {
+        if (allPersonalNotes.length === 0) {
+            loadAllPersonalNotes()
+                .then(notes => {
+                    if (notes && notes.length > 0) setAllPersonalNotes(notes as TopicNote[]);
+                })
+                .catch(console.error);
+        }
+    }, [allPersonalNotes.length]);
+
+    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
+
     const [isLandscape, setIsLandscape] = useState(false);
     useEffect(() => {
         const updateOrientation = () => {
@@ -350,30 +408,35 @@ const TopicCarouselMobile: React.FC<TopicCarouselProps> = React.memo(({ isMenuOp
     }, []);
 
     if (isLandscape) {
-        return <LandscapeView subjectOverride={subjectOverride} />;
+        return <LandscapeView sortedTopics={sortedTopics} topicMeta={topicMeta} subject={subject} t={t} />;
     }
 
-    return <PortraitCarousel isMenuOpen={isMenuOpen} subjectOverride={subjectOverride} />;
+    if (sortedTopics.length === 0) {
+        return <EmptyTopicsView t={t} />;
+    }
+
+    return (
+        <PortraitCarousel 
+            key={subject}
+            sortedTopics={sortedTopics}
+            topicMeta={topicMeta}
+            isMenuOpen={isMenuOpen}
+            subject={subject}
+        />
+    );
 });
 
-const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: string }) => {
+interface LandscapeViewProps {
+    sortedTopics: TopicNote[];
+    topicMeta: Map<string, { hasNew: boolean; newestUpdate: number }>;
+    subject: string;
+    t: TFunction;
+}
+
+const LandscapeView = React.memo(({ sortedTopics, topicMeta, subject, t }: LandscapeViewProps) => {
     const navigate = useNavigate();
-    const { subject: contextSubject } = useSubjectStore();
-    const subject = (subjectOverride || contextSubject || '').toLowerCase();
-    const { t, i18n } = useTranslation();
-    const preferredLang = i18n.language;
-    
     const { seenNewTopics, seenVersions, markAsSeen } = useSeenTopics();
     const seenNewTopicsSet = useMemo(() => new Set(seenNewTopics), [seenNewTopics]);
-    const [allPersonalNotes, setAllPersonalNotes] = useState<(typeof import('content-collections'))['allPersonalNotes'][number][]>([]);
-
-    useEffect(() => {
-        import('content-collections').then(m => setAllPersonalNotes(m.allPersonalNotes)).catch(console.error);
-    }, []);
-    
-
-
-    const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
 
     if (sortedTopics.length === 0) {
         return (
@@ -398,27 +461,31 @@ const LandscapeView = React.memo(({ subjectOverride }: { subjectOverride?: strin
     }
 
     return (
-            <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
-                <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">
-                        {sortedTopics.map((topic, index) => (
-                            <LandscapeTopicCard
-                                key={topic.slug}
-                                topic={topic}
-                                index={index}
-                                subject={subject}
-                                navigate={navigate}
-                                markAsSeen={markAsSeen}
-                                seenNewTopics={seenNewTopicsSet}
-                                seenVersions={seenVersions}
-                                topicMeta={topicMeta.get(topic.slug)}
-                                t={t}
-                            />
-                        ))}
-                    </div>
+        <div className="fixed inset-0 z-0 w-full flex flex-col overflow-hidden pointer-events-none">
+            <div className="flex-1 w-full h-full overflow-y-auto px-6 pt-24 pb-12 pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="grid grid-cols-2 gap-4 max-w-5xl mx-auto h-max">
+                    {sortedTopics.map((topic, index) => (
+                        <LandscapeTopicCard
+                            key={topic.slug}
+                            topic={topic}
+                            index={index}
+                            subject={subject}
+                            navigate={navigate}
+                            markAsSeen={markAsSeen}
+                            seenNewTopics={seenNewTopicsSet}
+                            seenVersions={seenVersions}
+                            topicMeta={topicMeta.get(topic.slug)}
+                            t={t}
+                        />
+                    ))}
                 </div>
             </div>
-        );
+        </div>
+    );
 });
+
+LandscapeView.displayName = 'LandscapeView';
+
+TopicCarouselMobile.displayName = 'TopicCarouselMobile';
 
 export default TopicCarouselMobile;

@@ -31,16 +31,21 @@ export const CarouselCard = React.memo(({
     subject, navigate, markAsSeen, isInteractive, seenNewTopics, seenVersions, onCardClick, topicMeta, t
 }: CarouselCardProps) => {
     
-    // Smooth Scale & Opacity Transforms optimized for Horizontal Snap (App Store Style)
-    const input = [
-        (index - 1) * itemWidth,
-        index * itemWidth,
-        (index + 1) * itemWidth
-    ];
-    
     // Minimal, solid physical transform - NO ROTATION
-    const scale = useTransform(scrollX, input, [0.92, 1, 0.92]);
-    const opacity = useTransform(scrollX, input, [0.5, 1, 0.5]);
+    const scale = useTransform(scrollX, (currentScroll: number) => {
+        if (!itemWidth) return 1;
+        const center = index * itemWidth;
+        const dist = Math.abs(currentScroll - center);
+        const progress = Math.max(0, 1 - dist / itemWidth);
+        return 0.92 + progress * 0.08;
+    });
+    const opacity = useTransform(scrollX, (currentScroll: number) => {
+        if (!itemWidth) return 1;
+        const center = index * itemWidth;
+        const dist = Math.abs(currentScroll - center);
+        const progress = Math.max(0, 1 - dist / itemWidth);
+        return 0.5 + progress * 0.5;
+    });
     
     const isActive = activeIndex === index;
 

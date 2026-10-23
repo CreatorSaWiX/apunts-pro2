@@ -7,6 +7,8 @@ import { DEFAULT_HOME_SUBJECTS } from '../stores/useSettingsStore';
 let cachedNotesPromise: Promise<PersonalNote[]> | null = null;
 let cachedNotes: PersonalNote[] | null = null;
 
+export const getCachedNotes = (): PersonalNote[] | null => cachedNotes;
+
 export const loadAllPersonalNotes = async (): Promise<PersonalNote[]> => {
     if (cachedNotes) return cachedNotes;
     if (!cachedNotesPromise) {
