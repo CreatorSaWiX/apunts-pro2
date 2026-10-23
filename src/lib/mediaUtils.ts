@@ -60,6 +60,30 @@ export function isVideoUrl(url?: string | null): boolean {
 }
 
 const pdfAvailabilityCache = new Map<string, { ca: boolean; es: boolean }>();
+let manifestPdfsSet: Set<string> | null = null;
+let manifestPromise: Promise<Set<string> | null> | null = null;
+
+async function getAvailablePdfsSet(): Promise<Set<string> | null> {
+    if (manifestPdfsSet) return manifestPdfsSet;
+    if (manifestPromise) return manifestPromise;
+
+    manifestPromise = (async () => {
+        try {
+            const res = await fetch('/offline-manifest.json');
+            if (!res.ok) return null;
+            const data = await res.json();
+            if (Array.isArray(data?.pdfs)) {
+                manifestPdfsSet = new Set<string>(data.pdfs);
+                return manifestPdfsSet;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    })();
+
+    return manifestPromise;
+}
 
 export async function checkPdfsAvailability(
     caUrl: string,
@@ -72,6 +96,16 @@ export async function checkPdfsAvailability(
     }
 
     try {
+        const manifestSet = await getAvailablePdfsSet();
+        if (manifestSet) {
+            const result = {
+                ca: manifestSet.has(caUrl),
+                es: manifestSet.has(esUrl)
+            };
+            pdfAvailabilityCache.set(cacheKey, result);
+            return result;
+        }
+
         const [caRes, esRes] = await Promise.all([
             fetch(caUrl, { method: 'HEAD', signal }),
             fetch(esUrl, { method: 'HEAD', signal })
