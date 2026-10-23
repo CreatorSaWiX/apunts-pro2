@@ -4,7 +4,6 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 export function apiDevServerPlugin(mode: string): Plugin {
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Inject env into process.env so Vercel API files can read them
   for (const [key, value] of Object.entries(env)) {
     if (!process.env[key]) {
       process.env[key] = value;
@@ -21,42 +20,39 @@ export function apiDevServerPlugin(mode: string): Plugin {
       server.middlewares.use('/api', async (req: IncomingMessage, res: ServerResponse, next: Function) => {
         try {
           const urlStr = req.url || '/';
-          const path = urlStr.split('?')[0]; // e.g. /chat, /cdn/community/...
+          const path = urlStr.split('?')[0];
           
           if (path === '/' || path === '') {
             return next();
           }
 
-          // R2 CDN specific local implementation (302 redirect to presigned URL)
-          // Prod doesn't have an /api/cdn.ts endpoint (it uses direct public URL)
           if (path.startsWith('/cdn/')) {
             await handleLocalCdn(req, res, env);
             return;
           }
 
-          // Map other paths to the api/ directory
-          const apiFile = path.substring(1); // e.g. "chat", "roadmap-ai"
-          let apiModule: { default?: (req: Request) => Promise<Response> };
+          const apiFile = path.substring(1);
+          let apiModule: {
+            default?: ((req: Request) => Promise<Response>) | { fetch?: (req: Request) => Promise<Response> };
+          };
           try {
-            // Import dynamically using Vite's module runner for HMR and TS support
             apiModule = await server.ssrLoadModule(`/api/${apiFile}.ts`);
           } catch (e: unknown) {
-            // File not found or failed to compile, let Vite handle it or return 404
             const err = e as { code?: string; message?: string };
             if (err.code === 'ERR_MODULE_NOT_FOUND' || err.message?.includes('Cannot find module') || err.message?.includes('Failed to load url')) {
                return next();
             }
-            throw e; // Throw actual syntax/compilation errors
+            throw e;
           }
 
-          const handler = apiModule.default;
+          const rawDefault = apiModule.default;
+          const handler = typeof rawDefault === 'function' ? rawDefault : rawDefault?.fetch;
           if (!handler) {
             res.statusCode = 500;
             res.end(`No default export found in api/${apiFile}.ts`);
             return;
           }
 
-          // Read the body if not GET/HEAD
           let bodyData: Buffer | undefined;
           if (req.method !== 'GET' && req.method !== 'HEAD') {
             bodyData = await new Promise<Buffer>((resolve, reject) => {
@@ -72,39 +68,48 @@ export function apiDevServerPlugin(mode: string): Plugin {
             if (value) mappedHeaders[key] = Array.isArray(value) ? value.join(', ') : value;
           }
 
-          // Create a Web API Request
+          const abortController = new AbortController();
+          const onClose = () => {
+            if (!res.writableEnded && !abortController.signal.aborted) {
+              abortController.abort();
+            }
+          };
+          req.on('aborted', onClose);
+          res.on('close', onClose);
+
           const fullUrl = new URL((req as IncomingMessage & { originalUrl?: string }).originalUrl || req.url || '/', `http://${req.headers.host || 'localhost'}`);
           const init: RequestInit = {
             method: req.method,
             headers: mappedHeaders,
+            signal: abortController.signal,
           };
           if (bodyData && bodyData.length > 0) {
-            init.body = bodyData;
+            init.body = new Uint8Array(bodyData);
           }
           const mockRequest = new Request(fullUrl, init);
 
-          // Execute Vercel API Handler
           const response: Response = await handler(mockRequest);
 
-          // Write Response back to Node's ServerResponse
           res.statusCode = response.status;
           response.headers.forEach((value, key) => {
             res.setHeader(key, value);
           });
+          if (typeof res.flushHeaders === 'function') {
+            res.flushHeaders();
+          }
 
-          // Handle streams vs text
           if (response.body) {
             const reader = response.body.getReader();
             while (true) {
               const { done, value } = await reader.read();
-              if (done) break;
+              if (done || res.writableEnded) break;
               if (value) {
                 res.write(value);
                 const flushableRes = res as ServerResponse & { flush?: () => void };
                 if (typeof flushableRes.flush === 'function') flushableRes.flush();
               }
             }
-            res.end();
+            if (!res.writableEnded) res.end();
           } else {
             const text = await response.text();
             res.end(text);
@@ -115,7 +120,7 @@ export function apiDevServerPlugin(mode: string): Plugin {
           if (!res.headersSent) {
              res.statusCode = 500;
              res.end(JSON.stringify({ error: String(err?.message || e) }));
-          } else {
+          } else if (!res.writableEnded) {
              res.write(`event: error\ndata: ${JSON.stringify({ message: String(err?.message || e) })}\n\n`);
              res.end();
           }
@@ -125,7 +130,6 @@ export function apiDevServerPlugin(mode: string): Plugin {
   };
 }
 
-// Local implementation for /cdn (Redirect to Cloudflare public CDN)
 async function handleLocalCdn(req: IncomingMessage, res: ServerResponse, env: Record<string, string>) {
   try {
     const rawUrl = req.url || '/';

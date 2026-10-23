@@ -5,7 +5,7 @@ import { CORS_HEADERS } from './_shared/cors.js';
 import { buildRoadmapSystemInstruction, type RoadmapNode } from './_shared/prompts.js';
 import { getGoogleGenAI } from './_shared/gemini.js';
 import { parseGenAIError } from './_shared/errors.js';
-import { createSseEmitter } from './_shared/sse.js';
+import { createSseEmitter, SSE_HEADERS } from './_shared/sse.js';
 import { logGeminiPrompt } from './_shared/debug.js';
 
 interface SubjectOfficialData {
@@ -55,11 +55,8 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
         });
     }
 
-    // --- EXTRACCIÓ DINÀMICA DE CONTEXT ---
     let injectedContext = "";
 
-    // Single combined regex instead of N per-node regex compilations.
-    // O(P + N) where P = prompt length, N = number of nodes.
     const promptText = prompt || "";
     const escapedIds = currentNodes.map((n: RoadmapNode) => n.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     const combinedPattern = escapedIds.length > 0 ? new RegExp(`\\b(${escapedIds.join('|')})\\b`, 'gi') : null;
@@ -76,13 +73,10 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     if (mentionedNodes.length > 0) {
         injectedContext += "\n\n# CONTEXT ESPECÍFIC DE LES ASSIGNATURES MENCIONADES:\n";
         const now = Date.now();
-        // Return context strings instead of mutating shared variable inside Promise.all
-        // (concurrent string concatenation is non-atomic and order-nondeterministic)
         const contextParts = await Promise.all(mentionedNodes.map(async (node) => {
             try {
                 const cached = subjectCache.get(node.id);
                 if (cached && (now - cached.timestamp < CACHE_TTL_MS)) {
-                    // LRU refresh: move to end of Map insertion order
                     subjectCache.delete(node.id);
                     subjectCache.set(node.id, cached);
                     return `\n## Dades oficials de ${node.id}:\n${JSON.stringify(cached.data)}\n`;
@@ -174,16 +168,36 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 let hasStartedWriting = false;
 
                 for (const modelName of getLoadBalancedModels()) {
+                    if (req.signal.aborted) return;
+
+                    const attemptController = new AbortController();
+                    const onClientAbort = () => attemptController.abort();
+                    req.signal.addEventListener('abort', onClientAbort, { once: true });
+
+                    let timeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+                        attemptController.abort(new Error(`Timeout esperant resposta de ${modelName}`));
+                    }, 9000);
+
+                    const refreshStreamTimeout = (ms = 15000) => {
+                        if (timeoutId) clearTimeout(timeoutId);
+                        timeoutId = setTimeout(() => {
+                            attemptController.abort(new Error(`Timeout de streaming a ${modelName}`));
+                        }, ms);
+                    };
+
                     try {
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction,
                             temperature: 0.1,
-                            tools: [{ functionDeclarations: [roadmapTool] as unknown[] }]
+                            tools: [{ functionDeclarations: [roadmapTool] as unknown[] }],
+                            abortSignal: attemptController.signal,
                         };
 
-                        // Enable thinking for Gemini 3.x models (was missing — model
-                        // couldn't reason properly without includeThoughts: true)
-                        applyThinkingConfig(streamConfig as any, modelName);
+                        applyThinkingConfig(streamConfig as any, modelName, 'auto', {
+                            userMessage: promptText,
+                        });
+
+                        await emit('status', { phase: 'thinking', model: modelName });
 
                         logGeminiPrompt({
                             endpoint: 'roadmap-ai',
@@ -205,15 +219,18 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             config: streamConfig as never
                         });
 
-                        await emit('status', { phase: 'thinking', model: modelName });
-
                         let hasToolCall = false;
                         let toolCallData: unknown = null;
 
                         for await (const chunk of responseStream) {
                             if (req.signal.aborted || controller.desiredSize === null) {
+                                if (timeoutId) clearTimeout(timeoutId);
+                                req.signal.removeEventListener('abort', onClientAbort);
                                 return;
                             }
+
+                            refreshStreamTimeout(15000);
+
                             if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
                                 for (const part of chunk.candidates[0].content.parts) {
                                     if (part.thought && part.text) {
@@ -236,6 +253,9 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             }
                         }
 
+                        if (timeoutId) clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
+
                         if (hasToolCall && toolCallData) {
                             await emit('actions', { actions: (toolCallData as { actions?: unknown[] }).actions });
                         }
@@ -244,10 +264,15 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         replied = true;
                         break;
                     } catch (e: unknown) {
+                        if (timeoutId) clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
+
+                        if (req.signal.aborted) return;
+
                         lastError = e;
                         const parsed = parseGenAIError(e);
 
-                        if ((parsed.isQuota || parsed.isUnavailable) && !hasStartedWriting) {
+                        if (!hasStartedWriting && !parsed.isSafety && !parsed.isRecitation) {
                             continue;
                         }
 
@@ -275,11 +300,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     return new Response(sseStream, {
         status: 200,
-        headers: {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            ...CORS_HEADERS,
-        },
+        headers: SSE_HEADERS,
     });
 });

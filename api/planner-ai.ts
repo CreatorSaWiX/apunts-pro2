@@ -1,3 +1,4 @@
+import { ThinkingLevel } from '@google/genai';
 import { getLiteModels } from './_shared/models.js';
 import { withMiddleware } from './_shared/middleware.js';
 import { plannerRequestSchema } from './_shared/schemas.js';
@@ -5,7 +6,7 @@ import { CORS_HEADERS } from './_shared/cors.js';
 import { buildPlannerSystemInstruction } from './_shared/prompts.js';
 import { getGoogleGenAI } from './_shared/gemini.js';
 import { parseGenAIError } from './_shared/errors.js';
-import { createSseEmitter } from './_shared/sse.js';
+import { createSseEmitter, SSE_HEADERS } from './_shared/sse.js';
 import { logGeminiPrompt } from './_shared/debug.js';
 
 export default withMiddleware(async function handler(req: Request): Promise<Response> {
@@ -49,10 +50,26 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                 let hasStartedWriting = false;
 
                 for (const modelName of getLiteModels()) {
+                    if (req.signal.aborted) return;
+
+                    const attemptController = new AbortController();
+                    const onClientAbort = () => attemptController.abort();
+                    req.signal.addEventListener('abort', onClientAbort, { once: true });
+
+                    const timeoutId = setTimeout(() => {
+                        attemptController.abort(new Error(`Timeout esperant ${modelName}`));
+                    }, 9000);
+
                     try {
+                        const thinkingConfig = modelName.startsWith('gemini-3')
+                            ? { thinkingLevel: ThinkingLevel.MINIMAL }
+                            : { thinkingBudget: 0 };
+
                         const streamConfig: Record<string, unknown> = {
                             systemInstruction,
-                            responseMimeType: "application/json"
+                            responseMimeType: "application/json",
+                            thinkingConfig,
+                            abortSignal: attemptController.signal,
                         };
 
                         await emit('status', { phase: 'thinking', model: modelName });
@@ -82,6 +99,8 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
 
                         for await (const chunk of responseStream) {
                             if (req.signal.aborted || controller.desiredSize === null) {
+                                clearTimeout(timeoutId);
+                                req.signal.removeEventListener('abort', onClientAbort);
                                 return;
                             }
                             if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
@@ -95,6 +114,9 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                                 }
                             }
                         }
+
+                        clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
 
                         let rData: { actions: unknown[] } | undefined;
                         try {
@@ -121,17 +143,20 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
                         await emit('actions', rData);
                         await emit('done', {});
                         replied = true;
-                        break; // Èxit amb aquest model!
+                        break;
 
                     } catch (e: unknown) {
+                        clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
+
+                        if (req.signal.aborted) return;
+
                         lastError = e;
                         const parsed = parseGenAIError(e);
 
                         console.warn(`[Planner Fallback] Model ${modelName} ha fallat:`, parsed.cleanMessage);
 
-                        const isFallbackable = (parsed.isQuota || parsed.isUnavailable || parsed.isNotFound) && !hasStartedWriting;
-
-                        if (isFallbackable) {
+                        if (!hasStartedWriting && !parsed.isSafety && !parsed.isRecitation) {
                             await emit('thought', { text: `❌ El model ${modelName} ha fallat (${parsed.cleanMessage}). Saltant al següent...\n\n` });
                             continue;
                         }
@@ -163,11 +188,7 @@ export default withMiddleware(async function handler(req: Request): Promise<Resp
     });
 
     return new Response(stream, {
-        headers: {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            ...CORS_HEADERS
-        }
+        status: 200,
+        headers: SSE_HEADERS,
     });
 });

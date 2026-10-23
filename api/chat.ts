@@ -3,11 +3,11 @@ import { getChatModels, getLiteModels, applyThinkingConfig } from './_shared/mod
 import { withMiddleware } from './_shared/middleware.js';
 import { chatRequestSchema, type AiSettings } from './_shared/schemas.js';
 import { CORS_HEADERS } from './_shared/cors.js';
-import { resolveDynamicNotesContext } from './_shared/notes-router.js';
+import { resolveDynamicNotesContext, isTrivialConversationalMessage } from './_shared/notes-router.js';
 import { buildChatSystemInstruction } from './_shared/prompts.js';
 import { getGoogleGenAI } from './_shared/gemini.js';
 import { parseGenAIError } from './_shared/errors.js';
-import { createSseEmitter, type SseEmitFn } from './_shared/sse.js';
+import { createSseEmitter, SSE_HEADERS, type SseEmitFn } from './_shared/sse.js';
 import { manageMemoryTool } from './_shared/chat-tools.js';
 import { logGeminiPrompt } from './_shared/debug.js';
 import { resolveGroundingChunks } from './_shared/grounding.js';
@@ -23,24 +23,31 @@ function truncateAtWordBoundary(text: string, maxLen: number): string {
 }
 
 // Heurística local O(1) per evitar consumir quota d'API innecessàriament
-const NO_SEARCH_REGEX = /^(hola|bon dia|bona tarda|bona nit|ei|bones|adeu|gr[aà]cies|merci|hello|hi|hey|què és|que es|com es|com funciona|explica'm|resol|demostra|troba|calcula|deriva|integra)\b/i;
-const SEARCH_TRIGGER_REGEX = /\b(qui [eé]s|qui era|qui va ser|coneixes a|not[ií]cia|actualitat|última hora|avui en dia|any 202[4-9]|paper de recerca|arxiv|jutge\.org|fib-upc|novetats?)\b/i;
+const NO_SEARCH_REGEX = /^(hola|bon dia|bona tarda|bona nit|ei|bones|adeu|gr[aà]cies|merci|hello|hi|hey|què és|que es|com es|com funciona|explica'm|resol|demostra|troba|calcula|deriva|integra|resumeix|resum|ajuda'm|tinc un dubte)\b/i;
+const SEARCH_TRIGGER_REGEX = /\b(qui [eé]s|qui era|qui va ser|coneixes a|not[ií]cia|actualitat|última hora|avui en dia|any 202[4-9]|paper de recerca|arxiv|jutge\.org|fib-upc|novetats?|preu|cotitzaci[oó]|resultat del partit)\b/i;
 
-// Necessitat google search
+// Heurística O(1) per saber si el missatge pot contenir fets personals a memoritzar
+const MEMORY_CANDIDATE_REGEX = /\b(em dic|soc |sóc |estudio|estudio a|curs[oo]|m'agrada|m'encanta|odio|prefereixo|recorda|memoron|oblida|esborra|el meu nom|tinc \d+ anys|visc a|treballo|vaig aprovar|he susp[eè]s|matriculat)\b/i;
+
 async function classifySearchIntent(message: string, ai: GoogleGenAI, emit: SseEmitFn): Promise<boolean> {
     const trimmed = message.trim();
+
+    if (isTrivialConversationalMessage(trimmed)) {
+        return false;
+    }
 
     // 1. Detecció ultraràpida O(1): Prioritat absoluta a paraules clau que requereixen informació externa
     if (SEARCH_TRIGGER_REGEX.test(trimmed)) {
         await emit('thought', { text: `i18n:searchDetected\n\n` });
         return true;
     }
-    // 2. Filtre de preguntes teòriques o salutacions breus (< 35 caràcters)
-    if (trimmed.length < 35 && NO_SEARCH_REGEX.test(trimmed)) {
+    // 2. Filtre de preguntes teòriques o acadèmiques habituals (< 120 caràcters)
+    if (trimmed.length < 120 && NO_SEARCH_REGEX.test(trimmed)) {
         await emit('thought', { text: `i18n:searchNotNeeded\n\n` });
         return false;
     }
 
+    await emit('status', { phase: 'analyzing_intent' });
     await emit('thought', { text: `🔍 i18n:analyzingIntent\n` });
 
     const prompt = `Ets un classificador d'intenció de cerca web per a un assistent d'apunts universitaris.
@@ -56,11 +63,10 @@ Dígit:`;
 
     const candidateModels = getLiteModels();
 
-    // Execució seqüencial amb fallback per protegir la quota (15 RPM)
     for (let i = 0; i < candidateModels.length; i++) {
         const liteModel = candidateModels[i];
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const timeoutId = setTimeout(() => controller.abort(), 2200);
         const thinkingConfig = liteModel.startsWith('gemini-3')
             ? { thinkingLevel: ThinkingLevel.MINIMAL }
             : { thinkingBudget: 0 };
@@ -93,7 +99,6 @@ Dígit:`;
         } catch (e) {
             clearTimeout(timeoutId);
             console.warn('[classifySearchIntent] Model failed, trying next:', e instanceof Error ? e.message : String(e));
-            // Provar el següent model disponible
             continue;
         }
     }
@@ -115,19 +120,23 @@ const MEMORY_SYSTEM_INSTRUCTION =
 
 const MEMORY_TOOLS = [{ functionDeclarations: [manageMemoryTool] }];
 
-// Necessitat guardar memòria d'usuari
 async function extractUserMemories(
     message: string,
     aiSettings: AiSettings | undefined,
     ai: GoogleGenAI,
     parentSignal?: AbortSignal
 ): Promise<{ memory_actions: MemoryAction[] }> {
+    const trimmed = message.trim();
+    if (isTrivialConversationalMessage(trimmed) || !MEMORY_CANDIDATE_REGEX.test(trimmed)) {
+        return { memory_actions: [] };
+    }
+
     const currentMemories = (aiSettings?.userContext?.memories || []);
     const memoryCtx = currentMemories.length > 0
         ? "La llista actual de memòries de l'usuari és:\n" + currentMemories.map((m: string) => `- "${m}"`).join('\n')
         : "Actualment no tens cap memòria de l'usuari.";
 
-    const promptContent = `${memoryCtx}\n\nAnalitza el NOU missatge de l'usuari: "${truncateAtWordBoundary(message, 500).replace(/"/g, '\\"')}"`;
+    const promptContent = `${memoryCtx}\n\nAnalitza el NOU missatge de l'usuari: "${truncateAtWordBoundary(trimmed, 500).replace(/"/g, '\\"')}"`;
 
     for (const liteModel of getLiteModels()) {
         if (parentSignal?.aborted) return { memory_actions: [] };
@@ -174,13 +183,11 @@ async function extractUserMemories(
             parentSignal?.removeEventListener('abort', onParentAbort);
 
             if (controller.signal.aborted || parentSignal?.aborted) {
-                console.warn("[extractUserMemories] Temps límit de 2s superat o petició cancel·lada.");
                 return { memory_actions: [] };
             }
 
             const parsed = parseGenAIError(e);
             if (parsed.isQuota || parsed.isUnavailable) continue;
-            console.warn("Extracció de metadades fallida (no crític):", e);
             return { memory_actions: [] };
         }
     }
@@ -204,11 +211,10 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
     if (!ai) {
         return new Response(JSON.stringify({ error: 'Error intern del servidor (C)' }), {
             status: 500,
-            headers: CORS_HEADERS
+            headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
         });
     }
 
-    // ── SSE Stream ───────────────────────────────────────────────────────────
     const sseStream = new ReadableStream({
         async start(controller) {
             const emit = createSseEmitter(controller, req);
@@ -218,31 +224,37 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
             try {
                 await emit('status', { phase: 'thinking' });
 
-                // 1. Extracció de memòries en segon pla (no bloquejant)
-                const metadataPromise = extractUserMemories(message, aiSettings, ai, req.signal)
-                    .catch(e => { console.warn("[extractUserMemories] Non-critical failure:", e); return { memory_actions: [] as MemoryAction[] }; });
+                const isFastPath = isTrivialConversationalMessage(message) && !image?.data;
 
-                // 2. Classificació d'intenció de cerca (tots els models Lite en paral·lel, resposta instantània)
-                const enableSearch = await classifySearchIntent(message, ai, emit);
+                // 1. Extracció de memòries en segon pla (només si hi ha indicis de dades personals)
+                const metadataPromise = isFastPath
+                    ? Promise.resolve({ memory_actions: [] as MemoryAction[] })
+                    : extractUserMemories(message, aiSettings, ai, req.signal)
+                        .catch(() => ({ memory_actions: [] as MemoryAction[] }));
+
+                // 2. Classificació d'intenció de cerca
+                const enableSearch = isFastPath
+                    ? false
+                    : await classifySearchIntent(message, ai, emit);
 
                 if (req.signal.aborted) return;
 
-                // 3. 'chat:notes_router' depèn de si s'ha de cercar o no:
-                // Si cal cercar a internet (enableSearch = true), no cal consultar ni injectar apunts universitaris.
-                // Si NO cal cercar (enableSearch = false), cerquem els apunts del campus rellevants.
+                // 3. Resolució d'apunts (s'omet completament en Fast-Path o si cal cerca web)
                 let notesContext = "";
-                if (!enableSearch) {
+                if (!enableSearch && !isFastPath) {
+                    await emit('status', { phase: 'searching_vector' });
                     notesContext = await resolveDynamicNotesContext({
                         message,
                         currentPath,
                         pageText,
                         language
                     }, ai);
+                } else if (enableSearch) {
+                    await emit('status', { phase: 'searching_web' });
                 }
 
                 if (req.signal.aborted) return;
 
-                // Format del context de conversa
                 const formattedHistory = history.map((msg) => ({
                     role: msg.role === 'user' ? 'user' as const : 'model' as const,
                     parts: [{ text: msg.content }]
@@ -254,32 +266,57 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                 }
 
                 const fullContents = [...formattedHistory, { role: 'user', parts: msgParts }];
-                const targetModels = getChatModels(enableSearch);
+                const targetModels = getChatModels(enableSearch, isFastPath);
 
                 const systemInstruction = buildChatSystemInstruction(
                     aiSettings,
                     currentPath,
-                    pageText,
+                    isFastPath ? "" : pageText,
                     notesContext,
                     enableSearch,
                     language
                 );
 
-                // Bucle de resiliència en cascada
+                // Bucle de resiliència en cascada amb Timeout de Primer Token (TTFT)
                 for (const modelName of targetModels) {
+                    if (req.signal.aborted) return;
+
+                    const attemptController = new AbortController();
+                    const onClientAbort = () => attemptController.abort();
+                    req.signal.addEventListener('abort', onClientAbort, { once: true });
+
+                    // Si un model no envia el primer chunk en 8s (o 4.5s en Fast-Path), avortem i saltem al següent!
+                    const firstChunkTimeoutMs = isFastPath ? 4500 : 8500;
+                    let timeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+                        attemptController.abort(new Error(`Timeout esperant el primer token de ${modelName}`));
+                    }, firstChunkTimeoutMs);
+
+                    const refreshStreamTimeout = (ms = 15000) => {
+                        if (timeoutId) clearTimeout(timeoutId);
+                        timeoutId = setTimeout(() => {
+                            attemptController.abort(new Error(`Timeout d'inactivitat de streaming a ${modelName}`));
+                        }, ms);
+                    };
+
                     try {
                         const streamConfig: Record<string, unknown> = {
-                            systemInstruction
+                            systemInstruction,
+                            abortSignal: attemptController.signal,
                         };
 
                         if (enableSearch) {
                             streamConfig.tools = [{ googleSearch: {} }];
                         }
 
-                        applyThinkingConfig(streamConfig as any, modelName, thinkingLevel);
+                        applyThinkingConfig(streamConfig as any, modelName, thinkingLevel, {
+                            disableThinking: isFastPath,
+                            userMessage: message,
+                        });
 
                         await emit('status', { phase: 'thinking', model: modelName });
-                        await emit('thought', { text: `📡 i18n:requestingModel:${modelName}\n` });
+                        if (!isFastPath) {
+                            await emit('thought', { text: `📡 i18n:requestingModel:${modelName}\n` });
+                        }
 
                         logGeminiPrompt({
                             endpoint: 'chat',
@@ -293,6 +330,7 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                                 language,
                                 thinkingLevel,
                                 enableSearch,
+                                isFastPath,
                                 notesInjected: !!notesContext
                             }
                         });
@@ -306,8 +344,12 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                         let hasResolvedGrounding = false;
                         for await (const chunk of response) {
                             if (req.signal.aborted || controller.desiredSize === null) {
+                                if (timeoutId) clearTimeout(timeoutId);
+                                req.signal.removeEventListener('abort', onClientAbort);
                                 return;
                             }
+
+                            refreshStreamTimeout(15000);
 
                             const candidate = chunk.candidates?.[0];
                             if (!candidate) continue;
@@ -343,19 +385,27 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             }
                         }
 
+                        if (timeoutId) clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
+
                         if (!hasStartedWriting) {
-                            await emit('error', { message: 'El model ha processat la informació però no ha generat cap text de resposta (Filtres de seguretat o error de format).' });
-                            await emit('done', {});
-                            return;
+                            throw new Error('Resposta buida del model.');
                         }
 
-                        // Emissió de memòries resoltes en segon pla
                         const metadataResult = await metadataPromise;
                         await emit('metadata', metadataResult);
                         await emit('done', {});
                         return;
 
                     } catch (e: unknown) {
+                        if (timeoutId) clearTimeout(timeoutId);
+                        req.signal.removeEventListener('abort', onClientAbort);
+
+                        // Si l'usuari ha cancel·lat manualment des del navegador, sortim immediatament
+                        if (req.signal.aborted) {
+                            return;
+                        }
+
                         lastError = e;
                         const parsed = parseGenAIError(e);
 
@@ -366,16 +416,12 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
                             message: parsed.cleanMessage
                         });
 
-                        // Si el contingut ha estat bloquejat per filtres de seguretat, no té sentit provar altres models
                         if (parsed.isSafety || parsed.isRecitation) {
                             await emit('error', { message: parsed.cleanMessage });
                             await emit('done', {});
                             return;
                         }
 
-                        // Si el model ha fallat per quota, saturació, sobrecàrrega o indisponibilitat temporal:
-                        // Reintentem de forma resilient amb el següent model de la llista.
-                        // Si ja havíem començat a enviar text a la pantalla, emetem 'reset' perquè el client netegi els fragments truncats.
                         if (hasStartedWriting) {
                             await emit('reset', {});
                             hasStartedWriting = false;
@@ -426,11 +472,6 @@ export default withMiddleware(async function handler(req: Request, _userId?: str
 
     return new Response(sseStream, {
         status: 200,
-        headers: {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            ...CORS_HEADERS,
-        },
+        headers: SSE_HEADERS,
     });
 });

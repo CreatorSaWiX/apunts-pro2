@@ -20,6 +20,19 @@ for (const s of subjectsData) {
     });
 }
 
+const TRIVIAL_MESSAGE_REGEX = /^(hola|bon dia|bona tarda|bona nit|ei|bones|hey|hi|hello|adeu|fins aviat|gr[aà]cies|moltes gr[aà]cies|merci|ok|d'acord|perfecte|ent[eè]s|vale|qu[eè] tal|com va|com est[aà]s|qui ets|qu[eè] pots fer)[?!.,\s]*$/i;
+
+/**
+ * Comprova si un missatge és una salutació o interacció conversacional breu
+ * que no requereix consultar apunts ni memòria.
+ */
+export function isTrivialConversationalMessage(message: string): boolean {
+    const trimmed = message.trim();
+    if (trimmed.length === 0) return true;
+    if (trimmed.length <= 45 && TRIVIAL_MESSAGE_REGEX.test(trimmed)) return true;
+    return false;
+}
+
 /**
  * Extreu el número real del tema a partir del títol ("Tema 5: ...") o de l'slug ("m1-tema-5")
  */
@@ -46,35 +59,21 @@ export function isRealNote(note: { content?: string; title?: string }): boolean 
 }
 
 /**
- * Neteja i compacta el contingut Markdown per a l'LLM:
- * - Elimina grans blocs JSON de grafs interactius per D3/ForceGraph
- * - Elimina contenidors i tags HTML <object>, <iframe>, <div>, <span>
- * - Elimina directives de contenidor (:::tip, ::::grid, :::warning, etc.)
- * - Elimina línies decoratives llargues (---, ===, ***)
- * - Compacta separadors de taules (|---|---|)
- * - Elimina espais en blanc redundants i compacta salts de línia (\n)
- * - Preserva el 100% de la teoria, definicions, teoremes, fórmules KaTeX i codi
+ * Neteja i compacta el contingut Markdown per a l'LLM.
  */
 export function cleanNoteContentForLlm(content: string): string {
     return content
-        // 1. Elimina blocs interactius de grafs (amb o sense JSON)
         .replace(/:{3,}graph[^\n]*\n```json[\s\S]*?```\n:{3,}/gi, '')
         .replace(/:{3,}graph[\s\S]*?:{3,}/gi, '')
-        // 2. Elimina directrius de contenidor (:::tip, ::::grid, :::warning, etc.)
         .replace(/:{3,}[a-zA-Z0-9_\-]+(?:\{[^\}]*\})?/gi, '')
         .replace(/:{3,}/g, '')
-        // 3. Elimina tags HTML incrustats (object, iframe, div, span)
         .replace(/<object[\s\S]*?<\/object>/gi, '')
         .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
         .replace(/<\/?(?:div|span|p|small)[^>]*>/gi, '')
-        // 4. Elimina separadors decoratius redundants (línies de --- o === o ***)
         .replace(/^[=\-_*]{3,}$/gm, '')
-        // 5. Compacta separadors de taules Markdown (| :--- | -> |--|)
         .replace(/\|(?:[ \t]*:?-+:?[ \t]*\|)+/g, match => match.replace(/[ \t:]+/g, ''))
-        // 6. Elimina espais en blanc sobrants a final de línia i espais dobles
         .replace(/[ \t]+$/gm, '')
         .replace(/[ \t]{2,}/g, ' ')
-        // 7. Compacta salts de línia múltiples a un sol salt de línia (\n)
         .replace(/\n{2,}/g, '\n')
         .trim();
 }
@@ -105,10 +104,14 @@ export function getUniqueNotesForSubject(subject: string, targetLang: string) {
     return selected.sort((a, b) => a.order - b.order);
 }
 
+let cachedSyllabusOverview: string | null = null;
+
 /**
- * Genera el resum compacte de totes les assignatures per al prompt del model Lite
+ * Genera (i guarda en caché en memòria) el resum compacte de totes les assignatures.
  */
 function getSubjectsSyllabusOverview(): string {
+    if (cachedSyllabusOverview) return cachedSyllabusOverview;
+
     const subjects = Array.from(new Set(allPersonalNotes.map(n => n.subject.toLowerCase()))).sort();
     const lines: string[] = [];
 
@@ -130,7 +133,8 @@ function getSubjectsSyllabusOverview(): string {
         }
     }
 
-    return lines.join('\n');
+    cachedSyllabusOverview = lines.join('\n');
+    return cachedSyllabusOverview;
 }
 
 /**
@@ -160,15 +164,35 @@ function generateCurricularOverview(userLang: string): string {
 }
 
 /**
- * Encaminador semàntic d'apunts impulsat per un model Lite.
- * Suporta consultes d'un tema concret, d'assignatures completes individuals o múltiples,
- * i mapeja fidelment la realitat acadèmica de la FIB-UPC.
+ * Detecta en O(1) quines assignatures del grau es mencionen explícitament al missatge.
+ */
+function detectMentionedSubjects(message: string): string[] {
+    const found: string[] = [];
+    for (const [acronymLower] of officialSubjectsMap.entries()) {
+        const escaped = acronymLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        if (regex.test(message)) {
+            found.push(acronymLower);
+        }
+    }
+    return found;
+}
+
+/**
+ * Encaminador semàntic d'apunts amb Fast-Path O(1) local i fallback a model Lite.
  */
 export async function resolveDynamicNotesContext(
     options: NotesRouterOptions,
     ai: GoogleGenAI
 ): Promise<string> {
     const { message, currentPath, language } = options;
+    const trimmed = message.trim();
+
+    // 0. Fast-Path O(1): Salutacions o missatges trivials no injecten mai apunts
+    if (isTrivialConversationalMessage(trimmed)) {
+        return '';
+    }
+
     const targetLang = (language || 'ca').toLowerCase().slice(0, 2);
 
     // Tema actual si l'alumne és a la pàgina
@@ -176,6 +200,38 @@ export async function resolveDynamicNotesContext(
         ? (allPersonalNotes.find(n => currentPath.includes(n.slug) && n.lang === targetLang && !n.draft) ||
            allPersonalNotes.find(n => currentPath.includes(n.slug) && n.lang === 'ca' && !n.draft))
         : undefined;
+
+    // 1. Fast-Path O(1): Si l'alumne està en un tema real, no menciona cap altra assignatura,
+    // ni demana tot el grau/temari general, resolem en 0ms sense cridar cap LLM!
+    const mentionedSubjects = detectMentionedSubjects(trimmed);
+    const asksForWholeCurriculum = /\b(grau|totes les assignatures|mapa curricular|pla d'estudis|especialitat)\b/i.test(trimmed);
+    const asksForWholeSubject = /\b(tota l'assignatura|tot el temari|tots els temes|resum de\s+[a-z0-9]{2,5})\b/i.test(trimmed);
+    const explicitTopicMatch = trimmed.match(/\btema\s+(\d+)\b/i);
+
+    if (
+        currentNote &&
+        isRealNote(currentNote) &&
+        !asksForWholeCurriculum &&
+        !asksForWholeSubject &&
+        !explicitTopicMatch &&
+        (mentionedSubjects.length === 0 ||
+            (mentionedSubjects.length === 1 && mentionedSubjects[0] === currentNote.subject.toLowerCase()))
+    ) {
+        const cleaned = cleanNoteContentForLlm(currentNote.content);
+        return `APUNT OFICIAL DEL TEMA ${currentNote.order} (${currentNote.title}):\n\n${cleaned}`;
+    }
+
+    // 2. Fast-Path O(1): Menció directa d'1 assignatura + 1 tema concret (ex: "M1 tema 5" o "tema 3 de PRO2")
+    if (mentionedSubjects.length === 1 && explicitTopicMatch && !asksForWholeSubject) {
+        const sub = mentionedSubjects[0];
+        const targetTopic = parseInt(explicitTopicMatch[1], 10);
+        const subNotes = getUniqueNotesForSubject(sub, targetLang);
+        const note = subNotes.find(n => getNoteTopicNumber(n) === targetTopic) || subNotes.find(n => n.order === targetTopic);
+        if (note && isRealNote(note)) {
+            const cleaned = cleanNoteContentForLlm(note.content);
+            return `APUNT OFICIAL DE L'ASSIGNATURA ${sub.toUpperCase()} - ${note.title}:\n\n${cleaned}`;
+        }
+    }
 
     const subjectsSyllabus = getSubjectsSyllabusOverview();
     const prompt = `Ets el router semàntic d'apunts d'un campus universitari d'enginyeria informàtica (FIB/UPC).
@@ -185,23 +241,21 @@ ${subjectsSyllabus}
 
 Pàgina actual on es troba l'estudiant: ${currentNote ? `${currentNote.subject.toUpperCase()} - Tema ${getNoteTopicNumber(currentNote) ?? currentNote.order} (${currentNote.title})` : 'Pàgina general'}
 
-Consulta de l'alumne: "${message.slice(0, 500).replace(/"/g, '\\"')}"
+Consulta de l'alumne: "${trimmed.slice(0, 500).replace(/"/g, '\\"')}"
 
 Determina quins apunts o temaris cal injectar per respondre amb màxima fidelitat. Respon ÚNICAMENT amb un JSON vàlid:
 {
   "scope": "subjects" | "topic" | "curriculum" | "none",
-  "subjects": string[], // Llista d'assignatures en minúscules (ex: ["m1"], ["eda", "so", "pe", "ci", "bd"], ["pro2", "eda"]). Buit si scope és "none" o "curriculum".
-  "topic": number | null // número de tema si demana un tema concret (ex: 5 per Tema 5). Si demana tota l'assignatura o múltiples, null.
+  "subjects": string[],
+  "topic": number | null
 }`;
 
     let routing: { scope?: string; subject?: string; subjects?: string[]; topic?: number } = {};
 
-    const candidateModels = getLiteModels();
-    const controllers = candidateModels.map(() => new AbortController());
-
-    const promises = candidateModels.map(async (model, index) => {
-        const controller = controllers[index];
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+    // Executem seqüencialment amb timeout curt (2.2s) per no multiplicar per 3 el consum de quota RPM
+    for (const model of getLiteModels()) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2200);
         const thinkingConfig = model.startsWith('gemini-3')
             ? { thinkingLevel: ThinkingLevel.MINIMAL }
             : { thinkingBudget: 0 };
@@ -226,22 +280,19 @@ Determina quins apunts o temaris cal injectar per respondre amb màxima fidelita
             });
 
             clearTimeout(timeoutId);
-            return JSON.parse(res.text?.trim() || '{}');
-        } catch (err) {
+            routing = JSON.parse(res.text?.trim() || '{}');
+            break;
+        } catch {
             clearTimeout(timeoutId);
-            throw err;
+            continue;
         }
-    });
-
-    try {
-        routing = await Promise.any(promises);
-        controllers.forEach(c => c.abort());
-    } catch {
-        controllers.forEach(c => c.abort());
-        routing = {};
     }
 
-    // Normalització d'assignatures (suport transparent per a 'subjects' com array o 'subject' singular)
+    // Si el router determina explícitament que no cal cap apunt, no injectem res
+    if (routing.scope === 'none') {
+        return '';
+    }
+
     let subjectsList: string[] = [];
     if (Array.isArray(routing.subjects)) {
         subjectsList = routing.subjects.map(s => String(s).toLowerCase().trim()).filter(Boolean);
@@ -249,9 +300,8 @@ Determina quins apunts o temaris cal injectar per respondre amb màxima fidelita
         subjectsList = [String(routing.subject).toLowerCase().trim()];
     }
 
-    // 1. Demana una o múltiples assignatures (ex: "Resumeix tot M1", "Resumeix EDA, SO, PE, CI i BD", "Diferència entre PRO2 i EDA")
+    // 1. Demana una o múltiples assignatures
     if ((routing.scope === 'subjects' || routing.scope === 'subject') && subjectsList.length > 0) {
-        // CAS A: Una sola assignatura sol·licitada
         if (subjectsList.length === 1) {
             const sub = subjectsList[0];
             const subNotes = getUniqueNotesForSubject(sub, targetLang);
@@ -259,7 +309,6 @@ Determina quins apunts o temaris cal injectar per respondre amb màxima fidelita
             const official = officialSubjectsMap.get(sub);
             const fullName = official ? `${official.acronym} - ${official.name}` : sub.toUpperCase();
 
-            // Si té apunts reals complets al repositori (ex: M1, M2, PRO2)
             if (realNotes.length > 0) {
                 const indexLines = subNotes.map(n => {
                     const topicNum = getNoteTopicNumber(n);
@@ -285,12 +334,10 @@ CONTINGUT DETALLAT DE CADA TEMA:
 ${contentBlocks.join('\n\n')}`;
             }
 
-            // Si l'assignatura és oficial de la FIB però no té apunts redactats a la web (ex: EDA, SO, BD, IA)
             return `ASSIGNATURA OFICIAL DE LA FIB-UPC: ${fullName}
 [AVÍS PLATAFORMA: Els apunts redactats d'aquesta assignatura encara estan en procés a la plataforma web. Respon amb el teu màxim rigor docent explicant el programa oficial d'aquesta assignatura al Grau en Enginyeria Informàtica (GEI) de la FIB-UPC.]`;
         }
 
-        // CAS B: Múltiples assignatures demanades alhora (ex: "Resumeix EDA, SO, PE, CI i BD", "Compara M1 i M2")
         const multiSections: string[] = [];
         for (const sub of subjectsList) {
             const subNotes = getUniqueNotesForSubject(sub, targetLang);
@@ -313,7 +360,7 @@ ${contentBlocks.join('\n\n')}`;
         return `GUIA I TEMARIS OFICIALS DE LES ASSIGNATURES SOL·LICITADES (${subjectsList.map(s => s.toUpperCase()).join(', ')}):\n\n${multiSections.join('\n\n---\n\n')}`;
     }
 
-    // 2. Demana un tema específic (ex: "M1 tema 5", "Tema 8 de PRO2", "Schwarz a M2")
+    // 2. Demana un tema específic
     if (routing.scope === 'topic') {
         const sub = subjectsList[0] || currentNote?.subject;
         const targetTopic = routing.topic ?? (currentNote ? getNoteTopicNumber(currentNote) : null);
@@ -323,17 +370,11 @@ ${contentBlocks.join('\n\n')}`;
             let note = null;
 
             if (targetTopic !== null && targetTopic !== undefined) {
-                // 1. Cerca pel número de tema real al títol o slug (ex: Tema 5 -> tema-5.md)
-                note = subNotes.find(n => getNoteTopicNumber(n) === targetTopic);
-                // 2. Si no es troba, fallback a n.order
-                if (!note) {
-                    note = subNotes.find(n => n.order === targetTopic);
-                }
+                note = subNotes.find(n => getNoteTopicNumber(n) === targetTopic) || subNotes.find(n => n.order === targetTopic);
             }
 
-            // 3. Cerca per coincidència textual al títol si no s'ha especificat número
             if (!note) {
-                const lowerMsg = message.toLowerCase();
+                const lowerMsg = trimmed.toLowerCase();
                 note = subNotes.find(n => {
                     const cleanTitle = n.title.toLowerCase().replace(/^tema\s+\d+:\s*/i, '');
                     return cleanTitle.length > 3 && lowerMsg.includes(cleanTitle);
@@ -356,8 +397,8 @@ ${contentBlocks.join('\n\n')}`;
         return generateCurricularOverview(targetLang);
     }
 
-    // 4. Fallback automàtic: si l'alumne és a un tema real de la web i no ha demanat res extern
-    if (currentNote && isRealNote(currentNote)) {
+    // 4. Fallback si el router ha fallat per timeout i l'alumne és dins d'un tema
+    if (!routing.scope && currentNote && isRealNote(currentNote)) {
         const cleaned = cleanNoteContentForLlm(currentNote.content);
         return `APUNT OFICIAL DEL TEMA ${currentNote.order} (${currentNote.title}):\n\n${cleaned}`;
     }

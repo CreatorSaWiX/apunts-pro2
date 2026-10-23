@@ -4,7 +4,18 @@ import type { Message, GroundingMetadata } from '../constants';
 import type { AttachedFile } from './useChatLayout';
 import type { AISettings } from '../../../types/ai';
 
-export const COOLDOWN_MS = 15_000;
+export const COOLDOWN_MS = 1_500;
+
+const VALID_STREAM_PHASES = new Set<StreamPhase>([
+  'connecting',
+  'analyzing_intent',
+  'searching_vector',
+  'searching_web',
+  'thinking',
+  'writing',
+  'done',
+  'idle',
+]);
 
 interface SendMessageOptions {
   userMsg: string;
@@ -39,7 +50,7 @@ function extractPageText(): string {
     const clone = mainEl.cloneNode(true) as HTMLElement;
     clone.querySelectorAll('.katex-html, script, style, svg, nav, footer, header, [aria-hidden="true"]').forEach((el) => el.remove());
     return (clone.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 3000);
-  } catch (_) {
+  } catch {
     return '';
   }
 }
@@ -55,7 +66,6 @@ export function useChatStream() {
   const pendingUpdatesRef = useRef<{ text?: string; thought?: string }>({});
   const lastSentAt = useRef<number>(0);
 
-  // Cancel·la animacions o peticions pendents en desmuntar
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
@@ -66,7 +76,6 @@ export function useChatStream() {
     };
   }, []);
 
-  // Actualització visual suau de text amb requestAnimationFrame (màxim 60fps)
   const scheduleUIUpdate = (text?: string, thought?: string) => {
     if (text !== undefined) pendingUpdatesRef.current.text = text;
     if (thought !== undefined) pendingUpdatesRef.current.thought = thought;
@@ -207,13 +216,13 @@ export function useChatStream() {
         if (done) break;
 
         sseBuffer += decoder.decode(value, { stream: true });
-        // Normalització CRLF a LF per a parsers SSE resilients davant de qualsevol proxy HTTP
         const normalized = sseBuffer.replace(/\r\n/g, '\n');
         const events = normalized.split('\n\n');
         sseBuffer = events.pop() || '';
 
         for (const eventBlock of events) {
-          if (!eventBlock.trim()) continue;
+          const trimmedBlock = eventBlock.trim();
+          if (!trimmedBlock || trimmedBlock.startsWith(':')) continue;
 
           let eventType = 'message';
           const dataLines: string[] = [];
@@ -234,8 +243,9 @@ export function useChatStream() {
 
             switch (eventType) {
               case 'status':
-                if (parsed.phase === 'thinking') setStreamPhase('thinking');
-                else if (parsed.phase === 'writing') setStreamPhase('writing');
+                if (parsed.phase && VALID_STREAM_PHASES.has(parsed.phase as StreamPhase)) {
+                  setStreamPhase(parsed.phase as StreamPhase);
+                }
                 break;
 
               case 'reset':
@@ -285,7 +295,6 @@ export function useChatStream() {
         }
       }
 
-      // Actualització de memòries a la configuració d'IA
       if (metadata.memory_actions && metadata.memory_actions.length > 0 && setAiSettings) {
         setAiSettings((prev: AISettings) => {
           let updatedMemories = [...(prev?.userContext?.memories || [])];
@@ -331,7 +340,6 @@ export function useChatStream() {
         (err as { name?: string })?.name === 'AbortError' ||
         (err instanceof DOMException && err.name === 'AbortError');
 
-      // Si s'atura la generació però ja s'havia generat text, preservem la resposta parcial
       if (isAbort && fullReplyText.trim()) {
         const partialMessages: Message[] = [
           ...newMessages,
