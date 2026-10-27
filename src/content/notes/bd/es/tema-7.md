@@ -1,8 +1,8 @@
 ---
-title: "Tema 6: Diseño Conceptual (UML)"
+title: "Tema 7: Diseño Conceptual (UML)"
 description: "Modelado conceptual en UML y traducción al modelo relacional lógico."
 readTime: "8 min"
-order: 6
+order: 7
 draft: false
 ---
 

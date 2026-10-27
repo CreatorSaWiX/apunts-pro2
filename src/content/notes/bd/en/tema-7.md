@@ -1,8 +1,8 @@
 ---
-title: "Topic 6: Conceptual Design (UML)"
+title: "Topic 7: Conceptual Design (UML)"
 description: "Conceptual modeling in UML and mapping to the relational logical schema."
 readTime: "8 min"
-order: 6
+order: 7
 draft: false
 ---
 
