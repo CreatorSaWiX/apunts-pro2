@@ -139,7 +139,7 @@ Si compramos una máquina $m = 1000$ veces más rápida, solo se suma una peque�
 ---
 
 ### Ordenación por selección (Selection Sort)
-En cada iteración $i$ (de $n-1$ bajando hasta $1$), busca el máximo de la parte restante $v[0 \dots i]$ y lo intercambia con $v[i]$, dejándolo fijado al final:
+En cada iteración $i$ (de $0$ avanzando hasta $n-2$), busca el mínimo de la parte restante $v[i \dots n-1]$ y lo intercambia con $v[i]$, dejándolo fijado al principio:
 
 :::oopviz{simulation="selection_sort"}
 :::
@@ -147,10 +147,10 @@ En cada iteración $i$ (de $n-1$ bajando hasta $1$), busca el máximo de la part
 :::selectionsortviz
 :::
 
-La búsqueda del máximo sobre el subvector $v[0 \dots i]$ requiere comparar todos sus elementos, suponiendo $i$ comparaciones. Como el índice $i$ decrece de $n - 1$ hasta $1$, el número total de comparaciones viene dado por la suma aritmética de Gauss:
+La búsqueda del mínimo sobre el subvector $v[i \dots n-1]$ requiere comparar todos sus elementos, suponiendo $n - 1 - i$ comparaciones. Como el índice $i$ avanza de $0$ hasta $n - 2$, el número total de comparaciones viene dado por la suma aritmética de Gauss:
 
 $$
-\sum_{i=1}^{n-1} i = (n - 1) + (n - 2) + \dots + 1 = \frac{n(n - 1)}{2} \in \Theta(n^2)
+\sum_{i=0}^{n-2} (n - 1 - i) = (n - 1) + (n - 2) + \dots + 1 = \frac{n(n - 1)}{2} \in \Theta(n^2)
 $$
 
 En cada iteración se realiza exactamente un intercambio (`swap`), dando $n - 1$ movimientos ($\Theta(n)$). El coste total del algoritmo es la suma de ambos:

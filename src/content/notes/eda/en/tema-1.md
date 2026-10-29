@@ -139,7 +139,7 @@ Purchasing hardware that is $m = 1000$ times faster yields only an additive cons
 ---
 
 ### Selection Sort
-In each iteration $i$ (counting down from $n-1$ to $1$), locates the maximum element in subvector $v[0 \dots i]$ and swaps it into $v[i]$:
+In each iteration $i$ (advancing from $0$ to $n-2$), locates the minimum element in subvector $v[i \dots n-1]$ and swaps it into $v[i]$:
 
 :::oopviz{simulation="selection_sort"}
 :::
@@ -147,10 +147,10 @@ In each iteration $i$ (counting down from $n-1$ to $1$), locates the maximum ele
 :::selectionsortviz
 :::
 
-Finding the maximum over $v[0 \dots i]$ requires comparing all its components, yielding $i$ comparisons. Summing across iterations gives Gauss's arithmetic series:
+Finding the minimum over $v[i \dots n-1]$ requires comparing all its components, yielding $n - 1 - i$ comparisons. Summing across iterations gives Gauss's arithmetic series:
 
 $$
-\sum_{i=1}^{n-1} i = (n - 1) + (n - 2) + \dots + 1 = \frac{n(n - 1)}{2} \in \Theta(n^2)
+\sum_{i=0}^{n-2} (n - 1 - i) = (n - 1) + (n - 2) + \dots + 1 = \frac{n(n - 1)}{2} \in \Theta(n^2)
 $$
 
 Each cycle performs exactly one `swap`, totaling $n - 1$ moves ($\Theta(n)$). Total sorting runtime:

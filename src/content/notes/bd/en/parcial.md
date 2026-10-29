@@ -4,6 +4,7 @@ description: "Summary of topics 1, 2, 3, and 7."
 readTime: "10 min"
 order: 8
 draft: false
+isUpdated: 1
 ---
 
 ## 1. SQL and Relational Algebra
@@ -11,7 +12,19 @@ draft: false
 ### SQL Queries
 - **Order:** `SELECT [DISTINCT] ... FROM ... [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ... [ASC|DESC]]`
 - **`NULL` values:** Always compare using `IS NULL` / `IS NOT NULL` (never `= NULL`).
-- **Aggregation:** `COUNT(*)` counts nulls; `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignore nulls (and return `NULL` if 0 rows, except `COUNT` which returns `0`).
+- **Aggregation:** `COUNT(*)` counts rows (includes nulls); `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignore nulls (and return `NULL` if 0 rows, except `COUNT` which returns `0`).
+- **`COUNT(*)` vs `COUNT(DISTINCT col)`:**
+  - `COUNT(*)`: counts **rows** (use when each row in the group is already unique by PK, e.g., *"3 or more different periods"*).
+  - `COUNT(DISTINCT col)`: counts **distinct values** of `col` (use only when the same `col` value can repeat across multiple rows in the group, e.g., *"3 or more different offices"*).
+```sql
+-- A professor can be in the same office (numero) across 4 periods (4 rows),
+-- yet it is still 1 single office:
+SELECT dni, modul
+FROM assignacions
+GROUP BY dni, modul
+HAVING COUNT(*) >= 3;               -- >= 3 assignments/periods (rows)
+HAVING COUNT(DISTINCT numero) >= 3; -- >= 3 different offices
+```
 - **`WHERE` vs `HAVING`:** `WHERE` filters rows before grouping (no aggregations). `HAVING` filters groups after `GROUP BY`. Every column in `SELECT` outside an aggregation must appear in `GROUP BY`. Example:
 ```sql
 SELECT a.modul, a.numero, p.nomProf, COUNT(*) 
@@ -23,6 +36,10 @@ GROUP BY a.modul, a.numero, p.nomProf
 - **Exclusion subqueries:**
   - `NOT EXISTS (SELECT * FROM ... WHERE ...)`.
   - `col NOT IN (SELECT col FROM ... WHERE col IS NOT NULL)`.
+- **Joins:**
+  - `JOIN` $\equiv$ `INNER JOIN`. They are exactly the same (`INNER` is optional).
+  - `A [INNER] JOIN B ON A.x = B.y`: Joins according to the specified `ON` condition.
+  - `A NATURAL [INNER] JOIN B`: Without `ON`; automatically matches **all** columns with the same name.
 
 ### Query Patterns ("More than X...", "At least X...", "X or more...")
 
@@ -252,6 +269,156 @@ Duplicate-free by definition. Written as a step-by-step sequence ($A = \dots, R 
 | **Joins** | $T[\text{cond}]S$ / $T * S$ | $\theta$-Join (with condition) / Natural Join (matching attribute names). |
 | **Set Operations** | $T \cup S$, $T - S$, $T \cap S$ | Identical schemas (same degree and attribute names). |
 
+#### Step-by-step method and statement translation
+
+| The statement says... | You use... |
+| :--- | :--- |
+| *"that do not have any..."*, *"except..."* | **Difference** ($-$) |
+| *"that satisfy A **and** B"* | **Intersection** ($\cap$) or two selections |
+| *"A **or** B"* | **Union** ($\cup$) |
+| *"some"*, *"that has a..."*, relating tables | **Join** + projection |
+| *"two or more"* | **Self-join** (join of the table with a renamed copy of itself) |
+| Condition on a value ($> 50000$) | **Selection** |
+
+1. **Break the statement into sets:** Translate the statement into sets in plain language before writing any operator. E.g., *"users who are **(a)** followers of some creator with $> 50000$ plays, **minus (b)** those who are creators of any playlist"* $\rightarrow$ $\text{set (a)} - \text{set (b)}$.
+2. **Follow the join path (foreign keys):** Each line ($A, B, C\dots$) is one sentence of your reasoning following FKs across tables:
+   - `usuaris` with $> 50000$ $\rightarrow$ `A`
+   - who are creators $\rightarrow$ join with `playlist` on `nomUsuari = creador` (`B`)
+   - their followers $\rightarrow$ join with `seguidors` on `nomUsuari = nomSeguit` (`C`)
+   - keep only the follower $\rightarrow$ projection `[nomSeguidor]` (`D`)
+3. **Prepare sets for set operations ($\cup, \cap, -$):** They require **the exact same attributes**. Project onto the key and rename so they match (e.g., rename both `nomSeguidor` and `creador` to `nomUsuari` before computing $H = F - G$).
+4. **Recover the requested columns:** Difference/intersection leaves you only with the key (`nomUsuari`). If additional columns are requested (e.g., `tarifa`), do a `*` (natural join) at the end with the main table and project:
+   - **General pattern:** *project to key $\rightarrow$ difference $\rightarrow$ join to recover remaining columns*.
+
+---
+
+### Pattern 1: Selection + Projection
+
+**Example 1:** "Names of `free` users with more than 1000 plays."
+```text
+R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
+```
+
+---
+
+### Pattern 2: Following foreign keys (Joins)
+
+**Example 2:** "Titles of the songs in the playlist named `'Running'`."
+Path: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (matching attribute names, so we use `*`).
+```text
+A = playlist(nomList='Running')
+B = A * cançonsAPlaylist
+C = B * cançons
+R = C[titol]
+```
+
+**Example 3:** "Name and plan (`tarifa`) of creators of `'rock'` theme playlists."
+Here `creador` and `nomUsuari` do not have the same name, so a $\theta$-join is required.
+```text
+A = playlist(tema='rock')
+B = A[creador = nomUsuari]usuaris
+R = B[nomUsuari, tarifa]
+```
+
+**Example 4:** "Names of users who follow someone with a `'premium'` plan."
+```text
+A = usuaris(tarifa='premium')
+B = A[nomUsuari = nomSeguit]seguidors
+R = B[nomSeguidor]
+```
+
+---
+
+### Pattern 3: "That do not have any..." (Difference)
+
+Always: **all candidates $-$ those that do satisfy it** (the starting set is the table that lists them all).
+
+**Example 5:** "Users who **have not created any** playlist."
+```text
+A = usuaris[nomUsuari]
+B = playlist[creador]{creador -> nomUsuari}
+R = A - B
+```
+
+**Example 6:** "Titles of songs that **do not appear in any** playlist."
+The difference leaves you only with the key (`idCanço`); at the end we do a natural join with `cançons` to recover `titol`.
+```text
+A = cançons[idCanço]
+B = cançonsAPlaylist[idCanço]
+C = A - B
+D = C * cançons
+R = D[titol]
+```
+
+**Example 7:** "Users who follow someone who **does not follow them back**."
+`B` is the "inverted" relation: where `A` has $(X \text{ follows } Y)$, `B` has $(Y \text{ follows } X)$ with attribute names swapped. Pairs in `A` that are not in `B` are unreciprocated follows.
+```text
+A = seguidors[nomSeguidor, nomSeguit]
+B = seguidors[nomSeguit, nomSeguidor]{nomSeguit -> nomSeguidor, nomSeguidor -> nomSeguit}
+C = A - B
+R = C[nomSeguidor]
+```
+
+---
+
+### Pattern 4: "And" / "Or" (Intersection and Union)
+
+**Example 8:** "Users who have created a `'rock'` theme playlist **and also** a `'pop'` theme playlist."
+*(Note: If $\cap$ is not allowed, it is equivalent to `A - (A - B)`).*
+```text
+A = playlist(tema='rock')[creador]
+B = playlist(tema='pop')[creador]
+R = A ∩ B
+```
+
+**Example 9:** "Users who are creators of some playlist **or** have more than 100000 plays."
+Union also requires both sets to have the same attribute name, so we rename `creador`.
+```text
+A = playlist[creador]{creador -> nomUsuari}
+B = usuaris(reproduccions > 100000)[nomUsuari]
+R = A ∪ B
+```
+
+---
+
+### Pattern 5: "Two or more" (Self-join)
+
+The pattern is always the same: **renamed copy**, **equality (`=`)** on what must repeat, and **inequality (`!=`)** on what must differ.
+
+**Example 10:** "Users who have created **two or more** playlists."
+```text
+A = playlist[idList, creador]
+C = A{idList -> idList2, creador -> creador2}
+D = A[creador = creador2 and idList != idList2]C
+R = D[creador]
+```
+
+**Example 11:** "Songs that appear in **two or more** different playlists."
+```text
+A = cançonsAPlaylist[idList, idCanço]
+C = A{idList -> idList2, idCanço -> idCanço2}
+D = A[idCanço = idCanço2 and idList != idList2]C
+R = D[idCanço]
+```
+
+---
+
+### Pattern 6: "All..." (Division / Double difference)
+
+**Idea:** Find all `(playlist, song by X)` pairs that **should exist** (Cartesian product), subtract those that **actually exist**, and the playlists left are the ones missing at least one song (*"bad"*). Then subtract them from the total.
+
+**Example 12:** "Names of playlists that contain **all** songs by singer `'X'`."
+*(Note: Since `L` and `C` share no attributes, `L * C` computes the Cartesian product combining every row with every row).*
+```text
+C = cançons(cantant='X')[idCanço]
+L = playlist[idList]
+P = L * C                                   -- All possible pairs (that should exist)
+M = P - cançonsAPlaylist[idList, idCanço]   -- Pairs missing in reality
+Bad = M[idList]                             -- Incomplete playlists
+Good = L - Bad                              -- Playlists containing ALL songs by X
+R = (Good * playlist)[nomList]              -- Recover nomList
+```
+
 ---
 
 ## 2. DDL and DML
@@ -272,13 +439,8 @@ Duplicate-free by definition. Written as a step-by-step sequence ($A = \dots, R 
 
 ## 3. Logical Components and Security
 
-### Domains, Assertions, and Transactions
-- **`CREATE DOMAIN dom AS type [DEFAULT v] [CHECK (VALUE ...)]`:** Reusable custom type.
-- **Where to place each constraint:**
-  - 1 column $\to$ Column `CHECK`.
-  - Multiple columns of the **same row** $\to$ Table `CHECK` (implication $A \to B \equiv \neg A \lor B$).
-  - Multiple rows or tables $\to$ `CREATE ASSERTION name CHECK (NOT EXISTS (SELECT ... violators))`.
-- **Transactions:** `START TRANSACTION`, `COMMIT` (saves), `ROLLBACK` (undoes). Maximum isolation: `SERIALIZABLE`.
+### Assertions
+Always starts with `CREATE ASSERTION name CHECK (NOT EXISTS (SELECT * ...))`
 
 ### Views (`CREATE VIEW`)
 - **Updatable (Standard SQL):** Only if defined over **1 single base table** (no `JOIN`, `UNION`, `GROUP BY`, `HAVING`, `DISTINCT`, or aggregations) projecting simple columns. For `INSERT`, all `NOT NULL` columns without a `DEFAULT` must be included.
@@ -309,8 +471,4 @@ Duplicate-free by definition. Written as a step-by-step sequence ($A = \dots, R 
 | **Inheritance** | 1 table for the superclass + 1 for each subclass with $\text{PK} = \text{FK}$ referencing the superclass. |
 | **Weak Class** | Composite $\text{PK}$ formed by the strong class PK + its relative identifier. |
 | **Pure Temporal Class** | No table created; maps as a `DATE`/`TIME`/`INT` attribute on the associated table. |
-
-### Validating UML Assertions (True / False)
-- **TRUE:** Proven by constructing a minimal row instance satisfying all PKs, FKs, and multiplicities.
-- **FALSE:** Violates a maximum (`1`) or minimum (`1`) multiplicity or external key. Fixed by changing the multiplicity (`1` $\to$ `*` or `1` $\to$ `0`) or making the key relative.
 

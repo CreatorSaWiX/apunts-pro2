@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { m as motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, RotateCcw, Play, Pause } from 'lucide-react';
+import { InlineMath } from 'react-katex';
 
 interface Item {
     id: number;
@@ -809,6 +810,20 @@ export default function InsertionSortVisualizer() {
                             total: {step.totalSwaps}
                         </span>
                     </div>
+                </div>
+
+                {/* Resum subtil de costos asímpotics */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.04] text-[11px] text-slate-500">
+                    <div className="flex items-center gap-3">
+                        <span>Millor: <span className="text-emerald-400/80"><InlineMath math="\Theta(n)" /></span> <span className="text-slate-600">(ja ordenat)</span></span>
+                        <span className="text-slate-700">·</span>
+                        <span>Mitjà: <span className="text-slate-400"><InlineMath math="\Theta(n^2)" /></span></span>
+                        <span className="text-slate-700">·</span>
+                        <span>Pitjor: <span className="text-rose-400/80"><InlineMath math="\Theta(n^2)" /></span> <span className="text-slate-600">(invers)</span></span>
+                    </div>
+                    <span className="text-[10px] text-slate-600">
+                        Adaptatiu: <InlineMath math="\Theta(n + I)" />
+                    </span>
                 </div>
             </div>
 

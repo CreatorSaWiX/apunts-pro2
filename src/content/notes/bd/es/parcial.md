@@ -4,6 +4,7 @@ description: "Resumen tema 1, 2, 3 y 7."
 readTime: "10 min"
 order: 8
 draft: false
+isUpdated: 1
 ---
 
 ## 1. SQL y álgebra relacional
@@ -11,7 +12,19 @@ draft: false
 ### Consultas SQL
 - **Orden:** `SELECT [DISTINCT] ... FROM ... [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ... [ASC|DESC]]`
 - **Valores `NULL`:** Comparar siempre con `IS NULL` / `IS NOT NULL` (nunca `= NULL`).
-- **Agregación:** `COUNT(*)` cuenta nulos; `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignoran nulos (y devuelven `NULL` si 0 filas, excepto `COUNT` que da `0`).
+- **Agregación:** `COUNT(*)` cuenta filas (incluye nulos); `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignoran nulos (y devuelven `NULL` si 0 filas, excepto `COUNT` que da `0`).
+- **`COUNT(*)` vs `COUNT(DISTINCT col)`:**
+  - `COUNT(*)`: cuenta **filas** (usar si cada fila del grupo ya es única según la PK, ej: *"3 o más períodos diferentes"*).
+  - `COUNT(DISTINCT col)`: cuenta **valores diferentes** de `col` (usar solo si un mismo valor de `col` puede repetirse en varias filas del grupo, ej: *"3 o más despachos diferentes"*).
+```sql
+-- Un profesor puede estar en el mismo despacho (numero) en 4 períodos (4 filas),
+-- pero sigue siendo 1 solo despacho:
+SELECT dni, modul
+FROM assignacions
+GROUP BY dni, modul
+HAVING COUNT(*) >= 3;               -- >= 3 asignaciones/períodos (filas)
+HAVING COUNT(DISTINCT numero) >= 3; -- >= 3 despachos diferentes
+```
 - **`WHERE` vs `HAVING`:** `WHERE` filtra filas antes de agrupar (sin agregaciones). `HAVING` filtra grupos después del `GROUP BY`. Toda columna del `SELECT` fuera de una agregación debe estar en el `GROUP BY`. Ejemplo:
 ```sql
 SELECT a.modul, a.numero, p.nomProf, COUNT(*) 
@@ -23,6 +36,10 @@ GROUP BY a.modul, a.numero, p.nomProf
 - **Subconsultas de exclusión:**
   - `NOT EXISTS (SELECT * FROM ... WHERE ...)`.
   - `col NOT IN (SELECT col FROM ... WHERE col IS NOT NULL)`.
+- **Joins:**
+  - `JOIN` $\equiv$ `INNER JOIN`. Son exactamente lo mismo (`INNER` es opcional).
+  - `A [INNER] JOIN B ON A.x = B.y`: Une según la condición `ON` indicada.
+  - `A NATURAL [INNER] JOIN B`: Sin `ON`; iguala automáticamente **todas** las columnas que tienen el mismo nombre.
 
 ### Enunciados tipo ("Más de X...", "Al menos X...", "X o más...")
 
@@ -252,6 +269,156 @@ Sin duplicados por definición. Se escribe en secuencia paso a paso ($A = \dots,
 | **Joins** | $T[\text{cond}]S$ / $T * S$ | $\theta$-Join (con condición) / Natural Join (mismo nombre de atributos). |
 | **Conjuntos** | $T \cup S$, $T - S$, $T \cap S$ | Esquemas idénticos (mismo grado y nombres de atributo). |
 
+#### Método paso a paso y traducción de enunciados
+
+| El enunciado dice... | Usas... |
+| :--- | :--- |
+| *"que no tienen ningún..."*, *"excepto..."* | **Resta** ($-$) |
+| *"que cumplen A **y** B"* | **Intersección** ($\cap$) o dos selecciones |
+| *"A **o** B"* | **Unión** ($\cup$) |
+| *"algún"*, *"que tiene un..."*, relacionar tablas | **Join** + proyección |
+| *"dos o más"* | **Auto-join** (join de la tabla consigo misma renombrada) |
+| Condición sobre un valor ($> 50000$) | **Selección** |
+
+1. **Trocea el enunciado en conjuntos:** Traduce el enunciado a conjuntos en lenguaje normal antes de escribir ningún operador. Ej: *"usuarios que son **(a)** seguidores de algún creador con $> 50000$ reproducciones, **menos (b)** los que son creadores de cualquier playlist"* $\rightarrow$ $\text{conjunto (a)} - \text{conjunto (b)}$.
+2. **Sigue el camino de joins (claves foráneas):** Cada línea ($A, B, C\dots$) es una frase del razonamiento siguiendo las FK entre tablas:
+   - `usuaris` con $> 50000$ $\rightarrow$ `A`
+   - que son creadores $\rightarrow$ join con `playlist` por `nomUsuari = creador` (`B`)
+   - sus seguidores $\rightarrow$ join con `seguidors` por `nomUsuari = nomSeguit` (`C`)
+   - me quedo solo con el seguidor $\rightarrow$ proyección `[nomSeguidor]` (`D`)
+3. **Prepara los conjuntos para operar ($\cup, \cap, -$):** Exigen **exactamente los mismos atributos**. Proyecta a la clave y renombra para que coincidan (ej: renombrar tanto `nomSeguidor` como `creador` a `nomUsuari` antes de hacer $H = F - G$).
+4. **Recupera las columnas pedidas:** La resta/intersección te deja solo con la clave (`nomUsuari`). Si piden más datos (ej: `tarifa`), haz un `*` (natural join) al final con la tabla principal y proyecta:
+   - **Patrón general:** *proyecta a la clave $\rightarrow$ resta $\rightarrow$ join para recuperar el resto de columnas*.
+
+---
+
+### Patrón 1: Selección + Proyección
+
+**Ejemplo 1:** "Nombres de los usuarios `free` con más de 1000 reproducciones."
+```text
+R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
+```
+
+---
+
+### Patrón 2: Seguir las claves foráneas (Joins)
+
+**Ejemplo 2:** "Títulos de las canciones de la playlist llamada `'Running'`."
+Camino: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (comparten nombre de atributo, usamos `*`).
+```text
+A = playlist(nomList='Running')
+B = A * cançonsAPlaylist
+C = B * cançons
+R = C[titol]
+```
+
+**Ejemplo 3:** "Nombre y tarifa de los creadores de playlists de tema `'rock'`."
+Aquí `creador` y `nomUsuari` no tienen el mismo nombre, por tanto hace falta $\theta$-join.
+```text
+A = playlist(tema='rock')
+B = A[creador = nomUsuari]usuaris
+R = B[nomUsuari, tarifa]
+```
+
+**Ejemplo 4:** "Nombres de los usuarios que siguen a alguien con tarifa `'premium'`."
+```text
+A = usuaris(tarifa='premium')
+B = A[nomUsuari = nomSeguit]seguidors
+R = B[nomSeguidor]
+```
+
+---
+
+### Patrón 3: "Que no tienen ningún..." (Resta)
+
+Siempre: **todos los candidatos $-$ los que sí lo cumplen** (el conjunto de partida es la tabla que los enumera a todos).
+
+**Ejemplo 5:** "Usuarios que **no han creado ninguna** playlist."
+```text
+A = usuaris[nomUsuari]
+B = playlist[creador]{creador -> nomUsuari}
+R = A - B
+```
+
+**Ejemplo 6:** "Títulos de las canciones que **no aparecen en ninguna** playlist."
+La resta te deja solo con la clave (`idCanço`); al final hacemos un natural join con `cançons` para recuperar el `titol`.
+```text
+A = cançons[idCanço]
+B = cançonsAPlaylist[idCanço]
+C = A - B
+D = C * cançons
+R = D[titol]
+```
+
+**Ejemplo 7:** "Usuarios que siguen a alguien que **no les sigue a ellos**."
+`B` es la relación "invertida": donde `A` tiene $(X \text{ sigue a } Y)$, `B` tiene $(Y \text{ sigue a } X)$ con los nombres intercambiados. Las parejas de `A` que no están en `B` son los seguimientos no correspondidos.
+```text
+A = seguidors[nomSeguidor, nomSeguit]
+B = seguidors[nomSeguit, nomSeguidor]{nomSeguit -> nomSeguidor, nomSeguidor -> nomSeguit}
+C = A - B
+R = C[nomSeguidor]
+```
+
+---
+
+### Patrón 4: "Y" / "O" (Intersección y Unión)
+
+**Ejemplo 8:** "Usuarios que han creado alguna playlist de tema `'rock'` **y también** alguna de tema `'pop'`."
+*(Nota: Si no se permite usar $\cap$, es equivalente a `A - (A - B)`).*
+```text
+A = playlist(tema='rock')[creador]
+B = playlist(tema='pop')[creador]
+R = A ∩ B
+```
+
+**Ejemplo 9:** "Usuarios que son creadores de alguna playlist **o** tienen más de 100000 reproducciones."
+La unión también exige que ambos conjuntos tengan el mismo nombre de atributo, por eso renombramos `creador`.
+```text
+A = playlist[creador]{creador -> nomUsuari}
+B = usuaris(reproduccions > 100000)[nomUsuari]
+R = A ∪ B
+```
+
+---
+
+### Patrón 5: "Dos o más" (Auto-join)
+
+El patrón es siempre el mismo: **copia renombrada**, **igualdad (`=`)** sobre lo que debe repetirse y **desigualdad (`!=`)** sobre lo que debe ser diferente.
+
+**Ejemplo 10:** "Usuarios que han creado **dos o más** playlists."
+```text
+A = playlist[idList, creador]
+C = A{idList -> idList2, creador -> creador2}
+D = A[creador = creador2 and idList != idList2]C
+R = D[creador]
+```
+
+**Ejemplo 11:** "Canciones que aparecen en **dos o más** playlists diferentes."
+```text
+A = cançonsAPlaylist[idList, idCanço]
+C = A{idList -> idList2, idCanço -> idCanço2}
+D = A[idCanço = idCanço2 and idList != idList2]C
+R = D[idCanço]
+```
+
+---
+
+### Patrón 6: "Todas..." (División / Doble resta)
+
+**Idea:** Busco todas las parejas `(playlist, canción de X)` que **deberían existir** (producto cartesiano), le resto las que **existen de verdad**, y las playlists que quedan son a las que les falta alguna canción (*"malas"*). Después las resto del total.
+
+**Ejemplo 12:** "Nombres de las playlists que contienen **todas** las canciones del cantante `'X'`."
+*(Nota: Como `L` y `C` no tienen atributos en común, `L * C` hace el producto cartesiano combinando todas las filas con todas).*
+```text
+C = cançons(cantant='X')[idCanço]
+L = playlist[idList]
+P = L * C                                   -- Todas las parejas posibles (que deberían existir)
+M = P - cançonsAPlaylist[idList, idCanço]   -- Parejas que faltan en la realidad
+Malas = M[idList]                           -- Playlists incompletas
+Buenas = L - Malas                          -- Playlists que tienen TODAS las canciones de X
+R = (Buenas * playlist)[nomList]            -- Recuperamos el nomList
+```
+
 ---
 
 ## 2. DDL y DML
@@ -272,13 +439,8 @@ Sin duplicados por definición. Se escribe en secuencia paso a paso ($A = \dots,
 
 ## 3. Componentes Lógicos y Seguridad
 
-### Dominios, Aserciones y Transacciones
-- **`CREATE DOMAIN dom AS tipo [DEFAULT v] [CHECK (VALUE ...)]`:** Tipo reutilizable.
-- **Dónde poner cada restricción:**
-  - 1 columna $\to$ `CHECK` de columna.
-  - Múltiples columnas de la **misma fila** $\to$ `CHECK` de tabla (implicación $A \to B \equiv \neg A \lor B$).
-  - Múltiples filas o tablas $\to$ `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT ... infractores))`.
-- **Transacciones:** `START TRANSACTION`, `COMMIT` (guarda), `ROLLBACK` (deshace). Aislamiento máximo: `SERIALIZABLE`.
+### Aserciones
+Siempre empieza con `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
 
 ### Vistas (`CREATE VIEW`)
 - **Actualizables (SQL estándar):** Solo si se definen sobre **1 sola tabla** (sin `JOIN`, `UNION`, `GROUP BY`, `HAVING`, `DISTINCT` ni agregaciones) y proyectan columnas simples. Para `INSERT`, hay que incluir todas las columnas `NOT NULL` sin `DEFAULT`.
@@ -309,8 +471,4 @@ Sin duplicados por definición. Se escribe en secuencia paso a paso ($A = \dots,
 | **Herencia** | 1 tabla para la superclase + 1 para cada subclase con $\text{PK} = \text{FK}$ apuntando a la superclase. |
 | **Clase débil** | $\text{PK}$ compuesta por la PK de la clase fuerte + su identificador relativo. |
 | **Clase temporal pura** | No crea tabla; se traduce como atributo `DATE`/`TIME`/`INT` en la tabla asociada. |
-
-### Validación de Afirmaciones UML (Verdadero / Falso)
-- **VERDADERA:** Se demuestra construyendo una instancia mínima de filas que cumpla todas las PK, FK y multiplicidades.
-- **FALSA:** Viola una multiplicidad máxima (`1`), mínima (`1`) o clave externa. Se arregla cambiando la multiplicidad (`1` $\to$ `*` o `1` $\to$ `0`) o haciendo la clave relativa.
 

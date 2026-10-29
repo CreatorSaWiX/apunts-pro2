@@ -4,6 +4,7 @@ description: "Resum tema 1, 2, 3 i 7."
 readTime: "10 min"
 order: 8
 draft: false
+isUpdated: 1
 ---
 
 ## 1. SQL i àlgebra relacional
@@ -11,7 +12,19 @@ draft: false
 ### Consultes SQL
 - **Ordre:** `SELECT [DISTINCT] ... FROM ... [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ... [ASC|DESC]]`
 - **Valors `NULL`:** Comparar sempre amb `IS NULL` / `IS NOT NULL` (mai `= NULL`).
-- **Agregació:** `COUNT(*)` compta nuls; `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignoren nuls (i retornen `NULL` si 0 files, excepte `COUNT` que dóna `0`).
+- **Agregació:** `COUNT(*)` compta files (inclou nuls); `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignoren nuls (i retornen `NULL` si 0 files, excepte `COUNT` que dóna `0`).
+- **`COUNT(*)` vs `COUNT(DISTINCT col)`:**
+  - `COUNT(*)`: compta **files** (usar si cada fila del grup ja és única segons la PK, ex: *"3 o més períodes diferents"*).
+  - `COUNT(DISTINCT col)`: compta **valors diferents** de `col` (usar només si un mateix valor de `col` es pot repetir en diverses files del grup, ex: *"3 o més despatxos diferents"*).
+```sql
+-- Un professor pot estar al mateix despatx (numero) en 4 períodes (4 files),
+-- però continua sent 1 sol despatx:
+SELECT dni, modul
+FROM assignacions
+GROUP BY dni, modul
+HAVING COUNT(*) >= 3;               -- >= 3 assignacions/períodes (files)
+HAVING COUNT(DISTINCT numero) >= 3; -- >= 3 despatxos diferents
+```
 - **`WHERE` vs `HAVING`:** `WHERE` filtra files abans d'agrupar (sense agregacions). `HAVING` filtra grups després del `GROUP BY`. Tota columna del `SELECT` fora d'una agregació ha d'estar al `GROUP BY`. Exemple:
 ```sql
 SELECT a.modul, a.numero, p.nomProf, COUNT(*) 
@@ -23,6 +36,10 @@ GROUP BY a.modul, a.numero, p.nomProf
 - **Subconsultes d'exclusió:**
   - `NOT EXISTS (SELECT * FROM ... WHERE ...)`.
   - `col NOT IN (SELECT col FROM ... WHERE col IS NOT NULL)`.
+- **Joins:**
+  - `JOIN` $\equiv$ `INNER JOIN`. Són exactament el mateix (`INNER` és opcional).
+  - `A [INNER] JOIN B ON A.x = B.y`: Uneix segons la condició `ON` indicada.
+  - `A NATURAL [INNER] JOIN B`: Sense `ON`; iguala automàticament **totes** les columnes que tenen el mateix nom.
 
 ### Enunciats tipus ("Més de X...", "Almenys X...", "X o més...")
 
@@ -252,6 +269,156 @@ Sense duplicats per definició. S'escriu en seqüència pas a pas ($A = \dots, R
 | **Joins** | $T[\text{cond}]S$ / $T * S$ | $\theta$-Join (amb condició) / Natural Join (mateix nom d'atributs). |
 | **Conjunts** | $T \cup S$, $T - S$, $T \cap S$ | Esquemes idèntics (mateix grau i noms d'atribut). |
 
+#### Mètode pas a pas i traducció d'enunciats
+
+| L'enunciat diu... | Fas servir... |
+| :--- | :--- |
+| *"que no tenen cap..."*, *"excepte..."* | **Resta** ($-$) |
+| *"que compleixen A **i** B"* | **Intersecció** ($\cap$) o dues seleccions |
+| *"A **o** B"* | **Unió** ($\cup$) |
+| *"algun"*, *"que té un..."*, relacionar taules | **Join** + projecció |
+| *"dues o més"* | **Auto-join** (join de la taula amb ella mateixa reanomenada) |
+| Condició sobre un valor ($> 50000$) | **Selecció** |
+
+1. **Trosseja l'enunciat en conjunts:** Tradueix l'enunciat a conjunts en llenguatge normal abans d'escriure cap operador. Ex: *"usuaris que són **(a)** seguidors d'algun creador amb $> 50000$ reproduccions, **menys (b)** els que són creadors de qualsevol playlist"* $\rightarrow$ $\text{conjunt (a)} - \text{conjunt (b)}$.
+2. **Segueix el camí de joins (claus foranes):** Cada línia ($A, B, C\dots$) és una frase del raonament seguint les FK entre taules:
+   - `usuaris` amb $> 50000$ $\rightarrow$ `A`
+   - que són creadors $\rightarrow$ join amb `playlist` per `nomUsuari = creador` (`B`)
+   - els seus seguidors $\rightarrow$ join amb `seguidors` per `nomUsuari = nomSeguit` (`C`)
+   - em quedo només amb el seguidor $\rightarrow$ projecció `[nomSeguidor]` (`D`)
+3. **Prepara els conjunts per operar ($\cup, \cap, -$):** Exigeixen **exactament els mateixos atributs**. Projecta a la clau i reanomena perquè coincideixin (ex: reanomenar tant `nomSeguidor` com `creador` a `nomUsuari` abans de fer $H = F - G$).
+4. **Recupera les columnes demanades:** La resta/intersecció et deixa només amb la clau (`nomUsuari`). Si demanen més dades (ex: `tarifa`), fes un `*` (natural join) al final amb la taula principal i projecta:
+   - **Patró general:** *projecta a la clau $\rightarrow$ resta $\rightarrow$ join per recuperar la resta de columnes*.
+
+---
+
+### Patró 1: Selecció + Projecció
+
+**Exemple 1:** "Noms dels usuaris `free` amb més de 1000 reproduccions."
+```text
+R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
+```
+
+---
+
+### Patró 2: Seguir les claus foranes (Joins)
+
+**Exemple 2:** "Títols de les cançons de la playlist anomenada `'Running'`."
+Camí: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (comparteixen nom d'atribut, usem `*`).
+```text
+A = playlist(nomList='Running')
+B = A * cançonsAPlaylist
+C = B * cançons
+R = C[titol]
+```
+
+**Exemple 3:** "Nom i tarifa dels creadors de playlists de tema `'rock'`."
+Aquí `creador` i `nomUsuari` no tenen el mateix nom, per tant cal $\theta$-join.
+```text
+A = playlist(tema='rock')
+B = A[creador = nomUsuari]usuaris
+R = B[nomUsuari, tarifa]
+```
+
+**Exemple 4:** "Noms dels usuaris que segueixen algú amb tarifa `'premium'`."
+```text
+A = usuaris(tarifa='premium')
+B = A[nomUsuari = nomSeguit]seguidors
+R = B[nomSeguidor]
+```
+
+---
+
+### Patró 3: "Que no tenen cap..." (Resta)
+
+Sempre: **tots els candidats $-$ els que sí que ho compleixen** (el conjunt de partida és la taula que els enumera tots).
+
+**Exemple 5:** "Usuaris que **no han creat cap** playlist."
+```text
+A = usuaris[nomUsuari]
+B = playlist[creador]{creador -> nomUsuari}
+R = A - B
+```
+
+**Exemple 6:** "Títols de les cançons que **no apareixen a cap** playlist."
+La resta et deixa només amb la clau (`idCanço`); al final fem un natural join amb `cançons` per recuperar el `titol`.
+```text
+A = cançons[idCanço]
+B = cançonsAPlaylist[idCanço]
+C = A - B
+D = C * cançons
+R = D[titol]
+```
+
+**Exemple 7:** "Usuaris que segueixen algú que **no els segueix a ells**."
+`B` és la relació "invertida": on `A` té $(X \text{ segueix } Y)$, `B` té $(Y \text{ segueix } X)$ amb els noms intercanviats. Les parelles d'`A` que no són a `B` són els seguiments no correspostos.
+```text
+A = seguidors[nomSeguidor, nomSeguit]
+B = seguidors[nomSeguit, nomSeguidor]{nomSeguit -> nomSeguidor, nomSeguidor -> nomSeguit}
+C = A - B
+R = C[nomSeguidor]
+```
+
+---
+
+### Patró 4: "I" / "O" (Intersecció i Unió)
+
+**Exemple 8:** "Usuaris que han creat alguna playlist de tema `'rock'` **i també** alguna de tema `'pop'`."
+*(Nota: Si no es permet usar $\cap$, és equivalent a `A - (A - B)`).*
+```text
+A = playlist(tema='rock')[creador]
+B = playlist(tema='pop')[creador]
+R = A ∩ B
+```
+
+**Exemple 9:** "Usuaris que són creadors d'alguna playlist **o** tenen més de 100000 reproduccions."
+La unió també exigeix que els dos conjunts tinguin el mateix nom d'atribut, per això reanomenem `creador`.
+```text
+A = playlist[creador]{creador -> nomUsuari}
+B = usuaris(reproduccions > 100000)[nomUsuari]
+R = A ∪ B
+```
+
+---
+
+### Patró 5: "Dues o més" (Auto-join)
+
+El patró és sempre el mateix: **còpia reanomenada**, **igualtat (`=`)** sobre el que s'ha de repetir i **desigualtat (`!=`)** sobre el que ha de ser diferent.
+
+**Exemple 10:** "Usuaris que han creat **dues o més** playlists."
+```text
+A = playlist[idList, creador]
+C = A{idList -> idList2, creador -> creador2}
+D = A[creador = creador2 and idList != idList2]C
+R = D[creador]
+```
+
+**Exemple 11:** "Cançons que apareixen a **dues o més** playlists diferents."
+```text
+A = cançonsAPlaylist[idList, idCanço]
+C = A{idList -> idList2, idCanço -> idCanço2}
+D = A[idCanço = idCanço2 and idList != idList2]C
+R = D[idCanço]
+```
+
+---
+
+### Patró 6: "Totes..." (Divisió / Doble resta)
+
+**Idea:** Busco totes les parelles `(playlist, cançó d'X)` que **haurien d'existir** (producte cartesià), li resto les que **existeixen de debò**, i les playlists que queden són les que els falta alguna cançó (*"dolentes"*). Després les resto del total.
+
+**Exemple 12:** "Noms de les playlists que contenen **totes** les cançons del cantant `'X'`."
+*(Nota: Com que `L` i `C` no tenen atributs en comú, `L * C` fa el producte cartesià combinant totes les files amb totes).*
+```text
+C = cançons(cantant='X')[idCanço]
+L = playlist[idList]
+P = L * C                                   -- Totes les parelles possibles (que haurien d'existir)
+M = P - cançonsAPlaylist[idList, idCanço]   -- Parelles que falten a la realitat
+Dolentes = M[idList]                        -- Playlists incompletes
+Bones = L - Dolentes                        -- Playlists que tenen TOTES les cançons d'X
+R = (Bones * playlist)[nomList]             -- Recuperem el nomList
+```
+
 ---
 
 ## 2. DDL i DML
@@ -272,13 +439,8 @@ Sense duplicats per definició. S'escriu en seqüència pas a pas ($A = \dots, R
 
 ## 3. Components Lògics i Seguretat
 
-### Dominis, Assercions i Transaccions
-- **`CREATE DOMAIN dom AS tipus [DEFAULT v] [CHECK (VALUE ...)]`:** Tipus reutilitzable.
-- **On posar cada restricció:**
-  - 1 columna $\to$ `CHECK` de columna.
-  - Múltiples columnes de la **mateixa fila** $\to$ `CHECK` de taula (implicació $A \to B \equiv \neg A \lor B$).
-  - Múltiples files o taules $\to$ `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT ... infractors))`.
-- **Transaccions:** `START TRANSACTION`, `COMMIT` (desa), `ROLLBACK` (desfà). Aïllament màxim: `SERIALIZABLE`.
+### Assercions
+Sempre comença amb `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
 
 ### Vistes (`CREATE VIEW`)
 - **Actualitzables (SQL estàndard):** Només si es defineixen sobre **1 sola taula** (sense `JOIN`, `UNION`, `GROUP BY`, `HAVING`, `DISTINCT` ni agregacions) i projecten columnes simples. Per a `INSERT`, cal incloure totes les columnes `NOT NULL` sense `DEFAULT`.
@@ -309,7 +471,3 @@ Sense duplicats per definició. S'escriu en seqüència pas a pas ($A = \dots, R
 | **Herència** | 1 taula per a la superclasse + 1 per a cada subclasse amb $\text{PK} = \text{FK}$ apuntant a la superclasse. |
 | **Classe feble** | $\text{PK}$ composta per la PK de la classe forta + el seu identificador relatiu. |
 | **Classe temporal pura** | No crea taula; es tradueix com a atribut `DATE`/`TIME`/`INT` a la taula associada. |
-
-### Validació d'Afirmacions UML (Cert / Fals)
-- **CERTA:** Es demostra construint una instància mínima de files que compleixi totes les PK, FK i multiplicitats.
-- **FALSA:** Viola una multiplicitat màxima (`1`), mínima (`1`) o clau externa. S'arregla canviant la multiplicitat (`1` $\to$ `*` o `1` $\to$ `0`) o fent la clau relativa.
