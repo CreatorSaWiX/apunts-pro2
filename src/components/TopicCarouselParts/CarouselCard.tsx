@@ -56,10 +56,10 @@ export const CarouselCard = React.memo(({
     const isTopicUpdated = !isTopicNew && newestUpdate > (seenVersions[topic.slug] || 0);
 
     return (
-        <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-4">
+        <div style={{ width: `${itemWidth}px` }} className="shrink-0 snap-center flex items-center justify-center h-full px-2 py-2">
             <motion.div 
                 style={{ scale, opacity, WebkitFontSmoothing: "antialiased" }} 
-                className="w-full h-full max-h-125 min-h-[420px] relative rounded-[32px] transform-gpu flex flex-col"
+                className="w-full h-full max-h-[480px] min-h-[360px] relative rounded-[32px] transform-gpu flex flex-col"
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.click(); } }}
@@ -86,14 +86,14 @@ export const CarouselCard = React.memo(({
                     {/* Glowing Accent Orb */}
                     <div className={`absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full blur-3xl pointer-events-none transition duration-700 delay-100 ${isActive ? 'bg-primary/20 opacity-100 scale-100' : 'bg-transparent opacity-0 scale-50'}`} />
                     
-                    <div className="relative z-10 h-full flex flex-col p-6 min-[390px]:p-8 pointer-events-none">
+                    <div className="relative z-10 h-full flex flex-col p-5 min-[390px]:p-7 pointer-events-none">
                         
                         {/* Header Area */}
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={`p-3.5 rounded-2xl border backdrop-blur-md transition duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
-                                <Book size={24} strokeWidth={1.5} />
+                        <div className="flex justify-between items-start mb-2 min-[390px]:mb-3 shrink-0">
+                            <div className={`p-3 min-[390px]:p-3.5 rounded-2xl border backdrop-blur-md transition duration-500 shadow-md ${isActive ? 'bg-primary/10 border-primary/20 text-accent shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)]' : 'bg-white/5 border-white/5 text-slate-500'}`}>
+                                <Book size={22} strokeWidth={1.5} />
                             </div>
-                            <span className={`font-mono text-6xl font-black transition duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
+                            <span className={`font-mono text-5xl min-[390px]:text-6xl font-black transition duration-500 tracking-tighter ${isActive ? 'text-white/10' : 'text-white/5'}`}>
                                 {(() => {
                                     const match = topic.title.match(/^Tema (\d+)/);
                                     if (match) return match[1].padStart(2, '0');
@@ -106,7 +106,7 @@ export const CarouselCard = React.memo(({
 
                         {/* Status Badges */}
                         {(isTopicNew || isTopicUpdated) && (
-                            <div className={`absolute top-6 right-6 z-30 transition duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                            <div className={`absolute top-5 right-5 min-[390px]:top-6 min-[390px]:right-6 z-30 transition duration-500 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
                                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-lg backdrop-blur-md ${isTopicNew ? 'bg-linear-to-r from-rose-500/90 to-pink-500/90 border-rose-300/30 shadow-rose-500/40' : 'bg-linear-to-r from-emerald-500/90 to-teal-500/90 border-emerald-300/30 shadow-emerald-500/40'}`}>
                                     <Sparkles size={10} className="text-white animate-pulse" />
                                     <span className="text-[9px] font-extrabold text-white uppercase tracking-wider drop-shadow-sm">
@@ -116,24 +116,24 @@ export const CarouselCard = React.memo(({
                             </div>
                         )}
 
-                        <h3 className={`text-2xl min-[390px]:text-[28px] font-bold leading-[1.35] tracking-tight mb-3 pb-1 transition-colors duration-500 line-clamp-2 ${isActive ? 'text-white' : 'text-slate-400'}`}>
+                        <h3 className={`text-xl min-[390px]:text-2xl font-bold leading-snug tracking-tight mb-2 shrink-0 transition-colors duration-500 line-clamp-2 ${isActive ? 'text-white' : 'text-slate-400'}`}>
                             {topic.title}
                         </h3>
 
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className={`h-[2px] rounded-full transition duration-500 ${isActive ? 'w-10 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-6 bg-slate-700'}`} />
-                            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest font-bold">
+                        <div className="flex items-center gap-2.5 mb-2.5 shrink-0">
+                            <div className={`h-[2px] rounded-full transition duration-500 ${isActive ? 'w-8 bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]' : 'w-5 bg-slate-700'}`} />
+                            <span className="text-[10px] min-[390px]:text-[11px] font-mono text-slate-400 uppercase tracking-widest font-bold">
                                 {topic.readTime || '10 Min'}
                             </span>
                         </div>
 
-                        <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 font-medium mb-auto opacity-90">
+                        <p className="text-slate-400 text-xs min-[390px]:text-sm leading-relaxed line-clamp-2 font-medium mb-auto opacity-90 shrink-0">
                             {topic.description}
                         </p>
 
                         {/* Interactive Buttons Footer */}
-                        <div className={`pt-5 mt-auto transition duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
-                            <div className="flex flex-col gap-3">
+                        <div className={`pt-3 min-[390px]:pt-4 mt-auto shrink-0 transition duration-500 transform-gpu ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+                            <div className="flex flex-col gap-2 min-[390px]:gap-2.5">
                                 <motion.div
                                     role="button"
                                     tabIndex={0}
@@ -145,15 +145,15 @@ export const CarouselCard = React.memo(({
                                         markAsSeen(topic.slug, newestUpdate); 
                                         navigate(`/tema/${topic.slug}`);
                                     }}
-                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-5 py-4 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-colors duration-300 cursor-pointer"
+                                    className="group/btn relative overflow-hidden flex items-center justify-between text-white font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-4 min-[390px]:px-5 py-3 min-[390px]:py-3.5 rounded-xl shadow-[0_12px_24px_rgba(var(--primary-rgb),0.25)] transition-colors duration-300 cursor-pointer"
                                 >
-                                    <span className="relative z-10 text-[15px] tracking-wide">{t('topics.explore', 'Explorar tema')}</span>
+                                    <span className="relative z-10 text-[14px] min-[390px]:text-[15px] tracking-wide font-medium">{t('topics.explore', 'Explorar tema')}</span>
                                     <div className="relative z-10 bg-white/20 p-1.5 rounded-lg group-hover/btn:bg-white/30 transition-colors">
-                                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                        <ArrowRight size={15} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
                                     </div>
                                 </motion.div>
 
-                                <div className="flex items-center gap-2.5">
+                                <div className="flex items-center gap-2">
                                     <motion.div
                                         role="button"
                                         tabIndex={0}
@@ -165,9 +165,10 @@ export const CarouselCard = React.memo(({
                                             markAsSeen(topic.slug, newestUpdate); 
                                             navigate(`/tema/${topic.slug}/test`);
                                         }}
-                                        className="flex-1 text-slate-300 hover:text-amber-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner cursor-pointer"
+                                        className="flex-1 text-slate-300 hover:text-amber-400 text-[11px] min-[390px]:text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors bg-slate-800/50 py-2.5 min-[390px]:py-3 rounded-lg border border-white/5 hover:bg-amber-500/10 hover:border-amber-500/20 shadow-inner cursor-pointer whitespace-nowrap overflow-hidden"
                                     >
-                                        <RefreshCw size={14} /> Test
+                                        <RefreshCw size={13} className="shrink-0" />
+                                        <span className="truncate">Test</span>
                                     </motion.div>
 
                                     <motion.div
@@ -181,9 +182,10 @@ export const CarouselCard = React.memo(({
                                             markAsSeen(topic.slug, newestUpdate); 
                                             navigate(getTopicSolutionRoute(topic.slug));
                                         }}
-                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors bg-slate-800/50 py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer"
+                                        className="flex-1 text-slate-300 hover:text-emerald-400 text-[11px] min-[390px]:text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors bg-slate-800/50 py-2.5 min-[390px]:py-3 rounded-lg border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 shadow-inner cursor-pointer whitespace-nowrap overflow-hidden"
                                     >
-                                        {isProgrammingSubject(subject) ? <Terminal size={14} /> : <Calculator size={14} />} {getTopicSolutionLabel(subject, topic.slug, t)}
+                                        {isProgrammingSubject(subject) ? <Terminal size={13} className="shrink-0" /> : <Calculator size={13} className="shrink-0" />}
+                                        <span className="truncate">{getTopicSolutionLabel(subject, topic.slug, t)}</span>
                                     </motion.div>
                                 </div>
                             </div>

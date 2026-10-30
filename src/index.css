@@ -564,7 +564,10 @@ ul[data-type="taskList"] li>label>input[type="checkbox"]:checked::after {
 ul[data-type="taskList"] li>div {
   @apply flex-1 mt-0 text-slate-300;
 }
-/* Prevent KaTeX from breaking page width on mobile */
+/* Prevent KaTeX from breaking page width on mobile and skip redundant WebKit MathML layout */
+.katex-mathml {
+  display: none !important;
+}
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;

@@ -2,6 +2,29 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 
+/**
+ * Matches Tailwind's `lg:` breakpoint (`min-width: 1024px`) so players
+ * only mount the active layout (Desktop resizable panels OR Mobile flex)
+ * instead of mounting duplicate CodeMirror/Canvas instances in the DOM.
+ */
+export function useIsDesktopLg(): boolean {
+    const [isDesktopLg, setIsDesktopLg] = useState(() => {
+        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return true;
+        return window.matchMedia('(min-width: 1024px)').matches;
+    });
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+        const mql = window.matchMedia('(min-width: 1024px)');
+        const onChange = (e: MediaQueryListEvent) => setIsDesktopLg(e.matches);
+        setIsDesktopLg(mql.matches);
+        mql.addEventListener('change', onChange);
+        return () => mql.removeEventListener('change', onChange);
+    }, []);
+
+    return isDesktopLg;
+}
+
 interface PlayerTab {
     id: string;
     label: string;
@@ -26,26 +49,25 @@ export function PlayerShell({
     controls
 }: PlayerShellProps) {
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const isDesktopLg = useIsDesktopLg();
 
     // Handle body scroll locking and Escape key when fullscreen
     useEffect(() => {
+        if (!isFullscreen) return;
+
+        const prevOverflow = document.body.style.overflow;
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isFullscreen) {
+            if (e.key === 'Escape') {
                 setIsFullscreen(false);
             }
         };
 
-        if (isFullscreen) {
-            document.body.style.overflow = 'hidden';
-            document.body.classList.add('player-fullscreen');
-            window.addEventListener('keydown', handleKeyDown);
-        } else {
-            document.body.style.overflow = '';
-            document.body.classList.remove('player-fullscreen');
-        }
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('player-fullscreen');
+        window.addEventListener('keydown', handleKeyDown);
 
         return () => {
-            document.body.style.overflow = '';
+            document.body.style.overflow = prevOverflow;
             document.body.classList.remove('player-fullscreen');
             window.removeEventListener('keydown', handleKeyDown);
         };
@@ -74,7 +96,7 @@ export function PlayerShell({
                 </button>
 
                 {/* Mobile Tab Switcher */}
-                {tabs.length > 0 && !isFullscreen && (
+                {!isDesktopLg && tabs.length > 0 && !isFullscreen && (
                     <div className="flex lg:hidden border-b border-white/5 bg-[#0a0d14]">
                         {tabs.map((tab) => (
                             <button type="button"
@@ -88,26 +110,28 @@ export function PlayerShell({
                     </div>
                 )}
 
-                {/* Desktop View with Resizable Panels */}
-                <div className="hidden lg:flex flex-1 overflow-hidden">
-                    <Group orientation="horizontal">
-                        <Panel defaultSize={50} minSize={20} className="flex flex-col">
-                            {leftPanel}
-                        </Panel>
-                        <Separator className="w-1.5 bg-[#0B0F17] hover:bg-emerald-500/30 active:bg-emerald-500/50 transition-colors cursor-col-resize flex flex-col justify-center items-center group relative z-50">
-                            <div className="h-8 w-1 bg-slate-700/50 group-hover:bg-emerald-500/70 rounded-full" />
-                        </Separator>
-                        <Panel defaultSize={50} minSize={20} className="flex flex-col">
-                            {rightPanel}
-                        </Panel>
-                    </Group>
-                </div>
-
-                {/* Mobile View with normal flex */}
-                <div className="flex flex-col lg:hidden flex-1 overflow-hidden">
-                    {leftPanel}
-                    {rightPanel}
-                </div>
+                {isDesktopLg ? (
+                    /* Desktop View with Resizable Panels */
+                    <div className="hidden lg:flex flex-1 overflow-hidden">
+                        <Group orientation="horizontal">
+                            <Panel defaultSize={50} minSize={20} className="flex flex-col">
+                                {leftPanel}
+                            </Panel>
+                            <Separator className="w-1.5 bg-[#0B0F17] hover:bg-emerald-500/30 active:bg-emerald-500/50 transition-colors cursor-col-resize flex flex-col justify-center items-center group relative z-50">
+                                <div className="h-8 w-1 bg-slate-700/50 group-hover:bg-emerald-500/70 rounded-full" />
+                            </Separator>
+                            <Panel defaultSize={50} minSize={20} className="flex flex-col">
+                                {rightPanel}
+                            </Panel>
+                        </Group>
+                    </div>
+                ) : (
+                    /* Mobile View with normal flex */
+                    <div className="flex flex-col lg:hidden flex-1 overflow-hidden">
+                        {leftPanel}
+                        {rightPanel}
+                    </div>
+                )}
 
                 {controls}
             </div>

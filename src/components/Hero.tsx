@@ -21,17 +21,15 @@ const letterContainerVariants = {
 };
 
 const letterVariants = {
-    hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+    hidden: { opacity: 0, y: 20 },
     visible: {
         opacity: 1,
         y: 0,
-        filter: 'blur(0px)',
-        transition: { type: 'spring' as const, damping: 15, stiffness: 40 }
+        transition: { type: 'spring' as const, damping: 18, stiffness: 60 }
     },
     exit: {
         opacity: 0,
-        y: -20,
-        filter: 'blur(10px)',
+        y: -15,
         transition: { duration: 0.2 }
     }
 };
@@ -73,7 +71,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
     }
 
     return (
-        <div className="relative flex flex-col items-center justify-center pt-8 pb-3 md:pt-12 md:pb-4 z-10 text-center px-4">
+        <div className="relative flex flex-col items-center justify-center pt-4 pb-1 md:pt-12 md:pb-4 z-10 text-center px-4">
 
             {/* Version Badge & Updates */}
             <AnimatePresence mode="wait">
@@ -86,11 +84,11 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                         exit={{ opacity: 0, scale: 0.9, y: 10 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 shadow-lg shadow-red-500/10 backdrop-blur-md cursor-pointer group"
+                        className="mb-2 md:mb-6 inline-flex items-center gap-2 px-3.5 py-1 md:px-4 md:py-1.5 rounded-full bg-red-500/10 border border-red-500/30 shadow-lg shadow-red-500/10 backdrop-blur-md cursor-pointer group"
                     >
-                        <span className="relative flex h-2.5 w-2.5">
+                        <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-red-500"></span>
                         </span>
                         <span className="text-[10px] uppercase tracking-widest text-red-400 font-semibold group-hover:text-red-300 transition-colors">
                             {t('hero.newVersion', 'Hi ha una nova versió')}
@@ -105,7 +103,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
                         whileHover={{ y: -2 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="group relative z-50 mb-4 md:mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/50 border border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-md cursor-pointer transition-colors duration-300 hover:bg-slate-800/80 hover:border-primary/40 hover:shadow-primary/20"
+                        className="group relative z-40 mb-2 md:mb-6 inline-flex items-center gap-2 px-3 py-1 md:py-1.5 rounded-full bg-slate-900/50 border border-primary/20 shadow-lg shadow-primary/10 backdrop-blur-md cursor-pointer transition-colors duration-300 hover:bg-slate-800/80 hover:border-primary/40 hover:shadow-primary/20"
                     >
                         <GitCommitVertical size={12} className="text-accent group-hover:rotate-12 transition-transform duration-300" />
                         <span className="text-[10px] uppercase tracking-widest text-accent font-semibold transition-colors group-hover:text-white">
@@ -129,7 +127,7 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                 <AnimatePresence mode="wait">
                     {isMobile && isMenuOpen ? (
                         <div key="mobile-title" className="relative">
-                            <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
+                            <h1 className="text-3xl min-[360px]:text-4xl min-[410px]:text-5xl md:text-7xl font-bold tracking-tight mb-1.5 md:mb-4 text-white overflow-visible">
                                 <span className="inline-block bg-linear-to-b from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
                                     APUNTS {theme.label}
                                 </span>
@@ -144,8 +142,8 @@ const Hero: React.FC<HeroProps> = ({ isMenuOpen = false, subjectOverride, isExit
                             variants={letterContainerVariants}
                             className="relative"
                         >
-                            <h1 className="text-4xl min-[390px]:text-5xl md:text-7xl font-bold tracking-tight mb-2 md:mb-4 text-white overflow-visible">
-                                <span className="inline-block mr-4">
+                            <h1 className="text-3xl min-[360px]:text-4xl min-[410px]:text-5xl md:text-7xl font-bold tracking-tight mb-1.5 md:mb-4 text-white overflow-visible">
+                                <span className="inline-block mr-2.5 min-[390px]:mr-4">
                                     {"APUNTS".split("").map((char, i) => {
                                         return (
                                             <motion.span

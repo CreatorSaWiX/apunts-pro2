@@ -4,7 +4,7 @@ import { Code2, TerminalSquare } from 'lucide-react';
 import { pro } from '../../../../lib/simulations/content/pro';
 import type { Simulation, SimulationStep } from '../../../../lib/simulations/engine/types';
 import { Group, Panel, Separator } from 'react-resizable-panels';
-import { PlayerShell } from '../shared/PlayerShell';
+import { PlayerShell, useIsDesktopLg } from '../shared/PlayerShell';
 import { PlayerControls } from '../shared/PlayerControls';
 import { usePlayerEngine } from '../shared/usePlayerEngine';
 import { PlayerEditor } from '../shared/PlayerEditor';
@@ -23,6 +23,7 @@ export default function OOPPlayer({ simulation }: OOPPlayerProps) {
 
 function OOPPlayerContent({ sim }: { sim: Simulation }) {
     const { t } = useTranslation();
+    const isDesktopLg = useIsDesktopLg();
     const [steps] = useState<SimulationStep[]>(() => sim.generateSteps());
     const [activeTab, setActiveTab] = useState<'term' | 'code'>('code');
     const [selectedFileObj, setSelectedFileObj] = useState<{ step: number; file: string } | null>(null);
@@ -89,55 +90,57 @@ function OOPPlayerContent({ sim }: { sim: Simulation }) {
                         <div className="flex-1 border-b border-slate-800/80 h-full relative z-0 min-w-5"></div>
                     </div>
 
-                    {/* Desktop Layout with Memory */}
-                    <div className="hidden lg:flex flex-1 overflow-hidden min-h-0">
-                        <Group
-                            id="oop-layout"
-                            orientation="vertical"
-                            className="flex-1 overflow-hidden min-h-0"
-                            onLayoutChanged={(layout) => {
-                                const sizes = Object.values(layout);
-                                if (sizes.length === 2) {
-                                    setSavedLayout(sizes);
-                                }
-                            }}
-                        >
-                            <Panel minSize={5} defaultSize={isMemoryExpanded ? savedLayout[0] : 100} className="flex flex-col relative overflow-hidden bg-[#0d1117] min-h-0">
-                                <PlayerEditor 
-                                    code={String((displayFile && sim.files?.[displayFile]) || '')} 
-                                    executionLine={displayFile === step.visual?.activeFile ? (step.line || 0) : 0} 
-                                />
-                            </Panel>
-
-                            {isMemoryExpanded && (
-                                <Separator className="h-1.5 bg-slate-800/80 hover:bg-emerald-500/50 active:bg-emerald-500 transition-colors cursor-row-resize z-50 flex items-center justify-center shrink-0">
-                                    <div className="w-8 h-0.5 bg-slate-600 rounded-full" />
-                                </Separator>
-                            )}
-
-                            {isMemoryExpanded && (
-                                <Panel
-                                    defaultSize={savedLayout[1]}
-                                    minSize={10}
-                                    className="flex flex-col min-h-0"
-                                >
-                                    <PlayerMemory 
-                                        variables={step.variables || {}} 
-                                        isExpanded={isMemoryExpanded} 
-                                        onToggle={() => setIsMemoryExpanded(false)} 
+                    {isDesktopLg ? (
+                        /* Desktop Layout with Memory */
+                        <div className="hidden lg:flex flex-1 overflow-hidden min-h-0">
+                            <Group
+                                id="oop-layout"
+                                orientation="vertical"
+                                className="flex-1 overflow-hidden min-h-0"
+                                onLayoutChanged={(layout) => {
+                                    const sizes = Object.values(layout);
+                                    if (sizes.length === 2) {
+                                        setSavedLayout(sizes);
+                                    }
+                                }}
+                            >
+                                <Panel minSize={5} defaultSize={isMemoryExpanded ? savedLayout[0] : 100} className="flex flex-col relative overflow-hidden bg-[#0d1117] min-h-0">
+                                    <PlayerEditor 
+                                        code={String((displayFile && sim.files?.[displayFile]) || '')} 
+                                        executionLine={displayFile === step.visual?.activeFile ? (step.line || 0) : 0} 
                                     />
                                 </Panel>
-                            )}
-                        </Group>
-                    </div>
 
-                    {/* Mobile Layout (Code only) */}
-                    <div className="flex lg:hidden flex-col flex-1 overflow-hidden min-h-0">
-                        <PlayerEditor 
-                            code={String((displayFile && sim.files?.[displayFile]) || '')} 
-                            executionLine={displayFile === step.visual?.activeFile ? (step.line || 0) : 0} 
-                        />
-                    </div>
+                                {isMemoryExpanded && (
+                                    <Separator className="h-1.5 bg-slate-800/80 hover:bg-emerald-500/50 active:bg-emerald-500 transition-colors cursor-row-resize z-50 flex items-center justify-center shrink-0">
+                                        <div className="w-8 h-0.5 bg-slate-600 rounded-full" />
+                                    </Separator>
+                                )}
+
+                                {isMemoryExpanded && (
+                                    <Panel
+                                        defaultSize={savedLayout[1]}
+                                        minSize={10}
+                                        className="flex flex-col min-h-0"
+                                    >
+                                        <PlayerMemory 
+                                            variables={step.variables || {}} 
+                                            isExpanded={isMemoryExpanded} 
+                                            onToggle={() => setIsMemoryExpanded(false)} 
+                                        />
+                                    </Panel>
+                                )}
+                            </Group>
+                        </div>
+                    ) : (
+                        /* Mobile Layout (Code only) */
+                        <div className="flex lg:hidden flex-col flex-1 overflow-hidden min-h-0">
+                            <PlayerEditor 
+                                code={String((displayFile && sim.files?.[displayFile]) || '')} 
+                                executionLine={displayFile === step.visual?.activeFile ? (step.line || 0) : 0} 
+                            />
+                        </div>
+                    )}
 
                     {!isMemoryExpanded && (
                         <div className="hidden lg:block">

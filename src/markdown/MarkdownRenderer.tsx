@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkDirective from "remark-directive";
-import rehypeKatex from "rehype-katex";
+import katex from "katex";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import remarkMark from "./remarkMark";
@@ -135,6 +135,76 @@ const ThreeVisualizer = React.lazy(() =>
 );
 
 
+/**
+ * Fast, bounded in-memory cache for KaTeX HTML strings.
+ * Uses `output: 'html'` to avoid generating duplicate MathML DOM trees that
+ * trigger expensive native MathML layout passes on iOS/macOS WebKit (Safari),
+ * and renders via `dangerouslySetInnerHTML` to avoid ~20,000+ React Fibers per note.
+ */
+const katexHtmlCache = new Map<string, string>();
+const MAX_KATEX_CACHE_SIZE = 4000;
+
+function renderKatexCached(tex: string, displayMode: boolean): string {
+    const cacheKey = `${displayMode ? 'D:' : 'I:'}${tex}`;
+    const cached = katexHtmlCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+
+    const html = katex.renderToString(tex, {
+        displayMode,
+        output: 'html',
+        throwOnError: false,
+        strict: false,
+    });
+
+    if (katexHtmlCache.size >= MAX_KATEX_CACHE_SIZE) {
+        katexHtmlCache.clear();
+    }
+    katexHtmlCache.set(cacheKey, html);
+    return html;
+}
+
+/**
+ * Staggered background mount queue for below-the-fold visualizers so that
+ * 30+ heavy interactive players/visualizers don't block the initial page paint,
+ * while still mounting progressively in the background before the user scrolls to them.
+ */
+const idleMountQueue: Array<() => void> = [];
+let idleDrainTimer: ReturnType<typeof setTimeout> | null = null;
+
+function processIdleMountQueue() {
+    idleDrainTimer = null;
+    const batch = idleMountQueue.splice(0, 2);
+    for (const cb of batch) {
+        cb();
+    }
+    if (idleMountQueue.length > 0) {
+        scheduleNextIdleBatch();
+    }
+}
+
+function scheduleNextIdleBatch() {
+    if (idleDrainTimer !== null || idleMountQueue.length === 0) return;
+    idleDrainTimer = setTimeout(() => {
+        if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+            (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(
+                processIdleMountQueue,
+                { timeout: 120 }
+            );
+        } else {
+            processIdleMountQueue();
+        }
+    }, 45);
+}
+
+function enqueueIdleMount(cb: () => void): () => void {
+    idleMountQueue.push(cb);
+    scheduleNextIdleBatch();
+    return () => {
+        const idx = idleMountQueue.indexOf(cb);
+        if (idx !== -1) idleMountQueue.splice(idx, 1);
+    };
+}
+
 const VizFallback = () => {
     const { t } = useTranslation();
     return (
@@ -190,12 +260,74 @@ class VizErrorBoundary extends React.Component<
     }
 }
 
+const DeferredVisualizer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [shouldRender, setShouldRender] = React.useState(() => {
+        return typeof window === 'undefined' || typeof IntersectionObserver === 'undefined';
+    });
+    const placeholderRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useLayoutEffect(() => {
+        if (shouldRender) return;
+        const el = placeholderRef.current;
+        if (!el) return;
+
+        // Mount immediately if within 1600px of the initial viewport
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        if (rect.top < vh + 1600 && rect.bottom > -600) {
+            setShouldRender(true);
+            return;
+        }
+
+        let mounted = false;
+        const triggerMount = () => {
+            if (mounted) return;
+            mounted = true;
+            setShouldRender(true);
+        };
+
+        const cancelIdle = enqueueIdleMount(triggerMount);
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        cancelIdle();
+                        triggerMount();
+                        observer.disconnect();
+                        break;
+                    }
+                }
+            },
+            { rootMargin: '1800px 0px' }
+        );
+
+        observer.observe(el);
+        return () => {
+            cancelIdle();
+            observer.disconnect();
+        };
+    }, [shouldRender]);
+
+    if (!shouldRender) {
+        return (
+            <div ref={placeholderRef} className="w-full">
+                <VizFallback />
+            </div>
+        );
+    }
+
+    return <>{children}</>;
+};
+
 /** Suspense + ErrorBoundary wrapper for all lazy-loaded visualizers */
 const SafeSuspense = ({ children }: { children: React.ReactNode }) => (
     <VizErrorBoundary>
-        <React.Suspense fallback={<VizFallback />}>
-            {children}
-        </React.Suspense>
+        <DeferredVisualizer>
+            <React.Suspense fallback={<VizFallback />}>
+                {children}
+            </React.Suspense>
+        </DeferredVisualizer>
     </VizErrorBoundary>
 );
 
@@ -951,6 +1083,27 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
+
+        if (className?.includes('language-math')) {
+            const isDisplay = className.includes('math-display') || !className.includes('math-inline');
+            const rawTex = String(children ?? '').replace(/\n$/, '');
+            const html = renderKatexCached(rawTex, isDisplay);
+            if (isDisplay) {
+                return (
+                    <span
+                        className="katex-display-wrapper block my-4 overflow-x-auto overflow-y-hidden py-1"
+                        dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                );
+            }
+            return (
+                <span
+                    className="katex-inline-wrapper"
+                    dangerouslySetInnerHTML={{ __html: html }}
+                />
+            );
+        }
+
         const match = /language-([\w+-]+)/.exec(className || '');
 
         // Access metadata passed by remarkCodeMetadata via hProperties -> props
@@ -1054,7 +1207,7 @@ const rehypePluginsConfig = [
         ],
         attributes: {
             ...defaultSchema.attributes,
-            'code': [...(defaultSchema.attributes?.code || []), 'metadata'],
+            'code': ['className', 'metadata'],
             '*': ['className', 'class', 'style', 'id'],
             'a': ['href', 'target', 'rel', 'download', 'className', 'class', 'title'],
             'svg': ['xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className', 'class', 'style'],
@@ -1088,8 +1241,7 @@ const rehypePluginsConfig = [
             'callout': ['type', 'title'],
             'object': ['data', 'type', 'width', 'height'],
         }
-    }],
-    rehypeKatex
+    }]
 ];
 
 const remarkPluginsConfig = [remarkDirective, remarkDirectiveRehype, remarkCodeMetadata, remarkGfm, remarkMark, remarkMath];

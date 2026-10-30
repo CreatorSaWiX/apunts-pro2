@@ -142,12 +142,12 @@ const HomePage = () => {
                 </NavigationPill>
             </div>
 
-            <div className="flex-none pt-4 z-20 pointer-events-none">
+            <div className="flex-none pt-2 md:pt-4 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
                     <Hero isMenuOpen={isMenuOpen} subjectOverride={displaySubject} isExiting={isExiting} />
                 </div>
             </div>
-            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center md:pt-0 md:-mt-4 pb-16">
+            <div className="flex-1 min-h-0 relative z-10 flex flex-col justify-center md:pt-0 md:-mt-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-16">
                 <TopicCarousel isMenuOpen={isMenuOpen} subjectOverride={displaySubject} />
             </div>
         </div>

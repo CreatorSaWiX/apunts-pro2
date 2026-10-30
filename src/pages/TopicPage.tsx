@@ -7,6 +7,8 @@ import { ArrowLeft, ArrowRight, FileText, X } from 'lucide-react';
 import { MarkdownRenderer } from "../markdown/MarkdownRenderer";
 import Spinner from '../components/ui/Spinner';
 import { checkPdfsAvailability } from '../lib/mediaUtils';
+import { getCachedNotes, loadAllPersonalNotes } from '../hooks/useAvailableSubjects';
+import type { PersonalNote } from 'content-collections';
 
 
 const TopicPage: React.FC = () => {
@@ -14,15 +16,19 @@ const TopicPage: React.FC = () => {
     const { t, i18n } = useTranslation();
     const preferredLang = i18n.language;
     
-    const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [allPersonalNotes, setAllPersonalNotes] = useState<PersonalNote[]>(() => getCachedNotes() || []);
+    const [isLoading, setIsLoading] = useState<boolean>(() => getCachedNotes() === null);
 
     useEffect(() => {
+        if (getCachedNotes() !== null) {
+            setIsLoading(false);
+            return;
+        }
         let isMounted = true;
-        import('content-collections')
-            .then(m => {
+        loadAllPersonalNotes()
+            .then(notes => {
                 if (isMounted) {
-                    setAllPersonalNotes(m.allPersonalNotes);
+                    setAllPersonalNotes(notes);
                     setIsLoading(false);
                 }
             })
@@ -140,14 +146,9 @@ const TopicPage: React.FC = () => {
                 style={{ scaleX }}
             />
 
-            <div className="pt-28 pb-20 px-4 sm:px-8 max-w-5xl mx-auto">
+            <div className="pt-16 sm:pt-24 md:pt-28 pb-28 md:pb-20 px-4 sm:px-8 max-w-5xl mx-auto">
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="mb-8 border-b border-white/5 pb-8 relative"
-                >
+                <div className="mb-8 border-b border-white/5 pb-8 relative">
                     {/* PDF Download Button UI - Absolute Floating */}
                     <div className={`absolute top-0 right-0 z-20 ${(availablePdfs.ca || availablePdfs.es || embeddedPdfUrl) ? '' : 'hidden'}`}>
                         {embeddedPdfUrl ? (
@@ -223,7 +224,7 @@ const TopicPage: React.FC = () => {
                             </AnimatePresence>
                         </div>
 
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight mb-4 pr-20">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight mb-4 pr-20 break-words">
                         {topic.title}
                     </h1>
 
@@ -234,7 +235,7 @@ const TopicPage: React.FC = () => {
                             </div>
                         )}
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Content */}
                 <div className="prose prose-invert prose-lg max-w-none heading-reset">

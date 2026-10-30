@@ -306,7 +306,7 @@ const PortraitCarousel = React.memo(({ sortedTopics, topicMeta, isMenuOpen, subj
                 <div 
                     ref={carouselRef}
                     onScroll={handleScroll}
-                    className="relative w-full h-[60dvh] min-h-[420px] flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                    className="relative w-full flex-1 min-h-[360px] max-h-[480px] flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                     style={{ 
                         WebkitOverflowScrolling: 'touch',
                         paddingLeft: `${paddingOffset}px`,

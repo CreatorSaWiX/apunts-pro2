@@ -77,6 +77,7 @@ interface PlayerEditorProps {
 
 export function PlayerEditor({ code, executionLine, language }: PlayerEditorProps) {
     const editorRef = useRef<ReactCodeMirrorRef | null>(null);
+    const isInitialMountRef = useRef(true);
 
     const customTheme = useMemo(() => EditorView.theme({
         "&": { backgroundColor: "transparent !important", height: "100%" },
@@ -145,6 +146,10 @@ export function PlayerEditor({ code, executionLine, language }: PlayerEditorProp
     }), []);
 
     useEffect(() => {
+        if (isInitialMountRef.current) {
+            isInitialMountRef.current = false;
+            return;
+        }
         if (editorRef.current?.view && executionLine > 0) {
             const view = editorRef.current.view;
             const lineNum = Math.min(Math.max(1, executionLine), view.state.doc.lines);
@@ -152,16 +157,12 @@ export function PlayerEditor({ code, executionLine, language }: PlayerEditorProp
             requestAnimationFrame(() => {
                 if (view.state.doc.lines >= lineNum) {
                     const line = view.state.doc.line(lineNum);
-                    const savedScrollY = window.scrollY;
-
-                    view.dispatch({
-                        effects: EditorView.scrollIntoView(line.from, { y: "center" })
-                    });
-
-                    window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
-                    requestAnimationFrame(() => {
-                        window.scrollTo({ top: savedScrollY, behavior: 'instant' as ScrollBehavior });
-                    });
+                    const scroller = view.scrollDOM;
+                    if (scroller && scroller.clientHeight > 0) {
+                        const lineBlock = view.lineBlockAt(line.from);
+                        const targetTop = Math.max(0, lineBlock.top - scroller.clientHeight / 2 + lineBlock.height / 2);
+                        scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
+                    }
                 }
             });
         }
