@@ -67,7 +67,7 @@ When a signal arrives, the Kernel inspects these 4 descriptor structures in the 
 :::killviz
 :::
 
-Transmits any signal to the process specified by `pid_target` (contrary to its name, `kill` sends arbitrary signals):
+Transmits any signal to the process specified by `pid_target` (the name is misleading: it is not just for killing, it sends any signal):
 ```c
 kill(pid_desti, SIGINT);  // Sends Ctrl+C interrupt
 kill(pid_desti, SIGKILL); // Unconditionally kills target process

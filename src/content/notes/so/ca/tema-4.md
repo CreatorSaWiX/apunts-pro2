@@ -67,7 +67,7 @@ Quan arriba un senyal, el Kernel consulta aquestes 4 estructures guardades a la 
 :::killviz
 :::
 
-Envia qualsevol senyal al procés amb identificador `pid_desti` (no només serveix per matar, serveix per enviar qualsevol senyal):
+Envia qualsevol senyal al procés amb identificador `pid_desti` (el nom és enganyós: no només serveix per matar, serveix per enviar qualsevol senyal):
 ```c
 kill(pid_desti, SIGINT);  // Envia un Ctrl+C al procés
 kill(pid_desti, SIGKILL); // Mata el procés forçosament
