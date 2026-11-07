@@ -90,6 +90,22 @@ const StrassenVisualizer = React.lazy(() => import("../components/ui/visualizers
 const HanoiVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HanoiVisualizer"));
 const MedianVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MedianVisualizer"));
 const BFPRTVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BFPRTVisualizer"));
+const PriorityQueueCompareVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/PriorityQueueCompareVisualizer"));
+const TreeTopologyVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/TreeTopologyVisualizer"));
+const MinMaxHeapVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MinMaxHeapVisualizer"));
+const HeapSurarVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HeapSurarVisualizer"));
+const HeapEnfonsarVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HeapEnfonsarVisualizer"));
+const TernaryHeapVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/TernaryHeapVisualizer"));
+const HeapBuildVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HeapBuildVisualizer"));
+const HeapsortVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HeapsortVisualizer"));
+const DFSVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DFSVisualizer"));
+const BFSVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BFSVisualizer"));
+const DijkstraVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DijkstraVisualizer"));
+const GraphRepVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GraphRepVisualizer"));
+const TopoSortVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/TopoSortVisualizer"));
+const MSTVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MSTVisualizer"));
+const GridBFSVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GridBFSVisualizer"));
+const WaterJugsVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/WaterJugsVisualizer"));
 // — SO (operating systems) —
 const OpenSUSEShellPlayer = React.lazy(() => import("../components/ui/visualizers/so/OpenSUSEShellPlayer"));
 const OSMediatorViz = React.lazy(() => import("../components/ui/visualizers/so/OSMediatorViz"));
@@ -851,6 +867,120 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    pqcompareviz: (props: MarkdownComponentProps) => {
+        const type = props.type as import("../components/ui/visualizers/eda/PriorityQueueCompareVisualizer").PQVizType | undefined;
+        return (
+            <SafeSuspense>
+                <PriorityQueueCompareVisualizer type={type} />
+            </SafeSuspense>
+        );
+    },
+    treetopoviz: () => {
+        return (
+            <SafeSuspense>
+                <TreeTopologyVisualizer />
+            </SafeSuspense>
+        );
+    },
+    minmaxheapviz: (props: MarkdownComponentProps) => {
+        const type = props.type as "min" | "max" | undefined;
+        return (
+            <SafeSuspense>
+                <MinMaxHeapVisualizer type={type} />
+            </SafeSuspense>
+        );
+    },
+    surarviz: () => {
+        return (
+            <SafeSuspense>
+                <HeapSurarVisualizer />
+            </SafeSuspense>
+        );
+    },
+    enfonsarviz: () => {
+        return (
+            <SafeSuspense>
+                <HeapEnfonsarVisualizer />
+            </SafeSuspense>
+        );
+    },
+    ternaryheapviz: () => {
+        return (
+            <SafeSuspense>
+                <TernaryHeapVisualizer />
+            </SafeSuspense>
+        );
+    },
+    heapbuildviz: () => {
+        return (
+            <SafeSuspense>
+                <HeapBuildVisualizer />
+            </SafeSuspense>
+        );
+    },
+    heapsortviz: () => {
+        return (
+            <SafeSuspense>
+                <HeapsortVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dfsviz: () => {
+        return (
+            <SafeSuspense>
+                <DFSVisualizer />
+            </SafeSuspense>
+        );
+    },
+    bfsviz: () => {
+        return (
+            <SafeSuspense>
+                <BFSVisualizer />
+            </SafeSuspense>
+        );
+    },
+    dijkstraviz: () => {
+        return (
+            <SafeSuspense>
+                <DijkstraVisualizer />
+            </SafeSuspense>
+        );
+    },
+    graphrepviz: () => {
+        return (
+            <SafeSuspense>
+                <GraphRepVisualizer />
+            </SafeSuspense>
+        );
+    },
+    toposortviz: () => {
+        return (
+            <SafeSuspense>
+                <TopoSortVisualizer />
+            </SafeSuspense>
+        );
+    },
+    mstviz: () => {
+        return (
+            <SafeSuspense>
+                <MSTVisualizer />
+            </SafeSuspense>
+        );
+    },
+    gridbfsviz: () => {
+        return (
+            <SafeSuspense>
+                <GridBFSVisualizer />
+            </SafeSuspense>
+        );
+    },
+    jugsviz: () => {
+        return (
+            <SafeSuspense>
+                <WaterJugsVisualizer />
+            </SafeSuspense>
+        );
+    },
     vectorviz: () => {
         return (
             <SafeSuspense>
@@ -1203,7 +1333,7 @@ const rehypePluginsConfig = [
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
@@ -1239,6 +1369,11 @@ const rehypePluginsConfig = [
             'listviz': ['edges', 'nodes', 'height', 'directed'],
             'accordion': ['title', 'defaultOpen'],
             'callout': ['type', 'title'],
+            'pqcompareviz': ['type', 'mode', 'operation'],
+            'graphrepviz': ['mode'],
+            'gridbfsviz': [],
+            'jugsviz': [],
+            'minmaxheapviz': ['type', 'variant'],
             'object': ['data', 'type', 'width', 'height'],
         }
     }]

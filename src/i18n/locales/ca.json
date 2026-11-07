@@ -92,8 +92,9 @@
     "madeWithLove": "Fet amb ❤️ per a la FIB"
   },
   "sw": {
-    "offlineReadyTitle": "App llesta per funcionar sense connexió",
-    "offlineReadyDesc": "Els apunts bàsics s'han descarregat correctament."
+    "offlineReady": "Disponible sense connexió",
+    "offlineReadyTitle": "Disponible sense connexió",
+    "offlineReadyDesc": "Els apunts bàsics estan descarregats."
   },
   "settings": {
     "contributor": "Col·laborador",
@@ -352,6 +353,7 @@
     "new": "Nou",
     "updated": "Actualitzat",
     "explore": "Explorar tema",
+    "dragHint": "Arrossega",
     "solutions": {
       "m1": "Solucionaris M1",
       "m2": "Solucionaris M2",

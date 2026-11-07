@@ -92,8 +92,9 @@
     "madeWithLove": "Hecho con ❤️ para la FIB"
   },
   "sw": {
-    "offlineReadyTitle": "App lista para funcionar sin conexión",
-    "offlineReadyDesc": "Los apuntes básicos se han descargado correctamente."
+    "offlineReady": "Disponible sin conexión",
+    "offlineReadyTitle": "Disponible sin conexión",
+    "offlineReadyDesc": "Los apuntes básicos están descargados."
   },
   "settings": {
     "contributor": "Colaborador",
@@ -351,6 +352,7 @@
     "new": "Nuevo",
     "updated": "Actualizado",
     "explore": "Explorar tema",
+    "dragHint": "Arrastra",
     "solutions": {
       "m1": "Solucionarios M1",
       "m2": "Solucionarios M2",

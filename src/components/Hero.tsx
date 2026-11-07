@@ -10,9 +10,9 @@ const APP_DATA: Record<string, { version: string; updated: string }> = {
     pro2: { version: 'v1.9.3', updated: '23/08/2026' },
     m1: { version: 'v1.7.1', updated: '30/05/2026' },
     m2: { version: 'v1.6.7', updated: '03/06/2026' },
-    eda: { version: 'v1.30', updated: '17/10/2026' },
-    bd: { version: 'v1.11', updated: '29/10/2026' },
-    so: { version: 'v1.20', updated: '01/11/2026' }
+    eda: { version: 'v1.4.0', updated: '17/10/2026' },
+    bd: { version: 'v1.1.1', updated: '29/10/2026' },
+    so: { version: 'v1.2.0', updated: '01/11/2026' }
 };
 
 const letterContainerVariants = {
@@ -21,15 +21,17 @@ const letterContainerVariants = {
 };
 
 const letterVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
     visible: {
         opacity: 1,
         y: 0,
-        transition: { type: 'spring' as const, damping: 18, stiffness: 60 }
+        filter: 'blur(0px)',
+        transition: { type: 'spring' as const, damping: 15, stiffness: 40 }
     },
     exit: {
         opacity: 0,
         y: -15,
+        filter: 'blur(10px)',
         transition: { duration: 0.2 }
     }
 };

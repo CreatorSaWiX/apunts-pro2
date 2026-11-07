@@ -92,8 +92,9 @@
     "madeWithLove": "Made with ❤️ for FIB"
   },
   "sw": {
-    "offlineReadyTitle": "App ready to work offline",
-    "offlineReadyDesc": "The basic notes have been successfully downloaded."
+    "offlineReady": "Available offline",
+    "offlineReadyTitle": "Available offline",
+    "offlineReadyDesc": "Basic notes are ready for offline use."
   },
   "settings": {
     "contributor": "Contributor",
@@ -351,6 +352,7 @@
     "new": "New",
     "updated": "Updated",
     "explore": "Explore topic",
+    "dragHint": "Drag",
     "solutions": {
       "m1": "M1 Solutions",
       "m2": "M2 Solutions",

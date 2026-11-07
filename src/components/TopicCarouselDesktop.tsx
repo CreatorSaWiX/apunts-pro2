@@ -2,8 +2,9 @@ import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { useSubjectStore } from '../stores/useSubjectStore';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { m as motion, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
+import { ArrowRight, Book, Terminal, Calculator, ChevronLeft, ChevronRight, RefreshCw, MoveHorizontal } from 'lucide-react';
+import { m as motion, AnimatePresence, useMotionTemplate, useMotionValue, MotionConfig } from 'framer-motion';
+import type { MotionValue } from 'framer-motion';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useShortcut } from '../hooks/useShortcut';
 import { useSettingsStore } from '../stores/useSettingsStore';
@@ -65,6 +66,56 @@ const SpotlightCard = React.memo(({
     );
 });
 
+interface DesktopDragCursorProps {
+    isVisible: boolean;
+    isDragging: boolean;
+    cursorX: MotionValue<number>;
+    cursorY: MotionValue<number>;
+    label: string;
+}
+
+const DesktopDragCursor = React.memo(({
+    isVisible,
+    isDragging,
+    cursorX,
+    cursorY,
+    label
+}: DesktopDragCursorProps) => {
+    return (
+        <AnimatePresence>
+            {isVisible && (
+                <motion.div
+                    style={{ x: cursorX, y: cursorY }}
+                    initial={{ opacity: 0, scale: 0.88, filter: 'blur(3px)' }}
+                    animate={{
+                        opacity: 1,
+                        scale: isDragging ? 0.95 : 1,
+                        filter: 'blur(0px)'
+                    }}
+                    exit={{ opacity: 0, scale: 0.9, filter: 'blur(2px)', transition: { duration: 0.15, ease: 'easeOut' } }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+                    className={`
+                        hidden md:flex pointer-events-none select-none fixed top-0 left-0 z-50 transform-gpu
+                        translate-x-3.5 translate-y-3.5 items-center gap-1.5 px-2.5 py-1 rounded-full
+                        bg-slate-950/85 backdrop-blur-md border border-white/10
+                        shadow-[0_4px_14px_rgba(0,0,0,0.35)]
+                        transition-colors duration-150
+                        ${isDragging ? 'border-primary/40 text-accent' : 'text-slate-300'}
+                    `}
+                    aria-hidden="true"
+                >
+                    <MoveHorizontal size={11} className={isDragging ? 'text-accent' : 'text-slate-400'} />
+                    <span className="text-[11px] font-medium text-slate-200 tracking-tight leading-none pt-[0.5px] whitespace-nowrap">
+                        {label}
+                    </span>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+});
+
+DesktopDragCursor.displayName = 'DesktopDragCursor';
+
 interface TopicCarouselProps {
     isMenuOpen?: boolean;
     subjectOverride?: string;
@@ -79,6 +130,10 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const preferredLang = i18n.language;
     const { shortcuts } = useSettingsStore();
     const [activeIndex, setActiveIndex] = useState(0);
+    const activeIndexRef = useRef(activeIndex);
+    useEffect(() => {
+        activeIndexRef.current = activeIndex;
+    }, [activeIndex]);
     const [allPersonalNotes, setAllPersonalNotes] = useState<any[]>([]);
 
     useEffect(() => {
@@ -100,6 +155,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         if (shortcut.key === 'Enter') key = 'ENTER';
         return shortcut.meta ? `⌘ ${key}` : key;
     }, []);
+    const carouselWrapperRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const requestRef = useRef<number>(0);
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -110,6 +166,67 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
     const metricsRef = useRef<{ center: number, index: number }[]>([]);
 
     const { sortedTopics, topicMeta } = useTopicNotes(allPersonalNotes, subject, preferredLang);
+
+    // -------------------------------------------------------------------------
+    // Desktop Custom Drag Cursor & Drag-to-Scroll State Machine (120fps)
+    // -------------------------------------------------------------------------
+    const cursorX = useMotionValue(-100);
+    const cursorY = useMotionValue(-100);
+
+    const [isHoveringCarousel, setIsHoveringCarousel] = useState(false);
+    const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [showPan, setShowPan] = useState(false);
+
+    const isHoveringCarouselRef = useRef(false);
+    const isHoveringInteractiveRef = useRef(false);
+    const isDraggingRef = useRef(false);
+    const showPanRef = useRef(false);
+
+    const isPointerDownRef = useRef(false);
+    const hasDraggedRef = useRef(false);
+    const suppressNextClickRef = useRef(false);
+    const dragStartXRef = useRef(0);
+    const dragStartScrollLeftRef = useRef(0);
+    const dragStartIndexRef = useRef(0);
+    const pointerHistoryRef = useRef<{ x: number; time: number }[]>([]);
+
+    const panTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const suppressClickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const clearPanTimer = useCallback(() => {
+        if (panTimerRef.current) {
+            clearTimeout(panTimerRef.current);
+            panTimerRef.current = null;
+        }
+    }, []);
+
+    const startPanTimer = useCallback((durationMs = 1000) => {
+        clearPanTimer();
+        panTimerRef.current = setTimeout(() => {
+            if (!isDraggingRef.current) {
+                showPanRef.current = false;
+                setShowPan(false);
+            }
+        }, durationMs);
+    }, [clearPanTimer]);
+
+    // Reset when subject changes
+    useEffect(() => {
+        clearPanTimer();
+        showPanRef.current = false;
+        setShowPan(false);
+        isHoveringCarouselRef.current = false;
+        setIsHoveringCarousel(false);
+    }, [subject, clearPanTimer]);
+
+    // Cleanup all timers on unmount
+    useEffect(() => {
+        return () => {
+            clearPanTimer();
+            if (suppressClickTimerRef.current) clearTimeout(suppressClickTimerRef.current);
+        };
+    }, [clearPanTimer]);
 
     // Save activeIndex to session storage whenever it updates (skip during restoration)
     useEffect(() => {
@@ -126,7 +243,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 localStorage.setItem('seen-new-topics', oldNew);
                 localStorage.removeItem('v1_seen-new-topics');
             }
-            
+
             const oldVersions = localStorage.getItem('v1_seen-topic-versions');
             if (oldVersions && !localStorage.getItem('seen-topic-versions')) {
                 localStorage.setItem('seen-topic-versions', oldVersions);
@@ -193,7 +310,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             }
         }
         metricsRef.current = newMetrics;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Recalculate metrics when topic list changes (async data load)
@@ -204,6 +321,75 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             updateMetrics();
         });
     }, [sortedTopics.length, updateMetrics]);
+
+    const isAnimatingRef = useRef(false);
+
+    // Direct synchronous DOM transform & opacity update for silky 120fps scrolling
+    const updateCardVisuals = useCallback((scrollLeft: number) => {
+        if (!scrollRef.current) return activeIndexRef.current;
+        if (metricsRef.current.length === 0) {
+            updateMetrics();
+            if (metricsRef.current.length === 0) return activeIndexRef.current;
+        }
+        const container = scrollRef.current;
+        const containerWidth = container.clientWidth;
+        const scrollCenter = scrollLeft + containerWidth / 2;
+        const maxDist = containerWidth * 0.6;
+        const children = container.children;
+
+        let closestIndex = activeIndexRef.current;
+        let minDistance = Infinity;
+
+        for (let i = 0; i < metricsRef.current.length; i++) {
+            const metric = metricsRef.current[i];
+            const child = children[i] as HTMLElement;
+            if (!child) continue;
+
+            const distance = Math.abs(metric.center - scrollCenter);
+            const progress = Math.max(0, 1 - distance / maxDist);
+            const easeProgress = Math.pow(progress, 1.8);
+
+            child.style.transform = `scale(${0.85 + easeProgress * 0.15})`;
+            child.style.opacity = `${0.3 + easeProgress * 0.7}`;
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = metric.index;
+            }
+        }
+        return closestIndex;
+    }, [updateMetrics]);
+
+    const handleScroll = useCallback(() => {
+        if (restoringRef.current || (isMobile && isMenuOpen)) return;
+        if (!scrollRef.current) return;
+
+        const currentLeft = scrollRef.current.scrollLeft;
+        const closestIndex = updateCardVisuals(currentLeft);
+
+        // Immediate activation when crossing card boundaries during horizontal scroll
+        if (closestIndex !== activeIndexRef.current && !isDraggingRef.current) {
+            activeIndexRef.current = closestIndex;
+            React.startTransition(() => {
+                setActiveIndex(closestIndex);
+            });
+        }
+
+        // Fast micro-sync when scroll settles (15ms instead of 70ms)
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => {
+            if (!isDraggingRef.current) {
+                const finalLeft = scrollRef.current?.scrollLeft ?? currentLeft;
+                const finalIndex = updateCardVisuals(finalLeft);
+                if (finalIndex !== activeIndexRef.current) {
+                    activeIndexRef.current = finalIndex;
+                    React.startTransition(() => {
+                        setActiveIndex(finalIndex);
+                    });
+                }
+            }
+        }, 15);
+    }, [isMobile, isMenuOpen, updateCardVisuals]);
 
     // Initialize layout scales on mount & restore saved position
     useEffect(() => {
@@ -230,12 +416,10 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 }
             }
 
-            // Important: Update metrics after scroll restoration but before first scroll event
             updateMetrics();
 
             setTimeout(() => {
                 restoringRef.current = false;
-                // Only trigger handleScroll if we're not in a low-priority background render (menu open)
                 if (!(isMobile && isMenuOpen)) {
                     handleScroll();
                 }
@@ -253,35 +437,87 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         return () => {
             window.removeEventListener('resize', handleGlobalResize);
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
             if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [subject, updateMetrics, isMobile, isMenuOpen]);
+    }, [subject, updateMetrics, isMobile, isMenuOpen, handleScroll]);
 
-    const scrollTo = useCallback((index: number) => {
+    const animationFrameRef = useRef<number>(0);
+
+    // Friction & momentum glide to target card (Apple / macOS momentum physics)
+    const smoothScrollToTarget = useCallback((index: number, initialVx = 0) => {
         if (!scrollRef.current) return;
         const container = scrollRef.current;
         const card = container.children[index] as HTMLElement;
+        if (!card) return;
 
-        if (card) {
-            const containerWidth = container.clientWidth;
-            const cardWidth = card.offsetWidth;
-            const centerPosition = card.offsetLeft - (containerWidth / 2) + (cardWidth / 2);
+        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
 
-            container.scrollTo({
-                left: centerPosition,
-                behavior: 'smooth'
+        const containerWidth = container.clientWidth;
+        const cardWidth = card.offsetWidth;
+        const maxScroll = Math.max(0, container.scrollWidth - containerWidth);
+        const targetLeft = Math.max(0, Math.min(card.offsetLeft - (containerWidth / 2) + (cardWidth / 2), maxScroll));
+        const startLeft = container.scrollLeft;
+        const distance = targetLeft - startLeft;
+
+        if (Math.abs(distance) < 2) {
+            container.scrollLeft = targetLeft;
+            container.style.scrollSnapType = '';
+            updateCardVisuals(targetLeft);
+            activeIndexRef.current = index;
+            setActiveIndex(index);
+            return;
+        }
+
+        // Immediately sync activeIndex so feedback (pagination pill, buttons) is instantaneous
+        if (activeIndexRef.current !== index) {
+            activeIndexRef.current = index;
+            React.startTransition(() => {
+                setActiveIndex(index);
             });
         }
-    }, []);
+
+        container.style.scrollSnapType = 'none';
+        isAnimatingRef.current = true;
+
+        const absDist = Math.abs(distance);
+        const speedBoost = Math.min(1.4, Math.max(0.7, 1 + Math.abs(initialVx) * 0.45));
+        const durationMs = Math.min(500, Math.max(280, (300 + Math.sqrt(absDist) * 7.5) / speedBoost));
+        const startTime = performance.now();
+
+        const step = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(1, elapsed / durationMs);
+            // Ease-out cubic curve (exact macOS inertia friction curve)
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            const currentLeft = startLeft + distance * ease;
+            container.scrollLeft = currentLeft;
+            updateCardVisuals(currentLeft);
+
+            if (progress < 1) {
+                animationFrameRef.current = requestAnimationFrame(step);
+            } else {
+                container.scrollLeft = targetLeft;
+                container.style.scrollSnapType = '';
+                updateCardVisuals(targetLeft);
+                isAnimatingRef.current = false;
+                setActiveIndex(index);
+            }
+        };
+
+        animationFrameRef.current = requestAnimationFrame(step);
+    }, [updateCardVisuals]);
+
+    const scrollTo = smoothScrollToTarget;
 
     const handlePrev = useCallback(() => {
-        if (activeIndex > 0) scrollTo(activeIndex - 1);
-    }, [activeIndex, scrollTo]);
+        if (activeIndexRef.current > 0) smoothScrollToTarget(activeIndexRef.current - 1);
+    }, [smoothScrollToTarget]);
 
     const handleNext = useCallback(() => {
-        if (activeIndex < sortedTopics.length - 1) scrollTo(activeIndex + 1);
-    }, [activeIndex, sortedTopics.length, scrollTo]);
+        if (activeIndexRef.current < sortedTopics.length - 1) smoothScrollToTarget(activeIndexRef.current + 1);
+    }, [sortedTopics.length, smoothScrollToTarget]);
 
     const handleCarouselLeft = useCallback(() => {
         if (isMobile && isMenuOpen) return;
@@ -299,68 +535,279 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
     const handleCarouselEnter = useCallback(() => {
         if (isMobile && isMenuOpen) return;
-        const activeTopic = sortedTopics[activeIndex];
+        const activeTopic = sortedTopics[activeIndexRef.current];
         if (activeTopic) {
             const versions = allPersonalNotes.filter(n => n.slug === activeTopic.slug);
             const newestUpdate = Math.max(0, ...versions.map(n => n.isUpdated || 0));
             markAsSeen(activeTopic.slug, newestUpdate);
             navigate(`/tema/${activeTopic.slug}`);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isMobile, isMenuOpen, sortedTopics, activeIndex, navigate, allPersonalNotes, markAsSeen]);
+    }, [isMobile, isMenuOpen, sortedTopics, navigate, allPersonalNotes, markAsSeen]);
 
     useShortcut('carouselEnter', handleCarouselEnter);
 
-    // Optimized with requestAnimationFrame + Cached Metrics for 120fps Zero-Lag Sync
-    const handleScroll = () => {
-        if (restoringRef.current || (isMobile && isMenuOpen)) return;
-        if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    const wheelAccumulatorRef = useRef(0);
+    const wheelLockRef = useRef(false);
+    const wheelLockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-        requestRef.current = requestAnimationFrame(() => {
-            if (!scrollRef.current) return;
+    // -------------------------------------------------------------------------
+    // Desktop Pointer & Drag Handlers
+    // -------------------------------------------------------------------------
+    const handleWrapperPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+        if (isMobile || e.pointerType !== 'mouse') return;
 
-            // Lazily recalculate metrics if empty (e.g. data loaded after initial mount)
-            if (metricsRef.current.length === 0) {
-                updateMetrics();
-                if (metricsRef.current.length === 0) return;
+        cursorX.set(e.clientX);
+        cursorY.set(e.clientY);
+
+        const overInteractive = Boolean((e.target as HTMLElement | null)?.closest('[data-cursor-interactive="true"]'));
+        if (overInteractive !== isHoveringInteractiveRef.current) {
+            isHoveringInteractiveRef.current = overInteractive;
+            setIsHoveringInteractive(overInteractive);
+        }
+
+        if (!isHoveringCarouselRef.current) {
+            isHoveringCarouselRef.current = true;
+            setIsHoveringCarousel(true);
+            showPanRef.current = true;
+            setShowPan(true);
+            startPanTimer(1000);
+        }
+    }, [isMobile, cursorX, cursorY, startPanTimer]);
+
+    const handleWrapperPointerLeave = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+        if (isMobile || e.pointerType !== 'mouse') return;
+        isHoveringCarouselRef.current = false;
+        setIsHoveringCarousel(false);
+        isHoveringInteractiveRef.current = false;
+        setIsHoveringInteractive(false);
+        clearPanTimer();
+        showPanRef.current = false;
+        setShowPan(false);
+    }, [isMobile, clearPanTimer]);
+
+    const handleScrollPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+        if (isMobile || e.pointerType !== 'mouse' || e.button !== 0 || !scrollRef.current || sortedTopics.length <= 1) return;
+        if ((e.target as HTMLElement | null)?.closest('[data-cursor-interactive="true"]')) return;
+
+        // Cancel running animation immediately so user arrests cards in place
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            isAnimatingRef.current = false;
+        }
+
+        // Prevent browser text-selection interference so mouse drag flows freely
+        window.getSelection()?.removeAllRanges();
+
+        isPointerDownRef.current = true;
+        hasDraggedRef.current = false;
+        dragStartXRef.current = e.clientX;
+        dragStartScrollLeftRef.current = scrollRef.current.scrollLeft;
+        dragStartIndexRef.current = activeIndexRef.current;
+        pointerHistoryRef.current = [{ x: e.clientX, time: performance.now() }];
+    }, [isMobile, sortedTopics.length]);
+
+    const handleScrollPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+        if (isMobile || e.pointerType !== 'mouse') return;
+
+        cursorX.set(e.clientX);
+        cursorY.set(e.clientY);
+
+        if (!isPointerDownRef.current || !scrollRef.current) return;
+
+        const deltaX = e.clientX - dragStartXRef.current;
+
+        if (!hasDraggedRef.current && Math.abs(deltaX) > 4) {
+            hasDraggedRef.current = true;
+            isDraggingRef.current = true;
+            setIsDragging(true);
+            suppressNextClickRef.current = true;
+
+            showPanRef.current = true;
+            setShowPan(true);
+            clearPanTimer();
+
+            try {
+                e.currentTarget.setPointerCapture(e.pointerId);
+            } catch {
+                // Ignore
             }
 
-            const container = scrollRef.current;
+            scrollRef.current.style.scrollSnapType = 'none';
+        }
 
-            const containerWidth = container.clientWidth;
-            const scrollCenter = container.scrollLeft + containerWidth / 2;
-            const maxDist = containerWidth * 0.6;
-            const children = container.children;
-
-            let closestIndex = activeIndex;
-            let minDistance = Infinity;
-
-            for (let i = 0; i < metricsRef.current.length; i++) {
-                const metric = metricsRef.current[i];
-                const child = children[i] as HTMLElement;
-                if (!child) continue;
-
-                const distance = Math.abs(metric.center - scrollCenter);
-                const progress = Math.max(0, 1 - distance / maxDist);
-                const easeProgress = Math.pow(progress, 1.8);
-
-                // DIRECT DOM WRITE (Fastest)
-                child.style.transform = `scale(${0.85 + (easeProgress * 0.15)})`;
-                child.style.opacity = `${0.3 + (easeProgress * 0.7)}`;
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestIndex = metric.index;
-                }
+        if (hasDraggedRef.current) {
+            const now = performance.now();
+            pointerHistoryRef.current.push({ x: e.clientX, time: now });
+            if (pointerHistoryRef.current.length > 8) {
+                pointerHistoryRef.current.shift();
             }
 
-            if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-            scrollTimeoutRef.current = setTimeout(() => {
+            // Direct 1:1 physical follow with soft rubber-band resistance at boundaries
+            let newScrollLeft = dragStartScrollLeftRef.current - deltaX;
+            const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+
+            if (newScrollLeft < 0) {
+                newScrollLeft = newScrollLeft * 0.3;
+            } else if (newScrollLeft > maxScroll) {
+                newScrollLeft = maxScroll + (newScrollLeft - maxScroll) * 0.3;
+            }
+
+            scrollRef.current.scrollLeft = newScrollLeft;
+            const closest = updateCardVisuals(newScrollLeft);
+            if (closest !== activeIndexRef.current) {
+                activeIndexRef.current = closest;
                 React.startTransition(() => {
-                    setActiveIndex((prev) => prev !== closestIndex ? closestIndex : prev);
+                    setActiveIndex(closest);
                 });
-            }, 10);
-        });
+            }
+        }
+    }, [isMobile, cursorX, cursorY, clearPanTimer, updateCardVisuals]);
+
+    const finishPointerDrag = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+        if (!isPointerDownRef.current) return;
+        isPointerDownRef.current = false;
+
+        if (!hasDraggedRef.current) return;
+
+        try {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        } catch {
+            // Ignore
+        }
+
+        isDraggingRef.current = false;
+        setIsDragging(false);
+
+        // Keep showing 'pan' until quiet, then switch back to click cursor
+        if (isHoveringCarouselRef.current) {
+            startPanTimer(1600);
+        } else {
+            showPanRef.current = false;
+            setShowPan(false);
+        }
+
+        if (!scrollRef.current || sortedTopics.length <= 1) return;
+        const container = scrollRef.current;
+        const containerWidth = container.clientWidth;
+        const currentScrollLeft = container.scrollLeft;
+
+        // Calculate release velocity from the last 90ms of pointer motion
+        const now = performance.now();
+        const recent = pointerHistoryRef.current.filter(p => now - p.time < 90);
+        let vx = 0;
+        if (recent.length >= 2) {
+            const first = recent[0];
+            const last = recent[recent.length - 1];
+            const dt = last.time - first.time;
+            if (dt > 8) {
+                vx = (last.x - first.x) / dt;
+            }
+        }
+
+        // Momentum projection (negative vx = flicked left = moves to next cards)
+        const momentumDistance = -vx * 260;
+        const projectedScrollLeft = currentScrollLeft + momentumDistance;
+
+        let targetIndex = dragStartIndexRef.current;
+        let minDistance = Infinity;
+
+        for (let i = 0; i < sortedTopics.length; i++) {
+            const card = container.children[i] as HTMLElement;
+            if (!card) continue;
+            const cardTarget = card.offsetLeft - (containerWidth / 2) + (card.offsetWidth / 2);
+            const dist = Math.abs(cardTarget - projectedScrollLeft);
+            if (dist < minDistance) {
+                minDistance = dist;
+                targetIndex = i;
+            }
+        }
+
+        // Enforce directional intent on swipe
+        const totalDeltaX = e.clientX - dragStartXRef.current;
+        if (totalDeltaX < -40 && targetIndex <= dragStartIndexRef.current) {
+            targetIndex = Math.min(sortedTopics.length - 1, dragStartIndexRef.current + 1);
+        } else if (totalDeltaX > 40 && targetIndex >= dragStartIndexRef.current) {
+            targetIndex = Math.max(0, dragStartIndexRef.current - 1);
+        }
+
+        targetIndex = Math.max(0, Math.min(sortedTopics.length - 1, targetIndex));
+
+        smoothScrollToTarget(targetIndex, vx);
+
+        if (suppressClickTimerRef.current) clearTimeout(suppressClickTimerRef.current);
+        suppressClickTimerRef.current = setTimeout(() => {
+            suppressNextClickRef.current = false;
+            hasDraggedRef.current = false;
+        }, 120);
+    }, [sortedTopics.length, startPanTimer, smoothScrollToTarget]);
+
+    const handleScrollClickCapture = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        if (suppressNextClickRef.current || hasDraggedRef.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            suppressNextClickRef.current = false;
+            hasDraggedRef.current = false;
+        }
+    }, []);
+
+    // -------------------------------------------------------------------------
+    // Smooth Desktop Mouse Wheel (converts vertical wheel to snappy carousel slide)
+    // -------------------------------------------------------------------------
+    useEffect(() => {
+        if (isMobile) return;
+        const container = carouselWrapperRef.current;
+        if (!container) return;
+
+        const onNativeWheel = (e: WheelEvent) => {
+            // Trackpad horizontal gestures: let browser natively handle it with instant responsiveness
+            if (Math.abs(e.deltaX) > 0 || Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.4) {
+                return;
+            }
+
+            // Desktop vertical mouse wheel
+            if (Math.abs(e.deltaY) < 6) return;
+
+            e.preventDefault();
+
+            if (wheelLockRef.current) return;
+
+            wheelAccumulatorRef.current += e.deltaY;
+
+            if (Math.abs(wheelAccumulatorRef.current) >= 40) {
+                const direction = wheelAccumulatorRef.current > 0 ? 1 : -1;
+                wheelAccumulatorRef.current = 0;
+                wheelLockRef.current = true;
+
+                const currIdx = activeIndexRef.current;
+                const nextIdx = direction > 0
+                    ? Math.min(sortedTopics.length - 1, currIdx + 1)
+                    : Math.max(0, currIdx - 1);
+
+                if (nextIdx !== currIdx) {
+                    smoothScrollToTarget(nextIdx);
+                }
+
+                if (wheelLockTimerRef.current) clearTimeout(wheelLockTimerRef.current);
+                wheelLockTimerRef.current = setTimeout(() => {
+                    wheelLockRef.current = false;
+                    wheelAccumulatorRef.current = 0;
+                }, 220);
+            }
+        };
+
+        container.addEventListener('wheel', onNativeWheel, { passive: false });
+        return () => {
+            container.removeEventListener('wheel', onNativeWheel);
+            if (wheelLockTimerRef.current) clearTimeout(wheelLockTimerRef.current);
+        };
+    }, [isMobile, sortedTopics.length, smoothScrollToTarget]);
+
+    const isDragCursorVisible = !isMobile && sortedTopics.length > 1 && isHoveringCarousel && !isHoveringInteractive && showPan;
+
+    const getCarouselCursorClass = () => {
+        if (isDragging) return 'cursor-grabbing';
+        if (showPan) return 'cursor-grab';
+        return '';
     };
 
     if (sortedTopics.length === 0) {
@@ -387,16 +834,34 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
     return (
         <MotionConfig reducedMotion={isMobile && isMenuOpen ? "always" : "never"}>
-            <div className="w-full flex-1 flex flex-col justify-center relative group/carousel">
+            <div
+                ref={carouselWrapperRef}
+                onPointerMove={handleWrapperPointerMove}
+                onPointerEnter={handleWrapperPointerMove}
+                onPointerLeave={handleWrapperPointerLeave}
+                className={`w-full flex-1 flex flex-col justify-center relative group/carousel select-none ${getCarouselCursorClass()}`}
+            >
+                {/* Apple / Linear Minimalist Custom Drag Cursor (Desktop Only) */}
+                {!isMobile && sortedTopics.length > 1 && (
+                    <DesktopDragCursor
+                        isVisible={isDragCursorVisible}
+                        isDragging={isDragging}
+                        cursorX={cursorX}
+                        cursorY={cursorY}
+                        label={t('topics.dragHint', 'Arrossega')}
+                    />
+                )}
+
                 {/* Desktop Navigation Arrows */}
                 {activeIndex > 0 && (
                     <button type="button"
+                        data-cursor-interactive="true"
                         onClick={handlePrev}
-                        className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navleft"
+                        className="hidden md:flex absolute left-6 md:left-8 top-1/2 -translate-y-1/2 z-40 p-3.5 md:p-4 rounded-full bg-slate-900/60 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all duration-300 backdrop-blur-xl opacity-60 hover:!opacity-100 group-hover/carousel:opacity-90 shadow-2xl hover:scale-105 active:scale-95 group/navleft cursor-pointer"
                         aria-label="Previous topic"
                     >
                         <ChevronLeft size={28} className="group-hover/navleft:-translate-x-1 transition-transform" />
-                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navleft:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navleft:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[10px] font-bold tracking-wider text-slate-300">
                                 {formatShortcut(leftShortcut)}
                             </span>
@@ -406,12 +871,13 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                 {activeIndex < sortedTopics.length - 1 && (
                     <button type="button"
+                        data-cursor-interactive="true"
                         onClick={handleNext}
-                        className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-40 p-4 rounded-full bg-slate-900/50 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 group/navright"
+                        className="hidden md:flex absolute right-6 md:right-8 top-1/2 -translate-y-1/2 z-40 p-3.5 md:p-4 rounded-full bg-slate-900/60 border border-white/10 hover:bg-slate-800 hover:border-primary/50 text-slate-400 hover:text-primary transition-all duration-300 backdrop-blur-xl opacity-60 hover:!opacity-100 group-hover/carousel:opacity-90 shadow-2xl hover:scale-105 active:scale-95 group/navright cursor-pointer"
                         aria-label="Next topic"
                     >
                         <ChevronRight size={28} className="group-hover/navright:translate-x-1 transition-transform" />
-                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navright:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/navright:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                             <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[10px] font-bold tracking-wider text-slate-300">
                                 {formatShortcut(rightShortcut)}
                             </span>
@@ -422,7 +888,12 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex gap-2 md:gap-3 overflow-x-auto pb-20 pt-12 md:pb-24 md:pt-16 hide-scrollbar snap-x snap-mandatory px-[9vw] md:px-[calc(50%-190px)] scroll-smooth"
+                    onPointerDown={handleScrollPointerDown}
+                    onPointerMove={handleScrollPointerMove}
+                    onPointerUp={finishPointerDrag}
+                    onPointerCancel={finishPointerDrag}
+                    onClickCapture={handleScrollClickCapture}
+                    className={`flex gap-2 md:gap-3 overflow-x-auto pb-20 pt-12 md:pb-24 md:pt-16 hide-scrollbar snap-x snap-mandatory px-[9vw] md:px-[calc(50%-190px)] ${getCarouselCursorClass()}`}
                 >
                     {sortedTopics.map((topic, i) => {
                         const isActive = activeIndex === i;
@@ -445,6 +916,10 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                     opacity: isActive ? 1 : 0.3
                                 }}
                                 onClick={(e) => {
+                                    if (suppressNextClickRef.current || hasDraggedRef.current) {
+                                        e.preventDefault();
+                                        return;
+                                    }
                                     if (!isActive) {
                                         e.preventDefault();
                                         scrollTo(i);
@@ -461,7 +936,8 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                         w-[82vw] md:w-[380px] h-[410px] md:h-[520px]
                                         rounded-[32px] md:rounded-[40px]
                                         flex flex-col justify-between
-                                        cursor-pointer transition-colors duration-200
+                                        ${isDragging ? 'cursor-grabbing' : (showPan ? 'cursor-grab' : 'cursor-pointer')}
+                                        transition-colors duration-200
                                         ${isActive
                                             ? 'bg-slate-900/80 border-primary/20 shadow-2xl shadow-primary/20 ring-1 ring-primary/20 backdrop-blur-md'
                                             : 'bg-slate-900/40 border-white/5 shadow-none'
@@ -544,15 +1020,19 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                                     </div>
 
                                     {/* Link / Action */}
-                                    <div className={`
-                                        px-5 md:px-10 pb-5 md:pb-8 mt-auto relative z-20 transition duration-200
-                                        ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-                                    `}>
+                                    <div
+                                        data-cursor-interactive={isActive ? "true" : undefined}
+                                        className={`
+                                            px-5 md:px-10 pb-5 md:pb-8 mt-auto relative z-20 transition duration-200
+                                            ${isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}
+                                        `}
+                                    >
                                         <div className="flex flex-col gap-3 md:gap-4">
                                             <Link
                                                 to={`/tema/${topic.slug}`}
+                                                draggable={false}
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                                className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm"
+                                                className="group/btn flex items-center justify-between gap-3 text-white font-semibold bg-linear-to-r from-primary/80 to-accent/80 hover:from-primary hover:to-accent px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition duration-300 transform hover:-translate-y-1 active:translate-y-0 text-[13px] md:text-sm cursor-pointer"
                                             >
                                                 <div className="flex items-center gap-2.5">
                                                     <span>{t('topics.explore', 'Explorar tema')}</span>
@@ -565,8 +1045,9 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                             <Link
                                                 to={`/tema/${topic.slug}/test`}
+                                                draggable={false}
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                                className="text-slate-500 hover:text-amber-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/test"
+                                                className="text-slate-500 hover:text-amber-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/test cursor-pointer"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/test:bg-amber-500/10 transition-colors">
                                                     <RefreshCw size={12} className="group-hover/test:rotate-180 transition-transform duration-500" />
@@ -576,8 +1057,9 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
 
                                             <Link
                                                 to={getTopicSolutionRoute(topic.slug)}
+                                                draggable={false}
                                                 onClick={(e) => { e.stopPropagation(); markAsSeen(topic.slug, newestUpdate); }}
-                                                className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol"
+                                                className="text-slate-500 hover:text-emerald-400 text-sm font-medium flex items-center gap-2 transition-colors w-fit group/sol cursor-pointer"
                                             >
                                                 <div className="p-1 rounded bg-white/5 group-hover/sol:bg-emerald-500/10 transition-colors">
                                                     {isProgrammingSubject(subject) ? <Terminal size={12} /> : <Calculator size={12} />}
@@ -594,7 +1076,10 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
                 </div>
 
                 {/* Elegant Pagination Indicators */}
-                <div className="absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50">
+                <div
+                    data-cursor-interactive="true"
+                    className="absolute bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-6 left-0 right-0 flex justify-center gap-2 z-50"
+                >
                     {sortedTopics.map((_, i) => (
                         <button type="button"
                             key={sortedTopics[i]?.slug || i}
