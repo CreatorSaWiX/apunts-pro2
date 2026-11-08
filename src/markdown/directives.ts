@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "distinctviz" | "groupbyviz" | "aggregateviz" | "naturaljoinviz" | "unionviz" | "joinaggviz" | "extractviz" | "intervalviz" | "relalgviz" | "umlviz" | "uml2relviz" | "dmlviz" | "deleteviz" | "updateviz" | "dacviz" | "viewviz" | "viewupdviz" | "dbhierarchyviz" | "sessionviz" | "txviz" | "domainviz" | "assertionviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "avlinsertviz" | "avldeleteviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "pqcompareviz" | "treetopoviz" | "minmaxheapviz" | "surarviz" | "enfonsarviz" | "ternaryheapviz" | "heapbuildviz" | "heapsortviz" | "dfsviz" | "bfsviz" | "dijkstraviz" | "graphrepviz" | "toposortviz" | "mstviz" | "gridbfsviz" | "jugsviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "distinctviz" | "groupbyviz" | "aggregateviz" | "naturaljoinviz" | "unionviz" | "joinaggviz" | "extractviz" | "intervalviz" | "relalgviz" | "umlviz" | "uml2relviz" | "dmlviz" | "deleteviz" | "updateviz" | "dacviz" | "viewviz" | "viewupdviz" | "dbhierarchyviz" | "sessionviz" | "txviz" | "domainviz" | "assertionviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "avlinsertviz" | "avldeleteviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "pqcompareviz" | "treetopoviz" | "minmaxheapviz" | "surarviz" | "enfonsarviz" | "ternaryheapviz" | "heapbuildviz" | "heapsortviz" | "dfsviz" | "bfsviz" | "dijkstraviz" | "graphrepviz" | "toposortviz" | "mstviz" | "gridbfsviz" | "jugsviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz" | "mmuviz" | "tlbviz" | "pagetableviz" | "pagingviz" | "memlayoutviz" | "sbrkviz" | "mallocviz" | "mmapviz" | "thrashingviz" | "pagefaultviz" | "cowviz" | "sharedlibviz" | "demandpagingviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -181,4 +181,17 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   schedulerviz:       makePassthrough("schedulerviz"),
   roundrobinviz:      makePassthrough("roundrobinviz"),
   cfsviz:             makePassthrough("cfsviz"),
+  mmuviz:             makePassthrough("mmuviz"),
+  tlbviz:             makePassthrough("tlbviz"),
+  pagetableviz:       makePassthrough("pagetableviz"),
+  pagingviz:          makePassthrough("pagingviz"),
+  memlayoutviz:       makePassthrough("memlayoutviz"),
+  sbrkviz:            makePassthrough("sbrkviz"),
+  mallocviz:          makePassthrough("mallocviz"),
+  mmapviz:            makePassthrough("mmapviz"),
+  thrashingviz:       makePassthrough("thrashingviz"),
+  pagefaultviz:       makePassthrough("pagefaultviz"),
+  cowviz:             makePassthrough("cowviz"),
+  sharedlibviz:       makePassthrough("sharedlibviz"),
+  demandpagingviz:    makePassthrough("demandpagingviz"),
 };

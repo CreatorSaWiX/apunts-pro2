@@ -127,6 +127,19 @@ const ContextSwitchViz = React.lazy(() => import("../components/ui/visualizers/s
 const SchedulerViz = React.lazy(() => import("../components/ui/visualizers/so/SchedulerViz"));
 const RoundRobinViz = React.lazy(() => import("../components/ui/visualizers/so/RoundRobinViz"));
 const CFSViz = React.lazy(() => import("../components/ui/visualizers/so/CFSViz"));
+const MMUViz = React.lazy(() => import("../components/ui/visualizers/so/MMUViz"));
+const TLBViz = React.lazy(() => import("../components/ui/visualizers/so/TLBViz"));
+const PageTableViz = React.lazy(() => import("../components/ui/visualizers/so/PageTableViz"));
+const PagingViz = React.lazy(() => import("../components/ui/visualizers/so/PagingViz"));
+const MemLayoutViz = React.lazy(() => import("../components/ui/visualizers/so/MemLayoutViz"));
+const SbrkViz = React.lazy(() => import("../components/ui/visualizers/so/SbrkViz"));
+const MallocViz = React.lazy(() => import("../components/ui/visualizers/so/MallocViz"));
+const MmapViz = React.lazy(() => import("../components/ui/visualizers/so/MmapViz"));
+const ThrashingViz = React.lazy(() => import("../components/ui/visualizers/so/ThrashingViz"));
+const PageFaultViz = React.lazy(() => import("../components/ui/visualizers/so/PageFaultViz"));
+const COWViz = React.lazy(() => import("../components/ui/visualizers/so/COWViz"));
+const SharedLibViz = React.lazy(() => import("../components/ui/visualizers/so/SharedLibViz"));
+const DemandPagingViz = React.lazy(() => import("../components/ui/visualizers/so/DemandPagingViz"));
 const LinkedInEmbed = React.lazy(() => import("../components/ui/embeds/LinkedInEmbed"));
 const YoutubeEmbed = React.lazy(() => import("../components/ui/embeds/YoutubeEmbed"));
 const Accordion = React.lazy(() => import("../components/ui/Accordion"));
@@ -1210,6 +1223,97 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    mmuviz: () => {
+        return (
+            <SafeSuspense>
+                <MMUViz />
+            </SafeSuspense>
+        );
+    },
+    tlbviz: () => {
+        return (
+            <SafeSuspense>
+                <TLBViz />
+            </SafeSuspense>
+        );
+    },
+    pagetableviz: () => {
+        return (
+            <SafeSuspense>
+                <PageTableViz />
+            </SafeSuspense>
+        );
+    },
+    pagingviz: () => {
+        return (
+            <SafeSuspense>
+                <PagingViz />
+            </SafeSuspense>
+        );
+    },
+    memlayoutviz: () => {
+        return (
+            <SafeSuspense>
+                <MemLayoutViz />
+            </SafeSuspense>
+        );
+    },
+    sbrkviz: () => {
+        return (
+            <SafeSuspense>
+                <SbrkViz />
+            </SafeSuspense>
+        );
+    },
+    mallocviz: () => {
+        return (
+            <SafeSuspense>
+                <MallocViz />
+            </SafeSuspense>
+        );
+    },
+    mmapviz: () => {
+        return (
+            <SafeSuspense>
+                <MmapViz />
+            </SafeSuspense>
+        );
+    },
+    thrashingviz: () => {
+        return (
+            <SafeSuspense>
+                <ThrashingViz />
+            </SafeSuspense>
+        );
+    },
+    pagefaultviz: () => {
+        return (
+            <SafeSuspense>
+                <PageFaultViz />
+            </SafeSuspense>
+        );
+    },
+    cowviz: () => {
+        return (
+            <SafeSuspense>
+                <COWViz />
+            </SafeSuspense>
+        );
+    },
+    sharedlibviz: () => {
+        return (
+            <SafeSuspense>
+                <SharedLibViz />
+            </SafeSuspense>
+        );
+    },
+    demandpagingviz: () => {
+        return (
+            <SafeSuspense>
+                <DemandPagingViz />
+            </SafeSuspense>
+        );
+    },
     pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     code(props: React.ComponentPropsWithoutRef<'code'> & { metadata?: string }) {
         const { children, className, ...rest } = props;
@@ -1333,7 +1437,7 @@ const rehypePluginsConfig = [
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'mmuviz', 'tlbviz', 'pagetableviz', 'pagingviz', 'memlayoutviz', 'sbrkviz', 'mallocviz', 'mmapviz', 'thrashingviz', 'pagefaultviz', 'sharedlibviz', 'cowviz', 'demandpagingviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
