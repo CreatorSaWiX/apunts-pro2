@@ -26,7 +26,7 @@ $$
 
 Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
 
-### Ejemplo introductorio: Búsqueda binaria (dicotómica)
+### Ejemplo introductorio: búsqueda binaria (dicotómica)
 Dado un vector $A[0 \dots n-1]$ **ordenado**, queremos determinar si un elemento $x$ pertenece a él. En cada paso comparamos $x$ con el elemento central $A[m]$: si coinciden hemos terminado; si $x < A[m]$, buscamos recursivamente en la mitad izquierda; si $x > A[m]$, en la mitad derecha.
 
 :::binarysearchviz
@@ -333,7 +333,7 @@ $$ \mathbf{T(n) \in \Theta(\log n)} $$
 
 ---
 
-## 2.4 Multiplicación de enteros grandes: Algoritmo de Karatsuba
+## 2.4 Multiplicación de enteros grandes: algoritmo de Karatsuba
 
 La multiplicación de dos números enteros de $n$ dígitos (o bits) es una operación fundamental en aritmética computacional y criptografía.
 En el método tradicional escolar, se multiplica el primer número por cada uno de los $n$ dígitos del segundo, desplazando cada fila parcial una posición hacia la izquierda:
@@ -481,7 +481,7 @@ Dado que $n^{1.585} \in o(n^2)$, este resultado demuestra formalmente que **la m
 
 ---
 
-## 2.5 Multiplicación de matrices: Algoritmo de Strassen
+## 2.5 Multiplicación de matrices: algoritmo de Strassen
 
 Dadas dos matrices cuadradas $X, Y \in \mathbb{R}^{n \times n}$, su producto $Z = X \cdot Y$ es una matriz $n \times n$ donde cada elemento $(i, j)$ se define por:
 
@@ -618,7 +618,7 @@ $$
 
 ---
 
-## 2.6 Las Torres de Hanoi
+## 2.6 Las torres de Hanoi
 
 El juego de las **Torres de Hanoi** ilustra la aplicación de divide y vencerás sobre recurrencias de carácter **sustractivo**, donde el tamaño del problema se reduce por una constante en lugar de un factor divisor.
 
@@ -690,7 +690,7 @@ $$
 
 ---
 
-### Análisis asintótico mediante el Teorema Maestro sustractivo
+### Análisis asintótico mediante el teorema maestro sustractivo
 
 La recurrencia de las Torres de Hanoi se ajusta a la forma general sustractiva:
 
@@ -731,7 +731,7 @@ A diferencia de la media aritmética ($\bar{x} = \frac{1}{n}\sum x_i$), la media
 
 ---
 
-### Algoritmo de la Mediana de Medianas (BFPRT, 1973)
+### Algoritmo de la mediana de medianas (BFPRT, 1973)
 
 En 1973, Manuel Blum, Robert Floyd, Vaughan Pratt, Ronald Rivest y Robert Tarjan diseñaron un método determinista para escoger un pivote garantizado que asegura que el coste de QuickSelect sea **lineal $\Theta(n)$ en el caso peor**.
 
@@ -784,7 +784,7 @@ Gracias a la estrategia de la mediana de medianas, **el caso peor de selección 
 
 ---
 
-## 2.8 Síntesis de complejidades del Tema 2
+## 2.8 Síntesis de complejidades del tema 2
 
 A continuación se resume el abanico completo de algoritmos de divide y vencerás analizados a lo largo del tema:
 

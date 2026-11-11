@@ -181,7 +181,7 @@ WHERE num_dpt = 2;
 
 Als exàmens parcials de la FIB es dóna un llistat de regles de negoci i es demana **on i com implementar cadascuna**: com a restricció al `CREATE TABLE`, com a asserció (`CREATE ASSERTION`), o explicar per què no es pot fer de cap de les dues maneres.
 
-### Arbre de Decisió
+### Arbre de decisió
 
 ```text
 La regla implica dades dependents de l'usuari connectat? (ex: "només veure les meves dades")
@@ -196,7 +196,7 @@ La regla implica dades dependents de l'usuari connectat? (ex: "només veure les 
         └── Exigeix accions reactives / càlculs derivats dinàmics? ──> DISPARADORS (TRIGGER / PL/pgSQL)
 ```
 
-### Taula Comparativa per a les Respostes d'Examen
+### Taula comparativa per a les respostes d'examen
 
 | Mecanisme | Àmbit d'Aplicació | Què admet / Què prohibeix | Exemple típic d'Examen |
 | :--- | :--- | :--- | :--- |
@@ -209,7 +209,7 @@ La regla implica dades dependents de l'usuari connectat? (ex: "només veure les 
 
 ---
 
-## 2.10. Traça d'Execució DML i Integritat Transaccional (Anàlisi d'Scripts SQL)
+## 2.10. Traça d'execució DML i integritat transaccional (anàlisi d'scripts SQL)
 
 Als exàmens s'inclouen exercicis on es mostra una seqüència de sentències `INSERT` consecutives i es demana quin resultat donarà un `SELECT` final.
 

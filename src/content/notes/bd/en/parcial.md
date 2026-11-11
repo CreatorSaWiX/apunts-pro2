@@ -1,5 +1,5 @@
 ---
-title: "DB Midterm"
+title: "DB midterm"
 description: "Summary of topics 1, 2, 3, and 7."
 readTime: "10 min"
 order: 8
@@ -7,9 +7,9 @@ draft: false
 isUpdated: 1
 ---
 
-## 1. SQL and Relational Algebra
+## 1. SQL and relational algebra
 
-### SQL Queries
+### SQL queries
 - **Order:** `SELECT [DISTINCT] ... FROM ... [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ... [ASC|DESC]]`
 - **`NULL` values:** Always compare using `IS NULL` / `IS NOT NULL` (never `= NULL`).
 - **Aggregation:** `COUNT(*)` counts rows (includes nulls); `COUNT(col)`, `SUM`, `AVG`, `MIN`, `MAX` ignore nulls (and return `NULL` if 0 rows, except `COUNT` which returns `0`).
@@ -41,7 +41,7 @@ GROUP BY a.modul, a.numero, p.nomProf
   - `A [INNER] JOIN B ON A.x = B.y`: Joins according to the specified `ON` condition.
   - `A NATURAL [INNER] JOIN B`: Without `ON`; automatically matches **all** columns with the same name.
 
-### Query Patterns ("More than X...", "At least X...", "X or more...")
+### Query patterns ("more than X...", "at least X...", "X or more...")
 
 Whenever the problem asks to filter by the **number of times** something occurs, use **`GROUP BY` and `HAVING COUNT(...)`**.
 **Typical phrasing:** *"having more than $N$..."*, *"on $N$ or more occasions..."*, *"at least $N$..."*.
@@ -92,7 +92,7 @@ HAVING COUNT(DISTINCT a.numero) >= 5;
 
 ---
 
-### Query Patterns ("No...", "Does not have any...", "Never...")
+### Query patterns ("no...", "does not have any...", "never...")
 
 Whenever the statement asks for an element that has **no** relationship with something else (or with a specific condition), use **`NOT EXISTS`** inside `WHERE`.
 
@@ -152,7 +152,7 @@ WHERE NOT EXISTS (
 
 ---
 
-### Query Patterns ("All...", "Always...", "Only...")
+### Query patterns ("all...", "always...", "only...")
 
 SQL has no `FOR ALL` keyword, so universal quantification is expressed via **double negation** using **`NOT EXISTS (... WHERE NOT Y)`** (inverting the condition operator inside: `=` becomes `<>`, `>` becomes `<=`, `IS NOT NULL` becomes `IS NULL`).
 
@@ -187,7 +187,7 @@ WHERE NOT EXISTS (
 
 ---
 
-### Query Patterns ("Only a single...", "The same for all...")
+### Query patterns ("only a single...", "the same for all...")
 
 When the statement requires an element to **only be related to a single** other element, find the element and its related entity `a` in the outer query, and use **`NOT EXISTS`** to verify that no other row exists for the same element with a different identifier (`a2.dni != a.dni`).
 
@@ -259,7 +259,7 @@ HAVING COUNT(*) >= 3;
 
 ---
 
-### Relational Algebra
+### Relational algebra
 Duplicate-free by definition. Written as a step-by-step sequence ($A = \dots, R = \dots$).
 
 | Operator | Syntax | Description |
@@ -292,7 +292,7 @@ Duplicate-free by definition. Written as a step-by-step sequence ($A = \dots, R 
 
 ---
 
-### Pattern 1: Selection + Projection
+### Pattern 1: selection + projection
 
 **Example 1:** "Names of `free` users with more than 1000 plays."
 ```text
@@ -301,7 +301,7 @@ R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
 
 ---
 
-### Pattern 2: Following foreign keys (Joins)
+### Pattern 2: following foreign keys (joins)
 
 **Example 2:** "Titles of the songs in the playlist named `'Running'`."
 Path: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (matching attribute names, so we use `*`).
@@ -329,7 +329,7 @@ R = B[nomSeguidor]
 
 ---
 
-### Pattern 3: "That do not have any..." (Difference)
+### Pattern 3: "that do not have any..." (difference)
 
 Always: **all candidates $-$ those that do satisfy it** (the starting set is the table that lists them all).
 
@@ -361,7 +361,7 @@ R = C[nomSeguidor]
 
 ---
 
-### Pattern 4: "And" / "Or" (Intersection and Union)
+### Pattern 4: "and" / "or" (intersection and union)
 
 **Example 8:** "Users who have created a `'rock'` theme playlist **and also** a `'pop'` theme playlist."
 *(Note: If $\cap$ is not allowed, it is equivalent to `A - (A - B)`).*
@@ -381,7 +381,7 @@ R = A ∪ B
 
 ---
 
-### Pattern 5: "Two or more" (Self-join)
+### Pattern 5: "two or more" (self-join)
 
 The pattern is always the same: **renamed copy**, **equality (`=`)** on what must repeat, and **inequality (`!=`)** on what must differ.
 
@@ -403,7 +403,7 @@ R = D[idCanço]
 
 ---
 
-### Pattern 6: "All..." (Division / Double difference)
+### Pattern 6: "all..." (division / double difference)
 
 **Idea:** Find all `(playlist, song by X)` pairs that **should exist** (Cartesian product), subtract those that **actually exist**, and the playlists left are the ones missing at least one song (*"bad"*). Then subtract them from the total.
 
@@ -423,21 +423,21 @@ R = (Good * playlist)[nomList]              -- Recover nomList
 
 ## 2. DDL and DML
 
-### Table Definition (`CREATE TABLE`) and Integrity
+### Table definition (`CREATE TABLE`) and integrity
 - **Constraints:** `NOT NULL`, `UNIQUE` (allows nulls), `PRIMARY KEY` (`NOT NULL` + `UNIQUE`), `REFERENCES table(pk)` (`FOREIGN KEY`), `CHECK (condition)`.
 - **Foreign Key Policies (`ON DELETE` / `ON UPDATE`):**
   - `RESTRICT` / `NO ACTION`: Blocks operation if child rows exist *(default)*.
   - `CASCADE`: Propagates deletion or update to child rows.
   - `SET NULL`: Sets FK to `NULL` (requires FK column to be nullable).
 
-### Data Manipulation (DML)
+### Data manipulation (DML)
 - `INSERT INTO table [(cols)] VALUES (...)` or `INSERT INTO table SELECT ...`
 - `DELETE FROM table [WHERE ...]` *(omitting `WHERE` deletes all rows)*.
 - `UPDATE table SET col = val [WHERE ...]` *(a subquery in `SET` must return 1 single row and column)*.
 
 ---
 
-## 3. Logical Components and Security
+## 3. Logical components and security
 
 ### Assertions
 Always starts with `CREATE ASSERTION name CHECK (NOT EXISTS (SELECT * ...))`
@@ -454,9 +454,9 @@ Always starts with `CREATE ASSERTION name CHECK (NOT EXISTS (SELECT * ...))`
 
 ---
 
-## 6. Conceptual Design (UML $\to$ Relational)
+## 7. Conceptual design (UML $\to$ relational)
 
-### Mapping UML Structures
+### Mapping UML structures
 
 | UML Element | Relational Model Mapping |
 | :--- | :--- |

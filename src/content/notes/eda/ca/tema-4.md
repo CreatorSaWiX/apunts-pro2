@@ -17,7 +17,7 @@ Una **cua amb prioritat** emmagatzema elements amb una prioritat associada i per
 
 ---
 
-## 4.1. Preliminars d'arbres: Topologia i Cotes
+## 4.1. Preliminars d'arbres: topologia i cotes
 
 * **Arbre binari perfecte:** Tots els nivells estan completament plens.
   $$n = 2^{h+1} - 1 \text{ nodes}$$
@@ -37,7 +37,7 @@ $$
 
 ---
 
-## 4.2. Munts Binaris (*Heaps*)
+## 4.2. Munts binaris (*heaps*)
 
 Estructura basada en un arbre binari complet que compleix la **propietat de heap**:
 * **Min-Heap:** Per a tot node $i \neq \text{arrel}$, $\text{clau}(\text{pare}(i)) \le \text{clau}(i)$. L'arrel conté el mínim global.
@@ -47,7 +47,7 @@ Estructura basada en un arbre binari complet que compleix la **propietat de heap
 :::minmaxheapviz{type="min"}
 :::
 
-### Representació sobre vector (Sense Punters)
+### Representació sobre vector (sense punters)
 
 Els nodes s'allotgen per nivells d'esquerra a dreta.
 
@@ -100,11 +100,11 @@ Si no s'intercanvia amb el fill *menor*, el fill gran passaria a ser pare del pe
 
 ---
 
-## 4.3. Munts Ternaris (*Ternary Heaps*)
+## 4.3. Munts ternaris (*ternary heaps*)
 
 Arbre ternari complet on cada node té com a màxim **3 fills** i compleix la propietat de heap.
 
-### Aritmètica d'índexs sobre vector (Indexat a 0)
+### Aritmètica d'índexs sobre vector (indexat a 0)
 
 | Relació per al node $i$ | Expressió matemàtica |
 | :--- | :---: |
@@ -129,7 +129,7 @@ Arbre ternari complet on cada node té com a màxim **3 fills** i compleix la pr
 
 * **Alçada asimptòtica:** $h \in \mathbf{\Theta(\log_3 n)}$. Té menor alçada que el binari, però fa fins a 3 comparacions per nivell a l'`enfonsar`.
 
-### Implementació d'`enfonsar` per a Min-Heap Ternari
+### Implementació d'`enfonsar` per a min-heap ternari
 
 ```cpp
 void enfonsar_ternari(vector<int>& t, int n, int i) {
@@ -150,7 +150,7 @@ void enfonsar_ternari(vector<int>& t, int n, int i) {
 
 ## 4.4. Algorisme d'ordenació Heapsort
 
-### 1. Construcció del Heap: Bàsica vs Mètode de Floyd
+### 1. Construcció del heap: bàsica vs mètode de Floyd
 
 * **Construcció bàsica (Top-Down):** Inserir $n$ elements successius amb `surar`.
   $$T(n) = \sum_{i=1}^n \log i = \log(n!) = \mathbf{\Theta(n \log n)}$$
@@ -161,7 +161,7 @@ void enfonsar_ternari(vector<int>& t, int n, int i) {
 :::heapbuildviz
 :::
 
-### 2. Heapsort *In-Place* (Memòria Auxiliar $\Theta(1)$)
+### 2. Heapsort *in-place* (memòria auxiliar $\Theta(1)$)
 
 Per ordenar un vector de menor a major (creixent) sense memòria extra:
 1. Es construeix un **Max-Heap** lineal en $\Theta(n)$ sobre el mateix vector.
@@ -194,7 +194,7 @@ void heapsort(vector<int>& t) {
 
 ---
 
-## 4.5. Aplicació (Trobar els $m$ menors de $n$ elements)
+## 4.5. Aplicació (trobar els $m$ menors de $n$ elements)
 
 | Mètode | Cost Temporal | Memòria Auxiliar | Quan aplicar-lo? |
 | :--- | :---: | :---: | :--- |

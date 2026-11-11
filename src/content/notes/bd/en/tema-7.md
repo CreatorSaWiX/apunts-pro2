@@ -1,5 +1,5 @@
 ---
-title: "Topic 7: Conceptual Design (UML)"
+title: "Topic 7: Conceptual design (UML)"
 description: "Conceptual modeling in UML and mapping to the relational logical schema."
 readTime: "8 min"
 order: 7
@@ -10,11 +10,11 @@ Database design transforms real-world requirements into normalized logical relat
 
 ---
 
-## 6.1. Conceptual Modeling in UML
+## 7.1. Conceptual modeling in UML
 
 A **class** describes a collection of entities sharing structural properties (e.g., `Employee`); each object possesses an identity (OID). **Attributes** represent atomic single-valued properties. The **candidate/external key** (identifier) is the minimal set of attributes uniquely identifying each class instance, declared via explicit textual constraints (e.g., *«Candidate key Employee: dni»*).
 
-### Upfront Normalization: Multivalued Attributes `[*]`
+### Upfront normalization: multivalued attributes `[*]`
 
 The relational model forbids multi-valued attributes (first normal form). Any `attribute[*]` must be factored into an **independent class associated via a 1\:N relationship**:
 
@@ -23,11 +23,11 @@ The relational model forbids multi-valued attributes (first normal form). Any `a
 
 ---
 
-## 6.2. Mapping Binary Associations
+## 7.2. Mapping binary associations
 
 Once classes are mapped to base relations (where UML candidate keys become **primary keys**), associations map based on their multiplicities:
 
-### 1. One-to-Many Associations (1\:N)
+### 1. One-to-many associations (1\:N)
 
 Multiplicity is $0..1$ or $1..1$ on one end ("one") and $*$ on the other ("many"). A **foreign key (FK)** is added to the relation on the **«many»** side, referencing the primary key of the «one» side. If minimum multiplicity on the «one» side is **$1$ ($1..1$)**, the FK must be declared **`NOT NULL`**; if **$0$ ($0..1$)**, it allows nulls.
 
@@ -46,7 +46,7 @@ EMPLEAT (dni, nom, num_dpt)
 
 ---
 
-### 2. One-to-One Associations (1\:1)
+### 2. One-to-one associations (1\:1)
 
 Maximum multiplicity on both ends is $1$ ($0..1$ or $1..1$). A foreign key is placed in **either relation**, but the FK column must carry a **`UNIQUE`** constraint to guarantee one-to-one mapping. If one side has $1..1$ and the other $0..1$, prefer propagating the foreign key to the $1..1$ entity with `NOT NULL UNIQUE` to prevent null values.
 
@@ -65,7 +65,7 @@ DELEGACIO (codi_del, nom_del, nom_ciutat)
 
 ---
 
-### 3. Many-to-Many Associations (M\:N)
+### 3. Many-to-many associations (M\:N)
 
 Maximum multiplicity on both ends is $*$ ($0..*$ or $1..*$). A **new junction relation (associative table)** is created whose PK consists of the **composite combination of both participating primary keys**.
 
@@ -87,7 +87,7 @@ EMMAGATZEMATGE (codi_prod, codi_mag)
 
 ---
 
-## 6.3. Mapping N-ary and Ternary Associations
+## 7.3. Mapping n-ary and ternary associations
 
 A ternary association interrelates 3 classes simultaneously. **It always maps to a new junction relation**, with its primary key derived from participating multiplicities:
 
@@ -102,7 +102,7 @@ A ternary association interrelates 3 classes simultaneously. **It always maps to
 
 ---
 
-## 6.4. Recursive Associations
+## 7.4. Recursive associations
 
 Associations where **a single class participates multiple times** in distinct roles. In the **1\:N** pattern (e.g., an Employee manages other Employees), a self-referencing foreign key column is added to the table, renamed to reflect the role:
 
@@ -126,7 +126,7 @@ SEGUIMENT (nom_seguidor, nom_seguit)
 
 ---
 
-## 6.5. Association Classes
+## 7.5. Association classes
 
 An **association class** arises when an association holds attributes of its own or participates in further associations. The generated junction relation **absorbs all attributes** of the association class:
 
@@ -142,14 +142,14 @@ EMMAGATZEMATGE (codi_prod, codi_mag, quantitat)
 
 ---
 
-## 6.6. Generalization and Specialization (Inheritance)
+## 7.6. Generalization and specialization (inheritance)
 
 Inheritance structures model a general superclass (common attributes) specialized into one or more subclasses (specific attributes).
 
 :::umlviz{schema="uml_herencia" title="Class Inheritance Hierarchy (UML)"}
 :::
 
-### Standard Mapping Strategy: One Table per Class
+### Standard mapping strategy: one table per class
 
 1. **Table for Superclass:** Holds original primary key and common attributes.
 2. **Table for Each Subclass:** Inherits the superclass primary key, serving **simultaneously as Primary Key and Foreign Key**:
@@ -178,7 +178,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.7. Transformation Rules and Design Guidelines
+## 7.7. Transformation rules and design guidelines
 
 | UML Conceptual Construct | Relational Logical Mapping |
 | :--- | :--- |
@@ -193,7 +193,7 @@ CREATE TABLE ESTUDIANT (
 :::uml2relviz
 :::
 
-### Special Modeling Scenarios
+### Special modeling scenarios
 
 1. **Weak Entities / Relative Identifiers**: If an entity lacks a global unique key (e.g., *«floors share identical numbers across different schools, but are unique within a school»*), `PLANTA` takes a composite primary key: `PRIMARY KEY (school_name, floor_id)`.
 2. **Pure Temporal Classes**: Auxiliary temporal classes such as `Date`, `Time`, or `Year` lacking extra attributes do not spawn separate tables; they map directly as `DATE`, `TIME`, or `INTEGER` columns.
@@ -202,7 +202,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.8. Semantic Model Validation (True / False Assertions)
+## 7.8. Semantic model validation (true / false assertions)
 
 Evaluating potential instance states against a UML conceptual model requires determining whether a configuration is allowed (**TRUE**) or violates structural invariants (**FALSE**):
 
@@ -218,7 +218,7 @@ To prove an assertion is **TRUE**, construct a minimal tabular instance verifyin
 
 ---
 
-## 6.9. Classifying and Mapping Textual Constraints (R1..Rn)
+## 7.9. Classifying and mapping textual constraints (R1..Rn)
 
 Additional textual domain constraints map according to their scope:
 
@@ -229,14 +229,14 @@ Additional textual domain constraints map according to their scope:
 
 ---
 
-## 6.10. End-to-End Enterprise Reference Case (UML & Relational)
+## 7.10. End-to-end enterprise reference case (UML & relational)
 
 Comprehensive organization schema encompassing departments, projects, and employees:
 
-### Conceptual UML Schema
+### Conceptual UML schema
 :::umlviz{schema="uml_empresa" title="UML Conceptual Model of Reference Enterprise" height="420"}
 :::
 
-### Resulting Logical Relational ERD
+### Resulting logical relational ERD
 :::sqlviz{simulation="esquema_empresa"}
 :::

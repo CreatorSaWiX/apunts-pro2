@@ -1,5 +1,5 @@
 ---
-title: "Tema 7: Diseño Conceptual (UML)"
+title: "Tema 7: Diseño conceptual (UML)"
 description: "Modelado conceptual en UML y traducción al modelo relacional lógico."
 readTime: "8 min"
 order: 7
@@ -10,11 +10,11 @@ El diseño de bases de datos transforma los requisitos del mundo real en estruct
 
 ---
 
-## 6.1. Modelo Conceptual en UML
+## 7.1. Modelo conceptual en UML
 
 Una **clase** describe un conjunto de objetos del mismo tipo que comparten propiedades (ej: `Empleado`); cada objeto tiene identidad propia (OID). Los **atributos** son las propiedades univaluadas compartidas por los objetos. La **clave externa** (identificador) es el conjunto mínimo de atributos que identifican unívocamente cada instancia, especificada mediante restricciones textuales (ej: *«Clave externa Empleado: dni»*).
 
-### Transformación previa: Atributos multivaluados `[*]`
+### Transformación previa: atributos multivaluados `[*]`
 
 El modelo relacional no admite valores multivaluados (primera forma normal). Todo atributo `atributo[*]` se transforma en una **asociación 1\:N** hacia una nueva clase:
 
@@ -23,11 +23,11 @@ El modelo relacional no admite valores multivaluados (primera forma normal). Tod
 
 ---
 
-## 6.2. Transformación de Asociaciones Binarias
+## 7.2. Transformación de asociaciones binarias
 
 Una vez transformadas las clases a relaciones base (donde la clave externa de UML se convierte en la **clave primaria**), traducimos las asociaciones según sus multiplicidades:
 
-### 1. Caso Uno a Muchos (1\:N)
+### 1. Caso uno a muchos (1\:N)
 
 La multiplicidad es $0..1$ o $1..1$ en un extremo ("uno") y $*$ en el otro ("muchos"). Se añade una **clave foránea (FK)** a la relación del extremo **«muchos»**, referenciando la clave primaria del extremo «uno». Si la multiplicidad mínima del extremo «uno» es **$1$ ($1..1$)**, la FK debe ser **`NOT NULL`**; si es **$0$ ($0..1$)**, admite valores nulos.
 
@@ -46,7 +46,7 @@ EMPLEAT (dni, nom, num_dpt)
 
 ---
 
-### 2. Caso Uno a Uno (1\:1)
+### 2. Caso uno a uno (1\:1)
 
 La multiplicidad máxima en ambos extremos es $1$ ($0..1$ o $1..1$). Se añade una clave foránea a **cualquiera de las dos tablas**, pero la columna FK debe tener la restricción **`UNIQUE`** para garantizar que ninguna fila del destino se enlace más de una vez. Si un lado tiene $1..1$ y el otro $0..1$, es preferible propagar la clave al lado $1..1$ con `NOT NULL UNIQUE` para evitar campos nulos.
 
@@ -65,7 +65,7 @@ DELEGACIO (codi_del, nom_del, nom_ciutat)
 
 ---
 
-### 3. Caso Muchos a Muchos (M\:N)
+### 3. Caso muchos a muchos (M\:N)
 
 La multiplicidad máxima en ambos extremos es $*$ ($0..*$ o $1..*$). Se define una **nueva relación (tabla asociativa intermedia)** con la PK formada por la **composición de las claves primarias** de las dos entidades relacionadas.
 
@@ -87,7 +87,7 @@ EMMAGATZEMATGE (codi_prod, codi_mag)
 
 ---
 
-## 6.3. Transformación de Asociaciones N-arias y Ternarias
+## 7.3. Transformación de asociaciones n-arias y ternarias
 
 Una asociación ternaria relaciona 3 clases simultáneamente. **Siempre se traduce a una nueva relación**, pero su clave primaria varía según las multiplicidades:
 
@@ -102,7 +102,7 @@ Una asociación ternaria relaciona 3 clases simultáneamente. **Siempre se tradu
 
 ---
 
-## 6.4. Asociaciones Recursivas
+## 7.4. Asociaciones recursivas
 
 Son asociaciones donde **una misma clase participa más de una vez** ejerciendo roles diferentes. En la variante **1\:N** (ej: Empleado es jefe de otros empleados) se añade una clave foránea a la misma tabla que referencia a la propia clave primaria, renombrando la columna por su rol:
 
@@ -126,7 +126,7 @@ SEGUIMENT (nom_seguidor, nom_seguit)
 
 ---
 
-## 6.5. Clases Asociativas
+## 7.5. Clases asociativas
 
 Una **clase asociativa** surge cuando una asociación tiene atributos propios o participa en otras relaciones. La relación creada para la asociación **absorbe los atributos propios** de la clase asociativa:
 
@@ -142,14 +142,14 @@ EMMAGATZEMATGE (codi_prod, codi_mag, quantitat)
 
 ---
 
-## 6.6. Generalización y Especialización (Herencia)
+## 7.6. Generalización y especialización (herencia)
 
 La herencia refleja una superclase general (atributos comunes) que se especializa en una o más subclases (atributos específicos).
 
 :::umlviz{schema="uml_herencia" title="Jerarquía de Herencia de Clases (UML)"}
 :::
 
-### Estrategia estándar: Una tabla por clase
+### Estrategia estándar: una tabla por clase
 
 1. **Tabla para la superclase:** Tiene su clave primaria original y los atributos comunes.
 2. **Tabla para cada subclase:** Tiene como clave primaria **la misma clave de la superclase**, que actúa **a la vez como Clave Primaria y Clave Foránea**:
@@ -178,7 +178,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.7. Resumen de transformaciones y criterios de diseño
+## 7.7. Resumen de transformaciones y criterios de diseño
 
 | Elemento del Modelo UML | Traducción al Modelo Relacional |
 | :--- | :--- |
@@ -202,7 +202,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.8. Validación Semántica de Modelos UML (Afirmaciones de Verdadero / Falso)
+## 7.8. Validación semántica de modelos UML (afirmaciones de verdadero / falso)
 
 Ante afirmaciones sobre posibles estados de un modelo UML, hay que determinar si la situación es compatible con el esquema (**VERDADERA**) o si viola alguna restricción estructural (**FALSA**):
 
@@ -218,7 +218,7 @@ Para justificar que una afirmación es **VERDADERA**, se construye una instancia
 
 ---
 
-## 6.9. Clasificación y Traducción de Restricciones Textuales (R1..Rn)
+## 7.9. Clasificación y traducción de restricciones textuales (R1..Rn)
 
 Las restricciones textuales adicionales se implementan según su alcance:
 
@@ -229,14 +229,14 @@ Las restricciones textuales adicionales se implementan según su alcance:
 
 ---
 
-## 6.10. Caso Global de Referencia (UML y Relacional)
+## 7.10. Caso global de referencia (UML y relacional)
 
 Ejemplo completo de una organización con departamentos, proyectos y empleados:
 
-### Modelo Conceptual Global (UML)
+### Modelo conceptual global (UML)
 :::umlviz{schema="uml_empresa" title="Modelo Conceptual UML de la Empresa de Referencia" height="420"}
 :::
 
-### Esquema Relacional Resultante (ERD)
+### Esquema relacional resultante (ERD)
 :::sqlviz{simulation="esquema_empresa"}
 :::

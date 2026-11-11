@@ -1,5 +1,5 @@
 ---
-title: "Topic 3: Logical Components"
+title: "Topic 3: Logical components"
 description: "Schemas, domains, assertions, views, and permissions."
 readTime: "8 min"
 order: 3
@@ -10,7 +10,7 @@ This topic covers the logical organization, integrity mechanisms, and access con
 
 ---
 
-## 3.1. Schemas, Catalogs, and Clusters
+## 3.1. Schemas, catalogs, and clusters
 
 The DBMS organizes storage resources into a three-level administrative hierarchy:
 
@@ -28,7 +28,7 @@ DROP SCHEMA schema_name CASCADE;  -- Recursively drops schema and all nested obj
 
 ---
 
-## 3.2. Connections, Sessions, and Transactions
+## 3.2. Connections, sessions, and transactions
 
 A **connection** represents an active communication channel between client and database server. A **session** defines the execution context of an authenticated user across that connection. A **transaction** is an atomic sequence of SQL statements: either all succeed or none persist.
 
@@ -87,7 +87,7 @@ CREATE TABLE empleats (
 
 An assertion is an overarching **global integrity constraint** in standard SQL evaluated against state mutations on any referenced table.
 
-### Scope of Constraint Enforcement
+### Scope of constraint enforcement
 
 A **column constraint** (`CHECK`) evaluates only scalar values of its own attribute (`CHECK (salary > 0)`). A **table constraint** (`CHECK`) compares multiple attributes across the identical tuple (`CHECK (end_date >= start_date)`) and vacously passes on empty relations. An **assertion** (`ASSERTION`) is mandatory whenever rules span multiple tuples, aggregate expressions, or cross-table invariants.
 
@@ -130,18 +130,18 @@ SELECT * FROM empleats_altsous WHERE num_dpt = 2;
 :::viewviz
 :::
 
-### Updatability of Views (Standard SQL)
+### Updatability of views (standard SQL)
 
 A view supports `INSERT`, `UPDATE`, or `DELETE` only if operations translate unambiguously into underlying base relations. Under the standard, it must query **a single base table** (excluding `JOIN`, `UNION`, and subqueries in `FROM`), omit aggregates, `DISTINCT`, `GROUP BY`, and `HAVING`, and project **simple attribute references** (no scalar arithmetic or literals). To support `INSERT`, the view must project all underlying `NOT NULL` columns lacking a `DEFAULT`.
 
-### Ambiguity in Multi-Table Joined Views
+### Ambiguity in multi-table joined views
 
 Joining tables $A$ and $B$ over foreign keys introduces ambiguities precluding updates: on `DELETE`, the DBMS cannot deduce whether to remove $A$, $B$, or both; on `UPDATE`, modifying $A$ attributes side-effects unprojected $B$ rows; and on `INSERT`, values for omitted mandatory columns in base tables remain undefined.
 
 :::viewupdviz
 :::
 
-### The `WITH CHECK OPTION` Clause
+### The `WITH CHECK OPTION` clause
 
 Ensures that view-mediated `INSERT` or `UPDATE` statements cannot introduce rows violating the view's `WHERE` predicate:
 
@@ -157,13 +157,13 @@ UPDATE empleats_dep2 SET num_dpt = 3 WHERE num_empl = 5;
 
 Without this clause, the mutation succeeds in the base relation, but the row **silently vanishes from the view**. Under cascading views (`CASCADED`), modifying nested view $V_2$ over $V_1$ enforces predicates for both $V_1$ and $V_2$.
 
-### Physical Storage Trade-offs: Tables vs. Views
+### Physical storage trade-offs: tables vs. views
 
 A **virtual view** consumes zero disk blocks; however, queries incur full re-execution costs against base tables. A **materialized table** occupies physical storage, but subsequent queries read cached tuples directly, saving I/O on expensive aggregations and joins.
 
 ---
 
-## 3.6. The Information Schema
+## 3.6. The information schema
 
 A standardized family of **read-only administrative metadata views**:
 
@@ -178,7 +178,7 @@ A standardized family of **read-only administrative metadata views**:
 
 ---
 
-## 3.7. Access Control: Privileges and Roles
+## 3.7. Access control: privileges and roles
 
 The DBMS regulates access through **privileges**. Data privileges on tables/views are `SELECT`, `INSERT`, `UPDATE[(col1, ...)]`, and `DELETE`. Structural privileges include `REFERENCES[(col1, ...)]` (creating foreign keys), `USAGE` (domains), and `ALL`.
 
@@ -192,14 +192,14 @@ REVOKE SELECT ON empleats FROM anna CASCADE;  -- Cascades revocation to delegate
 REVOKE SELECT ON empleats FROM anna RESTRICT; -- Fails if dependent delegations exist
 ```
 
-### Authorization Graphs
+### Authorization graphs
 
 Directed graph models where vertices represent users/roles and edges represent granted privileges:
 
 :::dacviz
 :::
 
-### Privilege Resolution Invariants
+### Privilege resolution invariants
 
 1. **Alternative Paths in `REVOKE CASCADE`**: Removing an edge recomputes connectivity from the object owner. If a user retains an independent path, the privilege is preserved.
 2. **Revoking Delegation Exclusively**: `REVOKE GRANT OPTION FOR SELECT ON table FROM user CASCADE` removes propagation rights while retaining personal query access.
@@ -228,7 +228,7 @@ GRANT SELECT ON el_meu_sou TO PUBLIC;
 
 ---
 
-## 3.8. Data Privacy (GDPR / LOPD-GDD)
+## 3.8. Data privacy (GDPR / LOPD-GDD)
 
 - **Consent**: Must be **explicit, informed, and unambiguous** (pre-ticked opt-in boxes prohibited).
 - **Subject Rights**: Right of access, rectification, objection, portability, and erasure (**right to be forgotten**).

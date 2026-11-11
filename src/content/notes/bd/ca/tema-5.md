@@ -1,5 +1,5 @@
 ---
-title: "Tema 5: Disparadors (Triggers)"
+title: "Tema 5: Disparadors (triggers)"
 description: "SGBD actius i regles ECA, sintaxi a PostgreSQL, ordre d'execució (BEFORE/AFTER, ROW/STATEMENT), variables NEW, OLD i TG_OP, valors de retorn, auditoria, atributs derivats, INSTEAD OF i disparadors en cascada."
 readTime: "10 min"
 order: 5
@@ -10,7 +10,7 @@ Un **disparador** és un mecanisme que permet a l'SGBD reaccionar automàticamen
 
 ---
 
-## 5.1. Concepte i Regla ECA
+## 5.1. Concepte i regla ECA
 
 Els SGBD convencionals són **passius** (només executen operacions sota petició explícita). Un SGBD **actiu** incorpora comportament reactiu basat en la **regla ECA**:
 
@@ -99,7 +99,7 @@ Dins del cos de la funció del disparador, PostgreSQL proporciona automàticamen
 
 ## 5.6. Exemples pràctics clau
 
-### Exemple 1: Auditoria d'operacions (`AFTER`)
+### Exemple 1: auditoria d'operacions (`AFTER`)
 Registrar cada canvi de quantitat a la taula `items` dins d'una taula de registre `log_record`:
 
 ```sql
@@ -125,7 +125,7 @@ CREATE TRIGGER auditar_canvis_estoc
     EXECUTE PROCEDURE insert_log();
 ```
 
-### Exemple 2: Manteniment automàtic d'atributs derivats (`BEFORE`)
+### Exemple 2: manteniment automàtic d'atributs derivats (`BEFORE`)
 Mantenir el camp `preu_total` actualitzat automàticament quan es modifica la quantitat (`qtt`) d'un producte:
 
 ```sql
@@ -144,7 +144,7 @@ CREATE TRIGGER atribut_derivat_preu
     EXECUTE PROCEDURE calcular_nou_total();
 ```
 
-### Exemple 3: Precedència i manteniment de restriccions (`BEFORE`)
+### Exemple 3: precedència i manteniment de restriccions (`BEFORE`)
 Si tenim la regla que «Tot estudiant ha de ser usuari» (amb una clau forana `id_e REFERENCES usuari`), si inserim un estudiant que encara no existeix a `usuari`:
 
 ```sql
@@ -166,7 +166,7 @@ CREATE TRIGGER auto_crear_usuari
 
 Si el trigger fos `AFTER`, la sentència fallaria immediatament per violació de clau forana abans d'arribar a executar el trigger.
 
-### Exemple 4: Actualització de vistes amb `INSTEAD OF`
+### Exemple 4: actualització de vistes amb `INSTEAD OF`
 Permet fer insercions sobre una vista que d'altra manera no admetria actualitzacions directes:
 
 ```sql

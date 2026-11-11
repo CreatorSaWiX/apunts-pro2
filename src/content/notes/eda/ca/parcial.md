@@ -47,7 +47,7 @@ $$
 > **Compte amb la base a l'exponent:** La base del logaritme **sí que canvia l'ordre** si és a l'exponent:  
 > $2^{\log_2 n} = n$, però $2^{\log_3 n} = n^{\log_3 2} \approx n^{0.631} \implies 2^{\log_2 n} \gg 2^{\log_3 n}$.
 
-### Propietats de Potències, Exponencials ($a^n, e^n$) i arrels
+### Propietats de potències, exponencials ($a^n, e^n$) i arrels
 | Propietat | Formulació | Exemple |
 | :--- | :--- | :--- |
 | **Suma a l'exponent** | $a^{x + y} = a^x \cdot a^y$ | $2^{n + 3} = 2^3 \cdot 2^n = 8 \cdot 2^n \implies \mathbf{\Theta(2^n)}$  |
@@ -266,7 +266,7 @@ if (T[d] < T[e]) swap(T[e], T[d]);
 :::strassenmatmultviz
 :::
 
-### Les Torres de Hanoi
+### Les torres de Hanoi
 
 :::hanoiviz
 :::
@@ -281,7 +281,7 @@ void hanoi(int n, char a, char b, char c) {
 }
 ```
 
-### La Mediana de Medianes 
+### La mediana de medianes 
 
 :::medianviz
 :::
@@ -297,7 +297,7 @@ Un diccionari emmagatzema parelles **(clau, valor)** ($k \in K$, $i \in I$) i pe
 :::
 
 
-### Taules de dispersió (*Hash Tables*)
+### Taules de dispersió (*hash tables*)
 
 Les **taules de dispersió** assoleixen cerca, inserció i esborrat en **temps constant esperat $\Theta(1)$**, a canvi d'un cas pitjor $\Theta(n)$ (quan tot col·lisiona).
 
@@ -326,7 +326,7 @@ Per solucionar col·lisions, cada casella $T[j]$ és una **llista enllaçada** d
 
 ---
 
-### Arbres Binaris de Cerca (ABC / BST)
+### Arbres binaris de cerca (ABC / BST)
 
 Un **ABC** implementa el diccionari aprofitant un **ordre total** sobre les claus.
 

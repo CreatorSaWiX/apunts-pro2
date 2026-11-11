@@ -1,12 +1,12 @@
 ---
-title: "Topic 1: OS and Shell"
+title: "Topic 1: OS and shell"
 description: "Role of the OS, execution modes, system calls, shell, inodes, links, and permissions."
 readTime: "15 min"
 order: 1
 draft: false
 ---
 
-## 1.1 Introduction to Operating Systems
+## 1.1 Introduction to operating systems
 
 The **Operating System (OS)** is the software that acts as an intermediary between user applications and the physical computer hardware (CPU, RAM, hard disk, keyboard, or screen).
 
@@ -19,7 +19,7 @@ Without an OS, each programmer would need to write low-level hardware routines t
 :::osmediatorviz
 :::
 
-### The Course Environment: UNIX and POSIX
+### The course environment: UNIX and POSIX
 
 * **UNIX**: An OS family dating back to the 1970s that pioneered the modern architectural paradigm: a single rooted hierarchical filesystem (`/`), the "everything is a file" philosophy, and small modular utilities chained by pipes. **Linux** and **macOS** follow this model (*Unix-like*).
 * **POSIX** (*Portable Operating System Interface*): An IEEE standard specifying the formal API of a UNIX system:
@@ -28,7 +28,7 @@ Without an OS, each programmer would need to write low-level hardware routines t
 
 ---
 
-## 1.2 Execution Modes
+## 1.2 Execution modes
 
 To ensure that rogue or crashing applications cannot destabilize the entire machine or access unauthorized memory, the physical CPU operates in **two execution modes**:
 
@@ -44,7 +44,7 @@ To ensure that rogue or crashing applications cannot destabilize the entire mach
 
 ---
 
-## 1.3 How Do We Transition into the Kernel?
+## 1.3 How do we transition into the kernel?
 
 The operating system kernel remains passive in memory, waking only in response to specific triggers. There are only **3 entry mechanisms into the Kernel**:
 
@@ -54,7 +54,7 @@ The operating system kernel remains passive in memory, waking only in response t
 | **Software Exception** | CPU execution unit | **Synchronous** (triggered by the instruction currently executing) | An error or anomalous condition in user code: division by zero, invalid memory dereference (*Segmentation Fault*), or a page fault (*page fault*). |
 | **System Call (*trap*)** | User program | **Synchronous** (explicitly requested by software) | Software purposefully invokes an OS service via a specialized trap instruction (`syscall`): opening a file, writing to terminal (`write`), or spawning a child process (`fork`). |
 
-### Purpose of the Timer Interrupt
+### Purpose of the timer interrupt
 Consider a program stuck in an infinite CPU loop devoid of system calls: `while (1);`. How does the OS regain control if the program makes no requests?  
 * A programmable motherboard timer chip generates periodic **clock interrupts** (e.g., every 10 milliseconds).
 * Every 10 ms, the CPU halts current execution, switches to kernel mode, and executes the timer interrupt handler.
@@ -62,7 +62,7 @@ Consider a program stuck in an infinite CPU loop devoid of system calls: `while 
 
 ---
 
-## 1.4 How Does a System Call Work?
+## 1.4 How does a system call work?
 
 When a user program requires kernel assistance (e.g., transmitting bytes via `write`), it cannot branch directly to a kernel memory address while running in user mode.
 
@@ -80,7 +80,7 @@ The Kernel does not expose syscall entry points via volatile memory addresses; r
 
 ---
 
-## 1.5 The Shell and Commands (Built-in vs External)
+## 1.5 The shell and commands (built-in vs external)
 
 The **Shell** (standardly **Bash** on Linux) is a command-line interpreter. It operates in an endless read-eval-print loop: reads user input, parses arguments, executes the specified command, and re-renders the input prompt (*prompt*).
 
@@ -98,7 +98,7 @@ Commands fall into two distinct categories:
 
 ---
 
-## 1.6 The `man` Manual Pages
+## 1.6 The `man` manual pages
 
 When issuing `man name`, the manual system references distinct numbered sections:
 
@@ -117,11 +117,11 @@ When issuing `man name`, the manual system references distinct numbered sections
 
 ---
 
-## 1.7 Filesystem Organization in UNIX: Inodes and Directories
+## 1.7 Filesystem organization in UNIX: inodes and directories
 
 UNIX structures all storage devices under a single unified hierarchical tree rooted at `/` (devoid of drive letters such as `C:` or `D:`).
 
-### What is an Inode?
+### What is an inode?
 **The identity record of a file**. An internal operating system data structure storing file metadata: byte size, owner UID, permission bits (`rwx`), timestamp records (access, modification, status change), link count (*links*), and block pointers to physical disk data. **The Inode DOES NOT know the file's name.** File names reside strictly inside directories. A directory is simply a table mapping pairs of `(file_name, inode_number)`.
 
 | File name (inside `/home/user`) | Inode No. | Description |
@@ -138,7 +138,7 @@ UNIX structures all storage devices under a single unified hierarchical tree roo
 
 ---
 
-## 1.8 Hard Links vs Soft Links
+## 1.8 Hard links vs soft links
 
 | Property | Hard Link (`ln file link`) | Soft Link (`ln -s file link`) |
 | :--- | :--- | :--- |
@@ -154,7 +154,7 @@ UNIX structures all storage devices under a single unified hierarchical tree roo
 
 ---
 
-## 1.9 Access Permissions and `chmod`
+## 1.9 Access permissions and `chmod`
 
 POSIX permissions consist of 1 leading character defining item type followed by 3 trios of `rwx` bits:
 
@@ -167,7 +167,7 @@ POSIX permissions consist of 1 leading character defining item type followed by 
 * `g` (*group*): Members of the owning group.
 * `o` (*others*): All other system users.
 
-### Bit Semantics by Context
+### Bit semantics by context
 | Character | Octal Value | On a Regular File | On a Directory |
 | :---: | :---: | :--- | :--- |
 | **`r`** (read) | 4 | Read content bytes | List entries within the directory (`ls`) |
@@ -186,14 +186,14 @@ POSIX permissions consist of 1 leading character defining item type followed by 
 
 ---
 
-## 1.10 Environment Variables and `$PATH`
+## 1.10 Environment variables and `$PATH`
 
 **Environment variables** are key-value string pairs (`KEY=VALUE`) inherited across processes during execution creation.
 * `env`: dumps all active environment variables.
 * `echo $KEY`: prints the value of a specific variable.
 * `export KEY="value"`: sets a variable and ensures child processes inherit it.
 
-### The `$PATH` Variable
+### The `$PATH` variable
 An ordered colon-delimited list of directories searched by the Shell when resolving commands like `ls` or `gcc`:
 * Search occurs strictly from left to right; the first matching binary is executed.
 * Prepending `export PATH=.:$PATH` forces the shell to prioritize current directory binaries (`.`). If a directory contains an untrusted script named `ls`, typing `ls` executes the rogue script instead of `/usr/bin/ls`.
@@ -201,7 +201,7 @@ An ordered colon-delimited list of directories searched by the Shell when resolv
 
 ---
 
-## 1.11 I/O Redirections and Globbing
+## 1.11 I/O redirections and globbing
 
 * `>` : Redirects standard output to a file, **truncating any pre-existing contents**.
 * `>>` : Redirects standard output to a file, **appending new data** to the end.
@@ -212,12 +212,12 @@ An ordered colon-delimited list of directories searched by the Shell when resolv
 
 ---
 
-## 1.12 Common Exam Questions Solved (Topic 1)
+## 1.12 Common exam questions solved (topic 1)
 
 ### 1. Why does the standard C library (`libc`) depend on hardware architecture?
 Because entering kernel mode requires issuing specific processor machine instructions (`syscall`, `sysenter`, `int 0x80`), with arguments placed into exact architecture-mandated hardware registers.
 
-### 2. Which three event types force a CPU transition into Kernel mode?
+### 2. Which three event types force a CPU transition into kernel mode?
 1. **Hardware Interrupt**: asynchronous event emitted by external hardware controllers (keyboard, disk controller, system timer).  
 2. **Software Exception**: synchronous fault generated directly by an executing instruction (division by zero, memory segmentation violation).  
 3. **System Call (*trap*)**: synchronous request issued deliberately by user code to solicit operating system services.

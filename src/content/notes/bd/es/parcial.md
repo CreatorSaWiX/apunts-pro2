@@ -259,7 +259,7 @@ HAVING COUNT(*) >= 3;
 
 ---
 
-### Álgebra Relacional
+### Álgebra relacional
 Sin duplicados por definición. Se escribe en secuencia paso a paso ($A = \dots, R = \dots$).
 
 | Operador | Sintaxis | Descripción |
@@ -292,7 +292,7 @@ Sin duplicados por definición. Se escribe en secuencia paso a paso ($A = \dots,
 
 ---
 
-### Patrón 1: Selección + Proyección
+### Patrón 1: selección + proyección
 
 **Ejemplo 1:** "Nombres de los usuarios `free` con más de 1000 reproducciones."
 ```text
@@ -301,7 +301,7 @@ R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
 
 ---
 
-### Patrón 2: Seguir las claves foráneas (Joins)
+### Patrón 2: seguir las claves foráneas (joins)
 
 **Ejemplo 2:** "Títulos de las canciones de la playlist llamada `'Running'`."
 Camino: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (comparten nombre de atributo, usamos `*`).
@@ -329,7 +329,7 @@ R = B[nomSeguidor]
 
 ---
 
-### Patrón 3: "Que no tienen ningún..." (Resta)
+### Patrón 3: "Que no tienen ningún..." (resta)
 
 Siempre: **todos los candidatos $-$ los que sí lo cumplen** (el conjunto de partida es la tabla que los enumera a todos).
 
@@ -361,7 +361,7 @@ R = C[nomSeguidor]
 
 ---
 
-### Patrón 4: "Y" / "O" (Intersección y Unión)
+### Patrón 4: "Y" / "O" (intersección y unión)
 
 **Ejemplo 8:** "Usuarios que han creado alguna playlist de tema `'rock'` **y también** alguna de tema `'pop'`."
 *(Nota: Si no se permite usar $\cap$, es equivalente a `A - (A - B)`).*
@@ -381,7 +381,7 @@ R = A ∪ B
 
 ---
 
-### Patrón 5: "Dos o más" (Auto-join)
+### Patrón 5: "Dos o más" (auto-join)
 
 El patrón es siempre el mismo: **copia renombrada**, **igualdad (`=`)** sobre lo que debe repetirse y **desigualdad (`!=`)** sobre lo que debe ser diferente.
 
@@ -403,7 +403,7 @@ R = D[idCanço]
 
 ---
 
-### Patrón 6: "Todas..." (División / Doble resta)
+### Patrón 6: "Todas..." (división / doble resta)
 
 **Idea:** Busco todas las parejas `(playlist, canción de X)` que **deberían existir** (producto cartesiano), le resto las que **existen de verdad**, y las playlists que quedan son a las que les falta alguna canción (*"malas"*). Después las resto del total.
 
@@ -423,7 +423,7 @@ R = (Buenas * playlist)[nomList]            -- Recuperamos el nomList
 
 ## 2. DDL y DML
 
-### Definición de tablas (`CREATE TABLE`) e Integridad
+### Definición de tablas (`CREATE TABLE`) e integridad
 - **Restricciones:** `NOT NULL`, `UNIQUE` (admite nulos), `PRIMARY KEY` (`NOT NULL` + `UNIQUE`), `REFERENCES tabla(pk)` (`FOREIGN KEY`), `CHECK (condición)`.
 - **Políticas de Clave Foránea (`ON DELETE` / `ON UPDATE`):**
   - `RESTRICT` / `NO ACTION`: Bloquea la operación si hay hijos *(por defecto)*.
@@ -437,7 +437,7 @@ R = (Buenas * playlist)[nomList]            -- Recuperamos el nomList
 
 ---
 
-## 3. Componentes Lógicos y Seguridad
+## 3. Componentes lógicos y seguridad
 
 ### Aserciones
 Siempre empieza con `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
@@ -454,9 +454,9 @@ Siempre empieza con `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
 
 ---
 
-## 6. Diseño Conceptual (UML $\to$ Relacional)
+## 7. Diseño conceptual (UML $\to$ relacional)
 
-### Traducción de Estructuras UML
+### Traducción de estructuras UML
 
 | Elemento UML | Traducción al Modelo Relacional |
 | :--- | :--- |

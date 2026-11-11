@@ -228,7 +228,7 @@ int *p = &a; // p guarda l'adreça de 'a'
 
 ---
 
-## 2.10 Preguntes típiques d'examen resoltes (Tema 2)
+## 2.10 Preguntes típiques d'examen resoltes (tema 2)
 
 ### 1. Per què un executable compilat amb `-static` ocupa tant d'espai comparat amb el normal?
  Perquè el flag `-static` copia físicament tot el codi màquina de les funcions de biblioteca (com `sprintf`, `strlen`, etc.) dins del propi fitxer executable. En la compilació dinàmica, el fitxer només guarda una petita referència i les biblioteques es comparteixen a la memòria des del sistema.

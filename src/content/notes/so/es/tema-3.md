@@ -6,14 +6,14 @@ order: 3
 draft: false
 ---
 
-## 3.1 ¿Qué es un Proceso?
+## 3.1 ¿Qué es un proceso?
 
 Cuando haces doble clic en un programa o lo ejecutas en la terminal, el sistema operativo crea un proceso (un programa en marcha en la memoria). Cada proceso tiene un identificador único (un DNI o número entero) llamado PID (Process Identifier).
 
 :::procoverviewviz
 :::
 
-### 1. Identidad, Entorno y Contexto
+### 1. Identidad, entorno y contexto
 Cada proceso en ejecución cuenta con:
 * **Identificadores únicos**:
   * **PID (*Process ID*)**: El DNI único del proceso en el sistema. Se consulta en C con la llamada `getpid()` (`man 2 getpid`).
@@ -31,7 +31,7 @@ Podemos consultar la identidad y el estado de los procesos activos con comandos 
 * **`ps -ef`** o **`ps aux`**: Muestra la lista completa de procesos en marcha, indicando el usuario (`UID`), el `PID`, el `PPID`, el consumo de recursos y la orden de ejecución.
 * **`pstree`**: Dibuja el árbol jerárquico de procesos del sistema (donde se ve cómo el proceso `systemd` o `init` con PID 1 es la raíz de todos los procesos).
 
-### 3. El PCB (*Process Control Block*)
+### 3. El PCB (*process control block*)
 El **PCB** es la **ficha de identidad** que el núcleo del sistema operativo (*Kernel*) guarda en su propia memoria para cada programa en marcha. Cuando un proceso deja de ejecutarse en la CPU para dejar paso a otro, el Kernel guarda todo lo que estaba haciendo dentro de esta ficha:
 
 * **Identificación**: PID, PPID y credenciales de usuario/grupo.
@@ -207,7 +207,7 @@ if (WIFEXITED(status)) {
 :::oopviz{simulation="waitpid_diagnosi"}
 :::
 
-### ¿Qué pasa si un proceso queda huérfano? ¿Puede quedar Zombie para siempre?
+### ¿Qué pasa si un proceso queda huérfano? ¿Puede quedar zombie para siempre?
 **NO**. En Linux, cuando un padre muere, los hijos huérfanos son adoptados automáticamente por el proceso `init` (PID 1) o `systemd`. Este proceso se encarga de ir haciendo `waitpid()` periódicamente de todos los hijos adoptados, limpiando sus PCBs tan pronto como mueren.
 
 ---
@@ -253,7 +253,7 @@ for (int i = 0; i < N; i++) {
 while (waitpid(-1, NULL, 0) > 0);
 ```
 
-### Cómo ejecuta los comandos el Shell: Primer plano vs Segundo plano (`&`)
+### Cómo ejecuta los comandos el shell: primer plano vs segundo plano (`&`)
 
 Cuando escribes un comando en el terminal, el Shell (`bash`, `zsh`) hace internamente un bucle con `fork()`, `exec()` y `waitpid()`:
 

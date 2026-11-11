@@ -19,7 +19,7 @@ draft: false
 ---
 -->
 
-## 3.1. Abstract Data Types (ADT)
+## 3.1. Abstract data types (ADT)
 
 An **ADT** specifies data structure *behavior* independently of concrete implementation details: **knowing the *what* without knowing the *how*.**
 Formally, an ADT is defined by three elements: admissible **values**, operational **signatures**, and equational **axioms** relating the operations.
@@ -27,7 +27,7 @@ Formally, an ADT is defined by three elements: admissible **values**, operationa
 :::tadviz
 :::
 <!-- 
-### Formal ADT Specification Examples
+### Formal ADT specification examples
 
 **Boolean ADT** — Values: $\text{Bool} = \{\text{true}, \text{false}\}$; Operations: $\text{and}, \text{or}, \text{not}$; Axioms:
 $$\text{and}(\text{true}, x) = x, \quad \text{and}(\text{false}, x) = \text{false}, \quad \text{or}(\text{true}, x) = \text{true}, \quad \text{not}(\text{true}) = \text{false}$$
@@ -42,7 +42,7 @@ $$\text{equal?}(\text{zero}, \text{zero}) = \text{true}, \quad \text{equal?}(\te
 
 ---
 
-## 3.2. The Dictionary ADT
+## 3.2. The dictionary ADT
 
 A dictionary stores associations of **(key, value)** pairs ($k \in K$, $i \in I$) and provides efficient manipulation primitives:
 
@@ -62,7 +62,7 @@ A dictionary stores associations of **(key, value)** pairs ($k \in K$, $i \in I$
 
 ---
 
-## 3.3. Elementary Dictionary Implementations
+## 3.3. Elementary dictionary implementations
 
 On a collection of $n$ records, linear sequence structures manifest unavoidable scaling bottlenecks:
 
@@ -77,11 +77,11 @@ On a collection of $n$ records, linear sequence structures manifest unavoidable 
 
 ---
 
-## 3.4. Hash Tables
+## 3.4. Hash tables
 
 **Hash tables** achieve expected constant time $\Theta(1)$ for lookup, insertion, and deletion, with worst-case cost $\Theta(n)$ under catastrophic collisions.
 
-### Direct Addressing Tables
+### Direct addressing tables
 
 The simplest dictionary implementation uses keys directly as vector indices: `T[key] = value`, giving $\Theta(1)$ access.
 
@@ -90,7 +90,7 @@ If keys span huge domains (such as 8-digit government IDs) while only 300 active
 :::directaddressviz
 :::
 
-### The Hash Function
+### The hash function
 
 To resolve this, we allocate a table $T$ with bounded capacity $m$ (proportional to expected element counts) and map keys into valid slot indices via a **hash function $h$**:
 
@@ -119,7 +119,7 @@ This phenomenon is a **collision**, requiring systematic conflict resolution (su
 
 ---
 
-### Collision Resolution via Separate Chaining
+### Collision resolution via separate chaining
 
 Each bucket $T[j]$ maintains an independent **linked list** of all colliding records with $h(k) = j$.
 
@@ -136,7 +136,7 @@ The **load factor** $\alpha = n/m$ represents average chain length:
 
 ---
 
-### Collision Resolution via Open Addressing
+### Collision resolution via open addressing
 
 Unlike separate chaining, open addressing maintains **no external linked nodes**: all elements reside directly within primary table slots ($n \le m$).
 
@@ -153,7 +153,7 @@ When insertion encounters an occupied slot (collision), the algorithm searches f
 
 ---
 
-## 3.5. Trees: Terminology and Definitions
+## 3.5. Trees: terminology and definitions
 
 A **tree** is an acyclic hierarchical structure composed of vertices and edges. In a **rooted tree**, a distinguished node serves as the **root** $r$.
 
@@ -166,17 +166,17 @@ A **tree** is an acyclic hierarchical structure composed of vertices and edges. 
 * **Ancestors & Descendants:** Paths upward (toward root) or downward (toward leaves).
 * **Height ($h$):** Longest edge path from root to any leaf.
 
-### Binary Trees
+### Binary trees
 
 A **binary tree** restricts each node to at most two direct descendants: a **left child** (`left`) and a **right child** (`right`).
 
 ---
 
-## 3.6. Binary Search Trees (BST)
+## 3.6. Binary search trees (BST)
 
 A **BST** implements the dictionary ADT relying on a **total order** over keys.
 
-### The BST Invariant Property
+### The BST invariant property
 
 For any node $x$ with key $k_x$:
 * All keys in the **left subtree** are strictly $< k_x$.
@@ -192,7 +192,7 @@ For any node $x$ with key $k_x$:
 
 ---
 
-### Core BST Operations
+### Core BST operations
 
 * **Search ($\Theta(h)$):** Compares target against current node, branching left if smaller or right if larger.
 ::algoviz{algorithm="abc_cerca"}
@@ -216,7 +216,7 @@ For any node $x$ with key $k_x$:
 
 ---
 
-### Height Degeneration in BSTs
+### Height degeneration in BSTs
 
 The time cost of all BST primitives scales directly with height $h$:
 
@@ -232,11 +232,11 @@ $$
 
 ---
 
-## 3.7. Self-Balancing Trees: AVL Trees
+## 3.7. Self-balancing trees: AVL trees
 
 To prevent pathological degeneration to $\Theta(n)$, **AVL trees** enforce a rigid balance invariant restored dynamically upon insertions and deletions.
 
-### Definition of an AVL Tree
+### Definition of an AVL tree
 
 An **AVL tree** is a BST where, **for every node**, subtree heights differ by at most 1:
 
@@ -251,7 +251,7 @@ $$
 
 ---
 
-### Rotations in AVL Trees
+### Rotations in AVL trees
 
 When an update induces an imbalance ($\text{balance} = \pm 2$), a **local rotation in constant time $\Theta(1)$** restores balance invariants while preserving in-order traversal:
 
@@ -273,7 +273,7 @@ When an update induces an imbalance ($\text{balance} = \pm 2$), a **local rotati
 
 ---
 
-### Insertion vs Deletion in AVL Trees
+### Insertion vs deletion in AVL trees
 * **Insertion ($\Theta(\log n)$):** Node is placed as in a BST; during upward backtracking, rebalancing occurs. **At most 1 rotation** (single or double) is required to rebalance the entire tree.
 ::algoviz{algorithm="avl_assignar"}
 
@@ -282,7 +282,7 @@ When an update induces an imbalance ($\text{balance} = \pm 2$), a **local rotati
 
 ---
 
-## 3.8. Comprehensive Summary of Dictionary Complexities
+## 3.8. Comprehensive summary of dictionary complexities
 
 | Data Structure | Search | Insertion | Deletion | In-Order Traversal | Notes |
 | :--- | :---: | :---: | :---: | :---: | :--- |

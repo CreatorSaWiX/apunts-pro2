@@ -14,7 +14,7 @@ This topic covers the definition of database schema structures (**DDL**) and dat
 
 ---
 
-## 2.1. Table Creation (`CREATE TABLE`)
+## 2.1. Table creation (`CREATE TABLE`)
 
 ```sql
 CREATE TABLE table_name (
@@ -24,7 +24,7 @@ CREATE TABLE table_name (
 );
 ```
 
-### Common Data Types
+### Common data types
 
 | Category | SQL Data Type | Description |
 | :--- | :--- | :--- |
@@ -37,7 +37,7 @@ CREATE TABLE table_name (
 
 `DEFAULT value` sets a default scalar value when columns are omitted in an `INSERT`.
 
-### Integrity Constraints
+### Integrity constraints
 
 Can be specified at **column level** (if referencing only that attribute) or at **table level** (mandatory when spanning multiple attributes, e.g., composite primary keys):
 
@@ -51,7 +51,7 @@ Can be specified at **column level** (if referencing only that attribute) or at 
 
 ---
 
-## 2.2. Referential Integrity
+## 2.2. Referential integrity
 
 When parent tuples are deleted (`DELETE`) or modified (`UPDATE`), referenced foreign key relationships execute one of these policies:
 
@@ -73,7 +73,7 @@ FOREIGN KEY (col_fk) REFERENCES parent_table(col_pk)
 
 ---
 
-## 2.3. Row Insertion (`INSERT INTO`)
+## 2.3. Row insertion (`INSERT INTO`)
 
 **Positional Insertion:** requires supplying values for **all columns** matching the table declaration order:
 
@@ -102,7 +102,7 @@ WHERE pressupost > 2000000;
 
 ---
 
-## 2.4. Row Deletion (`DELETE FROM`)
+## 2.4. Row deletion (`DELETE FROM`)
 
 ```sql
 DELETE FROM table_name [WHERE condition];
@@ -133,7 +133,7 @@ WHERE NOT EXISTS (
 
 ---
 
-## 2.5. Modifying Data (`UPDATE`)
+## 2.5. Modifying data (`UPDATE`)
 
 ```sql
 UPDATE table_name

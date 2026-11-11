@@ -6,14 +6,14 @@ order: 3
 draft: false
 ---
 
-## 3.1 What is a Process?
+## 3.1 What is a process?
 
 When you double-click an executable application or run a command in the terminal, the operating system instantiates a process (a program actively loaded and running in memory). Every process receives a system-wide unique identifier (an integer token) called the PID (Process Identifier).
 
 :::procoverviewviz
 :::
 
-### 1. Identity, Environment, and Context
+### 1. Identity, environment, and context
 Every executing process maintains:
 * **Unique Identifiers**:
   * **PID (*Process ID*)**: Unique system-level integer ID of the process. Queried in C via `getpid()` (`man 2 getpid`).
@@ -22,7 +22,7 @@ Every executing process maintains:
 * **Environment**: Invocation command-line argument vector (`argv`) and inherited environment variables (`HOME`, `PATH`...).
 * **Execution Context**: The exact state of CPU registers, the instruction pointer (*Program Counter*), stack pointers, and assigned virtual memory address space.
 
-### 2. Process Inspection from the Terminal
+### 2. Process inspection from the terminal
 Active processes and their states can be examined using standard Linux command utilities:
 
 :::shellviz{command="ps -ef" suggestions="ps -ef,ps -l,pstree,man ps" title="Terminal — Inspecting active processes (PID, PPID, and process hierarchy)"}
@@ -31,7 +31,7 @@ Active processes and their states can be examined using standard Linux command u
 * **`ps -ef`** or **`ps aux`**: Formats a complete listing of active processes, showing user identity (`UID`), `PID`, `PPID`, resource consumption, and start commands.
 * **`pstree`**: Renders the complete hierarchical tree of processes, highlighting `systemd` or `init` (PID 1) as the universal root ancestor.
 
-### 3. The PCB (*Process Control Block*)
+### 3. The PCB (*process control block*)
 The **PCB** is the central kernel descriptor structure allocated in kernel memory for every live process. When the scheduler suspends a process to grant CPU time to another task, the kernel saves its complete execution context inside this structure:
 
 * **Identification**: PID, PPID, and credential tokens (`UID`, `GID`).
@@ -47,7 +47,7 @@ The **PCB** is the central kernel descriptor structure allocated in kernel memor
 
 ---
 
-## 3.2 Process Lifecycle and System Calls
+## 3.2 Process lifecycle and system calls
 
 A process does not monopolize CPU execution indefinitely; it transitions through multiple operational states throughout its lifetime. This cycle is orchestrated by the kernel scheduler alongside explicit system calls invoked in source code:
 
@@ -63,7 +63,7 @@ A process does not monopolize CPU execution indefinitely; it transitions through
 
 ---
 
-### 1. Process Creation: Cloning with `fork()` (READY $\rightarrow$ RUN)
+### 1. Process creation: cloning with `fork()` (READY $\rightarrow$ RUN)
 When `fork()` is called, the kernel creates an **exact duplicate** of the calling process (the parent). The new process (the child) is placed into the **READY** state awaiting its CPU scheduling quantum to transition to **RUN**:
 
 :::forkviz
@@ -112,7 +112,7 @@ int main() {
 
 ---
 
-### 2. Process Mutation: Program Replacement with `execlp()`
+### 2. Process mutation: program replacement with `execlp()`
 
 `execlp()` does not create a new process: it completely discards the current process's address space and loads a new executable starting from its `main`. The existing PID is preserved.
 
@@ -144,7 +144,7 @@ State modifications during `execlp()`:
 
 ---
 
-### 3. Process Suspension (RUN $\rightarrow$ BLOCKED)
+### 3. Process suspension (RUN $\rightarrow$ BLOCKED)
 The **BLOCKED (Sleeping / Waiting)** state occurs when a process cannot make forward progress because it requires an external asynchronous completion. **While blocked, a process consumes zero CPU time.**
 
 :::blockedviz
@@ -156,7 +156,7 @@ System calls inducing a transition from RUN to BLOCKED:
 
 ---
 
-### 4. Process Termination and Reaping: `exit()`, ZOMBIE State, and `waitpid()`
+### 4. Process termination and reaping: `exit()`, ZOMBIE state, and `waitpid()`
 When a process finishes via `exit(status)` or returning from `main`:
 1. The kernel releases its mapped virtual memory and closes its file descriptors.
 2. The process enters the **ZOMBIE** state: its descriptor (PCB) remains in the kernel process table retaining its termination status code until the parent harvests it with `waitpid()`.
@@ -164,7 +164,7 @@ When a process finishes via `exit(status)` or returning from `main`:
 :::zombieviz
 :::
 
-### Synchronization with `waitpid()` and Exit Status Inspection
+### Synchronization with `waitpid()` and exit status inspection
 The parent invokes `waitpid()` to suspend execution until a child completes, retrieving its exit status in `status` and **permanently removing its PCB from kernel memory**:
 
 ```c
@@ -212,7 +212,7 @@ if (WIFEXITED(status)) {
 
 ---
 
-### 5. Process Freezing: The STOPPED State
+### 5. Process freezing: the STOPPED state
 The **STOPPED** state occurs when a process is intentionally paused by external signal intervention:
 * From the interactive terminal: pressing **`Ctrl+Z`** or executing `kill -STOP <PID>`.
 * In C source code: invoking `kill(pid, SIGSTOP)`.
@@ -223,7 +223,7 @@ The **STOPPED** state occurs when a process is intentionally paused by external 
 
 ---
 
-## 3.3 Sequential vs Concurrent Execution
+## 3.3 Sequential vs concurrent execution
 
 Orchestrating `fork()` and `waitpid()` patterns yields two primary multiprocessing models:
 
@@ -253,7 +253,7 @@ for (int i = 0; i < N; i++) {
 while (waitpid(-1, NULL, 0) > 0);
 ```
 
-### Shell Command Execution: Foreground vs Background (`&`)
+### Shell command execution: foreground vs background (`&`)
 
 When entering commands into an interactive Shell (`bash`, `zsh`), the shell executes an internal loop combining `fork()`, `exec()`, and `waitpid()`:
 
@@ -274,11 +274,11 @@ while (1) {
 
 ---
 
-## 3.4 Context Switching and CPU Scheduling
+## 3.4 Context switching and CPU scheduling
 
 How does an operating system maintain the illusion of simultaneous execution for dozens of processes on a shared CPU core?
 
-### 1. The Context Switch (*context switch*)
+### 1. The context switch (*context switch*)
 
 :::contextswitchviz
 :::
@@ -293,7 +293,7 @@ When the CPU transitions execution from process A to process B, the kernel perfo
 
 During a context switch, the CPU performs purely internal kernel bookkeeping; **no user program code advances**. This represents unavoidable administrative overhead that must be minimized.
 
-### 2. CPU Scheduling (*scheduling*)
+### 2. CPU scheduling (*scheduling*)
 
 :::schedulerviz
 :::
@@ -305,7 +305,7 @@ The **scheduler (*scheduler*)** is the kernel subsystem determining processor al
 * **Non-preemptive Scheduling (*Non-preemptive* / Cooperative)**: A running process retains CPU control until it voluntarily yields via termination (`exit`) or a blocking system call (`read`).
 * **Preemptive Scheduling (*Preemptive*)**: The kernel enforces execution limits: if a time quantum expires or a higher-priority task enters `READY`, the kernel forcibly preempts the running process.
 
-### 3. Key Scheduling Algorithms
+### 3. Key scheduling algorithms
 
 ### Round Robin (RR)
 
@@ -331,7 +331,7 @@ The production CPU scheduler of the Linux kernel:
 * Tracks execution time via a per-process metric termed **virtual runtime (`vruntime`)**. Processes with lower accumulated `vruntime` are prioritized for subsequent CPU allocation.
 * Consequently, I/O-bound interactive applications (text editors, window managers, terminals) that spend most of their existence suspended in `BLOCKED` accumulate very little `vruntime`. When awakened by an input event, CFS dispatches them with near-zero latency.
 
-### State Transition Summary
+### State transition summary
 
 | Transition | From $\rightarrow$ To | Primary Trigger |
 | :--- | :---: | :--- |

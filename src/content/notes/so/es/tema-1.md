@@ -212,12 +212,12 @@ Es una lista de carpetas (separadas por dos puntos `:`) donde la Shell busca los
 
 ---
 
-## 1.12 Preguntas típicas de examen resueltas (Tema 1)
+## 1.12 Preguntas típicas de examen resueltas (tema 1)
 
 ### 1. ¿Por qué la biblioteca de sistema (`libc`) depende del hardware?
 Porque para cambiar de modo de usuario a modo kernel hay que ejecutar una instrucción máquina específica de la CPU (`syscall`, `sysenter`, `int 0x80`), y hay que colocar los parámetros en los registros concretos que pide la arquitectura del procesador.
 
-### 2. ¿Qué tres tipos de eventos hacen que la CPU entre al Kernel?
+### 2. ¿Qué tres tipos de eventos hacen que la CPU entre al kernel?
 1. **Interrupción de hardware**: asíncrona, la genera un dispositivo externo (teclado, disco, reloj).  
 2. **Excepción de software**: síncrona, la causa una instrucción del programa con error (división por cero, violación de memoria).  
 3. **Llamada a sistema (*trap*)**: síncrona, la solicita expresamente el código para pedir un servicio al sistema operativo.

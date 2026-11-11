@@ -1,5 +1,5 @@
 ---
-title: "OS Midterm"
+title: "OS midterm"
 description: "Key theory summary for the Operating Systems midterm exam."
 readTime: "25 min"
 order: 5
@@ -7,9 +7,9 @@ draft: false
 isNew: true
 ---
 
-## 1. OS Architecture, CPU Modes, and Kernel Transitions
+## 1. OS architecture, CPU modes, and kernel transitions
 
-### CPU Modes: User vs. Kernel
+### CPU modes: user vs. kernel
 The CPU maintains an internal bit in its Program Status Word (PSW) indicating the active privilege level:
 * **User Mode**: Application code executes with restricted privileges. It can only access its own logical memory address space and non-privileged instructions. Direct hardware access is forbidden.
 * **Kernel Mode (Privileged)**: The operating system has unrestricted access to physical memory, CPU control registers, and privileged instructions.
@@ -17,7 +17,7 @@ The CPU maintains an internal bit in its Program Status Word (PSW) indicating th
   1. Kernel code resides outside the application's logical address space (unmapped and inaccessible).
   2. Kernel functions execute privileged CPU instructions prohibited in user mode.
 
-### How Do We Enter the Kernel?
+### How do we enter the kernel?
 There are only **3 entry mechanisms**. Kernel code remains dormant unless triggered by one of these:
 
 | Mechanism | Voluntary / Involuntary | Synchronous / Asynchronous | Trigger |
@@ -26,14 +26,14 @@ There are only **3 entry mechanisms**. Kernel code remains dormant unless trigge
 | **Software Exception** | Involuntary | **Synchronous** | CPU fault encountered while executing an instruction: division by zero, invalid memory access (*SegFault*), page fault. |
 | **System Call (*trap*)** | **Voluntary** | **Synchronous** | User application explicitly requests an OS service (`write`, `fork`, `sigsuspend`). |
 
-### Why Is the System Library (`libc`) Hardware-Dependent and Non-Portable?
+### Why is the system library (`libc`) hardware-dependent and non-portable?
 Because `libc` wraps raw system calls by executing processor-specific assembly instructions to trigger mode switching (`syscall` on x86_64, `svc` on ARM) and places arguments into designated machine registers defined by the architecture's ABI. A `libc` binary built for ARM cannot run on x86.
 
-### Shell Commands: Built-in vs. External
+### Shell commands: built-in vs. external
 * **Built-in (e.g., `cd`, `exit`)**: Executes directly inside the shell process. **No new child process is spawned**.
 * **External (e.g., `ls`, `ps`)**: The shell forks a new child process with `fork()` and replaces its memory space with `execlp()`.
 
-### Low-Level Terminal Output (`sprintf` + `write`)
+### Low-level terminal output (`sprintf` + `write`)
 Operating systems courses avoid `printf` due to user-space buffering. Direct output uses `write` targeting file descriptor 1 (`stdout`):
 ```c
 char buf[80];
@@ -43,12 +43,12 @@ write(1, buf, len);
 
 ---
 
-## 2. Process Management (PCB, Lifecycle, and System Calls)
+## 2. Process management (PCB, lifecycle, and system calls)
 
-### The PCB (*Process Control Block*)
+### The PCB (*process control block*)
 The kernel data structure allocated per active process, tracking: PID, PPID, process state, saved CPU register context, virtual memory mappings, open file descriptor table (`fd`), 4 signal handling structures, and CPU accounting stats.
 
-### Process Lifecycle and State Transitions
+### Process lifecycle and state transitions
 * **`RUN`**: Currently executing instructions on a physical CPU core.
 * **`READY`**: Ready to execute, waiting in the run queue for CPU dispatch.
 * **`BLOCKED`**: Suspended waiting for an external event (I/O completion, child termination, signal delivery). **Consumes 0% CPU**.
@@ -60,7 +60,7 @@ The kernel data structure allocated per active process, tracking: PID, PPID, pro
 
 ---
 
-### What Is Inherited Across `fork()` and What Changes on `exec()`? (Essential)
+### What is inherited across `fork()` and what changes on `exec()`? (Essential)
 
 | PCB Attribute | After `fork()` (Child) | After `exec()` (Mutation) |
 | :--- | :--- | :--- |
@@ -76,9 +76,9 @@ The kernel data structure allocated per active process, tracking: PID, PPID, pro
 
 ---
 
-### Lifecycle System Calls
+### Lifecycle system calls
 
-### 1. Cloning a Process: `fork()`
+### 1. Cloning a process: `fork()`
 Duplicates the caller into a new child process:
 ```c
 int pid = fork();
@@ -104,7 +104,7 @@ waitpid(-1, NULL, 0);
 // In the parent, global still evaluates to 100!
 ```
 
-### 2. Mutating a Process: `execlp()`
+### 2. Mutating a process: `execlp()`
 Overwrites the caller's virtual address space with a new executable while preserving the same PID. Returns only on failure (`-1`). Must terminate with sentinel `(char *)NULL`:
 ```c
 execlp("./program", "program", "arg1", (char *)NULL);
@@ -113,10 +113,10 @@ perror("Execution failed");
 exit(1);
 ```
 
-### 3. Terminating a Process: `exit(status)`
+### 3. Terminating a process: `exit(status)`
 Releases user RAM, closes descriptors, and moves the process to **`ZOMBIE`** state while recording `status` in the PCB. Never returns.
 
-### 4. Reaping Children and Releasing PCB: `waitpid()`
+### 4. Reaping children and releasing PCB: `waitpid()`
 Blocks until a child terminates, inspects its termination cause, and **deallocates its PCB from the kernel**:
 ```c
 int status;
@@ -141,18 +141,18 @@ if (WIFEXITED(status)) {
 while (waitpid(-1, NULL, 0) > 0);
 ```
 
-### Orphan and Zombie Processes
+### Orphan and zombie processes
 * If a parent terminates before its children, the children become **orphans** and are automatically adopted by `init` / `systemd` (PID 1).
 * **Can an orphan remain a Zombie permanently?** **No.** PID 1 regularly invokes `waitpid()` to clean up and deallocate any adopted process upon death.
 
 ---
 
-## 3. Process Hierarchies and Concurrency
+## 3. Process hierarchies and concurrency
 
-### Sequential vs. Concurrent Execution
+### Sequential vs. concurrent execution
 Defines when the parent waits for its children relative to when it spawns them.
 
-### Sequential Pattern
+### Sequential pattern
 The parent spawns one child and blocks until it terminates before spawning the next. The `waitpid()` call sits **inside** the loop:
 ```c
 for (i = 0; i < N; i++) {
@@ -168,7 +168,7 @@ for (i = 0; i < N; i++) {
 * **Maximum concurrency degree = 2** (parent + 1 child).
 * Execution order is strictly **deterministic**: child 0, then child 1, etc.
 
-### Concurrent Pattern
+### Concurrent pattern
 The parent spawns all children upfront and reaps them afterwards. The `waitpid()` call sits **outside** the creation loop:
 ```c
 for (i = 0; i < N; i++) {
@@ -186,9 +186,9 @@ while (waitpid(-1, NULL, 0) > 0); // Waits for all children after the loop
 
 ---
 
-### Process Tree Patterns
+### Process tree patterns
 
-### 1. Fan Tree (Star Pattern)
+### 1. Fan tree (star pattern)
 A single parent spawns $N$ direct children that each terminate via `exit()`:
 ```c
 for (i = 0; i < 3; i++) {
@@ -205,7 +205,7 @@ P0
 └── P0.2
 ```
 
-### 2. Cascade Tree (Mutation Chain)
+### 2. Cascade tree (mutation chain)
 Each child mutates into the same binary passing a decremented argument:
 ```c
 // Run command: ./prog 3
@@ -223,7 +223,7 @@ if (n > 0) {
 P0 ──> P0.0 ──> P0.0.0 ──> P0.0.0.0
 ```
 
-### 3. Binary Recursive Tree (`arbol.c` pattern)
+### 3. Binary recursive tree (`arbol.c` pattern)
 Each process with remaining levels $> 0$ forks twice, with children mutating at `levels - 1`:
 ```c
 if (nivells > 0) {
@@ -242,11 +242,11 @@ if (nivells > 0) {
 
 ---
 
-## 4. Signal Management
+## 4. Signal management
 
 Signals provide asynchronous notifications sent by the kernel or peer processes.
 
-### The 4 Signal Structures in the PCB
+### The 4 signal structures in the PCB
 When delivering a signal, the kernel checks these structures in order:
 1. **Signal Block Mask (`sigset_t`)**: Set of temporarily blocked signals. If blocked, the signal cannot interrupt the process right now.
 2. **Pending Signal Bitmap**: Bit vector recording blocked signals awaiting delivery. **Signals do not queue**: receiving 5 identical signals while blocked results in only **1 delivery** upon unblocking.
@@ -256,7 +256,7 @@ When delivering a signal, the kernel checks these structures in order:
    * User function: Jumps into the user-defined C handler.
 4. **Alarm Timer**: Kernel countdown timer. Upon reaching 0, the kernel generates `SIGALRM`. Only 1 alarm timer per process.
 
-### Key Signals Reference Table
+### Key signals reference table
 
 | Signal | Number | Default Action | Catchable / Blockable? |
 | :--- | :---: | :---: | :---: |
@@ -270,9 +270,9 @@ When delivering a signal, the kernel checks these structures in order:
 
 ---
 
-### Signal System Calls
+### Signal system calls
 
-### 1. Sending a Signal: `kill(pid, signal)`
+### 1. Sending a signal: `kill(pid, signal)`
 Transmits any signal to a process (not just for termination):
 ```c
 kill(pid, SIGSTOP); // Pauses the process (moves to STOPPED)
@@ -281,7 +281,7 @@ kill(pid, SIGKILL); // Forces immediate termination
 kill(pid, SIGUSR1); // Sends user-defined signal
 ```
 
-### 2. Configuring Signal Handlers: `sigaction()`
+### 2. Configuring signal handlers: `sigaction()`
 ```c
 void signal_handler(int s) {
     char msg[64];
@@ -305,7 +305,7 @@ sigaction(SIGUSR1, &sa, NULL);       // Attach SIGUSR1
 sigaddset(&sa.sa_mask, SIGUSR2); // SIGUSR2 is blocked while signal_handler runs
 ```
 
-### 3. Modifying the Block Mask: `sigprocmask()`
+### 3. Modifying the block mask: `sigprocmask()`
 ```c
 sigset_t mask, oldmask;
 sigemptyset(&mask);
@@ -322,7 +322,7 @@ sigprocmask(SIG_UNBLOCK, &mask, NULL);
 sigprocmask(SIG_SETMASK, &oldmask, NULL);
 ```
 
-### 4. Safely Awaiting Signals: `sigsuspend()`
+### 4. Safely awaiting signals: `sigsuspend()`
 **Atomically** swaps the caller's mask with `mask` and transitions the process to **`BLOCKED`** until an unmasked signal arrives:
 ```c
 sigsuspend(&mask); // Always returns -1 (errno = EINTR)
@@ -330,7 +330,7 @@ sigsuspend(&mask); // Always returns -1 (errno = EINTR)
 * After the handler finishes, `sigsuspend` **automatically restores the mask that was active beforehand**.
 * **Which signals always unblock `sigsuspend`?** Only `SIGKILL` and `SIGSTOP` (since they can never be blocked).
 
-### 5. Scheduling Timers: `alarm(seconds)`
+### 5. Scheduling timers: `alarm(seconds)`
 Schedules `SIGALRM` delivery in $N$ seconds without blocking execution:
 ```c
 alarm(5); // SIGALRM arrives in 5 seconds
@@ -342,7 +342,7 @@ int elapsed = 5 - remaining;      // Calculates child execution duration
 
 ---
 
-### Race Conditions
+### Race conditions
 
 Awaiting signals with `sigsuspend` while preventing race conditions.  
 If a parent must await a child's signal (`SIGUSR1`), **the signal must be blocked before `fork()`**:
@@ -383,12 +383,12 @@ while (!received) {
 * **Why is unblocked `fork()` a bug?**  
   If the child delivers `SIGUSR1` before the parent enters `sigsuspend()`, the signal is processed prematurely. When the parent finally reaches `sigsuspend()`, **it remains stuck sleeping indefinitely**.
 
-### Who Prints Messages Like `"Alarm clock"` or `"User defined signal 1"`?
+### Who prints messages like `"Alarm clock"` or `"User defined signal 1"`?
 Printed by **the shell**, not the process. The shell awaits termination via `waitpid()` and, upon detecting abnormal death via `WIFSIGNALED(status)`, outputs the default signal description.
 
 ---
 
-## 5. CPU Scheduling
+## 5. CPU scheduling
 
 * **Non-Preemptive (Cooperative) Scheduling:** The process relinquishes the CPU only by its own action: calling `exit()`, making a blocking system call (`read`, `waitpid`), or being killed by a signal.
 * **Preemptive Scheduling:** The kernel forcibly revokes CPU access upon quantum expiration (timer interrupt) or when a higher-priority process becomes `READY`.
@@ -403,7 +403,7 @@ Orders processes by `vruntime` (virtual runtime). Prioritizes interactive / I/O-
 
 ---
 
-## Frequently Asked Midterm Exam Questions
+## Frequently asked midterm exam questions
 
 Model justifications for full points:
 

@@ -213,12 +213,12 @@ Les **variables d'entorn** són dades en format `NOM=VALOR` que es passen autom�
 
 ---
 
-## 1.12 Preguntes típiques d'examen resoltes (Tema 1)
+## 1.12 Preguntes típiques d'examen resoltes (tema 1)
 
 ### 1. Per què la biblioteca de sistema (`libc`) depèn del maquinari?
 Perquè per canviar de mode d'usuari a mode kernel cal executar una instrucció màquina específica de la CPU (`syscall`, `sysenter`, `int 0x80`), i cal posar els paràmetres als registres concrets que demana l'arquitectura del processador.
 
-### 2. Quins tres tipus d'esdeveniments fan que la CPU entri al Kernel?
+### 2. Quins tres tipus d'esdeveniments fan que la CPU entri al kernel?
 1. **Interrupció de maquinari**: asíncrona, la genera un dispositiu extern (teclat, disc, rellotge).  
 2. **Excepció de programari**: síncrona, la causa una instrucció del programa amb error (divisió per zero, violació de memòria).  
 3. **Crida a sistema (*trap*)**: síncrona, la demana expressament el codi per sol·licitar un servei al sistema operatiu.

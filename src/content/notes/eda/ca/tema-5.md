@@ -6,7 +6,7 @@ order: 6
 draft: false
 ---
 
-## 5.1. Propietats Fonamentals i Cotes
+## 5.1. Propietats fonamentals i cotes
 
 Un graf $G = (V, E)$ està format per un conjunt de $n = |V|$ **vèrtexs** i $m = |E|$ **arestes**.
 
@@ -26,7 +26,7 @@ Més detalls a [Resum parcial teoria de grafs M1](./m1-G)
 
 ---
 
-## 5.2. Representacions a Memòria: Matriu vs Llistes d'Adjacència
+## 5.2. Representacions a memòria: matriu vs llistes d'adjacència
 
 | Operació / Paràmetre | Matriu d'adjacència (`vector<vector<bool>>`) | Llistes d'adjacència (`vector<vector<int>>`) |
 | :--- | :---: | :---: |
@@ -43,9 +43,9 @@ Més detalls a [Resum parcial teoria de grafs M1](./m1-G)
 
 ---
 
-## 5.3. Cerca en Profunditat (DFS) i Cerca en Amplada (BFS)
+## 5.3. Cerca en profunditat (DFS) i cerca en amplada (BFS)
 
-### DFS (Cerca en Profunditat)
+### DFS (cerca en profunditat)
 Explora recursivament fins a arribar a un carreró sense sortida i retrocedeix.
 
 ```cpp
@@ -65,7 +65,7 @@ void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {
 
 ---
 
-### BFS (Cerca en Amplada)
+### BFS (cerca en amplada)
 Explora per nivells concèntrics de distància des d'un origen $s$.
 
 ```cpp
@@ -100,7 +100,7 @@ vector<int> bfs(const vector<vector<int>>& G, int s) {
 
 ---
 
-## 5.4. Algorisme de Dijkstra (Camins mínims amb pesos $\ge 0$)
+## 5.4. Algorisme de Dijkstra (camins mínims amb pesos $\ge 0$)
 
 Calcula les distàncies mínimes des d'un origen $s$ en grafs amb arestes ponderades **no negatives** ($\omega(e) \ge 0$).
 
@@ -142,7 +142,7 @@ void dijkstra(const GrafP& G, int s, vector<double>& dist) {
 
 * **Cost temporal amb `std::priority_queue`:** $\mathbf{\mathcal{O}((n + m) \log n)}$.
 
-### Preguntes Clau d'Examen sobre Dijkstra
+### Preguntes clau d'examen sobre Dijkstra
 
 1. **Per què cal el vector `S` (o `if (d > dist[u]) continue;`)?**
    Com que `std::priority_queue` no té operació `decrease_key`, es permeten entrades duplicades a la cua. Sense el vector `S`, un node es podria reprocessar múltiples vegades, fent explotar el cost a **$\mathbf{\Omega(n^2)}$** en grafs amb molts camins alternatius.
@@ -155,14 +155,14 @@ void dijkstra(const GrafP& G, int s, vector<double>& dist) {
 
 ---
 
-## 5.5. Ordenació Topològica en Digrafs Acíclics (DAGs)
+## 5.5. Ordenació topològica en digrafs acíclics (DAGs)
 
 Una ordenació topològica és una permutació lineal dels vèrtexs $(v_1, \dots, v_n)$ tal que per a tot arc $(u, v) \in E$, $u$ apareix abans que $v$.
 
 * **Teorema:** Un digraf admet ordenació topològica $\iff$ és un **DAG** (no té cicles dirigits).
 * Tot DAG finit té almenys una font ($\deg^- = 0$) i un embornal ($\deg^+ = 0$).
 
-### Algorisme de Kahn (Fonts i Graus d'Entrada)
+### Algorisme de Kahn (fonts i graus d'entrada)
 
 ```cpp
 vector<int> toposort(const vector<vector<int>>& G) {
@@ -198,7 +198,7 @@ vector<int> toposort(const vector<vector<int>>& G) {
 
 ---
 
-## 5.6. Arbres d'Expansió Mínims (MST): Prim vs Kruskal
+## 5.6. Arbres d'expansió mínims (MST): Prim vs Kruskal
 
 Un **arbre d'expansió** connecta tots els vèrtexs d'un graf no dirigit connex utilitzant exactament **$n - 1$ arestes**. L'**MST** és aquell que minimitza la suma de pesos de les arestes.
 
@@ -216,7 +216,7 @@ Un **arbre d'expansió** connecta tots els vèrtexs d'un graf no dirigit connex 
 
 ---
 
-## 5.7. Grafs Implícits: Graelles i Espais d'Estats
+## 5.7. Grafs implícits: graelles i espais d'estats
 
 A molts problemes de final no donen llistes d'adjacència; el graf és implícit:
 
@@ -240,7 +240,7 @@ for (int k = 0; k < 4; ++k) {
 :::gridbfsviz
 :::
 
-### 2. Espais d'Estats Abstractes (ex: Problema de les Gerres, Gener 2024)
+### 2. Espais d'estats abstractes (ex: problema de les gerres, gener 2024)
 * **Vèrtexs:** Parelles d'estats $(a, b)$ amb l'aigua actual a cada gerra ($0 \le a \le A$, $0 \le b \le B$).
 * **Arestes:** Operacions possibles (omplir $A$, buidar $B$, transvasar $A \to B$, etc.).
 * **Resolució:** Com que cada operació compta com 1 pas, el nombre mínim de passos es resol **sempre amb BFS**, mai amb Dijkstra ni DFS. Cost: $\mathcal{O}(\text{nombre d'estats}) = \mathcal{O}(A \cdot B)$.

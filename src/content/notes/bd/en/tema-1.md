@@ -1,5 +1,5 @@
 ---
-title: "Topic 1: SQL and Relational Algebra"
+title: "Topic 1: SQL and relational algebra"
 description: "DQL, aggregate functions, subqueries, and relational algebra."
 readTime: "12 min"
 order: 1
@@ -13,7 +13,7 @@ All queries use the `SELECT` statement. Reference schema for examples:
 
 ---
 
-## 1.1. Basic `SELECT` Syntax
+## 1.1. Basic `SELECT` syntax
 
 ```sql
 SELECT [DISTINCT | ALL] col_1, col_2 ...
@@ -65,7 +65,7 @@ ORDER BY num_dpt ASC, sou DESC;
 
 ---
 
-## 1.3. Aggregate Functions
+## 1.3. Aggregate functions
 
 Process multiple tuples and return a single summary value:
 
@@ -91,7 +91,7 @@ WHERE num_dpt = 2;
 
 ---
 
-## 1.4. Grouping (`GROUP BY`) and Group Predicates (`HAVING`)
+## 1.4. Grouping (`GROUP BY`) and group predicates (`HAVING`)
 
 `GROUP BY` partitions tuples into groups according to distinct values of the specified attributes. Every individual non-aggregate column in the `SELECT` list **must appear in the `GROUP BY` clause**; projecting unaggregated non-grouping attributes is invalid.
 
@@ -119,7 +119,7 @@ HAVING COUNT(*) > 1;      -- 3. Keeps departments with > 1 employee satisfying W
 
 ---
 
-## 1.5. Multi-Table Queries (Joins)
+## 1.5. Multi-table queries (joins)
 
 Allow combining rows from multiple related tables. The recommended standard syntax is `INNER JOIN ... ON`:
 
@@ -158,7 +158,7 @@ HAVING COUNT(*) > 1;
 
 ---
 
-## 1.6. Set Operations (`UNION`)
+## 1.6. Set operations (`UNION`)
 
 `UNION` vertically combines results from two independent `SELECT` statements into a single unified relation, automatically eliminating duplicate rows. `UNION ALL` retains duplicates and executes faster. Both queries must project identical arities with compatible data types, and `ORDER BY` can only appear once at the very end:
 
@@ -200,7 +200,7 @@ WHERE NOT EXISTS (
 
 ---
 
-## 1.8. Temporal Types and Functions
+## 1.8. Temporal types and functions
 
 Primary temporal data types: `DATE` (format `'YYYY-MM-DD'`), `TIME` (format `'HH:MM:SS'`), `TIMESTAMP`, and `INTERVAL`. Current timestamps are obtained via `CURRENT_DATE`, `CURRENT_TIME`, or `NOW()`.
 
@@ -227,7 +227,7 @@ WHERE moment > (data_sortida + INTERVAL '10 min');
 
 ---
 
-## 1.9. Query Quality Criteria
+## 1.9. Query quality criteria
 
 In FIB university database exams, even if a query yields correct data, point penalties are deducted if it violates these criteria:
 
@@ -239,13 +239,13 @@ In FIB university database exams, even if a query yields correct data, point pen
 
 ---
 
-## 1.10. Relational Algebra
+## 1.10. Relational algebra
 
 **Relational Algebra** is a formal procedural query language where operators transform input relations into new output relations. In written examinations it carries between **1.5 and 2.5 points**, requiring step-by-step assignments ($A = \dots, B = \dots, R = \dots$).
 
 Unlike SQL, relational algebra relations are mathematical sets **without duplicate tuples**: projection automatically eliminates duplicates. For set operations ($\cup$, $\cap$, $-$), both relations must be union-compatible (identical arity and matching attribute names; attributes must be renamed beforehand if mismatched).
 
-### Relational Algebra Operators
+### Relational algebra operators
 
 | Operator | Syntax | Description |
 | :--- | :---: | :--- |

@@ -43,7 +43,7 @@ write(1, buffer, strlen(buffer)); // 1 = stdout, 2 = stderr
 
 ---
 
-## Bloc 2: Regles de Makefile (Exercicis 1 a 4)
+## Bloc 2: Regles de Makefile (exercicis 1 a 4)
 
 Format fonamental d'una regla:
 ```makefile
@@ -68,7 +68,7 @@ clean:
 
 ---
 
-## Bloc 3: Errors freqüents del compilador (Examen)
+## Bloc 3: Errors freqüents del compilador (examen)
 
 | Error / Avís de `gcc` | Causa | Solució |
 | :--- | :--- | :--- |

@@ -259,7 +259,7 @@ HAVING COUNT(*) >= 3;
 
 ---
 
-### Àlgebra Relacional
+### Àlgebra relacional
 Sense duplicats per definició. S'escriu en seqüència pas a pas ($A = \dots, R = \dots$).
 
 | Operador | Sintaxi | Descripció |
@@ -292,7 +292,7 @@ Sense duplicats per definició. S'escriu en seqüència pas a pas ($A = \dots, R
 
 ---
 
-### Patró 1: Selecció + Projecció
+### Patró 1: selecció + projecció
 
 **Exemple 1:** "Noms dels usuaris `free` amb més de 1000 reproduccions."
 ```text
@@ -301,7 +301,7 @@ R = usuaris(tarifa='free' and reproduccions > 1000)[nomUsuari]
 
 ---
 
-### Patró 2: Seguir les claus foranes (Joins)
+### Patró 2: seguir les claus foranes (joins)
 
 **Exemple 2:** "Títols de les cançons de la playlist anomenada `'Running'`."
 Camí: `playlist` $\rightarrow$ `cançonsAPlaylist` $\rightarrow$ `cançons` (comparteixen nom d'atribut, usem `*`).
@@ -329,7 +329,7 @@ R = B[nomSeguidor]
 
 ---
 
-### Patró 3: "Que no tenen cap..." (Resta)
+### Patró 3: "Que no tenen cap..." (resta)
 
 Sempre: **tots els candidats $-$ els que sí que ho compleixen** (el conjunt de partida és la taula que els enumera tots).
 
@@ -361,7 +361,7 @@ R = C[nomSeguidor]
 
 ---
 
-### Patró 4: "I" / "O" (Intersecció i Unió)
+### Patró 4: "I" / "O" (intersecció i unió)
 
 **Exemple 8:** "Usuaris que han creat alguna playlist de tema `'rock'` **i també** alguna de tema `'pop'`."
 *(Nota: Si no es permet usar $\cap$, és equivalent a `A - (A - B)`).*
@@ -381,7 +381,7 @@ R = A ∪ B
 
 ---
 
-### Patró 5: "Dues o més" (Auto-join)
+### Patró 5: "Dues o més" (auto-join)
 
 El patró és sempre el mateix: **còpia reanomenada**, **igualtat (`=`)** sobre el que s'ha de repetir i **desigualtat (`!=`)** sobre el que ha de ser diferent.
 
@@ -403,7 +403,7 @@ R = D[idCanço]
 
 ---
 
-### Patró 6: "Totes..." (Divisió / Doble resta)
+### Patró 6: "Totes..." (divisió / doble resta)
 
 **Idea:** Busco totes les parelles `(playlist, cançó d'X)` que **haurien d'existir** (producte cartesià), li resto les que **existeixen de debò**, i les playlists que queden són les que els falta alguna cançó (*"dolentes"*). Després les resto del total.
 
@@ -423,7 +423,7 @@ R = (Bones * playlist)[nomList]             -- Recuperem el nomList
 
 ## 2. DDL i DML
 
-### Definició de taules (`CREATE TABLE`) i Integritat
+### Definició de taules (`CREATE TABLE`) i integritat
 - **Restriccions:** `NOT NULL`, `UNIQUE` (admet nuls), `PRIMARY KEY` (`NOT NULL` + `UNIQUE`), `REFERENCES taula(pk)` (`FOREIGN KEY`), `CHECK (condició)`.
 - **Polítiques de Clau Forana (`ON DELETE` / `ON UPDATE`):**
   - `RESTRICT` / `NO ACTION`: Bloqueja l'operació si hi ha fills *(per defecte)*.
@@ -437,7 +437,7 @@ R = (Bones * playlist)[nomList]             -- Recuperem el nomList
 
 ---
 
-## 3. Components Lògics i Seguretat
+## 3. Components lògics i seguretat
 
 ### Assercions
 Sempre comença amb `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
@@ -454,9 +454,9 @@ Sempre comença amb `CREATE ASSERTION nom CHECK (NOT EXISTS (SELECT * ...))`
 
 ---
 
-## 6. Disseny Conceptual (UML $\to$ Relacional)
+## 7. Disseny conceptual (UML $\to$ relacional)
 
-### Traducció d'Estructures UML
+### Traducció d'estructures UML
 
 | Element UML | Traducció al Model Relacional |
 | :--- | :--- |

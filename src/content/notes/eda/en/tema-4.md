@@ -1,5 +1,5 @@
 ---
-title: "Topic 4: Priority Queues"
+title: "Topic 4: Priority queues"
 description: "Priority queue ADT, binary and ternary heaps, array-based representation, in-place Heapsort and Θ(n) linear build, and the selection problem."
 readTime: "12 min"
 order: 5
@@ -17,13 +17,13 @@ A **priority queue** stores elements with an associated priority and always allo
 
 ---
 
-## 4.1. Tree Preliminaries: Topology and Bounds
+## 4.1. Tree preliminaries: topology and bounds
 
 * **Perfect binary tree:** All levels are completely full.
   $$n = 2^{h+1} - 1 \text{ nodes}$$
 * **Complete binary tree:** Levels $0 \dots h-1$ are full, and the last level ($h$) has its leaves pushed **as far left as possible**.
 
-### Node Bounds and Logarithmic Height
+### Node bounds and logarithmic height
 In any complete binary tree of height $h$:
 
 $$
@@ -37,7 +37,7 @@ $$
 
 ---
 
-## 4.2. Binary Heaps
+## 4.2. Binary heaps
 
 A structure based on a complete binary tree satisfying the **heap property**:
 * **Min-Heap:** For every node $i \neq \text{root}$, $\text{key}(\text{parent}(i)) \le \text{key}(i)$. The root holds the global minimum.
@@ -47,7 +47,7 @@ A structure based on a complete binary tree satisfying the **heap property**:
 :::minmaxheapviz{type="min"}
 :::
 
-### Array-based Representation (Pointer-Free)
+### Array-based representation (pointer-free)
 
 Nodes are stored level by level from left to right.
 
@@ -76,7 +76,7 @@ void sift_up(vector<int>& t, int i) {
 :::surarviz
 :::
 
-### 2. Extract Minimum (`sift_down`)
+### 2. Extract minimum (`sift_down`)
 The root (`t[1]`) is saved, the last element (`t[n]`) is moved to the root, $n$ is decremented, and the element descends by swapping **always with the smaller child**:
 
 ```cpp
@@ -100,11 +100,11 @@ If it is not swapped with the *smaller* child, the larger child would become the
 
 ---
 
-## 4.3. Ternary Heaps
+## 4.3. Ternary heaps
 
 A complete ternary tree where each node has at most **3 children** and satisfies the heap property.
 
-### Array Index Arithmetic (0-Indexed)
+### Array index arithmetic (0-indexed)
 
 | Relationship for node $i$ | Mathematical expression |
 | :--- | :---: |
@@ -114,7 +114,7 @@ A complete ternary tree where each node has at most **3 children** and satisfies
 :::ternaryheapviz
 :::
 
-### Node Formulas for Height $h$
+### Node formulas for height $h$
 
 * **Maximum number of nodes (perfect ternary tree of height $h$):**
   $$
@@ -129,7 +129,7 @@ A complete ternary tree where each node has at most **3 children** and satisfies
 
 * **Asymptotic height:** $h \in \mathbf{\Theta(\log_3 n)}$. It has lower height than binary heaps, but requires up to 3 comparisons per level during `sift_down`.
 
-### `sift_down` Implementation for Ternary Min-Heap
+### `sift_down` implementation for ternary min-heap
 
 ```cpp
 void sift_down_ternary(vector<int>& t, int n, int i) {
@@ -148,9 +148,9 @@ void sift_down_ternary(vector<int>& t, int n, int i) {
 
 ---
 
-## 4.4. Heapsort Sorting Algorithm
+## 4.4. Heapsort sorting algorithm
 
-### 1. Heap Construction: Naive vs Floyd's Method
+### 1. Heap construction: naive vs Floyd's method
 
 * **Naive construction (Top-Down):** Insert $n$ successive elements using `sift_up`.
   $$T(n) = \sum_{i=1}^n \log i = \log(n!) = \mathbf{\Theta(n \log n)}$$
@@ -161,7 +161,7 @@ void sift_down_ternary(vector<int>& t, int n, int i) {
 :::heapbuildviz
 :::
 
-### 2. In-Place Heapsort ($\Theta(1)$ Auxiliary Memory)
+### 2. In-place heapsort ($\Theta(1)$ auxiliary memory)
 
 To sort an array in ascending order without extra memory:
 1. Build a linear **Max-Heap** in $\Theta(n)$ directly on the array.
@@ -194,7 +194,7 @@ void heapsort(vector<int>& t) {
 
 ---
 
-## 4.5. Application (Finding the $m$ Smallest of $n$ Elements)
+## 4.5. Application (finding the $m$ smallest of $n$ elements)
 
 | Method | Time Cost | Auxiliary Memory | When to use? |
 | :--- | :---: | :---: | :--- |

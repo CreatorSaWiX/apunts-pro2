@@ -6,7 +6,7 @@ order: 6
 draft: false
 ---
 
-## 5.1. Propiedades Fundamentales y Cotas
+## 5.1. Propiedades fundamentales y cotas
 
 Un grafo $G = (V, E)$ está formado por un conjunto de $n = |V|$ **vértices** y $m = |E|$ **aristas**.
 
@@ -26,7 +26,7 @@ Más detalles en [Resumen parcial teoría de grafos M1](./m1-G)
 
 ---
 
-## 5.2. Representaciones en Memoria: Matriz vs Listas de Adyacencia
+## 5.2. Representaciones en memoria: matriz vs listas de adyacencia
 
 | Operación / Parámetro | Matriz de adyacencia (`vector<vector<bool>>`) | Listas de adyacencia (`vector<vector<int>>`) |
 | :--- | :---: | :---: |
@@ -43,9 +43,9 @@ Más detalles en [Resumen parcial teoría de grafos M1](./m1-G)
 
 ---
 
-## 5.3. Búsqueda en Profundidad (DFS) y Búsqueda en Anchura (BFS)
+## 5.3. Búsqueda en profundidad (DFS) y búsqueda en anchura (BFS)
 
-### DFS (Búsqueda en Profundidad)
+### DFS (búsqueda en profundidad)
 Explora recursivamente hasta llegar a un callejón sin salida y retrocede.
 
 ```cpp
@@ -65,7 +65,7 @@ void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {
 
 ---
 
-### BFS (Búsqueda en Anchura)
+### BFS (búsqueda en anchura)
 Explora por niveles concéntricos de distancia desde un origen $s$.
 
 ```cpp
@@ -100,7 +100,7 @@ vector<int> bfs(const vector<vector<int>>& G, int s) {
 
 ---
 
-## 5.4. Algoritmo de Dijkstra (Caminos mínimos con pesos $\ge 0$)
+## 5.4. Algoritmo de Dijkstra (caminos mínimos con pesos $\ge 0$)
 
 Calcula las distancias mínimas desde un origen $s$ en grafos con aristas ponderadas **no negativas** ($\omega(e) \ge 0$).
 
@@ -142,7 +142,7 @@ void dijkstra(const GrafP& G, int s, vector<double>& dist) {
 
 * **Coste temporal con `std::priority_queue`:** $\mathbf{\mathcal{O}((n + m) \log n)}$.
 
-### Preguntas Clave de Examen sobre Dijkstra
+### Preguntas clave de examen sobre Dijkstra
 
 1. **¿Por qué es necesario el vector `S` (o `if (d > dist[u]) continue;`)?**
    Como `std::priority_queue` no tiene operación `decrease_key`, se permiten entradas duplicadas en la cola. Sin el vector `S`, un nodo se podría reprocesar múltiples veces, disparando el coste a **$\mathbf{\Omega(n^2)}$** en grafos con muchos caminos alternativos.
@@ -155,14 +155,14 @@ void dijkstra(const GrafP& G, int s, vector<double>& dist) {
 
 ---
 
-## 5.5. Ordenación Topológica en Dígrafos Acíclicos (DAGs)
+## 5.5. Ordenación topológica en dígrafos acíclicos (DAGs)
 
 Una ordenación topológica es una permutación lineal de los vértices $(v_1, \dots, v_n)$ tal que para todo arco $(u, v) \in E$, $u$ aparece antes que $v$.
 
 * **Teorema:** Un dígrafo admite ordenación topológica $\iff$ es un **DAG** (no tiene ciclos dirigidos).
 * Todo DAG finito tiene al menos una fuente ($\deg^- = 0$) y un sumidero ($\deg^+ = 0$).
 
-### Algoritmo de Kahn (Fuentes y Grados de Entrada)
+### Algoritmo de Kahn (fuentes y grados de entrada)
 
 ```cpp
 vector<int> toposort(const vector<vector<int>>& G) {
@@ -198,7 +198,7 @@ vector<int> toposort(const vector<vector<int>>& G) {
 
 ---
 
-## 5.6. Árboles de Recubrimiento Mínimo (MST): Prim vs Kruskal
+## 5.6. Árboles de recubrimiento mínimo (MST): Prim vs Kruskal
 
 Un **árbol de recubrimiento** conecta todos los vértices de un grafo no dirigido conexo utilizando exactamente **$n - 1$ aristas**. El **MST** es aquel que minimiza la suma de pesos de las aristas.
 
@@ -216,7 +216,7 @@ Un **árbol de recubrimiento** conecta todos los vértices de un grafo no dirigi
 
 ---
 
-## 5.7. Grafos Implícitos: Cuadrículas y Espacios de Estados
+## 5.7. Grafos implícitos: cuadrículas y espacios de estados
 
 En muchos problemas de examen final no proporcionan listas de adyacencia; el grafo es implícito:
 
@@ -240,7 +240,7 @@ for (int k = 0; k < 4; ++k) {
 :::gridbfsviz
 :::
 
-### 2. Espacios de Estados Abstractos (ej: Problema de las Jarras, Enero 2024)
+### 2. Espacios de estados abstractos (ej: problema de las jarras, enero 2024)
 * **Vértices:** Pares de estados $(a, b)$ con el agua actual en cada jarra ($0 \le a \le A$, $0 \le b \le B$).
 * **Aristas:** Operaciones posibles (llenar $A$, vaciar $B$, trasvasar $A \to B$, etc.).
 * **Resolución:** Como cada operación cuenta como 1 paso, el número mínimo de pasos se resuelve **siempre con BFS**, nunca con Dijkstra ni DFS. Coste: $\mathcal{O}(\text{número de estados}) = \mathcal{O}(A \cdot B)$.

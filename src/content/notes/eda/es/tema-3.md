@@ -19,7 +19,7 @@ draft: false
 ---
 -->
 
-## 3.1. Tipos Abstractos de Datos (TAD)
+## 3.1. Tipos abstractos de datos (TAD)
 
 Un **TAD** especifica el *comportamiento* de una estructura de datos de manera independiente de su implementación: **saber el *qué* sin saber el *cómo*.**
 Formalmente, un TAD se define por tres elementos: los **valores** válidos, las **operaciones** (firmas), y las **propiedades** (axiomas ecuacionales) que relacionan las operaciones.
@@ -42,7 +42,7 @@ $$\text{iguales?}(\text{cero}, \text{cero}) = \text{cierto}, \quad \text{iguales
 
 ---
 
-## 3.2. El TAD Diccionario
+## 3.2. El TAD diccionario
 
 Un diccionario almacena pares **(clave, valor)** ($k \in K$, $i \in I$) y permite gestionarlos eficientemente:
 
@@ -77,7 +77,7 @@ Sobre una colección de $n$ elementos, las estructuras lineales presentan cuello
 
 ---
 
-## 3.4. Tablas de dispersión (*Hash Tables*)
+## 3.4. Tablas de dispersión (*hash tables*)
 
 Las **tablas de dispersión** logran búsqueda, inserción y borrado en **tiempo constante esperado $\Theta(1)$**, a cambio de un caso peor $\Theta(n)$ (cuando todo colisiona).
 
@@ -90,7 +90,7 @@ Si las claves son números muy grandes (como el DNI, hasta 8 dígitos) y solo te
 :::directaddressviz
 :::
 
-### La función de dispersión (*Hash function*)
+### La función de dispersión (*hash function*)
 
 Para solucionarlo, creamos una tabla $T$ de tamaño razonable $m$ (proporcional al número de elementos reales que tenemos) y usamos una **función hash $h$** para traducir cualquier clave (sea un número grande o una palabra) a una posición válida de la tabla:
 
@@ -119,7 +119,7 @@ Esto se llama una **colisión**, y cualquier tabla de dispersión necesita un m�
 
 ---
 
-### Resolución de colisiones por Encadenamiento (*Separate Chaining*)
+### Resolución de colisiones por encadenamiento (*separate chaining*)
 
 Cada casilla $T[j]$ es una **lista enlazada** de todos los elementos con $h(k) = j$.
 
@@ -136,7 +136,7 @@ El **factor de carga** $\alpha = n/m$ intuye el número medio de elementos por l
 
 ---
 
-### Resolución de colisiones por Direccionamiento Abierto (*Open Addressing*)
+### Resolución de colisiones por direccionamiento abierto (*open addressing*)
 
 A diferencia del encadenamiento, aquí **no usamos listas externas**: todos los elementos se guardan directamente en las casillas de la tabla. Por tanto, nunca podemos tener más elementos que casillas ($n \le m$).
 
@@ -153,7 +153,7 @@ Cuando queremos insertar una clave y su casilla ya está ocupada (colisión), **
 
 ---
 
-## 3.5. Árboles: Definiciones y terminología
+## 3.5. Árboles: definiciones y terminología
 
 Un **árbol** es una estructura jerárquica formada por nodos y aristas sin ciclos. En un **árbol enraizado**, un nodo destacado actúa como **raíz** $r$.
 
@@ -172,11 +172,11 @@ Un **árbol binario** es aquel donde cada nodo tiene como máximo dos hijos: **h
 
 ---
 
-## 3.6. Árboles Binarios de Búsqueda (ABB / BST)
+## 3.6. Árboles binarios de búsqueda (ABB / BST)
 
 Un **ABB** implementa el diccionario aprovechando un **orden total** sobre las claves.
 
-### La Propiedad ABB
+### La propiedad ABB
 
 Para cualquier nodo $x$ con clave $k_x$:
 * Todo nodo del **subárbol izquierdo** tiene clave $< k_x$.
@@ -232,11 +232,11 @@ $$
 
 ---
 
-## 3.7. Árboles Equilibrados: Árboles AVL
+## 3.7. Árboles equilibrados: árboles AVL
 
 Para evitar que un ABB degenere a $\Theta(n)$, los **árboles AVL** imponen una condición de equilibrio que se autorregula en cada inserción y borrado.
 
-### Definición de Árbol AVL
+### Definición de árbol AVL
 
 Un **árbol AVL** es un ABB donde, **para cada nodo**, la diferencia de alturas entre sus dos subárboles es como máximo 1:
 
@@ -251,7 +251,7 @@ $$
 
 ---
 
-### Rotaciones en el Árbol AVL
+### Rotaciones en el árbol AVL
 
 Cuando una inserción o un borrado provoca un desequilibrio ($\text{diferencia} = \pm 2$), se aplica una **rotación local en tiempo constante $\Theta(1)$** para restaurar el equilibrio sin romper el orden del ABB:
 
@@ -273,7 +273,7 @@ Cuando una inserción o un borrado provoca un desequilibrio ($\text{diferencia} 
 
 ---
 
-### Inserción vs. Borrado en AVL 
+### Inserción vs. borrado en AVL 
 * **Inserción ($\Theta(\log n)$):** Se inserta el nodo como en un ABB y, en el retorno hacia la raíz, se reequilibra si es necesario. **Como máximo 1 rotación** (simple o doble) es necesaria para reequilibrar todo el árbol.
 ::algoviz{algorithm="avl_assignar"}
 

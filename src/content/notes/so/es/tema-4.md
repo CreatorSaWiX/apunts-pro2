@@ -8,7 +8,7 @@ isNew: true
 ---
 Las señales son el mecanismo básico de comunicación asíncrona entre procesos y el Kernel. Toda su gestión se integra directamente en la ficha de identidad de cada proceso ([PCB en Tema 3](./tema-3)), mediante la tabla de acciones, el bitmap de señales pendientes y la máscara de bloqueo.
 
-## 4.1 Concepto de Signal
+## 4.1 Concepto de signal
 
 Un signal es una notificación asíncrona que el Sistema Operativo (o otro proceso) envía a un proceso. Cada signal tiene un número y un nombre (`SIGALRM`, `SIGKILL`, `SIGINT`, etc.).
 
@@ -187,7 +187,7 @@ alarm(0); // Desactiva cualquier alarma pendiente antes de que suene
 
 ---
 
-## 4.4 Ejemplo completo procesos y signals (Previo lab-SO 4)
+## 4.4 Ejemplo completo procesos y signals (previo lab-SO 4)
 
 Aquí tenemos un escenario completo paso a paso:
 * **El Padre**: Proceso principal. Crea 10 hijos, les da un límite de tiempo de 2 segundos y comprueba cómo mueren. Si alguno se duerme demasiado tiempo (> 2s), lo mata con `SIGKILL`.
@@ -244,9 +244,9 @@ Porque si mueren 3 hijos a la vez mientras se está ejecutando la función, el s
 
 ---
 
-## 4.5 Preguntas de examen resueltas (Tema 4: Signals)
+## 4.5 Preguntas de examen resueltas (tema 4: signals)
 
-### 1. Un proceso huérfano recibe `SIGKILL`. ¿Puede quedarse en estado Zombie para siempre?
+### 1. Un proceso huérfano recibe `SIGKILL`. ¿Puede quedarse en estado zombie para siempre?
 **NO**. Cuando un proceso se queda huérfano, es adoptado inmediatamente por el proceso `init` (PID 1). Este proceso tiene la función de ir haciendo `waitpid()` de todos los procesos que adopta, de modo que libera su PCB tan pronto como mueren.
 
 ### 2. ¿Qué le pasa a las estructuras de señales de un padre cuando hace `fork()`?

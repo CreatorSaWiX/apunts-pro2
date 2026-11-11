@@ -26,7 +26,7 @@ $$
 
 On la feina no recursiva $g(n) = T_{\text{divisio}}(n) + T_{\text{combinar}}(n)$ pertany típicament a $\Theta(n^k)$ per a $k \ge 0$, podent resoldre's mitjançant el **Teorema Mestre de recurrències divisores**.
 
-### Exemple introductori: Cerca binària (dicotòmica)
+### Exemple introductori: cerca binària (dicotòmica)
 Donat un vector $A[0 \dots n-1]$ **ordenat**, volem determinar si un element $x$ hi pertany. A cada pas comparem $x$ amb l'element central $A[m]$: si coincideixen hem acabat; si $x < A[m]$, busquem recursivament a la meitat esquerra; si $x > A[m]$, a la meitat dreta.
 
 :::binarysearchviz
@@ -333,7 +333,7 @@ $$ \mathbf{T(n) \in \Theta(\log n)} $$
 
 ---
 
-## 2.4 Multiplicació d'enters grans: Algorisme de Karatsuba
+## 2.4 Multiplicació d'enters grans: algorisme de Karatsuba
 
 La multiplicació de dos nombres enters de $n$ dígits (o bits) és una operació fonamental en aritmètica computacional i criptografia. 
 En el mètode tradicional escolar, es multiplica el primer nombre per cadascun dels $n$ dígits del segon, desplaçant cada fila parcial una posició cap a l'esquerra:
@@ -488,7 +488,7 @@ Atès que $n^{1.585} \in o(n^2)$, aquest resultat demostra formalment que **la m
 
 ---
 
-## 2.5 Multiplicació de matrius: Algorisme de Strassen
+## 2.5 Multiplicació de matrius: algorisme de Strassen
 
 Donades dues matrius quadrades $X, Y \in \mathbb{R}^{n \times n}$, el seu producte $Z = X \cdot Y$ és una matriu $n \times n$ on cada element $(i, j)$ es defineix per:
 
@@ -659,7 +659,7 @@ Aquests mètodes moderns pertanyen a la categoria coneguda com **algorismes gal�
 
 ---
 
-## 2.6 Les Torres de Hanoi
+## 2.6 Les torres de Hanoi
 
 El joc de les **Torres de Hanoi** il·lustra l'aplicació de dividir i vèncer sobre recurrències de caràcter **subtractiu**, on la mida del problema es redueix per una constant en lloc d'un factor divisor.
 
@@ -731,7 +731,7 @@ $$
 
 ---
 
-### Anàlisi asimptòtica mitjançant el Teorema Mestre subtractiu
+### Anàlisi asimptòtica mitjançant el teorema mestre subtractiu
 
 La recurrència de les Torres de Hanoi s'ajusta a la forma general subtractiva:
 
@@ -817,7 +817,7 @@ A diferència de QuickSort, que crida recursivament sobre **tots dos** costats d
 
 ---
 
-### Algorisme de la Mediana de Medianes (BFPRT, 1973)
+### Algorisme de la mediana de medianes (BFPRT, 1973)
 
 L'any 1973, Manuel Blum, Robert Floyd, Vaughan Pratt, Ronald Rivest i Robert Tarjan van dissenyar un mètode determinista per escollir un pivot garantit que assegura que el cost de QuickSelect sigui **lineal $\Theta(n)$ en el cas pitjor**.
 
@@ -892,7 +892,7 @@ Gràcies a l'estratègia de la mediana de medianes, **el cas pitjor de selecció
 
 ---
 
-## 2.8 Síntesi de complexitats del Tema 2
+## 2.8 Síntesi de complexitats del tema 2
 
 A continuació es resumeix el ventall complet d'algorismes de dividir i vèncer analitzats al llarg del tema:
 

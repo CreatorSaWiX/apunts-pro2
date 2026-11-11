@@ -6,14 +6,14 @@ order: 3
 draft: false
 ---
 
-## 3.1 Què és un Procés?
+## 3.1 Què és un procés?
 
 Quan fas doble clic a un programa o l'executes a la terminal, el sistema operatiu crea un procés (un programa en marxa a la memòria). Cada procés té un identificador únic (un DNI o número enter) anomenat PID (Process Identifier).
 
 :::procoverviewviz
 :::
 
-### 1. Identitat, Entorn i Context
+### 1. Identitat, entorn i context
 Cada procés en execució compta amb:
 * **Identificadors únics**:
   * **PID (*Process ID*)**: El DNI únic del procés al sistema. Es consulta en C amb la crida `getpid()` (`man 2 getpid`).
@@ -32,7 +32,7 @@ Podem consultar la identitat i l'estat dels processos actius amb comandes estàn
 * **`pstree`**: Dibuixa l'arbre jeràrquic de processos del sistema (on es veu com el procés `systemd` o `init` amb PID 1 és l'arrel de tots els processos).
 
 
-### 3. El PCB (*Process Control Block*)
+### 3. El PCB (*process control block*)
 El **PCB** és la **fitxa d'identitat** que el nucli del sistema operatiu (*Kernel*) guarda a la seva pròpia memòria per a cada programa en marxa. Quan un procés deixa d'executar-se a la CPU per deixar pas a un altre, el Kernel guarda tot el que estava fent dins d'aquesta fitxa:
 
 * **Identificació**: PID, PPID i credencials d'usuari/grup.
@@ -208,7 +208,7 @@ if (WIFEXITED(status)) {
 :::oopviz{simulation="waitpid_diagnosi"}
 :::
 
-### Què passa si un procés queda orfe? Pot quedar Zombie per sempre? 
+### Què passa si un procés queda orfe? Pot quedar zombie per sempre? 
 **NO**. A Linux, quan un pare mor, els fills orfes són adoptats automàticament pel procés `init` (PID 1) o `systemd`. Aquest procés s'encarrega d'anar fent `waitpid()` periòdicament de tots els fills adoptats, netejant els seus PCBs tan bon punt moren.
 
 ---
@@ -254,7 +254,7 @@ for (int i = 0; i < N; i++) {
 while (waitpid(-1, NULL, 0) > 0);
 ```
 
-### Com executa les comandes el Shell: Primer pla vs Segon pla (`&`)
+### Com executa les comandes el shell: primer pla vs segon pla (`&`)
 
 Quan escrius una comanda al terminal, el Shell (`bash`, `zsh`) fa internament un bucle amb `fork()`, `exec()` i `waitpid()`:
 

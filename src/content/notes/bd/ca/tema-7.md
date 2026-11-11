@@ -1,5 +1,5 @@
 ---
-title: "Tema 7: Disseny Conceptual (UML)"
+title: "Tema 7: Disseny conceptual (UML)"
 description: "Modelatge conceptual en UML i traducció al model relacional lògic."
 readTime: "8 min"
 order: 7
@@ -10,11 +10,11 @@ El disseny de bases de dades transforma els requisits del món real en estructur
 
 ---
 
-## 6.1. Model Conceptual en UML
+## 7.1. Model conceptual en UML
 
 Una **classe** descriu un conjunt d'objectes del mateix tipus que comparteixen propietats (ex: `Empleat`); cada objecte té identitat pròpia (OID). Els **atributs** són les propietats univaluades compartides pels objectes. La **clau externa** (identificador) és el conjunt mínim d'atributs que identifiquen unívocament cada instància, especificada mitjançant restriccions textuals (ex: *«Clau externa Empleat: dni»*).
 
-### Transformació prèvia: Atributs multivaluats `[*]`
+### Transformació prèvia: atributs multivaluats `[*]`
 
 El model relacional no admet valors multivaluats (primera forma normal). Tot atribut `atribut[*]` es transforma en una **associació 1\:N** cap a una nova classe:
 
@@ -23,11 +23,11 @@ El model relacional no admet valors multivaluats (primera forma normal). Tot atr
 
 ---
 
-## 6.2. Transformació d'Associacions Binàries
+## 7.2. Transformació d'associacions binàries
 
 Un cop transformades les classes a relacions base (on la clau externa d'UML esdevé la **clau primària**), traduïm les associacions segons les seves multiplicitats:
 
-### 1. Cas Un a Molts (1\:N)
+### 1. Cas un a molts (1\:N)
 
 La multiplicitat és $0..1$ o $1..1$ en un extrem ("un") i $*$ a l'altre ("molts"). S'afegeix una **clau forana (FK)** a la relació de l'extrem **«molts»**, referenciant la clau primària de l'extrem «un». Si la multiplicitat mínima de l'extrem «un» és **$1$ ($1..1$)**, la FK ha de ser **`NOT NULL`**; si és **$0$ ($0..1$)**, admet valors nuls.
 
@@ -46,7 +46,7 @@ EMPLEAT (dni, nom, num_dpt)
 
 ---
 
-### 2. Cas Un a Un (1\:1)
+### 2. Cas un a un (1\:1)
 
 La multiplicitat màxima a tots dos extrems és $1$ ($0..1$ o $1..1$). S'afegeix una clau forana a **qualsevol de les dues taules**, però la columna FK ha de tenir la restricció **`UNIQUE`** per garantir que cap fila del destí es pugui enllaçar més d'un cop. Si un costat té $1..1$ i l'altre $0..1$, és preferible propagar la clau al costat $1..1$ amb `NOT NULL UNIQUE` per evitar camps nuls.
 
@@ -65,7 +65,7 @@ DELEGACIO (codi_del, nom_del, nom_ciutat)
 
 ---
 
-### 3. Cas Molts a Molts (M\:N)
+### 3. Cas molts a molts (M\:N)
 
 La multiplicitat màxima a tots dos extrems és $*$ ($0..*$ o $1..*$). Es defineix una **nova relació (taula associativa intermèdia)** amb la PK formada per la **composició de les claus primàries** de les dues entitats relacionades.
 
@@ -87,7 +87,7 @@ EMMAGATZEMATGE (codi_prod, codi_mag)
 
 ---
 
-## 6.3. Transformació d'Associacions N-àries i Ternàries
+## 7.3. Transformació d'associacions n-àries i ternàries
 
 Una associació ternària relaciona 3 classes simultàniament. **Sempre es tradueix a una nova relació**, però la seva clau primària varia segons les multiplicitats:
 
@@ -102,7 +102,7 @@ Una associació ternària relaciona 3 classes simultàniament. **Sempre es tradu
 
 ---
 
-## 6.4. Associacions Recursives
+## 7.4. Associacions recursives
 
 Són associacions on **una mateixa classe participa més d'una vegada** exercint rols diferents. En la variant **1\:N** (ex: Empleat és cap d'altres empleats) s'afegeix una clau forana a la mateixa taula que referencia la pròpia clau primària, reanomenant la columna pel seu rol:
 
@@ -126,7 +126,7 @@ SEGUIMENT (nom_seguidor, nom_seguit)
 
 ---
 
-## 6.5. Classes Associatives
+## 7.5. Classes associatives
 
 Una **classe associativa** sorgeix quan una associació té atributs propis o participa en altres relacions. La relació creada per a l'associació **absorbeix els atributs propis** de la classe associativa:
 
@@ -142,14 +142,14 @@ EMMAGATZEMATGE (codi_prod, codi_mag, quantitat)
 
 ---
 
-## 6.6. Generalització i Especialització (Herència)
+## 7.6. Generalització i especialització (herència)
 
 L'herència reflecteix una superclasse general (atributs comuns) que s'especialitza en una o més subclasses (atributs específics).
 
 :::umlviz{schema="uml_herencia" title="Jerarquia d'Herència de Classes (UML)"}
 :::
 
-### Estratègia estàndard: Una taula per classe
+### Estratègia estàndard: una taula per classe
 
 1. **Taula per a la superclasse:** Té la seva clau primària original i els atributs comuns.
 2. **Taula per a cada subclasse:** Té com a clau primària **la mateixa clau de la superclasse**, que actua **alhora com a Clau Primària i Clau Forana**:
@@ -178,7 +178,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.7. Resum de transformacions i criteris de disseny
+## 7.7. Resum de transformacions i criteris de disseny
 
 | Element del Model UML | Traducció al Model Relacional |
 | :--- | :--- |
@@ -202,7 +202,7 @@ CREATE TABLE ESTUDIANT (
 
 ---
 
-## 6.8. Validació Semàntica de Models UML (Afirmacions de Cert / Fals)
+## 7.8. Validació semàntica de models UML (afirmacions de cert / fals)
 
 Davant d'afirmacions sobre possibles estats d'un model UML, cal determinar si la situació és compatible amb l'esquema (**CERTA**) o si viola alguna restricció estructural (**FALSA**):
 
@@ -218,7 +218,7 @@ Per justificar que una afirmació és **CERTA**, es construeix una instància m�
 
 ---
 
-## 6.9. Classificació i Traducció de Restriccions Textuals (R1..Rn)
+## 7.9. Classificació i traducció de restriccions textuals (R1..Rn)
 
 Les restriccions textuals addicionals s'implementen segons el seu abast:
 
@@ -229,14 +229,14 @@ Les restriccions textuals addicionals s'implementen segons el seu abast:
 
 ---
 
-## 6.10. Cas Global de Referència (UML i Relacional)
+## 7.10. Cas global de referència (UML i relacional)
 
 Exemple complet d'una organització amb departaments, projectes i empleats:
 
-### Model Conceptual Global (UML)
+### Model conceptual global (UML)
 :::umlviz{schema="uml_empresa" title="Model Conceptual UML de l'Empresa de Referència" height="420"}
 :::
 
-### Esquema Relacional Resultant (ERD)
+### Esquema relacional resultant (ERD)
 :::sqlviz{simulation="esquema_empresa"}
 :::

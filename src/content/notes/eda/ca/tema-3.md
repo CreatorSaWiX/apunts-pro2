@@ -19,7 +19,7 @@ draft: false
 ---
 -->
 
-## 3.1. Tipus Abstractes de Dades (TAD)
+## 3.1. Tipus abstractes de dades (TAD)
 
 Un **TAD** especifica el *comportament* d'una estructura de dades de manera independent de la seva implementació: **saber el *què* sense saber el *com*.**
 Formalment, un TAD es defineix per tres elements: els **valors** vàlids, les **operacions** (signatures), i les **propietats** (axiomes equacionals) que relacionen les operacions.
@@ -42,7 +42,7 @@ $$\text{iguals?}(\text{zero}, \text{zero}) = \text{cert}, \quad \text{iguals?}(\
 
 ---
 
-## 3.2. El TAD Diccionari
+## 3.2. El TAD diccionari
 
 Un diccionari emmagatzema parelles **(clau, valor)** ($k \in K$, $i \in I$) i permet gestionar-les eficientment:
 
@@ -77,7 +77,7 @@ Sobre una col·lecció de $n$ elements, les estructures lineals presenten colls 
 
 ---
 
-## 3.4. Taules de dispersió (*Hash Tables*)
+## 3.4. Taules de dispersió (*hash tables*)
 
 Les **taules de dispersió** assoleixen cerca, inserció i esborrat en **temps constant esperat $\Theta(1)$**, a canvi d'un cas pitjor $\Theta(n)$ (quan tot col·lisiona).
 
@@ -90,7 +90,7 @@ Si les claus són números molt grans (com el DNI, fins a 8 dígits) i només te
 :::directaddressviz
 :::
 
-### La funció de dispersió (*Hash function*)
+### La funció de dispersió (*hash function*)
 
 Per solucionar-ho, fem una taula $T$ de mida raonable $m$ (proporcional al nombre d'elements reals que tenim) i usem una **funció hash $h$** per traduir qualsevol clau (sigui un número gran o una paraula) a una posició vàlida de la taula:
 
@@ -119,7 +119,7 @@ Això s'anomena una **col·lisió**, i qualsevol taula de dispersió necessita u
 
 ---
 
-### Resolució de col·lisions per Encadenament (*Separate Chaining*)
+### Resolució de col·lisions per encadenament (*separate chaining*)
 
 Cada casella $T[j]$ és una **llista enllaçada** de tots els elements amb $h(k) = j$.
 
@@ -152,7 +152,7 @@ La tria de $m$ **no és crítica** (convenient $m = 2^p$ per usar *bit shifts*).
 
 ---
 
-### Resolució de col·lisions per Adreçament Obert (*Open Addressing*)
+### Resolució de col·lisions per adreçament obert (*open addressing*)
 
 A diferència de l'encadenament, aquí **no fem servir llistes externes**: tots els elements es guarden directament a les caselles de la taula. Per tant, mai podem tenir més elements que caselles ($n \le m$).
 
@@ -169,7 +169,7 @@ Quan volem inserir una clau i la seva casella ja està ocupada (col·lisió), **
 
 ---
 
-## 3.5. Arbres: Definicions i terminologia
+## 3.5. Arbres: definicions i terminologia
 
 Un **arbre** és una estructura jeràrquica formada per nodes i arestes sense cicles. En un **arbre arrelat**, un node destacat actua com a **arrel** $r$.
 
@@ -188,11 +188,11 @@ Un **arbre binari** és aquell on cada node té com a màxim dos fills: **fill e
 
 ---
 
-## 3.6. Arbres Binaris de Cerca (ABC / BST)
+## 3.6. Arbres binaris de cerca (ABC / BST)
 
 Un **ABC** implementa el diccionari aprofitant un **ordre total** sobre les claus.
 
-### La Propietat ABC
+### La propietat ABC
 
 Per a qualsevol node $x$ amb clau $k_x$:
 * Tot node del **subarbre esquerre** té clau $< k_x$.
@@ -248,11 +248,11 @@ $$
 
 ---
 
-## 3.7. Arbres Equilibrats: Arbres AVL
+## 3.7. Arbres equilibrats: arbres AVL
 
 Per evitar que un ABC degeneri a $\Theta(n)$, els **arbres AVL** imposen una condició d'equilibri que s'autoregula en cada inserció i esborrat.
 
-### Definició d'Arbre AVL
+### Definició d'arbre AVL
 
 Un **arbre AVL** és un ABC on, **per a cada node**, la diferència d'alçades entre els seus dos subarbres és com a màxim 1:
 
@@ -267,7 +267,7 @@ $$
 
 ---
 
-### Rotacions a l'Arbre AVL
+### Rotacions a l'arbre AVL
 
 Quan una inserció o un esborrat provoca un desequilibri ($\text{diferència} = \pm 2$), s'aplica una **rotació local en temps constant $\Theta(1)$** per restaurar l'equilibri sense trencar l'ordre de l'ABC:
 
@@ -289,7 +289,7 @@ Quan una inserció o un esborrat provoca un desequilibri ($\text{diferència} = 
 
 ---
 
-### Inserció vs. Esborrat en AVL 
+### Inserció vs. esborrat en AVL 
 * **Inserció ($\Theta(\log n)$):** S'insereix el node com en un ABC i, en el retorn cap a l'arrel, es reequilibra si cal. **Com a màxim 1 rotació** (simple o doble) és necessària per reequilibrar tot l'arbre.
 ::algoviz{algorithm="avl_assignar"}
 

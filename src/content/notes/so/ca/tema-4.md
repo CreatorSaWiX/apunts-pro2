@@ -8,7 +8,7 @@ isNew: true
 ---
 Els senyals són el mecanisme bàsic de comunicació asíncrona entre processos i el Kernel. Tota la seva gestió s'integra directament a la fitxa d'identitat de cada procés ([PCB a Tema 3](./so-tema-3)), mitjançant la taula d'accions, el bitmap de senyals pendents i la màscara de bloqueig.
 
-## 4.1 Concepte de Signal
+## 4.1 Concepte de signal
 
 Un signal és una notificació asíncrona que el Sistema Operatiu (o un altre procés) envia a un procés. Cada signal té un número i un nom (`SIGALRM`, `SIGKILL`, `SIGINT`, etc.).
 
@@ -187,7 +187,7 @@ alarm(0); // Desactiva qualsevol alarma pendent abans que soni
 
 ---
 
-## 4.4 Exemple complet processos i signals (Previ lab-SO 4)
+## 4.4 Exemple complet processos i signals (previ lab-SO 4)
 
 Aquí tenim un escenari complet pas a pas:
 * **El Pare**: Procés principal. Crea 10 fills, els dona un límit de temps de 2 segons i comprova com moren. Si algun s'adorm massa temps (> 2s), el mata amb `SIGKILL`.
@@ -244,9 +244,9 @@ Perquè si moren 3 fills alhora mentre s'està executant la funció, el sistema 
 
 ---
 
-## 4.5 Preguntes d'examen resoltes (Tema 4: Signals)
+## 4.5 Preguntes d'examen resoltes (tema 4: signals)
 
-### 1. Un procés orfe rep `SIGKILL`. Pot quedar-se en estat Zombie per sempre?
+### 1. Un procés orfe rep `SIGKILL`. Pot quedar-se en estat zombie per sempre?
 **NO**. Quan un procés es queda orfe, és adoptat immediatament pel procés `init` (PID 1). Aquest procés té la funció d'anar fent `waitpid()` de tots els processos que adopta, de manera que allibera el seu PCB tan bon punt moren.
 
 ### 2. Què li passa a les estructures de senyals d'un pare quan fa `fork()`?

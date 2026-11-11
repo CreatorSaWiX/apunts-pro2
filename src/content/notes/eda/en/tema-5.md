@@ -6,7 +6,7 @@ order: 6
 draft: false
 ---
 
-## 5.1. Fundamental Properties and Bounds
+## 5.1. Fundamental properties and bounds
 
 A graph $G = (V, E)$ consists of a set of $n = |V|$ **vertices** and $m = |E|$ **edges**.
 
@@ -26,7 +26,7 @@ More details in [M1 Graph Theory Midterm Summary](./m1-G)
 
 ---
 
-## 5.2. Memory Representations: Adjacency Matrix vs Adjacency Lists
+## 5.2. Memory representations: adjacency matrix vs adjacency lists
 
 | Operation / Parameter | Adjacency Matrix (`vector<vector<bool>>`) | Adjacency Lists (`vector<vector<int>>`) |
 | :--- | :---: | :---: |
@@ -43,9 +43,9 @@ More details in [M1 Graph Theory Midterm Summary](./m1-G)
 
 ---
 
-## 5.3. Depth-First Search (DFS) and Breadth-First Search (BFS)
+## 5.3. Depth-first search (DFS) and breadth-first search (BFS)
 
-### DFS (Depth-First Search)
+### DFS (depth-first search)
 Explores recursively until reaching a dead end and backtracks.
 
 ```cpp
@@ -65,7 +65,7 @@ void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {
 
 ---
 
-### BFS (Breadth-First Search)
+### BFS (breadth-first search)
 Explores level-by-level in concentric rings of distance from a source $s$.
 
 ```cpp
@@ -100,7 +100,7 @@ vector<int> bfs(const vector<vector<int>>& G, int s) {
 
 ---
 
-## 5.4. Dijkstra's Algorithm (Shortest Paths with Non-Negative Weights $\ge 0$)
+## 5.4. Dijkstra's algorithm (shortest paths with non-negative weights $\ge 0$)
 
 Computes minimum distances from a source $s$ in graphs with **non-negative** edge weights ($\omega(e) \ge 0$).
 
@@ -142,7 +142,7 @@ void dijkstra(const GraphW& G, int s, vector<double>& dist) {
 
 * **Time Complexity with `std::priority_queue`:** $\mathbf{\mathcal{O}((n + m) \log n)}$.
 
-### Key Exam Questions on Dijkstra
+### Key exam questions on Dijkstra
 
 1. **Why is the `S` array (or `if (d > dist[u]) continue;`) necessary?**
    Because `std::priority_queue` lacks a `decrease_key` operation, duplicate entries are inserted into the queue. Without the `S` array, a node could be reprocessed multiple times, causing runtime to blow up to **$\mathbf{\Omega(n^2)}$** on graphs with many alternative paths.
@@ -155,14 +155,14 @@ void dijkstra(const GraphW& G, int s, vector<double>& dist) {
 
 ---
 
-## 5.5. Topological Sort in Directed Acyclic Graphs (DAGs)
+## 5.5. Topological sort in directed acyclic graphs (DAGs)
 
 A topological sort is a linear ordering of vertices $(v_1, \dots, v_n)$ such that for every directed edge $(u, v) \in E$, $u$ appears before $v$.
 
 * **Theorem:** A directed graph admits a topological sort $\iff$ it is a **DAG** (has no directed cycles).
 * Every finite DAG has at least one source ($\deg^- = 0$) and one sink ($\deg^+ = 0$).
 
-### Kahn's Algorithm (Sources and In-Degrees)
+### Kahn's algorithm (sources and in-degrees)
 
 ```cpp
 vector<int> toposort(const vector<vector<int>>& G) {
@@ -198,7 +198,7 @@ vector<int> toposort(const vector<vector<int>>& G) {
 
 ---
 
-## 5.6. Minimum Spanning Trees (MST): Prim vs Kruskal
+## 5.6. Minimum spanning trees (MST): Prim vs Kruskal
 
 A **spanning tree** connects all vertices of a connected undirected graph using exactly **$n - 1$ edges**. An **MST** is one that minimizes the total sum of edge weights.
 
@@ -216,11 +216,11 @@ A **spanning tree** connects all vertices of a connected undirected graph using 
 
 ---
 
-## 5.7. Implicit Graphs: Grids and State Spaces
+## 5.7. Implicit graphs: grids and state spaces
 
 In many final exam problems, adjacency lists are not given directly; the graph is implicit:
 
-### 1. 2D Grids ($R \times C$)
+### 1. 2D grids ($R \times C$)
 Traversable cells are nodes and valid moves are edges:
 
 ```cpp
@@ -240,7 +240,7 @@ for (int k = 0; k < 4; ++k) {
 :::gridbfsviz
 :::
 
-### 2. Abstract State Spaces (e.g. Water Jugs Problem, January 2024)
+### 2. Abstract state spaces (e.g. water jugs problem, January 2024)
 * **Vertices:** State pairs $(a, b)$ representing current water volumes in each jug ($0 \le a \le A$, $0 \le b \le B$).
 * **Edges:** Permissible operations (fill $A$, empty $B$, pour $A \to B$, etc.).
 * **Resolution:** Since each operation counts as 1 step, the minimum number of steps is **always solved with BFS**, never with Dijkstra or DFS. Cost: $\mathcal{O}(\text{number of states}) = \mathcal{O}(A \cdot B)$.

@@ -1,12 +1,12 @@
 ---
-title: "Topic 2: C Language"
+title: "Topic 2: C language"
 description: "Makefiles, low-level calls, binary inspection tools, and error management."
 readTime: "15 min"
 order: 2
 draft: false
 ---
 
-## 2.1 Compilation Pipeline in UNIX
+## 2.1 Compilation pipeline in UNIX
 
 Transforming C source code into an executable binary proceeds through **3 sequential stages**:
 
@@ -58,7 +58,7 @@ write(1, buf, len);
 
 The `make` utility automates incremental builds, avoiding redundant recompilation by comparing modification timestamps between desired build artifacts (*targets*) and their prerequisites (*dependencies*).
 
-### Strict Rule Syntax
+### Strict rule syntax
 ```makefile
 target: dependency1 dependency2 ... dependencyN
 	recipe_command
@@ -76,7 +76,7 @@ util.o: util.c util.h
 	gcc -c util.c
 ```
 
-### Complete Makefile Example:
+### Complete Makefile example:
 ```makefile
 all: prog
 
@@ -95,7 +95,7 @@ clean:
 
 ---
 
-## 2.4 Fundamental `gcc` Flags
+## 2.4 Fundamental `gcc` flags
 
 | Flag | Function | Usage Example |
 | :--- | :--- | :--- |
@@ -109,7 +109,7 @@ clean:
 
 ---
 
-## 2.5 Static vs Dynamic Linking (`-static`)
+## 2.5 Static vs dynamic linking (`-static`)
 
 A recurring core question in examination assessments:
 
@@ -123,9 +123,9 @@ A recurring core question in examination assessments:
 
 ---
 
-## 2.6 Binary Inspection Utilities: `nm`, `objdump`, and `strace`
+## 2.6 Binary inspection utilities: `nm`, `objdump`, and `strace`
 
-### 1. `nm <executable>`: Symbol Table Analysis
+### 1. `nm <executable>`: symbol table analysis
 Dumps the table of exported functions and global memory identifiers:
 * **`T` / `t`**: Text / Code segment (functions like `main`).
 * **`D` / `d`**: Initialized data segment (globals with non-zero initializers: `int x = 5;`).
@@ -148,7 +148,7 @@ Reading a 1024-byte file byte-by-byte (`read(0, &c, 1)`) incurs **1024 discrete 
 
 ---
 
-## 2.7 `main` Parameters: `argc` and `argv`
+## 2.7 `main` parameters: `argc` and `argv`
 
 ```c
 int main(int argc, char *argv[])
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
   * `argv[argc]`: Guaranteed to hold `NULL`.
 * **Important**: Command arguments are **ALWAYS passed as text strings**. Calling `./prog 42` populates `argv[1]` with the ASCII string `"42"`. Explicit conversion using `atoi(argv[1])` is necessary for numeric processing.
 
-### The Standard `Usage()` Pattern
+### The standard `Usage()` pattern
 All exam assignments require immediate parameter validation prior to performing functional logic:
 
 ```c
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## 2.8 Error Handling with `perror()`
+## 2.8 Error handling with `perror()`
 
 POSIX system calls return `-1` upon failure, storing the exact diagnostic error code inside global variable `errno`.
 
@@ -209,7 +209,7 @@ if (fd < 0) {
 
 ---
 
-## 2.9 Pointers and Memory Addresses
+## 2.9 Pointers and memory addresses
 
 A **pointer** is a typed scalar variable storing a physical or virtual memory address:
 * `&variable`: Retrieves the address in memory where `variable` resides.
@@ -227,7 +227,7 @@ int *p = &a; // p stores the memory address of 'a'
 
 ---
 
-## 2.10 Solved Exam Questions (Topic 2)
+## 2.10 Solved exam questions (topic 2)
 
 ### 1. Why does an executable linked with `-static` occupy vastly more disk space than a dynamic binary?
 Because `-static` physically embeds the compiled machine code for all referenced standard library functions (e.g., `sprintf`, `strlen`, `write`) into the binary itself. Under dynamic linking, the binary contains only lightweight relocatable stubs, with library code dynamically mapped into RAM from shared system files at launch.

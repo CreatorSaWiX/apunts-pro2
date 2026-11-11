@@ -106,6 +106,15 @@ const TopoSortVisualizer = React.lazy(() => import("../components/ui/visualizers
 const MSTVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/MSTVisualizer"));
 const GridBFSVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/GridBFSVisualizer"));
 const WaterJugsVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/WaterJugsVisualizer"));
+const BacktrackVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/BacktrackVisualizer"));
+const SubsetsVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/SubsetsVisualizer"));
+const SubsetsKVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/SubsetsKVisualizer"));
+const PermutationsVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/PermutationsVisualizer"));
+const NQueensVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/NQueensVisualizer"));
+const Backtrack2DVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/Backtrack2DVisualizer"));
+const DerangementsVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/DerangementsVisualizer"));
+const HamiltonVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/HamiltonVisualizer"));
+const KnapsackVisualizer = React.lazy(() => import("../components/ui/visualizers/eda/KnapsackVisualizer"));
 // — SO (operating systems) —
 const OpenSUSEShellPlayer = React.lazy(() => import("../components/ui/visualizers/so/OpenSUSEShellPlayer"));
 const OSMediatorViz = React.lazy(() => import("../components/ui/visualizers/so/OSMediatorViz"));
@@ -994,6 +1003,69 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
             </SafeSuspense>
         );
     },
+    backtrackviz: () => {
+        return (
+            <SafeSuspense>
+                <BacktrackVisualizer />
+            </SafeSuspense>
+        );
+    },
+    subsetsviz: () => {
+        return (
+            <SafeSuspense>
+                <SubsetsVisualizer />
+            </SafeSuspense>
+        );
+    },
+    subsetskviz: () => {
+        return (
+            <SafeSuspense>
+                <SubsetsKVisualizer />
+            </SafeSuspense>
+        );
+    },
+    permutationsviz: () => {
+        return (
+            <SafeSuspense>
+                <PermutationsVisualizer />
+            </SafeSuspense>
+        );
+    },
+    nqueensviz: () => {
+        return (
+            <SafeSuspense>
+                <NQueensVisualizer />
+            </SafeSuspense>
+        );
+    },
+    backtrack2dviz: () => {
+        return (
+            <SafeSuspense>
+                <Backtrack2DVisualizer />
+            </SafeSuspense>
+        );
+    },
+    derangementsviz: () => {
+        return (
+            <SafeSuspense>
+                <DerangementsVisualizer />
+            </SafeSuspense>
+        );
+    },
+    hamiltonviz: () => {
+        return (
+            <SafeSuspense>
+                <HamiltonVisualizer />
+            </SafeSuspense>
+        );
+    },
+    knapsackviz: () => {
+        return (
+            <SafeSuspense>
+                <KnapsackVisualizer />
+            </SafeSuspense>
+        );
+    },
     vectorviz: () => {
         return (
             <SafeSuspense>
@@ -1437,7 +1509,7 @@ const rehypePluginsConfig = [
             'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
-            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'mmuviz', 'tlbviz', 'pagetableviz', 'pagingviz', 'memlayoutviz', 'sbrkviz', 'mallocviz', 'mmapviz', 'thrashingviz', 'pagefaultviz', 'sharedlibviz', 'cowviz', 'demandpagingviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
+            'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'backtrackviz', 'subsetsviz', 'subsetskviz', 'permutationsviz', 'nqueensviz', 'backtrack2dviz', 'derangementsviz', 'hamiltonviz', 'knapsackviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'mmuviz', 'tlbviz', 'pagetableviz', 'pagingviz', 'memlayoutviz', 'sbrkviz', 'mallocviz', 'mmapviz', 'thrashingviz', 'pagefaultviz', 'sharedlibviz', 'cowviz', 'demandpagingviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'
         ],
         attributes: {
             ...defaultSchema.attributes,
@@ -1477,6 +1549,15 @@ const rehypePluginsConfig = [
             'graphrepviz': ['mode'],
             'gridbfsviz': [],
             'jugsviz': [],
+            'backtrackviz': [],
+            'subsetsviz': [],
+            'subsetskviz': [],
+            'nqueensviz': [],
+            'backtrack2dviz': [],
+            'permutationsviz': [],
+            'derangementsviz': [],
+            'hamiltonviz': [],
+            'knapsackviz': [],
             'minmaxheapviz': ['type', 'variant'],
             'object': ['data', 'type', 'width', 'height'],
         }

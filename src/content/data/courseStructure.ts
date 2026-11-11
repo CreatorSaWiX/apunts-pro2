@@ -724,7 +724,7 @@ export const courseStructure: TopicDefinition[] = [
     {
         id: "eda-tema-2",
         title: "Tema 2: Divide and Conquer",
-        title_es: "Tema 2: Divide y Vencerás",
+        title_es: "Tema 2: Divide y vencerás",
         description: "Exercicis de Jutge sobre algorismes de divideix i venceràs (Divide and Conquer).",
         description_es: "Ejercicios de Jutge sobre algoritmos de divide y vencerás (Divide and Conquer).",
         problems: [
@@ -746,7 +746,7 @@ export const courseStructure: TopicDefinition[] = [
     {
         id: "eda-tema-3",
         title: "Tema 3: Graph Algorithms",
-        title_es: "Tema 3: Algoritmos de Grafos",
+        title_es: "Tema 3: Algoritmos de grafos",
         description: "Exercicis de Jutge sobre algorismes de grafs: DFS, BFS, Dijkstra, arbres d'expansió mínima (MST) i ordenació topològica.",
         description_es: "Ejercicios de Jutge sobre algoritmos de grafos: DFS, BFS, Dijkstra, árboles de recubrimiento mínimo (MST) y ordenación topológica.",
         problems: [
@@ -784,7 +784,7 @@ export const courseStructure: TopicDefinition[] = [
     {
         id: "eda-tema-4",
         title: "Tema 4: Exhaustive Search",
-        title_es: "Tema 4: Búsqueda Exhaustiva",
+        title_es: "Tema 4: Búsqueda exhaustiva",
         description: "Exercicis de Jutge sobre cerca exhaustiva i backtracking: generació de subconjunts, permutacions i problemes amb restriccions.",
         description_es: "Ejercicios de Jutge sobre búsqueda exhaustiva y backtracking: generación de subconjuntos, permutaciones y problemas con restricciones.",
         problems: [
@@ -810,8 +810,8 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "eda-final",
-        title: "Exàmens Finals EDA",
-        title_es: "Exámenes Finales EDA",
+        title: "Exàmens finals EDA",
+        title_es: "Exámenes finales EDA",
         description: "Recull de problemes d'exàmens finals de cursos anteriors d'EDA.",
         description_es: "Recopilación de problemas de exámenes finales de cursos anteriores de EDA.",
         problems: [
@@ -943,32 +943,32 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "bd-tema-3",
-        title: "Tema 3: Components Lògics de la BD",
-        title_es: "Tema 3: Componentes Lógicos de la BD",
+        title: "Tema 3: Components lògics de la BD",
+        title_es: "Tema 3: Componentes lógicos de la BD",
         description: "Esquemes, dominis, assercions, vistes (WITH CHECK OPTION), esquema d'informació, gestió de privilegis (GRANT/REVOKE), rols i protecció de dades (RGPD).",
         description_es: "Esquemas, dominios, aserciones, vistas (WITH CHECK OPTION), esquema de información, gestión de privilegios (GRANT/REVOKE), roles y protección de datos (RGPD).",
         problems: []
     },
     {
         id: "bd-tema-4",
-        title: "Tema 4: Procediments Emmagatzemats (PL/pgSQL)",
-        title_es: "Tema 4: Procedimientos Almacenados (PL/pgSQL)",
+        title: "Tema 4: Procediments emmagatzemats (PL/pgSQL)",
+        title_es: "Tema 4: Procedimientos almacenados (PL/pgSQL)",
         description: "Estructura de funcions a PostgreSQL, paràmetres, retorn escalar i SETOF, variables (%TYPE i nous tipus), control de flux (IF, FOUND, FOR, WHILE) i gestió d'errors (EXCEPTION, RAISE EXCEPTION).",
         description_es: "Estructura de funciones en PostgreSQL, parámetros, retorno escalar y SETOF, variables (%TYPE y nuevos tipos), control de flujo (IF, FOUND, FOR, WHILE) y gestión de errores (EXCEPTION, RAISE EXCEPTION).",
         problems: []
     },
     {
         id: "bd-tema-5",
-        title: "Tema 5: Disparadors (Triggers)",
-        title_es: "Tema 5: Disparadores (Triggers)",
+        title: "Tema 5: Disparadors (triggers)",
+        title_es: "Tema 5: Disparadores (triggers)",
         description: "SGBD actius i regles ECA, sintaxi a PostgreSQL, ordre d'execució (BEFORE/AFTER, ROW/STATEMENT), variables NEW, OLD i TG_OP, auditoria, atributs derivats i INSTEAD OF.",
         description_es: "SGBD activos y reglas ECA, sintaxis en PostgreSQL, orden de ejecución (BEFORE/AFTER, ROW/STATEMENT), variables NEW, OLD y TG_OP, auditoría, atributos derivados e INSTEAD OF.",
         problems: []
     },
     {
-        id: "bd-tema-6",
-        title: "Tema 6: Disseny Conceptual (UML) i Traducció Relacional",
-        title_es: "Tema 6: Diseño Conceptual (UML) y Traducción Relacional",
+        id: "bd-tema-7",
+        title: "Tema 7: Disseny conceptual (UML) i traducció relacional",
+        title_es: "Tema 7: Diseño conceptual (UML) y traducción relacional",
         description: "Etapes del disseny de BD, modelatge conceptual en UML (classes, associacions, ternàries, herència) i regles formals de traducció al model relacional lògic (taules, PK, FK, NOT NULL i UNIQUE).",
         description_es: "Etapas del diseño de BD, modelado conceptual en UML (clases, asociaciones, ternarias, herencia) y reglas formales de traducción al modelo relacional lógico (tablas, PK, FK, NOT NULL y UNIQUE).",
         problems: []
@@ -978,8 +978,8 @@ export const courseStructure: TopicDefinition[] = [
     // --- SO (Sistemes Operatius) ---
     {
         id: "so-tema-1",
-        title: "Tema 1: Arquitectura del SO i Shell",
-        title_es: "Tema 1: Arquitectura del SO y Shell",
+        title: "Tema 1: Arquitectura del SO i shell",
+        title_es: "Tema 1: Arquitectura del SO y shell",
         description: "Modes d'execució, crides a sistema, Shell, inodes i permisos.",
         description_es: "Modos de ejecución, llamadas a sistema, Shell, inodos y permisos.",
         problems: []
@@ -994,8 +994,8 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "so-tema-2",
-        title: "Tema 2: El llenguatge C i Eines",
-        title_es: "Tema 2: El lenguaje C y Herramientas",
+        title: "Tema 2: El llenguatge C i eines",
+        title_es: "Tema 2: El lenguaje C y herramientas",
         description: "Compilació estàtica/dinàmica, Makefile, nm, objdump i strace.",
         description_es: "Compilación estática/dinámica, Makefile, nm, objdump y strace.",
         problems: []
@@ -1010,8 +1010,8 @@ export const courseStructure: TopicDefinition[] = [
     },
     {
         id: "so-tema-3",
-        title: "Tema 3: Processos i Senyals (Signals)",
-        title_es: "Tema 3: Procesos y Señales (Signals)",
+        title: "Tema 3: Processos i senyals (signals)",
+        title_es: "Tema 3: Procesos y señales (signals)",
         description: "PCB, graf d'estats, planificació (RR/CFS), fork, exec, waitpid i senyals.",
         description_es: "PCB, grafo de estados, planificación (RR/CFS), fork, exec, waitpid y señales.",
         problems: []

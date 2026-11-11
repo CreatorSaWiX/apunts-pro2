@@ -6,7 +6,7 @@ order: 1.5
 draft: false
 ---
 
-## Session 1 Guide: Shell and Commands
+## Session 1 guide: shell and commands
 
 Concise answers to laboratory questions (`entrega.txt`) for the SIMLAB exam.
 
@@ -16,7 +16,7 @@ Packaging the submission:
 
 ---
 
-## Block 1: Navigation and Directories (Q1 to Q5)
+## Block 1: navigation and directories (Q1 to Q5)
 
 ### Question 1: Create directories S1...S5
 * **Command:** `mkdir S1 S2 S3 S4 S5` or brace expansion `mkdir S{1..5}`.
@@ -74,7 +74,7 @@ Packaging the submission:
 
 ---
 
-## Block 2: File Access, Processes, and Aliases (Q6 to Q8)
+## Block 2: file access, processes, and aliases (Q6 to Q8)
 
 ### Question 6: `cat` vs `less`
 
@@ -106,7 +106,7 @@ Packaging the submission:
 
 ---
 
-## Block 3: Access Permissions and Rights (Q9)
+## Block 3: access permissions and rights (Q9)
 
 ### Question 9: `chmod`, read errors and deletion
 1. **Write-only:** `chmod ugo=w test.txt` or in octal `chmod 222 test.txt`.
@@ -121,9 +121,9 @@ Packaging the submission:
 
 ---
 
-## Block 4: Inodes and Links (Q10 to Q16)
+## Block 4: inodes and links (Q10 to Q16)
 
-### Question 10: Inode Information (`stat`)
+### Question 10: inode information (`stat`)
 * **Command:** `stat test.txt` (or `ls -li test.txt`).
 * **Key fields:** `Inode:` (unique identifier), `Links:` (hard link counter), `Blocks:` (allocated blocks), `IO Block:` (FS block size, typically 4096 bytes).
 
@@ -189,7 +189,7 @@ Packaging the submission:
 
 ---
 
-## Block 5: Mounted Filesystems and Storage Space (Q17 to Q19)
+## Block 5: mounted filesystems and storage space (Q17 to Q19)
 
 ### Question 17: Mounted filesystems
 * **Command:** `df -h` (or `mount`, or `df -T` to see filesystem types).
@@ -218,7 +218,7 @@ Packaging the submission:
 
 ---
 
-## Block 6: Environment Variables and PATH (Q20 to Q26)
+## Block 6: environment variables and PATH (Q20 to Q26)
 
 ### Question 20: Meaning of PATH, HOME, and PWD
 * **`HOME`**: Absolute path to the user's home directory (`~`).
@@ -263,7 +263,7 @@ Assuming a custom executable `./ls` in the current directory and an original PAT
 
 ---
 
-## Block 7: Output Redirections (Q27)
+## Block 7: output redirections (Q27)
 
 ### Question 27: Difference between `>` and `>>`
 

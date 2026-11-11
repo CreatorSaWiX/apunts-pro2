@@ -8,7 +8,7 @@ isNew: true
 ---
 Signals represent the core primitive mechanism for asynchronous notifications between processes and the Kernel. All signal state is directly maintained inside each process's descriptor table ([PCB in Topic 3](./tema-3)), comprising the signal action table, pending signal bitmask, and blocked signal mask.
 
-## 4.1 Concept of a Signal
+## 4.1 Concept of a signal
 
 A signal is an asynchronous software notification delivered by the Operating System (or another process) to a target process. Each signal is identified by an integer index and a symbolic identifier (`SIGALRM`, `SIGKILL`, `SIGINT`, etc.).
 
@@ -23,7 +23,7 @@ When a process receives a signal, one of 3 outcomes occurs:
 **Signal Mask:** The set of signals currently held in a blocked state for the process. If a blocked signal is delivered, it remains pending until unblocked.  
 **`sigsuspend(&mask):`** An atomic system call that temporarily replaces the process's signal mask with the supplied set and blocks execution until receipt of an unblocked signal.
 
-### Signal Table
+### Signal table
 | Signal | Code | Default Action | Trigger Source | Catchable or Blockable? |
 | :--- | :---: | :---: | :--- | :---: |
 | **`SIGINT`** | 2 | Terminate process | User presses `Ctrl+C` in terminal. | Yes |
@@ -38,7 +38,7 @@ When a process receives a signal, one of 3 outcomes occurs:
 
 ---
 
-## 4.2 How Does a Process Handle Signals?
+## 4.2 How does a process handle signals?
 
 :::signalpcbviz
 :::
@@ -60,9 +60,9 @@ When a signal arrives, the Kernel inspects these 4 descriptor structures in the 
 
 ---
 
-## 4.3 Signal System Calls
+## 4.3 Signal system calls
 
-### 1. Sending a Signal: `kill(pid, signal)`
+### 1. Sending a signal: `kill(pid, signal)`
 
 :::killviz
 :::
@@ -78,7 +78,7 @@ kill(pid_desti, SIGUSR1); // Sends user-defined signal 1
   * **Command `killall`**: Targets processes by executable name rather than PID: `killall -KILL alarm1` or `killall -9 alarm1`.
   * **Who prints death diagnostics?**: If an unhandled terminating signal kills a child (like `SIGALRM` or `SIGKILL`), terminal status messages (`Alarm clock`, `Killed`, or `Segmentation fault`) are printed by **the parent Shell** upon reaping the child via `waitpid()`.
 
-### 2. Configuring Signal Responses: `sigaction()`
+### 2. Configuring signal responses: `sigaction()`
 
 :::sigactionviz
 :::
@@ -98,7 +98,7 @@ Key configuration flags in `sa_flags`:
 * **`SA_RESETHAND`**: Handles the signal once with your custom function, then automatically resets disposition to `SIG_DFL`. A second arrival terminates the program.
 * **`SA_RESTART`**: If a slow system call (`read`, `waitpid`) was interrupted by the signal, the call **automatically restarts** upon handler completion rather than failing with `EINTR`.
 
-### 3. Managing Signal Sets (`sigset_t`)
+### 3. Managing signal sets (`sigset_t`)
 
 :::sigprocmaskviz
 :::
@@ -126,7 +126,7 @@ sigaddset(&mask, SIGINT);   // Add SIGINT to blocked set
 sigdelset(&mask, SIGINT);   // Remove SIGINT from set
 ```
 
-### 4. **Modifying the Signal Mask with `sigprocmask()`**:
+### 4. **Modifying the signal mask with `sigprocmask()`**:
   ```c
   int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
   ```
@@ -157,7 +157,7 @@ sigdelset(&mask, SIGINT);   // Remove SIGINT from set
   sigprocmask(SIG_SETMASK, &old_mask, NULL);
   ```
 
-### 5. Atomic Signal Waiting: `sigsuspend()`
+### 5. Atomic signal waiting: `sigsuspend()`
 
 :::sigsuspendviz
 :::
@@ -168,7 +168,7 @@ sigsuspend(&mascara);
 Suspends execution, replacing the active mask with `mascara` until delivery of an unblocked signal.  
 Upon signal handler execution, `sigsuspend` returns and **automatically restores the original pre-call signal mask**.
 
-### 6. Scheduling Timer Alarms: `alarm(seconds)`
+### 6. Scheduling timer alarms: `alarm(seconds)`
 
 :::alarmviz
 :::
@@ -187,7 +187,7 @@ alarm(0); // Cancel any pending alarm timer
 
 ---
 
-## 4.4 Complete Multiprocessing and Signals Example (Lab SO 4 Prep)
+## 4.4 Complete multiprocessing and signals example (lab SO 4 prep)
 
 Step-by-step complete scenario:
 * **Parent Process**: Main driver. Forks 10 children, establishes a 2-second timeout window, and monitors exit codes. If any child exceeds 2s, it forcibly kills it using `SIGKILL`.
@@ -198,7 +198,7 @@ Step-by-step complete scenario:
 
 <!-- ## 4.4 Patterns and Idioms with Signals
 
-### Pattern 1: Freezing and Resuming a Process
+### Pattern 1: freezing and resuming a process
 * **Self-suspension**:
   ```c
   kill(getpid(), SIGSTOP); // Immediately enters STOPPED state
@@ -210,7 +210,7 @@ Step-by-step complete scenario:
 
 ---
 
-### Pattern 2: Mitigating the Lost Signal Race Condition
+### Pattern 2: mitigating the lost signal race condition
 Suppose a parent process awaits a `SIGUSR1` notification from a child.  
 If the parent simply calls `sigsuspend(&empty)` without preliminary blocking, a fast child might send `SIGUSR1` **before** the parent reaches the `sigsuspend` call. The signal arrives, executes, and when the parent subsequently enters `sigsuspend`, it **hangs indefinitely** waiting for a signal that has already fired!
 
@@ -227,7 +227,7 @@ If the parent simply calls `sigsuspend(&empty)` without preliminary blocking, a 
 
 ---
 
-### Pattern 3: Asynchronous Child Reaping via `SIGCHLD`
+### Pattern 3: asynchronous child reaping via `SIGCHLD`
 To avoid blocking on `waitpid()`, the parent installs a `SIGCHLD` handler:
 
 ```c
@@ -244,7 +244,7 @@ Because if multiple children exit concurrently during handler invocation, signal
 
 ---
 
-## 4.5 Solved Exam Questions (Topic 4: Signals)
+## 4.5 Solved exam questions (topic 4: signals)
 
 ### 1. An orphaned process receives `SIGKILL`. Can it remain a Zombie forever?
 **NO**. When a process is orphaned, it is automatically adopted by `init` (PID 1). This root process continuously calls `waitpid()` for its adopted children, freeing their PCBs immediately upon termination.

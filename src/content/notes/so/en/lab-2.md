@@ -1,12 +1,12 @@
 ---
-title: "Lab 2: The C Language"
+title: "Lab 2: The C language"
 description: "Exercises and questions from laboratory session 2."
 readTime: "7 min"
 order: 2.5
 draft: false
 ---
 
-## Session 2 Guide: The C Language and Compilation
+## Session 2 guide: the C language and compilation
 
 Concise answers to laboratory questions (`entrega.txt`) for the SIMLAB exam.
 
@@ -16,7 +16,7 @@ Packaging the submission:
 
 ---
 
-## Block 1: Low-level Output (`sprintf` + `write`)
+## Block 1: low-level output (`sprintf` + `write`)
 
 In Operating Systems, `cout` and `printf` are **not** used. Mandatory standard pattern:
 
@@ -42,7 +42,7 @@ write(1, buffer, strlen(buffer)); // 1 = stdout, 2 = stderr
 
 ---
 
-## Block 2: Makefile Rules (Exercises 1 to 4)
+## Block 2: Makefile rules (exercises 1 to 4)
 
 Fundamental rule format:
 ```makefile
@@ -67,7 +67,7 @@ clean:
 
 ---
 
-## Block 3: Common Compiler Errors (Exam)
+## Block 3: common compiler errors (exam)
 
 | Error / Warning from `gcc` | Cause | Solution |
 | :--- | :--- | :--- |
@@ -78,7 +78,7 @@ clean:
 | `warning: return with a value in void function` | Function declared as `void main` | Declare `int main(int argc, char *argv[])` |
 | `error: syntax error at end of input` | Missing closing brace `}` | Close the loop or function brace |
 
-### Corrected Code (`listaParametros.c`)
+### Corrected code (`listaParametros.c`)
 ```c
 #include <stdio.h>
 #include <string.h>
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## Block 4: `argc` and `argv` Parameters
+## Block 4: `argc` and `argv` parameters
 
 * **`argc`**: Total argument count ($\ge 1$).
 * **`argv`**: Vector of strings `char *`.
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## Block 5: `Usage()` Function and Parameter Validation
+## Block 5: `Usage()` function and parameter validation
 
 All exam programs must validate the received argument count. If incorrect, they print usage instructions and exit with `exit(1)`:
 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-## Block 6: Pointers in C (`punters.c`)
+## Block 6: pointers in C (`punters.c`)
 
 * `&A`: Address-of operator: retrieves the memory address of variable `A`.
 * `*PA`: Dereference operator: reads or modifies the value at the address pointed to by `PA`.
@@ -153,7 +153,7 @@ int *PA = &A;
 
 ---
 
-## Block 7: Converting Characters to Integers (`suma.c`)
+## Block 7: converting characters to integers (`suma.c`)
 
 1. **`char2int`**: Subtracts the ASCII value of character `'0'`:
    ```c
@@ -174,7 +174,7 @@ int *PA = &A;
 
 ---
 
-## Block 8: Modularization and Compilation with `gcc`
+## Block 8: modularization and compilation with `gcc`
 
 Separation into `.h` (public prototypes) and `.c` (implementation):
 
@@ -187,7 +187,7 @@ int mi_atoi(char *s);
 #endif
 ```
 
-### Question 28: `gcc` Compiler Options
+### Question 28: `gcc` compiler options
 * **Generate object file `.o` without linking:**
   `gcc -c mis_funciones.c` (flag **`-c`**).
 * **Directory to find header files `.h`:**
@@ -200,7 +200,7 @@ int mi_atoi(char *s);
 
 ---
 
-## Block 9: Word Counter (`words.c`)
+## Block 9: word counter (`words.c`)
 
 A word is delimited by space `' '`, dot `'.' `, comma `','`, or newline `'\n'`:
 
@@ -225,7 +225,7 @@ for (int i = 0; str[i] != '\0'; i++) {
 
 ---
 
-## Submission Package Summary (`sessio02.tar.gz`)
+## Submission package summary (`sessio02.tar.gz`)
 
 | File | Content |
 | :--- | :--- |

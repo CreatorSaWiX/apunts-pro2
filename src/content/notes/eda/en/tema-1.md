@@ -1,5 +1,5 @@
 ---
-title: "Topic 1: Algorithm Analysis"
+title: "Topic 1: Algorithm analysis"
 description: "Algorithmic efficiency, asymptotic notation (O, Ω, Θ), iterative and recursive analysis, and master theorems."
 readTime: "20 min"
 order: 1
@@ -21,25 +21,25 @@ For a fixed input size $n$, runtime may vary depending on the particular instanc
 
 ---
 
-## 1.1. Formal Definitions of Asymptotic Notation
+## 1.1. Formal definitions of asymptotic notation
 
 Asymptotic notation characterizes the growth rate of a cost function $f(n)$ as $n \to \infty$, ignoring constant factors and lower-order terms relative to a reference function $g(n)$.
 
-### Upper bound: Big $\mathcal{O}$ (omicron)
+### Upper bound: big $\mathcal{O}$ (omicron)
 Specifies that $f(n)$ grows at most as fast as $g(n)$ for sufficiently large $n$ ($f(n) \le c \cdot g(n)$), guaranteeing an asymptotic upper bound:
 
 $$
 \mathcal{O}(g) = \{ f: \mathbb{N} \to \mathbb{R}^+ \mid \exists c \in \mathbb{R}^+,\; \exists n_0 \in \mathbb{N} \quad \text{such that} \quad \forall n \ge n_0,\; f(n) \le c \cdot g(n) \}
 $$
 
-### Lower bound: Big $\Omega$ (omega)
+### Lower bound: big $\Omega$ (omega)
 Specifies that $f(n)$ grows at least as fast as $g(n)$ for sufficiently large $n$ ($f(n) \ge c \cdot g(n)$), guaranteeing an asymptotic lower bound:
 
 $$
 \Omega(g) = \{ f: \mathbb{N} \to \mathbb{R}^+ \mid \exists c \in \mathbb{R}^+,\; \exists n_0 \in \mathbb{N} \quad \text{such that} \quad \forall n \ge n_0,\; f(n) \ge c \cdot g(n) \}
 $$
 
-### Tight bound: Big $\Theta$ (theta)
+### Tight bound: big $\Theta$ (theta)
 Specifies that $f(n)$ grows at the identical rate as $g(n)$ for sufficiently large $n$ ($c_1 \cdot g(n) \le f(n) \le c_2 \cdot g(n)$), providing exact asymptotic order:
 
 $$
@@ -55,7 +55,7 @@ $$
 :::asymptoticviz
 :::
 
-### Limit Quotient Criterion
+### Limit quotient criterion
 Determines the asymptotic dominance between two positive functions $f(n)$ and $g(n)$ via the limit of their ratio as $n \to \infty$:
 
 $$
@@ -70,7 +70,7 @@ $$
 
 > If the limit oscillates or fails to exist, apply the formal inequality definition using constants $c$ and $n_0$.
 
-### Core Algebraic Properties of Asymptotic Sets
+### Core algebraic properties of asymptotic sets
 
 | Property | Formulation | Description / Example |
 | :--- | :--- | :--- |
@@ -84,9 +84,9 @@ $$
 
 ---
 
-## 1.2. Growth Hierarchy
+## 1.2. Growth hierarchy
 
-### Asymptotic Simplification Rules
+### Asymptotic simplification rules
 
 | Family / Relation | Formulation | Invariant Property |
 | :--- | :--- | :--- |
@@ -97,12 +97,12 @@ $$
 
 > The base of a logarithm **is critical** when positioned in the exponent: $2^{\log_2 n} = n \neq 2^{\log_3 n} = n^{\log_3 2} \approx n^{0.631}$.
 
-### Universal Asymptotic Growth Chain
+### Universal asymptotic growth chain
 
 :::growthviz
 :::
 
-### The Intractability Frontier and Hardware Scaling
+### The intractability frontier and hardware scaling
 When an algorithm exhibits exponential cost ($2^n$ or $3^n$), runtimes escalate precipitously even for modest input sizes. Assuming a benchmark CPU executing $10^6$ elementary ops/sec ($1\,\mu\text{s}$ per operation):
 
 | Complexity | $n = 10$ | $n = 20$ | $n = 30$ | $n = 50$ | Effect of buying a $\times 1000$ faster CPU |
@@ -117,9 +117,9 @@ Purchasing hardware that is $m = 1000$ times faster yields only an additive cons
 
 ---
 
-## 1.3. Iterative (Non-Recursive) Algorithms
+## 1.3. Iterative (non-recursive) algorithms
 
-### Elementary Operations and Parameter Conventions
+### Elementary operations and parameter conventions
 
 | Operation / Concept | Cost | Justification / Rule |
 | :--- | :---: | :--- |
@@ -128,7 +128,7 @@ Purchasing hardware that is $m = 1000$ times faster yields only an additive cons
 | **Pass by reference (`&`, `const &`)** | $\Theta(1)$ | Passes pointer address without copying array contents. |
 | **Pass by value (`vector<T>` size $n$)** | $\Theta(n)$ | Deep copies all $n$ elements into newly allocated heap memory. |
 
-### Control Flow Structures
+### Control flow structures
 
 | Structure | Syntax Pattern | Cost Derivation | Behavior |
 | :--- | :--- | :--- | :--- |
@@ -199,7 +199,7 @@ $$
 
 ---
 
-## 1.4. Recursive Algorithms and Master Theorems
+## 1.4. Recursive algorithms and master theorems
 
 The runtime of a recursive function is expressed via a recurrence relation:
 
@@ -209,7 +209,7 @@ $$
 
 where $a \ge 1$ is the branch factor and $g(n)$ is non-recursive overhead (split and merge phases).
 
-### Master Theorem for Subtractive Recurrences
+### Master theorem for subtractive recurrences
 Applies when subproblem sizes decrement by a constant $c \ge 1$:
 
 $$
@@ -234,7 +234,7 @@ $$
 
 ---
 
-### Master Theorem for Divide-and-Conquer Recurrences
+### Master theorem for divide-and-conquer recurrences
 Applies when subproblem sizes are divided by a constant factor $b > 1$:
 
 $$

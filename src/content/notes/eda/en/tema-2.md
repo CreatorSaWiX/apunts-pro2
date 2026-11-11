@@ -1,5 +1,5 @@
 ---
-title: "Topic 2: Divide and Conquer"
+title: "Topic 2: Divide and conquer"
 description: "Divide-and-conquer and subtractive recurrences, sorting (MergeSort, QuickSort), fast exponentiation, Karatsuba, Strassen, Towers of Hanoi, and linear selection (BFPRT)."
 readTime: "45 min"
 order: 2
@@ -17,7 +17,7 @@ The **divide and conquer** paradigm decomposes a problem of size $n$ into smalle
 :::dncviz
 :::
 
-### Temporal Cost Decomposition
+### Temporal cost decomposition
 The total cost of a divide-and-conquer algorithm derives exclusively from three sources:
 
 $$
@@ -26,7 +26,7 @@ $$
 
 Where non-recursive overhead $g(n) = T_{\text{divide}}(n) + T_{\text{combine}}(n)$ typically belongs to $\Theta(n^k)$ for $k \ge 0$, solvable using the **Master Theorem for divide-and-conquer recurrences**.
 
-### Introductory Example: Binary Search
+### Introductory example: binary search
 Given a **sorted** array $A[0 \dots n-1]$, we determine whether an element $x$ is present. At each step we compare $x$ with middle element $A[m]$: if matching, search succeeds; if $x < A[m]$, search recursively in left half; if $x > A[m]$, in right half.
 
 :::binarysearchviz
@@ -62,7 +62,7 @@ $$
 | **Stability** | Yes | Preserves original relative order of items with identical keys. |
 | **Auxiliary Memory** | $\Theta(n)$ | Requires an auxiliary vector during the merge step (not *in-place*). |
 
-### Stability and Multi-Key Sorting
+### Stability and multi-key sorting
 
 An algorithm is **stable** if for any pair of elements with equal keys ($x = y$), if $x$ precedes $y$ in the input, $x$ precedes $y$ in the output.
 
@@ -76,7 +76,7 @@ This property enables **multi-key sorting**: to sort records across multiple pri
 
 ---
 
-### Recursive Scheme and Implementation
+### Recursive scheme and implementation
 
 The algorithm operates over an array $T$ bounded by indices $e$ (start) and $d$ (end). It splits at midpoint $m = \lfloor(e + d) / 2\rfloor$, recursively sorts both halves, and merges them via `merge`.
 
@@ -96,7 +96,7 @@ Merging combines two adjacent sorted subvectors, $T[e \dots m]$ and $T[m+1 \dots
 :::oopviz{simulation="mergesort"}
 :::
 
-### Time Complexity Analysis
+### Time complexity analysis
 
 The runtime $T(n)$ for a subvector of size $n = d - e + 1$ satisfies:
 
@@ -124,9 +124,9 @@ $$
 
 ---
 
-### Optimization Variants
+### Optimization variants
 
-### Hybridization via Critical Threshold
+### Hybridization via critical threshold
 For small subproblems ($n < k_0 \approx 50$), insertion sort outperforms MergeSort due to lower constant multipliers and absence of dynamic allocations. Below this cutoff, recursion stops in favor of insertion sort:
 
 :::hybridmergeviz
@@ -143,7 +143,7 @@ else {
 }
 ```
 
-### Iterative Queue-based MergeSort (*bottom-up*)
+### Iterative queue-based MergeSort (*bottom-up*)
 Builds sorted sequences bottom-up: enqueues each single element as a singleton vector, then iteratively dequeues and merges pairs until a single vector remains:
 
 :::mergequeueviz
@@ -159,7 +159,7 @@ function mergesort_queue(a[1...n]):
     return dequeue(Q)
 ```
 
-### In-Place Bottom-Up MergeSort
+### In-place bottom-up MergeSort
 Applies the bottom-up pattern directly on the array without queue overhead, merging adjacent power-of-two runs ($m = 1, 2, 4, 8, \dots$):
 
 :::mergebottomupviz
@@ -183,7 +183,7 @@ void mergesort_bottom_up(vector<elem>& T) {
 
 **QuickSort** is an *in-place* divide-and-conquer sorting algorithm. It features average complexity $\Theta(n \log n)$ and worst case $\Theta(n^2)$, with very low constant factors making it fast in practice.
 
-### Algorithm Phases
+### Algorithm phases
 
 | Phase | Action | Associated Cost |
 | :--- | :--- | :---: |
@@ -211,7 +211,7 @@ MergeSort and QuickSort present inverse computational symmetries across their ex
 
 ---
 
-### Hoare's In-Place Partition
+### Hoare's in-place partition
 Hoare's partition requires no auxiliary buffer. It uses two pointers: $i$ (advancing from the left looking for elements $\ge x$) and $j$ (advancing from the right looking for elements $\le x$). When both halt, they swap entries and continue until meeting ($i \ge j$).
 
 :::hoarepartviz
@@ -228,7 +228,7 @@ Hoare's partition requires no auxiliary buffer. It uses two pointers: $i$ (advan
 
 ---
 
-### Pivot Selection Strategies
+### Pivot selection strategies
 Because Hoare's partition uses $T[e]$ as pivot, alternative strategies choose a candidate and swap it into $T[e]$ initially:
 
 | Strategy | Mechanism | Advantage | Drawback |
@@ -249,7 +249,7 @@ if (T[d] < T[e]) swap(T[e], T[d]);
 
 ---
 
-### QuickSort Complexity Analysis
+### QuickSort complexity analysis
 Let $i$ denote the size of the left partition ($1 \le i \le n - 1$). The general recurrence is:
 
 $$ T(n) = T(i) + T(n - i) + \Theta(n) $$
@@ -261,7 +261,7 @@ $$ T(n) = T(i) + T(n - i) + \Theta(n) $$
 
 ---
 
-### Practical Comparison: QuickSort vs MergeSort in Hardware Architecture
+### Practical comparison: QuickSort vs MergeSort in hardware architecture
 Despite both sharing $\Theta(n \log n)$ asymptotic bounds, QuickSort is typically $2\times$ to $3\times$ faster on physical hardware due to memory hierarchy caching:
 
 | Memory Level | Typical Access Latency | Relative Slowdown vs Registers |
@@ -280,7 +280,7 @@ Despite both sharing $\Theta(n \log n)$ asymptotic bounds, QuickSort is typicall
 
 ---
 
-## 2.3 Exponentiation: Fast Exponentiation
+## 2.3 Exponentiation: fast exponentiation
 
 Computing integer powers $x^n$ demonstrates how divide-and-conquer reduces linear running times to logarithmic complexity.
 
@@ -305,7 +305,7 @@ $$
 :::oopviz{simulation="fast_power"}
 :::
 
-### Complexity Analysis and Call Branching
+### Complexity analysis and call branching
 
 Storing the intermediate subpower in a local variable (`y = potencia(x, n/2)`) enforces a single recursive call per step:
 
@@ -324,7 +324,7 @@ $$ \mathbf{T(n) \in \Theta(\log n)} $$
 > **Note on redundant calls:**  
 > If written redundantly (`potencia(x, n/2) * potencia(x, n/2)`), the call count becomes $a = 2$, yielding $T(n) = 2T(n/2) + \Theta(1)$, which evaluates to $\Theta(n)$ and completely negates algorithmic efficiency.
 
-### Practical Applications
+### Practical applications
 
 | Domain | Application | Resulting Complexity |
 | :--- | :--- | :---: |
@@ -333,7 +333,7 @@ $$ \mathbf{T(n) \in \Theta(\log n)} $$
 
 ---
 
-## 2.4 Large Integer Multiplication: Karatsuba's Algorithm
+## 2.4 Large integer multiplication: Karatsuba's algorithm
 
 Multiplying two $n$-digit (or $n$-bit) integers is a foundational primitive in computational arithmetic and cryptography.
 In the traditional grade-school method, the first number is multiplied by each of the $n$ digits of the second, shifting each partial row:
@@ -362,7 +362,7 @@ $$ T_{\text{school}}(n) = \Theta(n^2) + \Theta(n^2) = \mathbf{\Theta(n^2)} $$
 
 ---
 
-### Naive Recursive Decomposition (4 Subproducts)
+### Naive recursive decomposition (4 subproducts)
 
 In 1952, **Andrei Kolmogorov** conjectured that multiplying two $n$-digit integers possessed an insurmountable asymptotic lower bound of $\Omega(n^2)$ operations.
 
@@ -403,7 +403,7 @@ Direct decomposition fails to lower the asymptotic bound and incurs call-stack o
 
 ---
 
-### Karatsuba's Reduction (1960) and Gauss's Identity
+### Karatsuba's reduction (1960) and Gauss's identity
 
 :::karatsubaviz
 :::
@@ -447,7 +447,7 @@ $$
 
 ---
 
-### Complexity Analysis of Karatsuba
+### Complexity analysis of Karatsuba
 
 The algorithm requires only **3 recursive calls** on $n/2$-bit operands ($a$, $b$, and $c$). Linear additions, subtractions, and bit shifts over $\mathcal{O}(n)$ bit vectors yield $g(n) \in \Theta(n)$.
 
@@ -481,7 +481,7 @@ Because $n^{1.585} \in o(n^2)$, this formally proves that **integer multiplicati
 
 ---
 
-## 2.5 Matrix Multiplication: Strassen's Algorithm
+## 2.5 Matrix multiplication: Strassen's algorithm
 
 Given square matrices $X, Y \in \mathbb{R}^{n \times n}$, their product $Z = X \cdot Y$ is an $n \times n$ matrix where:
 
@@ -489,7 +489,7 @@ $$
 Z_{ij} = \sum_{k=1}^n X_{ik} Y_{kj} \qquad (1 \le i, j \le n)
 $$
 
-### Standard Cubic Algorithm $\Theta(n^3)$
+### Standard cubic algorithm $\Theta(n^3)$
 
 Direct implementation uses 3 nested loops:
 
@@ -513,7 +513,7 @@ $$
 
 ---
 
-### $2 \times 2$ Block Decomposition
+### $2 \times 2$ block decomposition
 
 :::naivematmultviz
 :::
@@ -549,7 +549,7 @@ $$
 
 ---
 
-### Volker Strassen's Algorithm (1969)
+### Volker Strassen's algorithm (1969)
 
 :::strassenmatmultviz
 :::
@@ -582,7 +582,7 @@ $$
 
 ---
 
-### Strassen Complexity Analysis
+### Strassen complexity analysis
 
 The algorithm performs 7 recursive calls on $(n/2) \times (n/2)$ submatrices with $\Theta(n^2)$ additions/subtractions:
 
@@ -616,14 +616,14 @@ $$
 
 ---
 
-## 2.6 The Towers of Hanoi
+## 2.6 The towers of Hanoi
 
 The **Towers of Hanoi** illustrates divide-and-conquer on **subtractive** recurrences, where problem size decrements additively.
 
 :::hanoiviz
 :::
 
-### Problem Rules
+### Problem rules
 
 Three vertical pegs are provided: $A$ (source), $B$ (auxiliary), and $C$ (target). Initially, $A$ holds $n$ graduated disks sorted by decreasing radius with the largest disk at the base. Move the tower to $C$ adhering to two invariants: move only one top disk per step, and never place a larger disk onto a smaller disk.
 
@@ -643,7 +643,7 @@ void hanoi(int n, char a, char b, char c) {
 
 ---
 
-### Exact Move Count Derivation
+### Exact move count derivation
 
 Let $M(n)$ be the minimal elementary moves for $n$ disks:
 
@@ -672,7 +672,7 @@ $$
 
 ---
 
-### Asymptotic Analysis via Subtractive Master Theorem
+### Asymptotic analysis via subtractive master theorem
 
 The recurrence fits the subtractive template $T(n) = a T(n - b) + g(n)$ with $a = 2, b = 1, g(n) = \Theta(1)$. Since $a = 2 > 1$:
 
@@ -684,9 +684,9 @@ This exponential cost is strictly minimal, as moving the base disk requires all 
 
 ---
 
-## 2.7 Median Finding and Selection Algorithms
+## 2.7 Median finding and selection algorithms
 
-### The Median and Statistical Robustness
+### The median and statistical robustness
 
 The **median** of an array partitions sorted elements into equal-sized halves.
 * Odd length $n$: exact center element.
@@ -701,14 +701,14 @@ Unlike the arithmetic mean, the median offers two key properties:
 
 ---
 
-### Median of Medians Algorithm (BFPRT, 1973)
+### Median of medians algorithm (BFPRT, 1973)
 
 Blum, Floyd, Pratt, Rivest, and Tarjan designed a deterministic pivot selection strategy guaranteeing **linear worst-case time $\Theta(n)$** for QuickSelect.
 
 :::bfprtviz
 :::
 
-### Block Size $q = 5$ Algorithm:
+### Block size $q = 5$ algorithm:
 1. **Partition into blocks:** Divide array of size $n$ into $\lceil n/5 \rceil$ blocks of 5 elements.
 2. **Block medians:** Compute the median of each block ($\Theta(1)$ per 5-element block, $\Theta(n)$ overall).
 3. **Recursive pivot search:** Recursively find the **median of the $n/5$ block medians** (pseudomedian pivot $p$ costing $T(n/5)$).
@@ -717,7 +717,7 @@ Blum, Floyd, Pratt, Rivest, and Tarjan designed a deterministic pivot selection 
 
 ---
 
-### Global Recurrence and Linearity Condition
+### Global recurrence and linearity condition
 
 Worst-case running time $C(n)$ combines:
 1. Non-recursive partitioning and block medians: $\Theta(n)$.
@@ -750,7 +750,7 @@ $$
 
 ---
 
-## 2.8 Topic 2 Complexity Summary
+## 2.8 Topic 2 complexity summary
 
 | Algorithm | Problem | Recurrence $T(n)$ | Method & Branch | Time Complexity | Extra Space |
 | :--- | :--- | :--- | :--- | :---: | :---: |

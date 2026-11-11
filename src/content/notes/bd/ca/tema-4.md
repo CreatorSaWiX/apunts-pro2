@@ -172,7 +172,7 @@ $$ LANGUAGE plpgsql;
 
 ---
 
-## 4.5. Sentències iteratives (Bucles)
+## 4.5. Sentències iteratives (bucles)
 
 **Bucle `FOR` sobre consultes SQL (el més utilitzat):** itera automàticament fila per fila sobre el conjunt retornat per una consulta:
 

@@ -227,7 +227,7 @@ int *p = &a; // p guarda la dirección de 'a'
 
 ---
 
-## 2.10 Preguntas típicas de examen resueltas (Tema 2)
+## 2.10 Preguntas típicas de examen resueltas (tema 2)
 
 ### 1. ¿Por qué un ejecutable compilado con `-static` ocupa tanto espacio comparado con el normal?
 Porque el flag `-static` copia físicamente todo el código máquina de las funciones de biblioteca (como `sprintf`, `strlen`, etc.) dentro del propio archivo ejecutable. En la compilación dinámica, el archivo solo guarda una pequeña referencia y las bibliotecas se comparten en la memoria desde el sistema.

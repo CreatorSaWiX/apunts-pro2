@@ -1,12 +1,12 @@
 ---
-title: "EDA Midterm Review"
+title: "EDA midterm review"
 description: "Summary Topics 1 - 3"
 readTime: "20 min"
 order: 4
 draft: false
 ---
 
-## 1. Algorithm Analysis
+## 1. Algorithm analysis
 
 - **$\mathcal{O}(g)$** (upper bound): $f(n) \le c \cdot g(n)$ *(grows at most as fast as $g$)*
 - **$\Omega(g)$** (lower bound): $f(n) \ge c \cdot g(n)$ *(grows at least as fast as $g$)*
@@ -28,12 +28,12 @@ $$
 | **$L = \infty$** | $f > g$ | $f \in \Omega(g)$, $f \notin \mathcal{O}(g)$, $f \notin \Theta(g)$ |
 | **Does not exist** | Oscillates | Apply formal definition directly using $c$ and $n_0$. |
 
-### Simplification Identities for Limits and Comparisons
+### Simplification identities for limits and comparisons
 
 :::growthviz
 :::
 
-### Properties of Logarithms and Natural Logarithms ($\log_b, \ln$)
+### Properties of logarithms and natural logarithms ($\log_b, \ln$)
 | Property | Mathematical Formulation | Example |
 | :--- | :--- | :--- |
 | **Product to sum** | $\log_b(x \cdot y) = \log_b x + \log_b y$ | $\log(2n) = \log 2 + \log n \implies \Theta(\log n)$|
@@ -47,7 +47,7 @@ $$
 > **Caution with base in the exponent:** The base of a logarithm **does alter asymptotic complexity** when positioned in the exponent:  
 > $2^{\log_2 n} = n$, but $2^{\log_3 n} = n^{\log_3 2} \approx n^{0.631} \implies 2^{\log_2 n} \gg 2^{\log_3 n}$.
 
-### Properties of Powers, Exponentials ($a^n, e^n$), and Radicals
+### Properties of powers, exponentials ($a^n, e^n$), and radicals
 | Property | Formulation | Example |
 | :--- | :--- | :--- |
 | **Sum in exponent** | $a^{x + y} = a^x \cdot a^y$ | $2^{n + 3} = 2^3 \cdot 2^n = 8 \cdot 2^n \implies \mathbf{\Theta(2^n)}$ |
@@ -57,7 +57,7 @@ $$
 | **Conversion to base $e$** | $a^x = e^{x \ln a}$ | $2^n = e^{n \ln 2}, \quad n^n = e^{n \ln n}$ |
 | **Key Swap Identity** | $\mathbf{a^{\log_b n} = n^{\log_b a}}$ | $4^{\log_2 n} = n^{\log_2 4} = n^2 \quad \vert \quad 3^{\log_2 n} = n^{\log_2 3} \approx n^{1.585}$ |
 
-### Elementary Operations and Parameter Passing
+### Elementary operations and parameter passing
 
 | Concept / Operation | Cost | Rationale / Rule |
 | :--- | :---: | :--- |
@@ -76,7 +76,7 @@ $$
 
 ---
 
-### Master Theorem for Subtractive Recurrences
+### Master theorem for subtractive recurrences
 Applies to recurrence relations where subproblem sizes decrease by a constant $c \ge 1$:
 
 $$
@@ -95,7 +95,7 @@ $$
 
 ---
 
-### Master Theorem for Divide-and-Conquer Recurrences
+### Master theorem for divide-and-conquer recurrences
 
 $$
 C(n) = \begin{cases} \Theta(1), & \text{if } n < n_0 \\ a \cdot C(n/b) + g(n), & \text{if } n \ge n_0 \end{cases} \qquad C(n) \in \begin{cases} 
@@ -112,7 +112,7 @@ $$
 | **Karatsuba** | $C(n) = 3C(n/2) + \Theta(n)$ | $a=3, b=2, k=1$ | $\alpha = \log_2 3 \approx 1.585 > k$ | $\Theta(n^{1.585})$ |
 | **Strassen** | $C(n) = 7C(n/2) + \Theta(n^2)$ | $a=7, b=2, k=2$ | $\alpha = \log_2 7 \approx 2.807 > k$ | $\Theta(n^{2.807})$ |
 
-## 2. Divide and Conquer
+## 2. Divide and conquer
 
 The total running time of a divide-and-conquer algorithm originates from three distinct components:
 
@@ -139,7 +139,7 @@ Where the non-recursive overhead $g(n) = T_{\text{divide}}(n) + T_{\text{combine
 | **QuickSelect (worst case)** | Select $k$-th order statistic | $T(n) = T(n-1) + \Theta(n)$ | $\Theta(n^2)$ |
 | **Median of Medians (BFPRT)** | Select $k$-th statistic (worst case) | $T(n) = T(n/5) + T(3n/4) + \Theta(n)$ | $\mathbf{\Theta(n)}$ |
 
-### Binary Search $\Theta(\log n)$
+### Binary search $\Theta(\log n)$
 :::binarysearchviz
 :::
 
@@ -159,7 +159,7 @@ Where the non-recursive overhead $g(n) = T_{\text{divide}}(n) + T_{\text{combine
 
 ---
 
-### Hybrid MergeSort with Threshold
+### Hybrid MergeSort with threshold
 :::hybridmergeviz
 :::
 
@@ -174,7 +174,7 @@ else {
 }
 ```
 
-### Iterative Queue-based MergeSort
+### Iterative queue-based MergeSort
 :::mergequeueviz
 :::
 
@@ -188,7 +188,7 @@ function mergesort_queue(a[1...n]):
     return dequeue(Q)
 ```
 
-### In-place Bottom-up MergeSort
+### In-place bottom-up MergeSort
 
 :::mergebottomupviz
 :::
@@ -207,19 +207,19 @@ void mergesort_bottom_up(vector<elem>& T) {
 
 ---
 
-### QuickSort $\Theta(n \log n)$ with Worst Case $\Theta(n^2)$
+### QuickSort $\Theta(n \log n)$ with worst case $\Theta(n^2)$
 
 :::quicksortviz
 :::
 
-### Hoare's Partition
+### Hoare's partition
 :::hoarepartviz
 :::
 
 :::oopviz{simulation="quicksort"}
 :::
 
-### Pivot Selection Strategies
+### Pivot selection strategies
 
 Median-of-three pivot code:
 ```cpp
@@ -232,7 +232,7 @@ if (T[d] < T[e]) swap(T[e], T[d]);
 
 ---
 
-### Fast Exponentiation $ \mathbf{T(n) \in \Theta(\log n)} $
+### Fast exponentiation $ \mathbf{T(n) \in \Theta(\log n)} $
 
 :::fastpowerviz
 :::
@@ -240,17 +240,17 @@ if (T[d] < T[e]) swap(T[e], T[d]);
 :::oopviz{simulation="fast_power"}
 :::
 
-### Karatsuba Algorithm $\Theta(n^{1.585})$
+### Karatsuba algorithm $\Theta(n^{1.585})$
 
 :::karatsubaviz
 :::
 
-### Strassen Algorithm $\Theta(n^{2.807})$
+### Strassen algorithm $\Theta(n^{2.807})$
 
 :::strassenmatmultviz
 :::
 
-### The Towers of Hanoi
+### The towers of Hanoi
 
 :::hanoiviz
 :::
@@ -265,7 +265,7 @@ void hanoi(int n, char a, char b, char c) {
 }
 ```
 
-### Median of Medians
+### Median of medians
 
 :::medianviz
 :::
@@ -280,7 +280,7 @@ A dictionary ADT maintains pairs of **(key, value)** ($k \in K$, $i \in I$), ena
 :::dictviz
 :::
 
-### Hash Tables
+### Hash tables
 
 **Hash tables** provide search, insertion, and deletion in **expected constant time $\Theta(1)$**, at the expense of a $\Theta(n)$ worst case under pathological collisions.
 
@@ -309,7 +309,7 @@ In collision resolution via separate chaining, each bucket $T[j]$ maintains a **
 
 ---
 
-### Binary Search Trees (BST)
+### Binary search trees (BST)
 
 A **BST** implements the dictionary ADT relying on a **total order** over keys.
 

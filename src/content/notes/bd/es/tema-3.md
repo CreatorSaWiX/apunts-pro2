@@ -1,5 +1,5 @@
 ---
-title: "Tema 3: Componentes Lógicos"
+title: "Tema 3: Componentes lógicos"
 description: "Esquemas, dominios, aserciones, vistas y permisos."
 readTime: "8 min"
 order: 3
@@ -10,7 +10,7 @@ Este tema completa los componentes lógicos de gestión, estructuración y contr
 
 ---
 
-## 3.1. Esquemas, Catálogos y Servidor
+## 3.1. Esquemas, catálogos y servidor
 
 El SGBD organiza los recursos en una jerarquía de tres niveles administrativos:
 
@@ -28,7 +28,7 @@ DROP SCHEMA nombre_esquema CASCADE;  -- Borra el esquema y todos sus objetos
 
 ---
 
-## 3.2. Conexiones, Sesiones y Transacciones
+## 3.2. Conexiones, sesiones y transacciones
 
 Una **conexión** es la asociación activa entre el cliente y el servidor de BD. Una **sesión** es el contexto de ejecución de un usuario durante esa conexión. Una **transacción** es una unidad atómica de operaciones SQL: o se ejecutan todas o ninguna.
 
@@ -130,7 +130,7 @@ SELECT * FROM empleats_altsous WHERE num_dpt = 2;
 :::viewviz
 :::
 
-### Actualizabilidad de Vistas (SQL Estándar)
+### Actualizabilidad de vistas (SQL estándar)
 
 Una vista admite `INSERT`, `UPDATE` o `DELETE` solo si la operación se traslada de forma unívoca a la tabla base. Según el estándar, debe estar definida sobre **una única tabla base** (sin `JOIN`, `UNION` ni subconsultas en el `FROM`), **sin funciones de agregación** ni `DISTINCT`, `GROUP BY` o `HAVING`, y con **columnas simples** en el `SELECT` (sin expresiones aritméticas ni constantes). Para aceptar `INSERT`, la vista debe incluir además todas las columnas `NOT NULL` sin `DEFAULT` de la tabla subyacente.
 
@@ -157,13 +157,13 @@ UPDATE empleats_dep2 SET num_dpt = 3 WHERE num_empl = 5;
 
 Sin esta cláusula, la operación se ejecuta en la tabla base, pero la fila modificada **desaparece silenciosamente de la vista**. En vistas anidadas (`CASCADED`), si $V_2$ se define sobre $V_1$ (que tiene `WITH CHECK OPTION`), cualquier modificación en $V_2$ debe cumplir tanto el filtro de $V_1$ como el de $V_2$.
 
-### Coste físico: Tablas vs. Vistas
+### Coste físico: tablas vs. vistas
 
 Una **vista virtual** ocupa cero páginas de datos en disco; cada consulta obliga al SGBD a leer físicamente todas las tuplas de las tablas base para recalcular el resultado. Una **tabla base** o materializada sí ocupa espacio físico, pero las consultas leen únicamente sus propias tuplas, reduciendo las operaciones de E/S en consultas sobre agregaciones o filtros.
 
 ---
 
-## 3.6. Esquema de Información
+## 3.6. Esquema de información
 
 Conjunto estándar de **vistas de solo lectura** con los metadatos de los objetos del catálogo:
 
@@ -178,7 +178,7 @@ Conjunto estándar de **vistas de solo lectura** con los metadatos de los objeto
 
 ---
 
-## 3.7. Control de acceso: Privilegios y Roles
+## 3.7. Control de acceso: privilegios y roles
 
 El SGBD regula el acceso a objetos mediante **privilegios**. Los privilegios de datos sobre tablas y vistas son `SELECT`, `INSERT`, `UPDATE[(col1, ...)]` y `DELETE`. Los privilegios estructurales y de ejecución incluyen `REFERENCES[(col1, ...)]` (crear claves foráneas hacia la tabla), `USAGE` (usar dominios) y `ALL`.
 
@@ -192,7 +192,7 @@ REVOKE SELECT ON empleats FROM anna CASCADE;  -- Revoca en cadena a los usuarios
 REVOKE SELECT ON empleats FROM anna RESTRICT; -- Falla si hay privilegios dependientes delegados
 ```
 
-### Diagrama de Autorizaciones
+### Diagrama de autorizaciones
 
 Representación en grafo dirigido donde los nodos son usuarios y las aristas son concesiones de privilegios:
 

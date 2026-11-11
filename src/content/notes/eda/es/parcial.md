@@ -47,7 +47,7 @@ $$
 > **Cuidado con la base en el exponente:** La base del logaritmo **sí cambia el orden** si está en el exponente:  
 > $2^{\log_2 n} = n$, pero $2^{\log_3 n} = n^{\log_3 2} \approx n^{0.631} \implies 2^{\log_2 n} \gg 2^{\log_3 n}$.
 
-### Propiedades de Potencias, Exponenciales ($a^n, e^n$) y raíces
+### Propiedades de potencias, exponenciales ($a^n, e^n$) y raíces
 | Propiedad | Formulación | Ejemplo |
 | :--- | :--- | :--- |
 | **Suma en el exponente** | $a^{x + y} = a^x \cdot a^y$ | $2^{n + 3} = 2^3 \cdot 2^n = 8 \cdot 2^n \implies \mathbf{\Theta(2^n)}$ |
@@ -250,7 +250,7 @@ if (T[d] < T[e]) swap(T[e], T[d]);
 :::strassenmatmultviz
 :::
 
-### Las Torres de Hanoi
+### Las torres de Hanoi
 
 :::hanoiviz
 :::
@@ -265,7 +265,7 @@ void hanoi(int n, char a, char b, char c) {
 }
 ```
 
-### La Mediana de Medianas 
+### La mediana de medianas 
 
 :::medianviz
 :::
@@ -280,7 +280,7 @@ Un diccionario almacena pares **(clave, valor)** ($k \in K$, $i \in I$) y permit
 :::dictviz
 :::
 
-### Tablas de dispersión (*Hash Tables*)
+### Tablas de dispersión (*hash tables*)
 
 Las **tablas de dispersión** logran búsqueda, inserción y borrado en **tiempo constante esperado $\Theta(1)$**, a cambio de un caso peor $\Theta(n)$ (cuando todo colisiona).
 
@@ -309,7 +309,7 @@ Para solucionar colisiones, cada casilla $T[j]$ es una **lista enlazada** de tod
 
 ---
 
-### Árboles Binarios de Búsqueda (ABB / BST)
+### Árboles binarios de búsqueda (ABB / BST)
 
 Un **ABB** implementa el diccionario aprovechando un **orden total** sobre las claves.
 

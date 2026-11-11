@@ -1,5 +1,5 @@
 ---
-title: "Tema 5: Gestió de Memòria"
+title: "Tema 5: Gestió de memòria"
 description: "Traducció d'adreces, MMU, paginació, memòria dinàmica (sbrk i malloc), mmap, COW i memòria virtual."
 readTime: "15 min"
 order: 5
@@ -18,22 +18,18 @@ Els sistemes moderns són **multiprogramats** (mantenen diversos processos simul
 2. **Assignació dinàmica**: El SO ubica el procés a la memòria física lliure disponible (varia a cada execució).
 3. **Traducció d'adreces**: Cal traduir les adreces del codi a posicions físiques reals de memòria.
 
-### Adreces Lògiques vs Adreces Físiques
+### Adreces lògiques vs adreces físiques
 
-| Concepte | Adreça Lògica o Virtual (@L) | Adreça Física o Real (@F) |
-| :--- | :--- | :--- |
-| **Definició** | Adreça generada en compilar; és la que referencia la CPU en executar el codi. | Posició real als xips de memòria RAM. |
-| **Visibilitat** | La veu el programador, el procés d'usuari i el binari. | Exclusiva del controlador de memòria i el Kernel. |
-| **Espai d'adreces** | Rang d'@L permeses per al procés (de `0` al màxim de l'arquitectura). | Rang d'@F reals assignades al procés pel SO. |
-| **Assignació** | Es fixa en compilar/enllaçar (s'ajusta en càrrega o execució). | En el moment que el SO assigna memòria física al procés. |
+* **Adreça lògica o virtual (`@L`)**: És l'adreça que genera el compilador i que referencia el programa durant la seva execució. Cada procés té el seu propi espai d'adreces aïllat (començant des de `0`), creient que disposa de tota la memòria per a ell sol sense saber quina posició física ocuparà.
+* **Adreça física o real (`@F`)**: És la posició real i tangible dins dels xips de memòria RAM on s'emmagatzemen les dades i instruccions. El procés mai hi té accés directe; és gestionada pel sistema operatiu i la MMU s'encarrega de traduir cada `@L` a la seva `@F`.
 
 ---
 
-## 5.2 Suport maquinari: MMU, Taula de Pàgines i TLB
+## 5.2 Suport maquinari: MMU, taula de pàgines i TLB
 
 La traducció d'adreces es fa **en temps d'execució directament pel maquinari (HW)** per no penalitzar la velocitat de la CPU.
 
-### La MMU (*Memory Management Unit*)
+### La MMU (*memory management unit*)
 Component físic de la CPU situat entre la unitat d'execució i el bus de memòria:
 
 :::mmuviz
@@ -44,7 +40,7 @@ Component físic de la CPU situat entre la unitat d'execució i el bus de memòr
 3. **Accés vàlid**: Si l'adreça existeix i té permisos adients (lectura `r`, escriptura `w`, execució `x`), la MMU envia l'`@F` al bus de memòria RAM.
 4. **Accés invàlid**: Si l'adreça no pertany al procés o vulnera permisos, la MMU dispara una **excepció de maquinari** (*trap*). El Kernel l'atén (habitualment enviant `SIGSEGV` al procés).
 
-### La Taula de Pàgines (TP)
+### La taula de pàgines (TP)
 Estructura de dades del Kernel (una per procés) que descriu la correspondència de memòria:
 
 * L'adreça lògica es divideix en dues parts:
@@ -62,7 +58,7 @@ Estructura de dades del Kernel (una per procés) que descriu la correspondència
 > **Canvi de context:**  
 > L'adreça base de la TP de cada procés es guarda al seu **PCB**. En commutar de procés, el Kernel carrega aquesta adreça base al registre de control de la CPU (`%cr3` a x86). A partir d'aquell cicle, la MMU tradueix segons la TP del nou procés.
 
-### La TLB (*Translation Lookaside Buffer*)
+### La TLB (*translation lookaside buffer*)
 Memòria cau associativa d'alta velocitat a la pròpia CPU per accelerar traduccions:
 * **TLB Hit**: La traducció $p \rightarrow f$ és a la TLB; resolució immediata sense accedir a RAM.
 * **TLB Miss**: La traducció no hi és; la MMU consulta la TP a RAM, actualitza la TLB i accedeix a la dada.
@@ -120,7 +116,7 @@ Podem inspeccionar l'espai d'adreces virtuals de qualsevol procés en temps real
 :::pagingviz
 :::
 
-### Fragmentació Interna vs Externa
+### Fragmentació interna vs externa
 
 | Tipus | Què és? | A la Paginació? | Càlcul |
 | :--- | :--- | :---: | :--- |
@@ -163,7 +159,7 @@ Demanar memòria amb `sbrk()` directament és ineficient (massa crides a sistema
 
 ---
 
-## 5.6 Mapeig fora del Heap: `mmap` i `munmap`
+## 5.6 Mapeig fora del heap: `mmap` i `munmap`
 
 ```c
 #include <sys/mman.h>
@@ -211,9 +207,9 @@ close(fd);
 
 ---
 
-## 5.7 Optimitzacions clau del Sistema Operatiu
+## 5.7 Optimitzacions clau del sistema operatiu
 
-### 1. Càrrega sota demanda (*Demand Paging*)
+### 1. Càrrega sota demanda (*demand paging*)
 Al fer `exec`, el SO no copia tot el fitxer executable a RAM:
 * Crea les regions al PCB i posa les pàgines com a **no residents** (bit de presència a `0`).
 * Quan la CPU executa una instrucció d'una pàgina no carregada, la MMU genera una fallada de pàgina.
@@ -248,14 +244,14 @@ Elimina el cost de duplicar tota la memòria física a `fork()`:
 
 ---
 
-## 5.8 Memòria Virtual, Fallades de Pàgina i Thrashing
+## 5.8 Memòria virtual, fallades de pàgina i thrashing
 
 Permet que la suma dels espais lògics dels processos superi la capacitat física de la RAM usant el disc com a magatzem secundari (**àrea de Swap**).
 
 * **Pàgina resident**: Té un marc físic assignat a RAM (bit de presència = 1).
 * **Pàgina no resident**: Emmagatzemada al disc o a l'àrea de swap (bit de presència = 0).
 
-### Seqüència d'una fallada de pàgina (*Page Fault*)
+### Seqüència d'una fallada de pàgina (*page fault*)
 
 :::pagefaultviz
 :::
@@ -271,7 +267,7 @@ Permet que la suma dels espais lògics dels processos superi la capacitat físic
 7. El procés passa a **`READY`**.
 8. En rebre la CPU, la instrucció que havia fallat es **reinicia des del principi** i s'executa amb èxit.
 
-### Sobrepaginació (*Thrashing*)
+### Sobrepaginació (*thrashing*)
 
 :::thrashingviz
 :::

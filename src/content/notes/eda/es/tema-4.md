@@ -17,7 +17,7 @@ Una **cola con prioridad** almacena elementos con una prioridad asociada y permi
 
 ---
 
-## 4.1. Preliminares de árboles: Topología y Cotas
+## 4.1. Preliminares de árboles: topología y cotas
 
 * **Árbol binario perfecto:** Todos los niveles están completamente llenos.
   $$n = 2^{h+1} - 1 \text{ nodos}$$
@@ -37,7 +37,7 @@ $$
 
 ---
 
-## 4.2. Montículos Binarios (*Heaps*)
+## 4.2. Montículos binarios (*heaps*)
 
 Estructura basada en un árbol binario completo que cumple la **propiedad de heap**:
 * **Min-Heap:** Para todo nodo $i \neq \text{raíz}$, $\text{clave}(\text{padre}(i)) \le \text{clave}(i)$. La raíz contiene el mínimo global.
@@ -47,7 +47,7 @@ Estructura basada en un árbol binario completo que cumple la **propiedad de hea
 :::minmaxheapviz{type="min"}
 :::
 
-### Representación sobre vector (Sin Punteros)
+### Representación sobre vector (sin punteros)
 
 Los nodos se alojan por niveles de izquierda a derecha.
 
@@ -100,11 +100,11 @@ Si no se intercambia con el hijo *menor*, el hijo mayor pasaría a ser padre del
 
 ---
 
-## 4.3. Montículos Ternarios (*Ternary Heaps*)
+## 4.3. Montículos ternarios (*ternary heaps*)
 
 Árbol ternario completo donde cada nodo tiene como máximo **3 hijos** y cumple la propiedad de heap.
 
-### Aritmética de índices sobre vector (Indexado a 0)
+### Aritmética de índices sobre vector (indexado a 0)
 
 | Relación para el nodo $i$ | Expresión matemática |
 | :--- | :---: |
@@ -129,7 +129,7 @@ Si no se intercambia con el hijo *menor*, el hijo mayor pasaría a ser padre del
 
 * **Altura asintótica:** $h \in \mathbf{\Theta(\log_3 n)}$. Tiene menor altura que el binario, pero realiza hasta 3 comparaciones por nivel al `hundir`.
 
-### Implementación de `hundir` para Min-Heap Ternario
+### Implementación de `hundir` para min-heap ternario
 
 ```cpp
 void hundir_ternario(vector<int>& t, int n, int i) {
@@ -150,7 +150,7 @@ void hundir_ternario(vector<int>& t, int n, int i) {
 
 ## 4.4. Algoritmo de ordenación Heapsort
 
-### 1. Construcción del Heap: Básica vs Método de Floyd
+### 1. Construcción del heap: básica vs método de Floyd
 
 * **Construcción básica (Top-Down):** Insertar $n$ elementos sucesivos con `flotar`.
   $$T(n) = \sum_{i=1}^n \log i = \log(n!) = \mathbf{\Theta(n \log n)}$$
@@ -161,7 +161,7 @@ void hundir_ternario(vector<int>& t, int n, int i) {
 :::heapbuildviz
 :::
 
-### 2. Heapsort *In-Place* (Memoria Auxiliar $\Theta(1)$)
+### 2. Heapsort *in-place* (memoria auxiliar $\Theta(1)$)
 
 Para ordenar un vector de menor a mayor (creciente) sin memoria adicional:
 1. Se construye un **Max-Heap** lineal en $\Theta(n)$ sobre el propio vector.
@@ -194,7 +194,7 @@ void heapsort(vector<int>& t) {
 
 ---
 
-## 4.5. Aplicación (Encontrar los $m$ menores de $n$ elementos)
+## 4.5. Aplicación (encontrar los $m$ menores de $n$ elementos)
 
 | Método | Coste Temporal | Memoria Auxiliar | ¿Cuándo aplicarlo? |
 | :--- | :---: | :---: | :--- |

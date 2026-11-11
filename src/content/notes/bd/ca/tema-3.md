@@ -1,5 +1,5 @@
 ---
-title: "Tema 3: Components Lògics"
+title: "Tema 3: Components lògics"
 description: "Esquemes, dominis, assercions, vistes i permisos."
 readTime: "8 min"
 order: 3
@@ -10,7 +10,7 @@ Aquest tema completa els components lògics de gestió, estructuració i control
 
 ---
 
-## 3.1. Esquemes, Catàlegs i Servidor
+## 3.1. Esquemes, catàlegs i servidor
 
 L'SGBD organitza els recursos en una jerarquia de tres nivells administratius:
 
@@ -28,7 +28,7 @@ DROP SCHEMA nom_esquema CASCADE;  -- Esborra l'esquema i tots els seus objectes
 
 ---
 
-## 3.2. Connexions, Sessions i Transaccions
+## 3.2. Connexions, sessions i transaccions
 
 Una **connexió** és l'associació activa entre el client i el servidor de BD. Una **sessió** és el context d'execució d'un usuari durant aquella connexió. Una **transacció** és una unitat atòmica d'operacions SQL: o s'executen totes o cap.
 
@@ -130,7 +130,7 @@ SELECT * FROM empleats_altsous WHERE num_dpt = 2;
 :::viewviz
 :::
 
-### Actualitzabilitat de Vistes (SQL Estàndard)
+### Actualitzabilitat de vistes (SQL estàndard)
 
 Una vista admet `INSERT`, `UPDATE` o `DELETE` només si l'operació es trasllada de forma unívoca a la taula base. Segons l'estàndard, ha d'estar definida sobre **una única taula base** (sense `JOIN`, `UNION` ni subconsultes al `FROM`), **sense funcions d'agregació** ni `DISTINCT`, `GROUP BY` o `HAVING`, i amb **columnes simples** al `SELECT` (sense expressions aritmètiques ni constants). Per acceptar `INSERT`, la vista ha d'incloure a més totes les columnes `NOT NULL` sense `DEFAULT` de la taula subjacent.
 
@@ -157,13 +157,13 @@ UPDATE empleats_dep2 SET num_dpt = 3 WHERE num_empl = 5;
 
 Sense aquesta clàusula, l'operació s'executa a la taula base, però la fila modificada **desapareix silenciosament de la vista**. En vistes aniuades (`CASCADED`), si $V_2$ es defineix sobre $V_1$ (que té `WITH CHECK OPTION`), qualsevol modificació a $V_2$ ha de complir tant el filtre de $V_1$ com el de $V_2$.
 
-### Cost físic: Taules vs. Vistes
+### Cost físic: taules vs. vistes
 
 Una **vista virtual** ocupa zero pàgines de dades a disc; cada consulta obliga l'SGBD a llegir físicament totes les tuples de les taules base per recalcular el resultat. Una **taula base** o materialitzada sí ocupa espai físic, però les consultes llegeixen únicament les seves pròpies tuples, reduint les operacions d'E/S en consultes sobre agregacions o filtres.
 
 ---
 
-## 3.6. Esquema d'Informació
+## 3.6. Esquema d'informació
 
 Conjunt estàndard de **vistes de només lectura** amb les metadades dels objectes del catàleg:
 
@@ -178,7 +178,7 @@ Conjunt estàndard de **vistes de només lectura** amb les metadades dels object
 
 ---
 
-## 3.7. Control d'accés: Privilegis i Rols
+## 3.7. Control d'accés: privilegis i rols
 
 L'SGBD regula l'accés a objectes mitjançant **privilegis**. Els privilegis de dades sobre taules i vistes són `SELECT`, `INSERT`, `UPDATE[(col1, ...)]` i `DELETE`. Els privilegis estructurals i d'execució inclouen `REFERENCES[(col1, ...)]` (crear claus foranes cap a la taula), `USAGE` (usar dominis) i `ALL`.
 
@@ -192,7 +192,7 @@ REVOKE SELECT ON empleats FROM anna CASCADE;  -- Revoca en cadena als usuaris de
 REVOKE SELECT ON empleats FROM anna RESTRICT; -- Falla si hi ha privilegis dependents delegats
 ```
 
-### Diagrama d'Autoritzacions
+### Diagrama d'autoritzacions
 
 Representació en graf dirigit on els nodes són usuaris i les arestes són concessions de privilegis:
 
