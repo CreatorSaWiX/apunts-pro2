@@ -10,9 +10,9 @@ const APP_DATA: Record<string, { version: string; updated: string }> = {
     pro2: { version: 'v1.9.3', updated: '23/08/2026' },
     m1: { version: 'v1.7.1', updated: '30/05/2026' },
     m2: { version: 'v1.6.7', updated: '03/06/2026' },
-    eda: { version: 'v1.4.0', updated: '17/10/2026' },
-    bd: { version: 'v1.1.1', updated: '29/10/2026' },
-    so: { version: 'v1.2.0', updated: '01/11/2026' }
+    eda: { version: 'v1.4.1', updated: '10/11/2026' },
+    bd: { version: 'v1.3.0', updated: '11/11/2026' },
+    so: { version: 'v1.3.0', updated: '11/11/2026' }
 };
 
 const letterContainerVariants = {

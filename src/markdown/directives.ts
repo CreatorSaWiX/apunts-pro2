@@ -1,7 +1,7 @@
 import type { ContainerDirective, LeafDirective, TextDirective, } from "mdast-util-directive";
 
 export type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
-export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "distinctviz" | "groupbyviz" | "aggregateviz" | "naturaljoinviz" | "unionviz" | "joinaggviz" | "extractviz" | "intervalviz" | "relalgviz" | "umlviz" | "uml2relviz" | "dmlviz" | "deleteviz" | "updateviz" | "dacviz" | "viewviz" | "viewupdviz" | "dbhierarchyviz" | "sessionviz" | "txviz" | "domainviz" | "assertionviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "avlinsertviz" | "avldeleteviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "pqcompareviz" | "treetopoviz" | "minmaxheapviz" | "surarviz" | "enfonsarviz" | "ternaryheapviz" | "heapbuildviz" | "heapsortviz" | "dfsviz" | "bfsviz" | "dijkstraviz" | "graphrepviz" | "toposortviz" | "mstviz" | "gridbfsviz" | "jugsviz" | "backtrackviz" | "subsetsviz" | "subsetskviz" | "permutationsviz" | "nqueensviz" | "backtrack2dviz" | "derangementsviz" | "hamiltonviz" | "knapsackviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz" | "mmuviz" | "tlbviz" | "pagetableviz" | "pagingviz" | "memlayoutviz" | "sbrkviz" | "mallocviz" | "mmapviz" | "thrashingviz" | "pagefaultviz" | "cowviz" | "sharedlibviz" | "demandpagingviz";
+export type DirectiveName = "grid" | "graph" | "algoviz" | "oopviz" | "sqlviz" | "distinctviz" | "groupbyviz" | "aggregateviz" | "naturaljoinviz" | "unionviz" | "joinaggviz" | "extractviz" | "intervalviz" | "relalgviz" | "umlviz" | "uml2relviz" | "dmlviz" | "deleteviz" | "updateviz" | "dacviz" | "viewviz" | "viewupdviz" | "dbhierarchyviz" | "sessionviz" | "txviz" | "acidviz" | "interferencesviz" | "recoverviz" | "granuleviz" | "precedenceviz" | "lockviz" | "pr2fviz" | "isolationviz" | "deadlockviz" | "logviz" | "plpgsqlviz" | "returnviz" | "setofviz" | "varviz" | "foundviz" | "forloopviz" | "exceptionviz" | "ecaviz" | "triggerviz" | "tgvarsviz" | "trigretviz" | "incrtriggerviz" | "stmtguardviz" | "beforemodviz" | "beforefkviz" | "jdbcviz" | "jdbcconnviz" | "jdbcstmtviz" | "resultsetviz" | "sqlexceptionviz" | "storagearchviz" | "slottedpageviz" | "evviz" | "bplusviz" | "bplussizingviz" | "indexcostviz" | "multiindexviz" | "strategyviz" | "domainviz" | "assertionviz" | "stackviz" | "queueviz" | "heapviz" | "bstviz" | "abcviz" | "vectorviz" | "linkedlistviz" | "pointerviz" | "listviz" | "bintreeviz" | "proofviz" | "mafs" | "threeviz" | "three" | "videoviz" | "linkedinviz" | "youtubeviz" | "note" | "tip" | "warning" | "info" | "accordion" | "download" | "dictviz" | "tadviz" | "directaddressviz" | "hashviz" | "collisionviz" | "chainingviz" | "openaddressviz" | "treeterviz" | "abcdegenviz" | "avlrotviz" | "avlinsertviz" | "avldeleteviz" | "asymptoticviz" | "growthviz" | "dncviz" | "selectionsortviz" | "insertionsortviz" | "mergeviz" | "mergequeueviz" | "quicksortviz" | "hoarepartviz" | "fastpowerviz" | "mergerecviz" | "binarysearchviz" | "hybridmergeviz" | "mergebottomupviz" | "karatsubaviz" | "naivemultviz" | "naivematmultviz" | "strassenmatmultviz" | "hanoiviz" | "medianviz" | "bfprtviz" | "pqcompareviz" | "treetopoviz" | "minmaxheapviz" | "surarviz" | "enfonsarviz" | "ternaryheapviz" | "heapbuildviz" | "heapsortviz" | "dfsviz" | "bfsviz" | "dijkstraviz" | "graphrepviz" | "toposortviz" | "mstviz" | "gridbfsviz" | "jugsviz" | "backtrackviz" | "subsetsviz" | "subsetskviz" | "permutationsviz" | "nqueensviz" | "backtrack2dviz" | "derangementsviz" | "hamiltonviz" | "knapsackviz" | "shellviz" | "osmediatorviz" | "compileviz" | "processviz" | "procoverviewviz" | "processoverviewviz" | "signalpcbviz" | "killviz" | "sigactionviz" | "sigprocmaskviz" | "sigmaskviz" | "sigsuspendviz" | "alarmviz" | "forkviz" | "execviz" | "blockedviz" | "zombieviz" | "stoppedviz" | "contextswitchviz" | "schedulerviz" | "roundrobinviz" | "cfsviz" | "mmuviz" | "tlbviz" | "pagetableviz" | "pagingviz" | "memlayoutviz" | "sbrkviz" | "mallocviz" | "mmapviz" | "thrashingviz" | "pagefaultviz" | "cowviz" | "sharedlibviz" | "demandpagingviz";
 
 export type DirectiveHandler = (node: DirectiveNode) => void;
 
@@ -91,6 +91,44 @@ export const directiveHandlers: Record<DirectiveName, DirectiveHandler> = {
   dbhierarchyviz: makePassthrough("dbhierarchyviz"),
   sessionviz:     makePassthrough("sessionviz"),
   txviz:          makePassthrough("sessionviz"),
+  acidviz:        makePassthrough("acidviz"),
+  interferencesviz: makePassthrough("interferencesviz"),
+  recoverviz:     makePassthrough("recoverviz"),
+  granuleviz:     makePassthrough("granuleviz"),
+  precedenceviz:  makePassthrough("precedenceviz"),
+  lockviz:        makePassthrough("lockviz"),
+  pr2fviz:        makePassthrough("pr2fviz"),
+  isolationviz:   makePassthrough("isolationviz"),
+  deadlockviz:    makePassthrough("deadlockviz"),
+  logviz:         makePassthrough("logviz"),
+  plpgsqlviz:     makePassthrough("plpgsqlviz"),
+  returnviz:      makePassthrough("returnviz"),
+  setofviz:       makePassthrough("setofviz"),
+  varviz:         makePassthrough("varviz"),
+  foundviz:       makePassthrough("foundviz"),
+  forloopviz:     makePassthrough("forloopviz"),
+  exceptionviz:   makePassthrough("exceptionviz"),
+  ecaviz:         makePassthrough("ecaviz"),
+  triggerviz:     makePassthrough("triggerviz"),
+  tgvarsviz:      makePassthrough("tgvarsviz"),
+  trigretviz:     makePassthrough("trigretviz"),
+  incrtriggerviz: makePassthrough("incrtriggerviz"),
+  stmtguardviz:   makePassthrough("stmtguardviz"),
+  beforemodviz:   makePassthrough("beforemodviz"),
+  beforefkviz:    makePassthrough("beforefkviz"),
+  jdbcviz:        makePassthrough("jdbcviz"),
+  jdbcconnviz:    makePassthrough("jdbcconnviz"),
+  jdbcstmtviz:    makePassthrough("jdbcstmtviz"),
+  resultsetviz:   makePassthrough("resultsetviz"),
+  sqlexceptionviz: makePassthrough("sqlexceptionviz"),
+  storagearchviz:  makePassthrough("storagearchviz"),
+  slottedpageviz:  makePassthrough("slottedpageviz"),
+  evviz:          makePassthrough("evviz"),
+  bplusviz:       makePassthrough("bplusviz"),
+  bplussizingviz: makePassthrough("bplussizingviz"),
+  indexcostviz:   makePassthrough("indexcostviz"),
+  multiindexviz:  makePassthrough("multiindexviz"),
+  strategyviz:    makePassthrough("strategyviz"),
   domainviz:      makePassthrough("domainviz"),
   assertionviz:   makePassthrough("assertionviz"),
   stackviz:       makePassthrough("stackviz"),

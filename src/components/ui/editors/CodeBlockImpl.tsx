@@ -12,6 +12,7 @@ import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { json } from '@codemirror/lang-json';
 import { sql } from '@codemirror/lang-sql';
+import { java } from '@codemirror/lang-java';
 
 interface LanguageConfig {
     name: string;
@@ -37,6 +38,7 @@ const LANGUAGES: Record<string, LanguageConfig> = {
     'sh': { name: 'Terminal', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
     'json': { name: 'JSON', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
     'sql': { name: 'SQL', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+    'java': { name: 'Java', color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
 };
 
 const getLanguageExtension = (langKey: string) => {
@@ -55,6 +57,7 @@ const getLanguageExtension = (langKey: string) => {
         case 'html': return html();
         case 'json': return json();
         case 'sql': return sql();
+        case 'java': return java();
         default: return [];
     }
 };

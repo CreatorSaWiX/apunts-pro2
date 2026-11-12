@@ -29,6 +29,44 @@ const ViewVisualizer = React.lazy(() => import("../components/ui/visualizers/sql
 const ViewUpdatableVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/views/ViewUpdatableVisualizer"));
 const DbHierarchyVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DbHierarchyVisualizer"));
 const SessionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/SessionVisualizer"));
+const AcidVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/AcidVisualizer"));
+const InterferencesVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/InterferencesVisualizer"));
+const RecoverabilityVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/RecoverabilityVisualizer"));
+const GranuleVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/GranuleVisualizer"));
+const PrecedenceVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/PrecedenceVisualizer"));
+const LockRulesVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/LockRulesVisualizer"));
+const TwoPhaseLockVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/TwoPhaseLockVisualizer"));
+const IsolationVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/IsolationVisualizer"));
+const DeadlockVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DeadlockVisualizer"));
+const LogRecoveryVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/LogRecoveryVisualizer"));
+const PlpgsqlVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/PlpgsqlVisualizer"));
+const PlpgsqlReturnVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/PlpgsqlReturnVisualizer"));
+const SetofVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/SetofVisualizer"));
+const PlpgsqlVarVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/PlpgsqlVarVisualizer"));
+const FoundVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/FoundVisualizer"));
+const ForLoopVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/ForLoopVisualizer"));
+const ExceptionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/ExceptionVisualizer"));
+const ECAVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/ECAVisualizer"));
+const TriggerOrderVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/TriggerOrderVisualizer"));
+const TriggerVarsVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/TriggerVarsVisualizer"));
+const TriggerReturnVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/TriggerReturnVisualizer"));
+const IncrementalTriggerVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/IncrementalTriggerVisualizer"));
+const StatementGuardVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/StatementGuardVisualizer"));
+const BeforeModifyVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/BeforeModifyVisualizer"));
+const BeforeFkVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/BeforeFkVisualizer"));
+const JdbcIntroVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/JdbcIntroVisualizer"));
+const JdbcConnectionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/JdbcConnectionVisualizer"));
+const JdbcStatementVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/JdbcStatementVisualizer"));
+const ResultSetVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/ResultSetVisualizer"));
+const JdbcExceptionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/JdbcExceptionVisualizer"));
+const StorageArchVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/StorageArchVisualizer"));
+const SlottedPageVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/SlottedPageVisualizer"));
+const VirtualSpaceVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/VirtualSpaceVisualizer"));
+const BPlusTreeVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/BPlusTreeVisualizer"));
+const BPlusSizingVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/BPlusSizingVisualizer"));
+const IndexCostVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/IndexCostVisualizer"));
+const MultiAttrIndexVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/MultiAttrIndexVisualizer"));
+const IndexStrategyVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/IndexStrategyVisualizer"));
 const DomainVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DomainVisualizer"));
 const AssertionVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/AssertionVisualizer"));
 const DistinctVisualizer = React.lazy(() => import("../components/ui/visualizers/sql/DistinctVisualizer"));
@@ -606,6 +644,272 @@ const defaultComponents: Record<string, React.FC<MarkdownComponentProps>> = {
         return (
             <SafeSuspense>
                 <SessionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    acidviz: () => {
+        return (
+            <SafeSuspense>
+                <AcidVisualizer />
+            </SafeSuspense>
+        );
+    },
+    interferencesviz: () => {
+        return (
+            <SafeSuspense>
+                <InterferencesVisualizer />
+            </SafeSuspense>
+        );
+    },
+    recoverviz: () => {
+        return (
+            <SafeSuspense>
+                <RecoverabilityVisualizer />
+            </SafeSuspense>
+        );
+    },
+    granuleviz: () => {
+        return (
+            <SafeSuspense>
+                <GranuleVisualizer />
+            </SafeSuspense>
+        );
+    },
+    precedenceviz: () => {
+        return (
+            <SafeSuspense>
+                <PrecedenceVisualizer />
+            </SafeSuspense>
+        );
+    },
+    lockviz: () => {
+        return (
+            <SafeSuspense>
+                <LockRulesVisualizer />
+            </SafeSuspense>
+        );
+    },
+    pr2fviz: () => {
+        return (
+            <SafeSuspense>
+                <TwoPhaseLockVisualizer />
+            </SafeSuspense>
+        );
+    },
+    isolationviz: () => {
+        return (
+            <SafeSuspense>
+                <IsolationVisualizer />
+            </SafeSuspense>
+        );
+    },
+    deadlockviz: () => {
+        return (
+            <SafeSuspense>
+                <DeadlockVisualizer />
+            </SafeSuspense>
+        );
+    },
+    logviz: () => {
+        return (
+            <SafeSuspense>
+                <LogRecoveryVisualizer />
+            </SafeSuspense>
+        );
+    },
+    plpgsqlviz: () => {
+        return (
+            <SafeSuspense>
+                <PlpgsqlVisualizer />
+            </SafeSuspense>
+        );
+    },
+    returnviz: () => {
+        return (
+            <SafeSuspense>
+                <PlpgsqlReturnVisualizer />
+            </SafeSuspense>
+        );
+    },
+    setofviz: () => {
+        return (
+            <SafeSuspense>
+                <SetofVisualizer />
+            </SafeSuspense>
+        );
+    },
+    varviz: () => {
+        return (
+            <SafeSuspense>
+                <PlpgsqlVarVisualizer />
+            </SafeSuspense>
+        );
+    },
+    foundviz: () => {
+        return (
+            <SafeSuspense>
+                <FoundVisualizer />
+            </SafeSuspense>
+        );
+    },
+    forloopviz: () => {
+        return (
+            <SafeSuspense>
+                <ForLoopVisualizer />
+            </SafeSuspense>
+        );
+    },
+    exceptionviz: () => {
+        return (
+            <SafeSuspense>
+                <ExceptionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    ecaviz: () => {
+        return (
+            <SafeSuspense>
+                <ECAVisualizer />
+            </SafeSuspense>
+        );
+    },
+    triggerviz: () => {
+        return (
+            <SafeSuspense>
+                <TriggerOrderVisualizer />
+            </SafeSuspense>
+        );
+    },
+    tgvarsviz: () => {
+        return (
+            <SafeSuspense>
+                <TriggerVarsVisualizer />
+            </SafeSuspense>
+        );
+    },
+    trigretviz: () => {
+        return (
+            <SafeSuspense>
+                <TriggerReturnVisualizer />
+            </SafeSuspense>
+        );
+    },
+    incrtriggerviz: () => {
+        return (
+            <SafeSuspense>
+                <IncrementalTriggerVisualizer />
+            </SafeSuspense>
+        );
+    },
+    stmtguardviz: () => {
+        return (
+            <SafeSuspense>
+                <StatementGuardVisualizer />
+            </SafeSuspense>
+        );
+    },
+    beforemodviz: () => {
+        return (
+            <SafeSuspense>
+                <BeforeModifyVisualizer />
+            </SafeSuspense>
+        );
+    },
+    beforefkviz: () => {
+        return (
+            <SafeSuspense>
+                <BeforeFkVisualizer />
+            </SafeSuspense>
+        );
+    },
+    jdbcviz: () => {
+        return (
+            <SafeSuspense>
+                <JdbcIntroVisualizer />
+            </SafeSuspense>
+        );
+    },
+    jdbcconnviz: () => {
+        return (
+            <SafeSuspense>
+                <JdbcConnectionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    jdbcstmtviz: () => {
+        return (
+            <SafeSuspense>
+                <JdbcStatementVisualizer />
+            </SafeSuspense>
+        );
+    },
+    resultsetviz: () => {
+        return (
+            <SafeSuspense>
+                <ResultSetVisualizer />
+            </SafeSuspense>
+        );
+    },
+    sqlexceptionviz: () => {
+        return (
+            <SafeSuspense>
+                <JdbcExceptionVisualizer />
+            </SafeSuspense>
+        );
+    },
+    storagearchviz: () => {
+        return (
+            <SafeSuspense>
+                <StorageArchVisualizer />
+            </SafeSuspense>
+        );
+    },
+    slottedpageviz: () => {
+        return (
+            <SafeSuspense>
+                <SlottedPageVisualizer />
+            </SafeSuspense>
+        );
+    },
+    evviz: () => {
+        return (
+            <SafeSuspense>
+                <VirtualSpaceVisualizer />
+            </SafeSuspense>
+        );
+    },
+    bplusviz: () => {
+        return (
+            <SafeSuspense>
+                <BPlusTreeVisualizer />
+            </SafeSuspense>
+        );
+    },
+    bplussizingviz: () => {
+        return (
+            <SafeSuspense>
+                <BPlusSizingVisualizer />
+            </SafeSuspense>
+        );
+    },
+    indexcostviz: () => {
+        return (
+            <SafeSuspense>
+                <IndexCostVisualizer />
+            </SafeSuspense>
+        );
+    },
+    multiindexviz: () => {
+        return (
+            <SafeSuspense>
+                <MultiAttrIndexVisualizer />
+            </SafeSuspense>
+        );
+    },
+    strategyviz: () => {
+        return (
+            <SafeSuspense>
+                <IndexStrategyVisualizer />
             </SafeSuspense>
         );
     },
@@ -1506,7 +1810,7 @@ const rehypePluginsConfig = [
         tagNames: [
             ...(defaultSchema.tagNames || []),
             'svg', 'path', 'polyline', 'line', 'polygon', 'rect', 'circle', 'g',
-            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'domainviz', 'assertionviz',
+            'shellviz', 'download', 'videoviz', 'accordion', 'graph', 'callout', 'algoviz', 'oopviz', 'sqlviz', 'distinctviz', 'groupbyviz', 'aggregateviz', 'naturaljoinviz', 'unionviz', 'joinaggviz', 'extractviz', 'intervalviz', 'relalgviz', 'umlviz', 'uml2relviz', 'dmlviz', 'deleteviz', 'updateviz', 'dacviz', 'viewviz', 'viewupdviz', 'dbhierarchyviz', 'sessionviz', 'txviz', 'acidviz', 'interferencesviz', 'recoverviz', 'granuleviz', 'precedenceviz', 'lockviz', 'pr2fviz', 'isolationviz', 'deadlockviz', 'logviz', 'plpgsqlviz', 'returnviz', 'setofviz', 'varviz', 'foundviz', 'forloopviz', 'exceptionviz', 'ecaviz', 'triggerviz', 'tgvarsviz', 'trigretviz', 'incrtriggerviz', 'stmtguardviz', 'beforemodviz', 'beforefkviz', 'jdbcviz', 'jdbcconnviz', 'jdbcstmtviz', 'resultsetviz', 'sqlexceptionviz', 'storagearchviz', 'slottedpageviz', 'evviz', 'bplusviz', 'bplussizingviz', 'indexcostviz', 'multiindexviz', 'strategyviz', 'domainviz', 'assertionviz',
             'stackviz', 'queueviz', 'heapviz', 'bstviz', 'vectorviz', 'linkedlistviz', 'pointerviz',
             'listviz', 'bintreeviz', 'proofviz', 'mafs', 'threeviz', 'three',
             'asymptoticviz', 'growthviz', 'dncviz', 'selectionsortviz', 'insertionsortviz', 'mergeviz', 'mergequeueviz', 'quicksortviz', 'hoarepartviz', 'fastpowerviz', 'mergerecviz', 'binarysearchviz', 'hybridmergeviz', 'mergebottomupviz', 'karatsubaviz', 'naivemultviz', 'naivematmultviz', 'strassenmatmultviz', 'hanoiviz', 'medianviz', 'bfprtviz', 'pqcompareviz', 'treetopoviz', 'minmaxheapviz', 'surarviz', 'enfonsarviz', 'ternaryheapviz', 'heapbuildviz', 'heapsortviz', 'dfsviz', 'bfsviz', 'dijkstraviz', 'graphrepviz', 'toposortviz', 'mstviz', 'gridbfsviz', 'jugsviz', 'backtrackviz', 'subsetsviz', 'subsetskviz', 'permutationsviz', 'nqueensviz', 'backtrack2dviz', 'derangementsviz', 'hamiltonviz', 'knapsackviz', 'dictviz', 'tadviz', 'directaddressviz', 'hashviz', 'collisionviz', 'chainingviz', 'openaddressviz', 'treeterviz', 'abcviz', 'abcdegenviz', 'avlrotviz', 'avlinsertviz', 'avldeleteviz', 'osmediatorviz', 'compileviz', 'processviz', 'procoverviewviz', 'processoverviewviz', 'signalpcbviz', 'killviz', 'sigactionviz', 'sigprocmaskviz', 'sigmaskviz', 'sigsuspendviz', 'alarmviz', 'forkviz', 'execviz', 'blockedviz', 'zombieviz', 'stoppedviz', 'contextswitchviz', 'schedulerviz', 'roundrobinviz', 'cfsviz', 'mmuviz', 'tlbviz', 'pagetableviz', 'pagingviz', 'memlayoutviz', 'sbrkviz', 'mallocviz', 'mmapviz', 'thrashingviz', 'pagefaultviz', 'sharedlibviz', 'cowviz', 'demandpagingviz', 'linkedinviz', 'youtubeviz', 'object', 'mark'

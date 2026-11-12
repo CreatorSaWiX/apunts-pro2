@@ -6,6 +6,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { json } from '@codemirror/lang-json';
+import { java } from '@codemirror/lang-java';
 import { Copy, Check } from 'lucide-react';
 import Spinner from '../../ui/Spinner';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +35,8 @@ const getLanguageExtension = (filename: string) => {
             return [html()];
         case 'json':
             return [json()];
+        case 'java':
+            return [java()];
         default:
             return [];
     }

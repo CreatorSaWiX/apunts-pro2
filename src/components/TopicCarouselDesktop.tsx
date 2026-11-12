@@ -201,7 +201,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
         }
     }, []);
 
-    const startPanTimer = useCallback((durationMs = 1000) => {
+    const startPanTimer = useCallback((durationMs = 700) => {
         clearPanTimer();
         panTimerRef.current = setTimeout(() => {
             if (!isDraggingRef.current) {
@@ -570,7 +570,7 @@ const TopicCarousel: React.FC<TopicCarouselProps> = React.memo(({ isMenuOpen = f
             setIsHoveringCarousel(true);
             showPanRef.current = true;
             setShowPan(true);
-            startPanTimer(1000);
+            startPanTimer(700);
         }
     }, [isMobile, cursorX, cursorY, startPanTimer]);
 
