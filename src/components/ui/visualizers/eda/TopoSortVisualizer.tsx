@@ -24,6 +24,7 @@ interface Step {
     queue: number[];
     ordre: number[];
     status: "init" | "pop" | "decrement" | "done" | "cycle";
+    action: string; // Text explicatiu mínim per a cada pas
 }
 
 const NODES: NodeCoord[] = [
@@ -56,7 +57,18 @@ const EDGES_CYCLE: Edge[] = [
 
 // ── Passos Mode DAG ──────────────────────────────────────────────────────────
 const STEPS_DAG: Step[] = [
-    // 0: Estat inicial
+    // 0: Comptar graus d'entrada inicials
+    {
+        activeNode: null,
+        activeEdge: null,
+        removedEdges: [],
+        ge: [0, 0, 1, 2, 2, 2],
+        queue: [],
+        ordre: [],
+        status: "init",
+        action: "comptem graus d'entrada ge[0..5]",
+    },
+    // 1: Encuar nodes amb ge == 0
     {
         activeNode: null,
         activeEdge: null,
@@ -65,8 +77,9 @@ const STEPS_DAG: Step[] = [
         queue: [0, 1],
         ordre: [],
         status: "init",
+        action: "ge[0]=0 i ge[1]=0 → encua 0 i 1 a Q",
     },
-    // 1: Pop 0 de Q
+    // 2: Pop 0 de Q
     {
         activeNode: 0,
         activeEdge: null,
@@ -75,8 +88,9 @@ const STEPS_DAG: Step[] = [
         queue: [1],
         ordre: [0],
         status: "pop",
+        action: "desencua 0 → afegeix a ordre · mirem veïns de 0",
     },
-    // 2: Elimina 0 -> 2 (ge[2] = 0 -> entra a Q)
+    // 3: Elimina 0 -> 2 (ge[2] = 0 -> entra a Q)
     {
         activeNode: 0,
         activeEdge: [0, 2],
@@ -85,8 +99,9 @@ const STEPS_DAG: Step[] = [
         queue: [1, 2],
         ordre: [0],
         status: "decrement",
+        action: "0 → 2: --ge[2] = 0 → encua 2 a Q",
     },
-    // 3: Elimina 0 -> 3 (ge[3] = 1)
+    // 4: Elimina 0 -> 3 (ge[3] = 1)
     {
         activeNode: 0,
         activeEdge: [0, 3],
@@ -95,8 +110,9 @@ const STEPS_DAG: Step[] = [
         queue: [1, 2],
         ordre: [0],
         status: "decrement",
+        action: "0 → 3: --ge[3] = 1 (> 0, encara no s'encua)",
     },
-    // 4: Pop 1 de Q
+    // 5: Pop 1 de Q
     {
         activeNode: 1,
         activeEdge: null,
@@ -105,8 +121,9 @@ const STEPS_DAG: Step[] = [
         queue: [2],
         ordre: [0, 1],
         status: "pop",
+        action: "desencua 1 → afegeix a ordre · mirem veïns de 1",
     },
-    // 5: Elimina 1 -> 3 (ge[3] = 0 -> entra a Q)
+    // 6: Elimina 1 -> 3 (ge[3] = 0 -> entra a Q)
     {
         activeNode: 1,
         activeEdge: [1, 3],
@@ -115,8 +132,9 @@ const STEPS_DAG: Step[] = [
         queue: [2, 3],
         ordre: [0, 1],
         status: "decrement",
+        action: "1 → 3: --ge[3] = 0 → encua 3 a Q",
     },
-    // 6: Pop 2 de Q
+    // 7: Pop 2 de Q
     {
         activeNode: 2,
         activeEdge: null,
@@ -125,8 +143,9 @@ const STEPS_DAG: Step[] = [
         queue: [3],
         ordre: [0, 1, 2],
         status: "pop",
+        action: "desencua 2 → afegeix a ordre · mirem veïns de 2",
     },
-    // 7: Elimina 2 -> 4 (ge[4] = 1)
+    // 8: Elimina 2 -> 4 (ge[4] = 1)
     {
         activeNode: 2,
         activeEdge: [2, 4],
@@ -135,8 +154,9 @@ const STEPS_DAG: Step[] = [
         queue: [3],
         ordre: [0, 1, 2],
         status: "decrement",
+        action: "2 → 4: --ge[4] = 1 (> 0, encara no s'encua)",
     },
-    // 8: Pop 3 de Q
+    // 9: Pop 3 de Q
     {
         activeNode: 3,
         activeEdge: null,
@@ -145,8 +165,9 @@ const STEPS_DAG: Step[] = [
         queue: [],
         ordre: [0, 1, 2, 3],
         status: "pop",
+        action: "desencua 3 → afegeix a ordre · mirem veïns de 3",
     },
-    // 9: Elimina 3 -> 4 (ge[4] = 0 -> entra a Q)
+    // 10: Elimina 3 -> 4 (ge[4] = 0 -> entra a Q)
     {
         activeNode: 3,
         activeEdge: [3, 4],
@@ -155,8 +176,9 @@ const STEPS_DAG: Step[] = [
         queue: [4],
         ordre: [0, 1, 2, 3],
         status: "decrement",
+        action: "3 → 4: --ge[4] = 0 → encua 4 a Q",
     },
-    // 10: Elimina 3 -> 5 (ge[5] = 1)
+    // 11: Elimina 3 -> 5 (ge[5] = 1)
     {
         activeNode: 3,
         activeEdge: [3, 5],
@@ -165,8 +187,9 @@ const STEPS_DAG: Step[] = [
         queue: [4],
         ordre: [0, 1, 2, 3],
         status: "decrement",
+        action: "3 → 5: --ge[5] = 1 (> 0, encara no s'encua)",
     },
-    // 11: Pop 4 de Q
+    // 12: Pop 4 de Q
     {
         activeNode: 4,
         activeEdge: null,
@@ -175,8 +198,9 @@ const STEPS_DAG: Step[] = [
         queue: [],
         ordre: [0, 1, 2, 3, 4],
         status: "pop",
+        action: "desencua 4 → afegeix a ordre · mirem veïns de 4",
     },
-    // 12: Elimina 4 -> 5 (ge[5] = 0 -> entra a Q)
+    // 13: Elimina 4 -> 5 (ge[5] = 0 -> entra a Q)
     {
         activeNode: 4,
         activeEdge: [4, 5],
@@ -185,8 +209,9 @@ const STEPS_DAG: Step[] = [
         queue: [5],
         ordre: [0, 1, 2, 3, 4],
         status: "decrement",
+        action: "4 → 5: --ge[5] = 0 → encua 5 a Q",
     },
-    // 13: Pop 5 de Q
+    // 14: Pop 5 de Q
     {
         activeNode: 5,
         activeEdge: null,
@@ -194,13 +219,36 @@ const STEPS_DAG: Step[] = [
         ge: [0, 0, 0, 0, 0, 0],
         queue: [],
         ordre: [0, 1, 2, 3, 4, 5],
+        status: "pop",
+        action: "desencua 5 → afegeix a ordre · sense veïns sortints",
+    },
+    // 15: Ordre topològic completat!
+    {
+        activeNode: null,
+        activeEdge: null,
+        removedEdges: [[0, 2], [0, 3], [1, 3], [2, 4], [3, 4], [3, 5], [4, 5]],
+        ge: [0, 0, 0, 0, 0, 0],
+        queue: [],
+        ordre: [0, 1, 2, 3, 4, 5],
         status: "done",
+        action: "Q buida i |ordre|=6 == n → DAG vàlid",
     },
 ];
 
 // ── Passos Mode Cicle ────────────────────────────────────────────────────────
 const STEPS_CYCLE: Step[] = [
-    // 0: Inici mode cicle (ge[2] comença en 2 per l'aresta 4->2)
+    // 0: Comptar graus d'entrada (aresta 4->2 incrementa ge[2] a 2)
+    {
+        activeNode: null,
+        activeEdge: null,
+        removedEdges: [],
+        ge: [0, 0, 2, 2, 2, 2],
+        queue: [],
+        ordre: [],
+        status: "init",
+        action: "comptem ge[0..5] (4→2 fa que ge[2]=2)",
+    },
+    // 1: Encuar nodes amb ge == 0
     {
         activeNode: null,
         activeEdge: null,
@@ -209,8 +257,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [0, 1],
         ordre: [],
         status: "init",
+        action: "ge[0]=0 i ge[1]=0 → encua 0 i 1 a Q",
     },
-    // 1: Pop 0
+    // 2: Pop 0
     {
         activeNode: 0,
         activeEdge: null,
@@ -219,8 +268,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [1],
         ordre: [0],
         status: "pop",
+        action: "desencua 0 → afegeix a ordre · mirem veïns de 0",
     },
-    // 2: Elimina 0 -> 2 (ge[2] baixa a 1, NO entra a Q)
+    // 3: Elimina 0 -> 2 (ge[2] baixa a 1, NO entra a Q)
     {
         activeNode: 0,
         activeEdge: [0, 2],
@@ -229,8 +279,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [1],
         ordre: [0],
         status: "decrement",
+        action: "0 → 2: --ge[2] = 1 (> 0, no s'encua)",
     },
-    // 3: Elimina 0 -> 3 (ge[3] baixa a 1)
+    // 4: Elimina 0 -> 3 (ge[3] baixa a 1)
     {
         activeNode: 0,
         activeEdge: [0, 3],
@@ -239,8 +290,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [1],
         ordre: [0],
         status: "decrement",
+        action: "0 → 3: --ge[3] = 1 (> 0, no s'encua)",
     },
-    // 4: Pop 1
+    // 5: Pop 1
     {
         activeNode: 1,
         activeEdge: null,
@@ -249,8 +301,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [],
         ordre: [0, 1],
         status: "pop",
+        action: "desencua 1 → afegeix a ordre · mirem veïns de 1",
     },
-    // 5: Elimina 1 -> 3 (ge[3] = 0 -> entra a Q)
+    // 6: Elimina 1 -> 3 (ge[3] = 0 -> entra a Q)
     {
         activeNode: 1,
         activeEdge: [1, 3],
@@ -259,8 +312,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [3],
         ordre: [0, 1],
         status: "decrement",
+        action: "1 → 3: --ge[3] = 0 → encua 3 a Q",
     },
-    // 6: Pop 3
+    // 7: Pop 3
     {
         activeNode: 3,
         activeEdge: null,
@@ -269,8 +323,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [],
         ordre: [0, 1, 3],
         status: "pop",
+        action: "desencua 3 → afegeix a ordre · mirem veïns de 3",
     },
-    // 7: Elimina 3 -> 4 (ge[4] baixa a 1)
+    // 8: Elimina 3 -> 4 (ge[4] baixa a 1)
     {
         activeNode: 3,
         activeEdge: [3, 4],
@@ -279,8 +334,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [],
         ordre: [0, 1, 3],
         status: "decrement",
+        action: "3 → 4: --ge[4] = 1 (> 0, no s'encua)",
     },
-    // 8: Elimina 3 -> 5 (ge[5] baixa a 1)
+    // 9: Elimina 3 -> 5 (ge[5] baixa a 1)
     {
         activeNode: 3,
         activeEdge: [3, 5],
@@ -289,8 +345,9 @@ const STEPS_CYCLE: Step[] = [
         queue: [],
         ordre: [0, 1, 3],
         status: "decrement",
+        action: "3 → 5: --ge[5] = 1 (> 0, no s'encua)",
     },
-    // 9: Bloqueig: Q buida i |ordre| = 3 < 6 (cicle entre 2 i 4)
+    // 10: Bloqueig: Q buida i |ordre| = 3 < 6 (cicle entre 2 i 4)
     {
         activeNode: null,
         activeEdge: null,
@@ -299,6 +356,7 @@ const STEPS_CYCLE: Step[] = [
         queue: [],
         ordre: [0, 1, 3],
         status: "cycle",
+        action: "Q buida i |ordre|=3 < 6 → cicle (cap ge=0)",
     },
 ];
 
@@ -322,7 +380,7 @@ export default function TopoSortVisualizer() {
                 }
                 return prev + 1;
             });
-        }, 800);
+        }, 1100);
 
         return () => clearInterval(interval);
     }, [isPlaying, steps.length]);
@@ -661,7 +719,7 @@ export default function TopoSortVisualizer() {
                 </svg>
             </div>
 
-            {/* 3. ESTRUCTURES DE DADES DE KAHN (SENSE TEXT PROSAIC) */}
+            {/* 3. ESTRUCTURES DE DADES DE KAHN */}
             <div className="w-full max-w-lg flex flex-col items-center gap-3 pt-1">
                 {/* Vector ge (in-degrees) */}
                 <div className="flex items-center justify-center gap-1.5 sm:gap-2">
@@ -772,6 +830,18 @@ export default function TopoSortVisualizer() {
                             </span>
                         )}
                     </div>
+                </div>
+
+                {/* Text mínim d'estat estil "$ text" */}
+                <div className="min-h-5 flex items-center justify-center text-center text-[11px] font-mono text-slate-400 pt-0.5">
+                    <motion.span
+                        key={`${mode}-${stepIdx}`}
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <span className="text-slate-500">$</span> {currentStep.action}
+                    </motion.span>
                 </div>
             </div>
         </div>

@@ -23,6 +23,7 @@ interface Step {
     treeEdges: [number, number][]; // Arestes d'arbre (descobertes)
     backEdges: [number, number][]; // Arestes de retrocés (cicles)
     status: "active" | "backtrack" | "done";
+    action: string; // Text explicatiu mínim per a cada pas
 }
 
 // 6 nodes en posició planar neta
@@ -68,6 +69,7 @@ const STEPS_U0: Step[] = [
         treeEdges: [],
         backEdges: [],
         status: "active",
+        action: "dfs(0) → vis[0]=T",
     },
     // 1: 0 explora veí 1
     {
@@ -78,6 +80,7 @@ const STEPS_U0: Step[] = [
         treeEdges: [],
         backEdges: [],
         status: "active",
+        action: "explora 0 → 1 (0→2 també és vàlid)",
     },
     // 2: Entra dfs(1), aresta d'arbre (0, 1)
     {
@@ -88,6 +91,7 @@ const STEPS_U0: Step[] = [
         treeEdges: [[0, 1]],
         backEdges: [],
         status: "active",
+        action: "dfs(1) → vis[1]=T",
     },
     // 3: 1 explora veí 3
     {
@@ -98,6 +102,7 @@ const STEPS_U0: Step[] = [
         treeEdges: [[0, 1]],
         backEdges: [],
         status: "active",
+        action: "explora 1 → 3",
     },
     // 4: Entra dfs(3), aresta d'arbre (1, 3)
     {
@@ -111,6 +116,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "dfs(3) → vis[3]=T",
     },
     // 5: 3 explora veí 4
     {
@@ -124,6 +130,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "explora 3 → 4",
     },
     // 6: Entra dfs(4), aresta d'arbre (3, 4)
     {
@@ -138,6 +145,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "dfs(4) → vis[4]=T",
     },
     // 7: 4 comprova veí 1 (ja visitat, no és pare 3) -> aresta de retrocés (cicle!)
     {
@@ -152,6 +160,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [[4, 1]],
         status: "active",
+        action: "4 → 1 visitat · cicle!",
     },
     // 8: 4 explora veí 2
     {
@@ -166,6 +175,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [[4, 1]],
         status: "active",
+        action: "explora 4 → 2",
     },
     // 9: Entra dfs(2), aresta d'arbre (4, 2)
     {
@@ -181,6 +191,7 @@ const STEPS_U0: Step[] = [
         ],
         backEdges: [[4, 1]],
         status: "active",
+        action: "dfs(2) → vis[2]=T",
     },
     // 10: 2 comprova veí 0 (ja visitat, no és pare 4) -> aresta de retrocés (cicle!)
     {
@@ -199,6 +210,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "active",
+        action: "2 → 0 visitat · cicle!",
     },
     // 11: 2 explora veí 5
     {
@@ -217,6 +229,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "active",
+        action: "explora 2 → 5",
     },
     // 12: Entra dfs(5), aresta d'arbre (2, 5). Tots visitats!
     {
@@ -236,6 +249,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "active",
+        action: "dfs(5) → vis[5]=T",
     },
     // 13: 5 no té més veïns -> retrocedeix a 2
     {
@@ -255,6 +269,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "backtrack",
+        action: "5 sense veïns · torna a 2",
     },
     // 14: 2 retrocedeix a 4
     {
@@ -274,6 +289,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "backtrack",
+        action: "2 acaba · torna a 4",
     },
     // 15: 4 retrocedeix a 3
     {
@@ -293,6 +309,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "backtrack",
+        action: "4 acaba · torna a 3",
     },
     // 16: 3 retrocedeix a 1
     {
@@ -312,6 +329,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "backtrack",
+        action: "3 acaba · torna a 1",
     },
     // 17: 1 retrocedeix a 0
     {
@@ -331,6 +349,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "backtrack",
+        action: "1 acaba · torna a 0",
     },
     // 18: DFS finalitzat!
     {
@@ -350,6 +369,7 @@ const STEPS_U0: Step[] = [
             [2, 0],
         ],
         status: "done",
+        action: "dfs(0) finalitzat",
     },
 ];
 
@@ -364,6 +384,7 @@ const STEPS_U2: Step[] = [
         treeEdges: [],
         backEdges: [],
         status: "active",
+        action: "dfs(2) → vis[2]=T",
     },
     // 1: 2 explora veí 0
     {
@@ -374,6 +395,7 @@ const STEPS_U2: Step[] = [
         treeEdges: [],
         backEdges: [],
         status: "active",
+        action: "explora 2 → 0",
     },
     // 2: Entra dfs(0), aresta d'arbre (2, 0)
     {
@@ -384,6 +406,7 @@ const STEPS_U2: Step[] = [
         treeEdges: [[2, 0]],
         backEdges: [],
         status: "active",
+        action: "dfs(0) → vis[0]=T",
     },
     // 3: 0 explora veí 1
     {
@@ -394,6 +417,7 @@ const STEPS_U2: Step[] = [
         treeEdges: [[2, 0]],
         backEdges: [],
         status: "active",
+        action: "explora 0 → 1",
     },
     // 4: Entra dfs(1), aresta d'arbre (0, 1)
     {
@@ -407,6 +431,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "dfs(1) → vis[1]=T",
     },
     // 5: 1 explora veí 3
     {
@@ -420,6 +445,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "explora 1 → 3",
     },
     // 6: Entra dfs(3), aresta d'arbre (1, 3)
     {
@@ -434,6 +460,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "dfs(3) → vis[3]=T",
     },
     // 7: 3 explora veí 4
     {
@@ -448,6 +475,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "explora 3 → 4",
     },
     // 8: Entra dfs(4), aresta d'arbre (3, 4)
     {
@@ -463,6 +491,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [],
         status: "active",
+        action: "dfs(4) → vis[4]=T",
     },
     // 9: 4 comprova veí 1 (ja visitat) -> back edge (4, 1)
     {
@@ -478,6 +507,7 @@ const STEPS_U2: Step[] = [
         ],
         backEdges: [[4, 1]],
         status: "active",
+        action: "4 → 1 visitat · cicle!",
     },
     // 10: 4 comprova veí 2 (ja visitat) -> back edge (4, 2)
     {
@@ -496,6 +526,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "active",
+        action: "4 → 2 visitat · cicle!",
     },
     // 11: Retrocedeix 4 -> 3 -> 1 -> 0 -> 2
     {
@@ -514,6 +545,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "backtrack",
+        action: "4→3→1→0 acaben · torna a 2",
     },
     // 12: 2 explora veí 5
     {
@@ -532,6 +564,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "active",
+        action: "explora 2 → 5",
     },
     // 13: Entra dfs(5), aresta d'arbre (2, 5). Tots visitats!
     {
@@ -551,6 +584,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "active",
+        action: "dfs(5) → vis[5]=T",
     },
     // 14: Retrocedeix de 5 a 2
     {
@@ -570,6 +604,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "backtrack",
+        action: "5 sense veïns · torna a 2",
     },
     // 15: DFS finalitzat!
     {
@@ -589,6 +624,7 @@ const STEPS_U2: Step[] = [
             [4, 2],
         ],
         status: "done",
+        action: "dfs(2) finalitzat",
     },
 ];
 
@@ -649,7 +685,7 @@ export default function DFSVisualizer() {
     return (
         <div className="w-full flex flex-col items-center justify-center gap-5 my-8 font-mono select-none not-prose px-1">
 
-            {/* 1. FILA SUPERIOR COMPACTA: PRESETS + CONTROLS (SENSE TEXT EXPLICATIU) */}
+            {/* 1. FILA SUPERIOR COMPACTA: PRESETS + CONTROLS */}
             <div className="w-full max-w-lg flex items-center justify-between gap-2 text-xs">
                 {/* Selector d'origen u=0 o u=2 */}
                 <div className="flex items-center bg-white/[0.04] p-0.5 rounded-lg border border-white/10">
@@ -930,6 +966,18 @@ export default function DFSVisualizer() {
                             })}
                         </div>
                     )}
+                </div>
+
+                {/* Text mínim d'estat estil "$ text" */}
+                <div className="min-h-5 flex items-center justify-center text-center text-[11px] font-mono text-slate-400 pt-0.5">
+                    <motion.span
+                        key={`${startNode}-${stepIdx}`}
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <span className="text-slate-500">$</span> {currentStep.action}
+                    </motion.span>
                 </div>
             </div>
 

@@ -20,6 +20,9 @@ Els sistemes moderns són **multiprogramats** (mantenen diversos processos simul
 
 ### Adreces lògiques vs adreces físiques
 
+:::addrspaceviz
+:::
+
 * **Adreça lògica o virtual (`@L`)**: És l'adreça que genera el compilador i que referencia el programa durant la seva execució. Cada procés té el seu propi espai d'adreces aïllat (començant des de `0`), creient que disposa de tota la memòria per a ell sol sense saber quina posició física ocuparà.
 * **Adreça física o real (`@F`)**: És la posició real i tangible dins dels xips de memòria RAM on s'emmagatzemen les dades i instruccions. El procés mai hi té accés directe; és gestionada pel sistema operatiu i la MMU s'encarrega de traduir cada `@L` a la seva `@F`.
 
@@ -71,39 +74,34 @@ Memòria cau associativa d'alta velocitat a la pròpia CPU per accelerar traducc
 
 ## 5.3 Càrrega d'un executable i anatomia de l'espai lògic
 
-La comanda `exec` (`execlp`, `execv`) llegeix un binari en format **ELF (*Executable and Linkable Format*)** i en construeix l'espai lògic.
+En fer `exec`, el Kernel llegeix el binari **ELF** i en construeix les regions lògiques a l'espai d'adreces:
 
-### 1. Seccions del fitxer ELF (inspecció amb `objdump -h`)
-* **`.text`**: Codi binari executable (`r-x`).
-* **`.rodata`**: Constants i cadenes literals (`r--`).
-* **`.data`**: Variables globals/estàtiques **inicialitzades** (`rw-`).
-* **`.bss`**: Variables globals/estàtiques **sense inicialitzar** (`rw-`). Ocupa 0 bytes en disc; el SO l'omple de zeros en carregar-la.
-
-### 2. Regions de memòria d'un procés
+### 1. Regions de memòria i seccions ELF (`objdump -h`)
 
 :::memlayoutviz
 :::
 
-* **Adreça 0 (NULL)**: Pàgina no assignada intencionadament. Desreferenciar `NULL` dispara un `SIGSEGV` immediat.
-* **Stack**: Creix cap a **adreces baixes**.
-* **Heap**: Creix cap a **adreces altes**.
+| Regió / Secció ELF | Permisos a `maps` | Què conté? |
+| :--- | :---: | :--- |
+| **`.text`** (Codi) | `r-xp` | Instruccions executables (només lectura per protecció). |
+| **`.rodata`** (Constants) | `r--p` | Constants i cadenes literals. |
+| **`.data`** i **`.bss`** (Globals) | `rw-p` | Variables globals/estàtiques (`.bss` sense inicialitzar ocupa 0 B a disc; el SO l'omple de zeros). |
+| **`[heap]`** | `rw-p` | Memòria dinàmica (`sbrk`/`malloc`). Creix cap a adreces altes ($\uparrow$). |
+| **`[stack]`** | `rw-p` | Variables locals i marcs de funció. Creix cap a adreces baixes ($\downarrow$). |
 
-### 3. Inspecció real amb `/proc/[PID]/maps`
-Podem inspeccionar l'espai d'adreces virtuals de qualsevol procés en temps real consultant el fitxer `maps` dins del pseudo-sistema de fitxers `/proc`:
+* **Adreça 0 (`NULL`)**: Pàgina no assignada intencionadament; desreferenciar `NULL` provoca un `SIGSEGV` immediat.
+
+### 2. Inspecció real amb `/proc/[PID]/maps`
 
 :::shellviz{command="cat /proc/self/maps" suggestions="cat /proc/self/maps,cat /proc/self/status,cat /proc/self/limits,ls -l /proc/self" title="Terminal — Mapa de memòria virtual del procés (/proc/self/maps)"}
 :::
 
-* **Estructura de cada línia**: `[rang d'adreces] [permisos] [offset] [dispositiu] [inode] [camí o etiqueta]`
-* **Regions clau identificades al mapa**:
-  * **Codi executable (`r-xp`)**: Secció `.text` del binari amb permís d'execució i lectura (sense escriptura per protegir les instruccions).
-  * **Constants i literals (`r--p`)**: Secció `.rodata` en mode de només lectura.
-  * **Variables globals (`rw-p`)**: Seccions `.data` i `.bss` privades (*Copy-On-Write*).
-  * **`[heap]`**: Memòria dinàmica assignada amb `malloc` / `sbrk`. Creix cap a adreces altes ($\uparrow$).
-  * **Biblioteques dinàmiques (`libc.so`)**: Mapatge dinàmic de biblioteques compartides a la zona intermèdia (*mmap*).
-  * **`[stack]`**: Pila d'execució (variables locals i marcs de crida). Creix cap a adreces baixes ($\downarrow$).
-* **Permís `p` (*Private*) vs `s` (*Shared*)**: `rw-p` indica regió privada amb *Copy-On-Write* (COW); `rw-s` indica regió de memòria compartida entre processos.
-* **`[vvar]` i `[vdso]`**: Pàgines especials del Kernel mapades directament a l'espai d'usuari per accelerar crides freqüents (com `gettimeofday`) sense el cost d'un canvi de context complet de CPU.
+* **Format de cada línia**: `[rang d'adreces] [permisos] [offset] [dispositiu] [inode] [etiqueta]`
+* **`p` (*Private*) vs `s` (*Shared*)**: `p` indica regió privada amb *Copy-On-Write*; `s` indica memòria compartida real entre processos.
+* **Detalls pràctics clau**:
+  * **`[heap]` no apareix a `maps`** fins que el procés demana memòria dinàmica (`sbrk`/`malloc`).
+  * **Biblioteques dinàmiques (`libc.so`)**: Es mapegen a la zona intermèdia (*mmap*).
+  * **`[vvar]` i `[vdso]`**: Pàgines del Kernel mapades a espai d'usuari per accelerar crides freqüents (ex. `gettimeofday`) sense canvi de context.
 
 ---
 
@@ -112,11 +110,15 @@ Podem inspeccionar l'espai d'adreces virtuals de qualsevol procés en temps real
 * **Pàgina**: Bloc lògic de mida fixa potència de 2 (estàndard: **4096 bytes = 4 KB**).
 * **Marc (*Frame*)**: Bloc físic a la RAM de la mateixa mida (4 KB).
 * **Assignació no contigua**: Les pàgines d'un procés es reparteixen en marcs lliures dispersos; la TP manté la continuïtat lògica.
+* **Aïllament per regió**: Cada regió lògica (codi, dades, heap, pila, mmap) ocupa pàgines separades: dues regions diferents **mai comparteixen un mateix marc físic**.
 
 :::pagingviz
 :::
 
 ### Fragmentació interna vs externa
+
+:::fragviz
+:::
 
 | Tipus | Què és? | A la Paginació? | Càlcul |
 | :--- | :--- | :---: | :--- |
@@ -144,11 +146,12 @@ void *sbrk(intptr_t increment);
 > **Granularitat del Kernel:**  
 > Encara que demanis `sbrk(100)`, el Kernel assigna marcs físics complets de **4096 bytes**. El límit efectiu a `/proc/[PID]/maps` sempre s'arrodoneix al següent múltiple de pàgina.
 
-### 2. Biblioteca de C: `malloc()` i `free()`
-Demanar memòria amb `sbrk()` directament és ineficient (massa crides a sistema i impossibilitat d'alliberar blocs intermedis).
+### 2. Biblioteca de C (`<stdlib.h>`): `malloc()`, `realloc()` i `free()`
+Demanar memòria amb `sbrk()` directament és ineficient (moltes crides a sistema i impossibilitat d'alliberar forats intermedis). La `libc` ho gestiona a espai d'usuari:
 
-* **Reserva en excés**: `malloc(64)` no demana 64 B al Kernel; demana un bloc gran (ex. 132 KB) via `sbrk` i en gestiona les porcions a l'espai d'usuari per atendre futurs `malloc` ràpidament.
-* **Assignació fora del heap**: Per peticions grans (> ~128 KB), `malloc` no toca el heap; utilitza `mmap()`.
+* **`malloc(size)`** / **`calloc(n, mida)`** *(inicialitzat a 0)*: Reserva un bloc al heap. `malloc(64)` sol demanar un bloc gran al Kernel (ex. 132 KB via `sbrk`) per anar-ne repartint trossos; per peticions molt grans (> ~128 KB), usa **`mmap()`** fora del heap.
+* **`realloc(ptr, nova_mida)`**: Redimensiona un bloc reservat prèviament (l'amplia *in-situ* si hi ha espai o el mou a una adreça nova copiant el contingut i alliberant l'antic).
+* **`free(ptr)`**: Marca el bloc com a reutilitzable dins de `libc`. Habitualment **no redueix el límit del heap (`sbrk`)** en blocs petits (sí que fa `munmap` si provenia de `mmap`).
 
 ### `SIGSEGV`: `sbrk` vs `malloc` fora de rang
 * Amb `char *p = sbrk(4096);`, accedir a `p[4100] = 'a';` cau fora de la pàgina assignada $\rightarrow$ la MMU no té traducció $\rightarrow$ **`SIGSEGV`**.
@@ -172,16 +175,20 @@ int munmap(void *addr, size_t length);
 * `flags`: Requereix exactament un d'aquests dos:
   * **`MAP_PRIVATE`**: Canvis privats (via COW). No es modifiquen fitxers ni altres processos els veuen.
   * **`MAP_SHARED`**: Canvis visibles per altres processos i reflectits al fitxer.
+* **Control d'errors**: Si falla, `mmap` retorna **`MAP_FAILED`** (no `NULL`!).
 
 :::mmapviz
 :::
 
-### Patró 1: Memòria compartida anònima (`MAP_ANONYMOUS`)
-Reserva de memòria pura (`fd = -1`, `offset = 0`) compartida entre processos emparentats:
+### Patró 1: Memòria anònima (`MAP_ANONYMOUS`)
+Reserva memòria directa al marge del heap (`fd = -1`, `offset = 0`):
+* Amb **`MAP_PRIVATE | MAP_ANONYMOUS`**: buffer privat del procés (alternativa a `malloc`), alliberat amb `munmap(ptr, mida)`.
+* Amb **`MAP_SHARED | MAP_ANONYMOUS`**: memòria compartida entre processos emparentats després d'un `fork()`:
 
 ```c
 int *comptador = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE,
                       MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+if (comptador == MAP_FAILED) { perror("mmap"); exit(1); }
 
 *comptador = 100;
 if (fork() == 0) {
@@ -190,6 +197,7 @@ if (fork() == 0) {
 }
 waitpid(-1, NULL, 0);
 // El pare llegeix 42: comparteixen el mateix marc físic!
+munmap(comptador, sizeof(int));
 ```
 
 ### Patró 2: Fitxers mapats en memòria
@@ -224,9 +232,9 @@ Al fer `exec`, el SO no copia tot el fitxer executable a RAM:
 :::sharedlibviz
 :::
 
-* El codi (`.text`, `r-x`) de biblioteques comunes com `libc.so` es carrega **un sol cop a RAM**.
-* La MMU mapera aquest mateix marc a l'espai d'adreces de tots els processos actius (`MAP_SHARED`).
-* Cada procés manté la seva còpia privada de dades (`.data`).
+* El codi de biblioteques comunes com `libc.so` es carrega **un sol cop a RAM** (estalvia disc i memòria física).
+* Els processos el mapegen com a lectura/execució privada (`r-xp` a `maps`), però mentre no s'hi escrigui, la MMU apunta als **mateixos marcs físics compartits**.
+* Cada procés manté la seva còpia privada de dades (`.data`, `rw-p`).
 
 ### 3. Copy-On-Write (COW)
 Elimina el cost de duplicar tota la memòria física a `fork()`:
@@ -266,6 +274,20 @@ Permet que la suma dels espais lògics dels processos superi la capacitat físic
 6. Actualitza la TP del procés (assigna marc i bit de presència = `1`).
 7. El procés passa a **`READY`**.
 8. En rebre la CPU, la instrucció que havia fallat es **reinicia des del principi** i s'executa amb èxit.
+
+### Tipus de fallada i reemplaçament de pàgines
+
+:::pagereplaceviz
+:::
+
+* **Excepció de MMU $\neq$ sempre `SIGSEGV`**: Quan falla la traducció, el Kernel consulta el PCB. Només envia `SIGSEGV` si l'adreça no pertany al procés o viola permisos; si és *COW* o *page fault*, la resol transparentment i reinicia la instrucció.
+* **Fallada menor (*Minor*) vs major (*Major Page Fault*)**:
+  * **Menor**: La pàgina ja és a RAM (ex. còpia per *COW* o dada ja present a la memòria cau); **no accedeix a disc**.
+  * **Major**: Cal anar a buscar la pàgina a disc o Swap; bloqueja el procés fins completar la lectura.
+* **Algorismes bàsics de reemplaçament** (per triar la pàgina víctima si la RAM és plena):
+  * **FIFO**: Expulsa la pàgina que fa més temps que va entrar.
+  * **LRU (*Least Recently Used*)**: Expulsa la que fa més temps que no s'utilitza (molt bona eficiència, cara d'implementar en maquinari pur).
+  * **Rellotge (*Second Chance*)**: Aproximació eficient d'LRU mitjançant un bit d'accés posat a `1` per la MMU en cada lectura/escriptura.
 
 ### Sobrepaginació (*thrashing*)
 

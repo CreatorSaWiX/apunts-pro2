@@ -23,6 +23,7 @@ interface Step {
     treeEdges: [number, number][]; // Arestes de l'arbre BFS
     crossEdges: [number, number][]; // Arestes transversals (veí ja visitat)
     status: "init" | "pop" | "explore" | "done";
+    action: string; // Text explicatiu mínim per a cada pas
 }
 
 // 6 nodes amb la mateixa disposició planar que DFS
@@ -67,6 +68,7 @@ const STEPS_S0: Step[] = [
         treeEdges: [],
         crossEdges: [],
         status: "init",
+        action: "dist[0]=0 · encua 0",
     },
     // 1: Desencua u=0
     {
@@ -77,6 +79,7 @@ const STEPS_S0: Step[] = [
         treeEdges: [],
         crossEdges: [],
         status: "pop",
+        action: "desencua 0",
     },
     // 2: u=0 explora veí 1 -> dist[1]=1, Q.push(1)
     {
@@ -87,6 +90,7 @@ const STEPS_S0: Step[] = [
         treeEdges: [[0, 1]],
         crossEdges: [],
         status: "explore",
+        action: "0 → 1 · dist[1]=1 · encua 1 (0→2 també és vàlid)",
     },
     // 3: u=0 explora veí 2 -> dist[2]=1, Q.push(2)
     {
@@ -100,6 +104,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "0 → 2 · dist[2]=1 · encua 2",
     },
     // 4: Desencua u=1
     {
@@ -113,6 +118,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [],
         status: "pop",
+        action: "desencua 1",
     },
     // 5: u=1 explora veí 3 -> dist[3]=2, Q.push(3)
     {
@@ -127,6 +133,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "1 → 3 · dist[3]=2 · encua 3",
     },
     // 6: u=1 explora veí 4 -> dist[4]=2, Q.push(4)
     {
@@ -142,6 +149,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "1 → 4 · dist[4]=2 · encua 4",
     },
     // 7: Desencua u=2
     {
@@ -157,6 +165,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [],
         status: "pop",
+        action: "desencua 2",
     },
     // 8: u=2 comprova veí 4 (ja visitat) -> cross edge (2, 4)
     {
@@ -172,6 +181,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [[2, 4]],
         status: "explore",
+        action: "2 → 4 ja visitat · s'ignora",
     },
     // 9: u=2 explora veí 5 -> dist[5]=2, Q.push(5)
     {
@@ -188,6 +198,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [[2, 4]],
         status: "explore",
+        action: "2 → 5 · dist[5]=2 · encua 5",
     },
     // 10: Desencua u=3
     {
@@ -204,6 +215,7 @@ const STEPS_S0: Step[] = [
         ],
         crossEdges: [[2, 4]],
         status: "pop",
+        action: "desencua 3",
     },
     // 11: u=3 comprova veí 4 (ja visitat) -> cross edge (3, 4)
     {
@@ -223,6 +235,7 @@ const STEPS_S0: Step[] = [
             [3, 4],
         ],
         status: "explore",
+        action: "3 → 4 ja visitat · s'ignora",
     },
     // 12: Desencua u=4 (cap veí nou)
     {
@@ -242,6 +255,7 @@ const STEPS_S0: Step[] = [
             [3, 4],
         ],
         status: "pop",
+        action: "desencua 4 · cap veí nou",
     },
     // 13: Desencua u=5 (cap veí nou)
     {
@@ -261,6 +275,7 @@ const STEPS_S0: Step[] = [
             [3, 4],
         ],
         status: "pop",
+        action: "desencua 5 · cap veí nou",
     },
     // 14: BFS completat!
     {
@@ -280,6 +295,7 @@ const STEPS_S0: Step[] = [
             [3, 4],
         ],
         status: "done",
+        action: "bfs(0) finalitzat",
     },
 ];
 
@@ -294,6 +310,7 @@ const STEPS_S2: Step[] = [
         treeEdges: [],
         crossEdges: [],
         status: "init",
+        action: "dist[2]=0 · encua 2",
     },
     // 1: Desencua u=2
     {
@@ -304,6 +321,7 @@ const STEPS_S2: Step[] = [
         treeEdges: [],
         crossEdges: [],
         status: "pop",
+        action: "desencua 2",
     },
     // 2: u=2 explora veí 0 -> dist[0]=1, Q.push(0)
     {
@@ -314,6 +332,7 @@ const STEPS_S2: Step[] = [
         treeEdges: [[2, 0]],
         crossEdges: [],
         status: "explore",
+        action: "2 → 0 · dist[0]=1 · encua 0",
     },
     // 3: u=2 explora veí 4 -> dist[4]=1, Q.push(4)
     {
@@ -327,6 +346,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "2 → 4 · dist[4]=1 · encua 4",
     },
     // 4: u=2 explora veí 5 -> dist[5]=1, Q.push(5)
     {
@@ -341,6 +361,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "2 → 5 · dist[5]=1 · encua 5",
     },
     // 5: Desencua u=0
     {
@@ -355,6 +376,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [],
         status: "pop",
+        action: "desencua 0",
     },
     // 6: u=0 explora veí 1 -> dist[1]=2, Q.push(1)
     {
@@ -370,6 +392,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [],
         status: "explore",
+        action: "0 → 1 · dist[1]=2 · encua 1",
     },
     // 7: Desencua u=4
     {
@@ -385,6 +408,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [],
         status: "pop",
+        action: "desencua 4",
     },
     // 8: u=4 comprova veí 1 (ja visitat) -> cross edge (4, 1)
     {
@@ -400,6 +424,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [[4, 1]],
         status: "explore",
+        action: "4 → 1 ja visitat · s'ignora",
     },
     // 9: u=4 explora veí 3 -> dist[3]=2, Q.push(3)
     {
@@ -416,6 +441,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [[4, 1]],
         status: "explore",
+        action: "4 → 3 · dist[3]=2 · encua 3",
     },
     // 10: Desencua u=5
     {
@@ -432,6 +458,7 @@ const STEPS_S2: Step[] = [
         ],
         crossEdges: [[4, 1]],
         status: "pop",
+        action: "desencua 5 · cap veí nou",
     },
     // 11: Desencua u=1 -> comprova veí 3 (ja visitat) -> cross edge (1, 3)
     {
@@ -451,6 +478,7 @@ const STEPS_S2: Step[] = [
             [1, 3],
         ],
         status: "explore",
+        action: "desencua 1 · 1 → 3 ja visitat",
     },
     // 12: Desencua u=3
     {
@@ -470,6 +498,7 @@ const STEPS_S2: Step[] = [
             [1, 3],
         ],
         status: "pop",
+        action: "desencua 3 · cap veí nou",
     },
     // 13: BFS completat!
     {
@@ -489,6 +518,7 @@ const STEPS_S2: Step[] = [
             [1, 3],
         ],
         status: "done",
+        action: "bfs(2) finalitzat",
     },
 ];
 
@@ -549,7 +579,7 @@ export default function BFSVisualizer() {
     return (
         <div className="w-full flex flex-col items-center justify-center gap-5 my-8 font-mono select-none not-prose px-1">
 
-            {/* 1. FILA SUPERIOR COMPACTA: PRESETS + CONTROLS (SENSE TEXT EXPLICATIU) */}
+            {/* 1. FILA SUPERIOR COMPACTA: PRESETS + CONTROLS */}
             <div className="w-full max-w-lg flex items-center justify-between gap-2 text-xs">
                 {/* Selector d'origen s=0 o s=2 */}
                 <div className="flex items-center bg-white/[0.04] p-0.5 rounded-lg border border-white/10">
@@ -862,6 +892,18 @@ export default function BFSVisualizer() {
                             })}
                         </div>
                     )}
+                </div>
+
+                {/* Text mínim d'estat estil "$ text" */}
+                <div className="min-h-5 flex items-center justify-center text-center text-[11px] font-mono text-slate-400 pt-0.5">
+                    <motion.span
+                        key={`${startNode}-${stepIdx}`}
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <span className="text-slate-500">$</span> {currentStep.action}
+                    </motion.span>
                 </div>
             </div>
 

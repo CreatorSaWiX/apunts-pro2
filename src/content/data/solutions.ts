@@ -130,6 +130,14 @@ export const allSolutions: TopicSolutions[] = [
         solutions: []
     },
     {
+        topicId: 'eda-tema-5',
+        solutions: []
+    },
+    {
+        topicId: 'eda-tema-6',
+        solutions: []
+    },
+    {
         topicId: 'eda-final',
         solutions: []
     }

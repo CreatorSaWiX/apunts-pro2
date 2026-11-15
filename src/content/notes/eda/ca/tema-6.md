@@ -113,7 +113,7 @@ void permutacions(vector<int>& sol, int idx, int n, vector<bool>& usat) {
 :::permutationsviz
 :::
 
-### 2. Desarranjaments (*derangements*) — examen final 2024
+### 2. Desarranjaments (*derangements*) — Final Teoria 2024 P
 Un **desarranjament** de mida $n$ és una permutació de $\{0 \dots n-1\}$ **sense punts fixos** ($\pi(i) \neq i$ per a tot $i$):
 
 **Filtre de viabilitat:** N'hi ha prou d'afegir la condició `k != idx` al bucle de selecció:
@@ -136,7 +136,9 @@ for (int k = 0; k < n; ++k) {
 
 ## 6.4. Problemes clàssics d'examen final
 
-### 1. El problema de les $n$-reines (poda en $\Theta(1)$)
+### 1. El problema de les $n$-reines (poda en $\Theta(1)$) — variants a Final Lab 2010 T, 2015 T i 2026 P
+*(Clàssic de Jutge Tema 6; variants directes de col·locació en tauler han sortit a Finals de Laboratori: `Reis pacífics` **2010 T**, `Torres dins d'un rectangle` **2015 T** i `Cavalls voraços` **2026 P**).*
+
 Col·locar $n$ reines en un tauler $n \times n$ sense que s'amenacin (màxim 1 per fila, columna o diagonal).
 * Representació: `t[i] = j` indica reina a la fila `i`, columna `j`.
 * **Identificació de diagonals en $\Theta(1)$:**
@@ -162,7 +164,9 @@ int reines(int i, int n, vector<bool>& mc, vector<bool>& md1, vector<bool>& md2)
 :::nqueensviz
 :::
 
-### 2. Navegació en graelles 2D (sudoku i taulers)
+### 2. Navegació en graelles 2D (sudoku i taulers) — Final Lab 2016 T (Sudoku)
+*(També variants de recorregut en taulers a Finals de Laboratori: **2010 T**, **2015 P** i **2021 P**).*
+
 Per recórrer matrius casella a casella amb backtracking, s'avança horitzontalment i es canvia de fila en arribar al límit:
 
 ```cpp
@@ -181,7 +185,7 @@ void backtrack_2d(vector<vector<int>>& M, int i, int j, int n) {
 :::backtrack2dviz
 :::
 
-### 3. Cicle hamiltonià sobre graf
+### 3. Cicle hamiltonià sobre graf — Final Teoria 2020 P
 Trobar un cicle que visiti cada vèrtex exactament un cop i torni a l'origen:
 
 ```cpp
@@ -204,7 +208,9 @@ bool hamilton(const vector<vector<int>>& G, int u, int visitats, int n, vector<b
 :::hamiltonviz
 :::
 
-### 4. Motxilla 0/1 i Branch & Bound (poda per fites)
+### 4. Motxilla 0/1 i Branch & Bound (poda per fites) — Finals Teoria 2020 P i 2020 T / Final Lab 2011 P
+*(Esquema aplicat a **Final Teoria 2020 P** amb TSP, **Final Teoria 2020 T** amb Herència / Subset Sum, i **Final Lab 2011 P** amb `Omplint la bossa`).*
+
 * **Poda 1 (Viabilitat):** Si `pes_act + p[k] > C`, no agafar l'objecte $k$.
 * **Poda 2 (Fita optimista):** Sigui `svr` la suma de valors dels objectes restants ($k \dots n-1$). Si `val_act + svr <= millor_valor`, descartar la branca sencera:
 
@@ -225,7 +231,7 @@ void motxilla(int k, int n, int C, int pes_act, int val_act, int svr, int& millo
 
 ## 6.5. Backtracking vs solució polinòmica
 
-**Exàmens 2022 i 2026:**
+**Finals Teoria 2021 T (gen. 2022) i 2026 P:**
 Sovint es presenta un problema d'ordenació amb restriccions (ex: resultats de partides de 3 jugadors on $j_1$ va abans que $j_2$ i $j_2$ abans que $j_3$) i un codi que prova totes les permutacions en $\mathbf{\mathcal{O}(n! \cdot m)}$.
 
 **Pregunta:** *"Es pot resoldre en temps polinòmic?"*  **SÍ.**

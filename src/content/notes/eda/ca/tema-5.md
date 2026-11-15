@@ -4,6 +4,7 @@ description: "Definició i propietats de grafs, representacions en memòria, rec
 readTime: "15 min"
 order: 6
 draft: false
+isUpdated: 1
 ---
 
 ## 5.1. Propietats fonamentals i cotes
@@ -46,7 +47,7 @@ Més detalls a [Resum parcial teoria de grafs M1](./m1-G)
 ## 5.3. Cerca en profunditat (DFS) i cerca en amplada (BFS)
 
 ### DFS (cerca en profunditat)
-Explora recursivament fins a arribar a un carreró sense sortida i retrocedeix.
+L'objectiu de DFS és comprovar l'arribabilitat. Explora recursivament fins a arribar a un carreró sense sortida i retrocedeix.
 
 ```cpp
 void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {

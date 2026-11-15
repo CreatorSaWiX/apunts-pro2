@@ -744,9 +744,9 @@ export const courseStructure: TopicDefinition[] = [
         ]
     },
     {
-        id: "eda-tema-3",
-        title: "Tema 3: Graph Algorithms",
-        title_es: "Tema 3: Algoritmos de grafos",
+        id: "eda-tema-5",
+        title: "Tema 5: Grafs",
+        title_es: "Tema 5: Grafos",
         description: "Exercicis de Jutge sobre algorismes de grafs: DFS, BFS, Dijkstra, arbres d'expansió mínima (MST) i ordenació topològica.",
         description_es: "Ejercicios de Jutge sobre algoritmos de grafos: DFS, BFS, Dijkstra, árboles de recubrimiento mínimo (MST) y ordenación topológica.",
         problems: [
@@ -782,9 +782,9 @@ export const courseStructure: TopicDefinition[] = [
         ]
     },
     {
-        id: "eda-tema-4",
-        title: "Tema 4: Exhaustive Search",
-        title_es: "Tema 4: Búsqueda exhaustiva",
+        id: "eda-tema-6",
+        title: "Tema 6: Cerca exhaustiva",
+        title_es: "Tema 6: Búsqueda exhaustiva",
         description: "Exercicis de Jutge sobre cerca exhaustiva i backtracking: generació de subconjunts, permutacions i problemes amb restriccions.",
         description_es: "Ejercicios de Jutge sobre búsqueda exhaustiva y backtracking: generación de subconjuntos, permutaciones y problemas con restricciones.",
         problems: [
@@ -815,85 +815,130 @@ export const courseStructure: TopicDefinition[] = [
         description: "Recull de problemes d'exàmens finals de cursos anteriors d'EDA.",
         description_es: "Recopilación de problemas de exámenes finales de cursos anteriores de EDA.",
         problems: [
-            { id: "P39846", title: "Tresors en un mapa (4)" },
-            { id: "P71701", title: "Reis pacífics" },
-            { id: "P84415", title: "La bossa de les paraules" },
-            { id: "P22295", title: "La tortuga viatgera" },
-            { id: "P69865", title: "Recollint monedes" },
-            { id: "P98123", title: "Omplint la bossa" },
-            { id: "P90766", title: "Tresors en un mapa (3)" },
-            { id: "P67329", title: "ADN" },
-            { id: "P47386", title: "Xafardeig" },
-            { id: "P87462", title: "Pac-man" },
-            { id: "P90861", title: "Cues d'un supermercat (1)" },
-            { id: "P14952", title: "Ordenació topològica" },
-            { id: "X07174", title: "Nombres sense prefixos prohibits" },
-            { id: "X34032", title: "El cavall afamat" },
-            { id: "P60796", title: "Tresors en un mapa (2)" },
-            { id: "X21319", title: "Valors d'un circuit" },
-            { id: "P81453", title: "Camí més curt" },
-            { id: "P89318", title: "Paraules prohibides" },
-            { id: "X41530", title: "Bosc" },
-            { id: "X92609", title: "Dues monedes de cada (3)" },
-            { id: "P86108", title: "LOL" },
-            { id: "P27258", title: "Monstres en un mapa" },
-            { id: "P43164", title: "Tresors en un mapa (5)" },
-            { id: "P31389", title: "Torres dins d'un rectangle" },
-            { id: "P12887", title: "Minimum spanning trees" },
-            { id: "P54070", title: "Posició d'inserció més a la dreta" },
-            { id: "P76807", title: "Sudoku" },
-            { id: "P99753", title: "Vector bicreixent" },
-            { id: "P18679", title: "Barra d'equilibris (1)" },
-            { id: "P74219", title: "Fibonacci numbers (2)" },
-            { id: "P49889", title: "Consonants i vocals" },
-            { id: "P96413", title: "Nombre d'Erdős (2)" },
-            { id: "P70756", title: "Particions" },
-            { id: "P71496", title: "Retallades" },
-            { id: "P29033", title: "Dos colors" },
-            { id: "X39049", title: "Potències de permutacions" },
-            { id: "X82938", title: "Cerca en un vector unimodal" },
-            { id: "X81287", title: "Rutes Barates" },
-            { id: "P11655", title: "Sumes iguals (3)" },
-            { id: "X64801", title: "És cíclic?" },
-            { id: "P65553", title: "Jocs de taula" },
-            { id: "P98259", title: "Buscant el telecos" },
-            { id: "X39187", title: "Comprant accions" },
-            { id: "X46137", title: "Paraules compensades" },
-            { id: "X57029", title: "Pujades i baixades" },
-            { id: "X14417", title: "Buscador de pel·lícules" },
-            { id: "X39759", title: "Joc de cavall" },
-            { id: "X40596", title: "Seqüències equilibrades" },
-            { id: "X50299", title: "Carreteres curtes" },
-            { id: "X34137", title: "Vèrtexs intermedis" },
-            { id: "X41088", title: "Seqüències sense pous" },
-            { id: "X67572", title: "Paraules concatenades" },
-            { id: "X13208", title: "Camí en un tauler" },
-            { id: "X68591", title: "Component connex mínim i màxim" },
-            { id: "X18624", title: "Runes" },
-            { id: "X83283", title: "Vèrtex més allunyat" },
-            { id: "X20680", title: "Paraules amb x, y i z" },
-            { id: "P23127", title: "Bronques" },
-            { id: "X77076", title: "Primera aparició en vector quasi ordenat" },
-            { id: "X22314", title: "Donacions" },
-            { id: "P17866", title: "El cavall afamat" },
-            { id: "X35804", title: "Creuers" },
-            { id: "P43164", title: "Tresors en un mapa (5)" },
-            { id: "P39058", title: "I2P02. El cavall menja-flors" },
-            { id: "P88410", title: "Rosers i testos (1)" },
-            { id: "P87462", title: "Pac-man" },
-            { id: "P98089", title: "Manies interpersonals" },
-            { id: "P56143", title: "Pagesos i cavaller" },
-            { id: "P83364", title: "Nombres sense prefixos prohibits" },
-            { id: "P71496", title: "Retallades" },
-            { id: "X54052", title: "Completant cadenes d'ADN" },
-            { id: "P29230", title: "Tots els canvis" },
-            { id: "V45017", title: "Balances equilibrades" },
-            { id: "P57638", title: "Experiment físic (1)" },
-            { id: "P25757", title: "Pintant components" },
-            { id: "S97190", title: "Salts de dos en dos" },
-            { id: "Y16864", title: "Components complets" },
-            { id: "P39621", title: "Cavalls voraços" },
-            { id: "P82271", title: "Dues festes" }
+            // Final 2022 Primavera (03/06/2022)
+            { id: "P23127", title: "22P-Ex1: Bronques" },
+            { id: "X77076", title: "22P-Ex2: Primera aparició en vector quasi ordenat" },
+            // Final 2022 Tardor (09/01/2023) - Torn 1
+            { id: "X22314", title: "22TT1-Ex1: Donacions" },
+            { id: "P17866", title: "22TT1-Ex2: El cavall afamat" },
+            // Final 2022 Tardor (09/01/2023) - Torn 2
+            { id: "X35804", title: "22TT2-Ex1: Creuers" },
+            { id: "P43164", title: "22TT2-Ex2: Tresors en un mapa (5)" },
+            // Final 2023 Primavera (07/06/2023)
+            { id: "P39058", title: "23P-Ex1: I2P02. El cavall menja-flors" },
+            { id: "P88410", title: "23P-Ex2: Rosers i testos (1)" },
+            // Final 2023 Tardor (15/01/2024) - Torn 1
+            { id: "P87462", title: "23TT1-Ex1: Pac-man" },
+            { id: "P98089", title: "23TT1-Ex2: Manies interpersonals" },
+            // Final 2023 Tardor (15/01/2024) - Torn 2
+            { id: "P56143", title: "23TT2-Ex1: Pagesos i cavaller" },
+            { id: "P83364", title: "23TT2-Ex2: Nombres sense prefixos prohibits" },
+            // Final 2024 Primavera (05/06/2024)
+            { id: "P71496", title: "24P-Ex1: Retallades" },
+            { id: "X54052", title: "24P-Ex2: Completant cadenes d'ADN" },
+            // Final 2024 Tardor (13/01/2025) - Torn 1
+            { id: "X68591", title: "24TT1-Ex1: Component connex màxim i mínim" },
+            { id: "P29230", title: "24TT1-Ex2: Tots els canvis" },
+            // Final 2024 Tardor (13/01/2025) - Torn 2
+            { id: "P96413", title: "24TT2-Ex1: Nombre d'Erdős (2)" },
+            { id: "V45017", title: "24TT2-Ex2: Balances equilibrades" },
+            // Final 2025 Primavera (13/06/2025)
+            { id: "P57638", title: "25P-Ex1: Experiment físic (1)" },
+            { id: "P25757", title: "25P-Ex2: Pintant components" },
+            // Final 2025 Tardor (09/01/2026) - Torn 1
+            { id: "X92609", title: "25TT1-Ex1: Dues monedes de cada (3)" },
+            { id: "S97190", title: "25TT1-Ex2: Salts de dos en dos" },
+            // Final 2025 Tardor (09/01/2026) - Torn 2
+            { id: "P46547", title: "25TT2-Ex1: Dígits en ordre òptim" },
+            { id: "Y16864", title: "25TT2-Ex2: Components complets" },
+            // Final 2026 Primavera (09/06/2026)
+            { id: "P39621", title: "26P-Ex1: Cavalls voraços" },
+            { id: "P82271", title: "26P-Ex2: Dues festes" },
+
+            // Final 2020 Tardor (11/01/2021) - Torn 1
+            { id: "X40596", title: "20TT1-Ex1: Seqüències equilibrades" },
+            { id: "X34137", title: "20TT1-Ex2: Vèrtexs intermedis" },
+            // Final 2020 Tardor (11/01/2021) - Torn 2
+            { id: "X41088", title: "20TT2-Ex1: Seqüències sense pous" },
+            { id: "X50299", title: "20TT2-Ex2: Carreteres curtes" },
+            // Final 2021 Primavera (08/06/2021)
+            { id: "X67572", title: "21P-Ex1: Paraules concatenades" },
+            { id: "X13208", title: "21P-Ex2: Camí en un tauler" },
+            // Final 2021 Tardor (07/01/2022) - Torn 1
+            { id: "X68591", title: "21TT1-Ex1: Component connex màxim i mínim" },
+            { id: "X18624", title: "21TT1-Ex2: Runes" },
+            // Final 2021 Tardor (07/01/2022) - Torn 2
+            { id: "X83283", title: "21TT2-Ex1: Vèrtex més allunyat" },
+            { id: "X20680", title: "21TT2-Ex2: Paraules amb x, y i z" },
+            // Final 2020 Primavera (10/06/2020)
+            { id: "X39187", title: "20P-Ex1: Comprant accions" },
+            { id: "X46137", title: "20P-Ex1: Paraules compensades" },
+            { id: "X57029", title: "20P-Ex1: Pujades i baixades" },
+            { id: "X14417", title: "20P-Ex2: Buscador de pel·lícules" },
+            { id: "X39759", title: "20P-Ex2: Joc de cavall" },
+            // Final 2019 Tardor (02/12/2019)
+            { id: "P65553", title: "19T-Ex1: Jocs de taula" },
+            { id: "P98259", title: "19T-Ex2: Buscant el telecos" },
+            // Final 2019 Primavera (20/05/2019)
+            { id: "X64801", title: "19P-Ex1: És cíclic?" },
+            { id: "P11655", title: "19P-Ex2: Sumes iguals (3)" },
+            // Final 2018 Tardor (03/12/2018)
+            { id: "X82938", title: "18T-Ex1: Cerca en un vector unimodal" },
+            { id: "X81287", title: "18T-Ex2: Rutes Barates" },
+            // Final 2018 Primavera (28/05/2018)
+            { id: "P29033", title: "18P-Ex1: Dos colors" },
+            { id: "X39049", title: "18P-Ex2: Potències de permutacions" },
+            // Final 2017 Tardor (11/12/2017)
+            { id: "P70756", title: "17T-Ex1: Particions" },
+            { id: "P71496", title: "17T-Ex2: Retallades" },
+            // Final 2017 Primavera (25/05/2017)
+            { id: "P49889", title: "17P-Ex1: Consonants i vocals" },
+            { id: "P96413", title: "17P-Ex2: Nombre d'Erdős (2)" },
+            // Final 2016 Tardor (15/12/2016) - Torn 1
+            { id: "P76807", title: "16TT1-Ex1: Sudoku" },
+            { id: "P99753", title: "16TT1-Ex2: Vector bicreixent" },
+            // Final 2016 Tardor (15/12/2016) - Torn 2
+            { id: "P18679", title: "16TT2-Ex1: Barra d'equilibris (1)" },
+            { id: "P74219", title: "16TT2-Ex2: Fibonacci numbers (2)" },
+            // Final 2016 Primavera (19/05/2016)
+            { id: "P12887", title: "16P-Ex1: Minimum spanning trees" },
+            { id: "P54070", title: "16P-Ex2: Posició d'inserció més a la dreta" },
+            // Final 2015 Tardor (22/12/2015)
+            { id: "P43164", title: "15T-Ex1: Tresors en un mapa (5)" },
+            { id: "P31389", title: "15T-Ex2: Torres dins d'un rectangle" },
+            // Final 2015 Primavera (25/05/2015)
+            { id: "P86108", title: "15P-Ex1: LOL" },
+            { id: "P27258", title: "15P-Ex2: Monstres en un mapa" },
+            // Final 2014 Tardor (22/12/2014)
+            { id: "X41530", title: "14T-Ex1: Bosc" },
+            { id: "X92609", title: "14T-Ex2: Dues monedes de cada (3)" },
+            // Final 2014 Primavera (19/05/2014)
+            { id: "P81453", title: "14P-Ex1: Camí més curt" },
+            { id: "P89318", title: "14P-Ex2: Paraules prohibides" },
+            // Final 2013 Tardor (04/12/2013)
+            { id: "P60796", title: "13T-Ex1: Tresors en un mapa (2)" },
+            { id: "X21319", title: "13T-Ex2: Valors d'un circuit" },
+            // Final 2013 Primavera (22/05/2013)
+            { id: "X07174", title: "13P-Ex1: Nombres sense prefixos prohibits" },
+            { id: "X34032", title: "13P-Ex2: El cavall afamat" },
+            // Final 2012 Tardor (29/11/2012)
+            { id: "P90861", title: "12T-Ex1: Cues d'un supermercat (1)" },
+            { id: "P14952", title: "12T-Ex2: Ordenació topològica" },
+            // Final 2012 Primavera (14/05/2012)
+            { id: "P47386", title: "12P-Ex1: Xafardeig" },
+            { id: "P87462", title: "12P-Ex2: Pac-man" },
+            // Final 2011 Tardor (13/12/2011)
+            { id: "P90766", title: "11T-Ex1: Tresors en un mapa (3)" },
+            { id: "P67329", title: "11T-Ex2: ADN" },
+            // Final 2011 Primavera (19/05/2011)
+            { id: "P69865", title: "11P-Ex1: Recollint monedes" },
+            { id: "P98123", title: "11P-Ex2: Omplint la bossa" },
+            // Final 2010 Tardor (13/12/2010) - Torn 1
+            { id: "P39846", title: "10TT1-Ex1: Tresors en un mapa (4)" },
+            { id: "P71701", title: "10TT1-Ex2: Reis pacífics" },
+            // Final 2010 Tardor (13/12/2010) - Torn 2
+            { id: "P84415", title: "10TT2-Ex1: La bossa de les paraules" },
+            { id: "P22295", title: "10TT2-Ex2: La tortuga viatgera" }
         ]
     },
 

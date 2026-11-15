@@ -33,6 +33,9 @@ interface Step {
     activeEdges: string[]; // Arestes relaxades en aquest pas
     treeEdges: string[]; // Arestes del camí mínim actual
     isDiscard: boolean; // Si la còpia extreta s'ha descartat per S[u] == true
+    updatedNode?: number | null; // Node v la distància del qual s'ha actualitzat
+    action?: string; // Etiqueta curta de l'operació actual
+    desc: string; // Text explicatiu mínim per a cada pas
 }
 
 const NODES: NodePos[] = [
@@ -88,7 +91,7 @@ function getEdgePath(edge: Edge): string {
 }
 
 const STEPS: Step[] = [
-    // 0: Estat inicial
+    // 0: Estat inicial (dist[0]=0, pq.push({0, 0}))
     {
         current: null,
         dist: [0, null, null, null, null],
@@ -97,28 +100,110 @@ const STEPS: Step[] = [
         activeEdges: [],
         treeEdges: [],
         isDiscard: false,
+        desc: "inici: dist[0]=0 · encua node 0 {0, 0}",
     },
-    // 1: Pop {0, 0} -> S[0]=true, relaxa (0,2)=2 i (0,1)=4
+    // 1: Pop {0, 0} -> S[0] = true
+    {
+        current: 0,
+        dist: [0, null, null, null, null],
+        S: [true, false, false, false, false],
+        pq: [],
+        activeEdges: [],
+        treeEdges: [],
+        isDiscard: false,
+        action: "pop {0, 0}",
+        desc: "extreu mínim de pq: node 0 (dist=0) · mirem veïns de 0",
+    },
+    // 2: u=0 relaxa (0,1)=4 -> dist[1]=4, pq.push({4, 1})
+    {
+        current: 0,
+        dist: [0, 4, null, null, null],
+        S: [true, false, false, false, false],
+        pq: [{ d: 4, u: 1 }],
+        activeEdges: ["0-1"],
+        treeEdges: ["0-1"],
+        isDiscard: false,
+        updatedNode: 1,
+        action: "relax 0→1",
+        desc: "veí de 0: node 1 (0+4=4) · encua node 1 {4, 1}",
+    },
+    // 3: u=0 relaxa (0,2)=2 -> dist[2]=2, pq.push({2, 2})
     {
         current: 0,
         dist: [0, 4, 2, null, null],
         S: [true, false, false, false, false],
         pq: [{ d: 2, u: 2 }, { d: 4, u: 1 }],
-        activeEdges: ["0-2", "0-1"],
-        treeEdges: ["0-2", "0-1"],
+        activeEdges: ["0-2"],
+        treeEdges: ["0-1", "0-2"],
         isDiscard: false,
+        updatedNode: 2,
+        action: "relax 0→2",
+        desc: "veí de 0: node 2 (0+2=2) · encua node 2 {2, 2}",
     },
-    // 2: Pop {2, 2} -> S[2]=true, relaxa (2,1)=3 (<4!), (2,3)=9, (2,4)=11
+    // 4: Pop {2, 2} -> S[2] = true
+    {
+        current: 2,
+        dist: [0, 4, 2, null, null],
+        S: [true, false, true, false, false],
+        pq: [{ d: 4, u: 1 }],
+        activeEdges: [],
+        treeEdges: ["0-1", "0-2"],
+        isDiscard: false,
+        action: "pop {2, 2}",
+        desc: "extreu mínim de pq: node 2 (dist=2) · mirem veïns de 2",
+    },
+    // 5: u=2 relaxa (2,1)=3 (<4!) -> dist[1]=3, pq.push({3, 1})
+    {
+        current: 2,
+        dist: [0, 3, 2, null, null],
+        S: [true, false, true, false, false],
+        pq: [{ d: 3, u: 1 }, { d: 4, u: 1 }],
+        activeEdges: ["2-1"],
+        treeEdges: ["0-2", "2-1"],
+        isDiscard: false,
+        updatedNode: 1,
+        action: "relax 2→1",
+        desc: "veí de 2: node 1 (2+1=3 < 4) · millora i encua {3, 1}",
+    },
+    // 6: u=2 relaxa (2,3)=9 -> dist[3]=9, pq.push({9, 3})
+    {
+        current: 2,
+        dist: [0, 3, 2, 9, null],
+        S: [true, false, true, false, false],
+        pq: [{ d: 3, u: 1 }, { d: 4, u: 1 }, { d: 9, u: 3 }],
+        activeEdges: ["2-3"],
+        treeEdges: ["0-2", "2-1", "2-3"],
+        isDiscard: false,
+        updatedNode: 3,
+        action: "relax 2→3",
+        desc: "veí de 2: node 3 (2+7=9) · encua node 3 {9, 3}",
+    },
+    // 7: u=2 relaxa (2,4)=11 -> dist[4]=11, pq.push({11, 4})
     {
         current: 2,
         dist: [0, 3, 2, 9, 11],
         S: [true, false, true, false, false],
         pq: [{ d: 3, u: 1 }, { d: 4, u: 1 }, { d: 9, u: 3 }, { d: 11, u: 4 }],
-        activeEdges: ["2-1", "2-3", "2-4"],
+        activeEdges: ["2-4"],
         treeEdges: ["0-2", "2-1", "2-3", "2-4"],
         isDiscard: false,
+        updatedNode: 4,
+        action: "relax 2→4",
+        desc: "veí de 2: node 4 (2+9=11) · encua node 4 {11, 4}",
     },
-    // 3: Pop {3, 1} -> S[1]=true, relaxa (1,3)=6 (<9!)
+    // 8: Pop {3, 1} -> S[1] = true
+    {
+        current: 1,
+        dist: [0, 3, 2, 9, 11],
+        S: [true, true, true, false, false],
+        pq: [{ d: 4, u: 1 }, { d: 9, u: 3 }, { d: 11, u: 4 }],
+        activeEdges: [],
+        treeEdges: ["0-2", "2-1", "2-3", "2-4"],
+        isDiscard: false,
+        action: "pop {3, 1}",
+        desc: "extreu mínim de pq: node 1 (dist=3) · mirem veïns de 1",
+    },
+    // 9: u=1 relaxa (1,3)=6 (<9!) -> dist[3]=6, pq.push({6, 3})
     {
         current: 1,
         dist: [0, 3, 2, 6, 11],
@@ -127,8 +212,11 @@ const STEPS: Step[] = [
         activeEdges: ["1-3"],
         treeEdges: ["0-2", "2-1", "1-3", "2-4"],
         isDiscard: false,
+        updatedNode: 3,
+        action: "relax 1→3",
+        desc: "veí de 1: node 3 (3+3=6 < 9) · millora i encua {6, 3}",
     },
-    // 4: Pop {4, 1} -> S[1] ja és true! Descarta còpia obsoleta
+    // 10: Pop {4, 1} -> S[1] ja és true! Descarta còpia obsoleta
     {
         current: 1,
         dist: [0, 3, 2, 6, 11],
@@ -137,8 +225,22 @@ const STEPS: Step[] = [
         activeEdges: [],
         treeEdges: ["0-2", "2-1", "1-3", "2-4"],
         isDiscard: true,
+        action: "skip {4, 1}",
+        desc: "extreu {4, 1} · node 1 ja tancat (S[1]=T), descarta",
     },
-    // 5: Pop {6, 3} -> S[3]=true, relaxa (3,4)=8 (<11!)
+    // 11: Pop {6, 3} -> S[3] = true
+    {
+        current: 3,
+        dist: [0, 3, 2, 6, 11],
+        S: [true, true, true, true, false],
+        pq: [{ d: 9, u: 3 }, { d: 11, u: 4 }],
+        activeEdges: [],
+        treeEdges: ["0-2", "2-1", "1-3", "2-4"],
+        isDiscard: false,
+        action: "pop {6, 3}",
+        desc: "extreu mínim de pq: node 3 (dist=6) · mirem veïns de 3",
+    },
+    // 12: u=3 relaxa (3,4)=8 (<11!) -> dist[4]=8, pq.push({8, 4})
     {
         current: 3,
         dist: [0, 3, 2, 6, 8],
@@ -147,8 +249,11 @@ const STEPS: Step[] = [
         activeEdges: ["3-4"],
         treeEdges: ["0-2", "2-1", "1-3", "3-4"],
         isDiscard: false,
+        updatedNode: 4,
+        action: "relax 3→4",
+        desc: "veí de 3: node 4 (6+2=8 < 11) · millora i encua {8, 4}",
     },
-    // 6: Pop {8, 4} -> S[4]=true. Tots els nodes definitius!
+    // 13: Pop {8, 4} -> S[4] = true (sense arestes sortints)
     {
         current: 4,
         dist: [0, 3, 2, 6, 8],
@@ -157,8 +262,34 @@ const STEPS: Step[] = [
         activeEdges: [],
         treeEdges: ["0-2", "2-1", "1-3", "3-4"],
         isDiscard: false,
+        action: "pop {8, 4}",
+        desc: "extreu mínim de pq: node 4 (dist=8) · sense veïns sortints",
     },
-    // 7: Cua buidada (obsolets descartats) -> Completat
+    // 14: Pop {9, 3} -> S[3] ja és true! Descarta còpia obsoleta
+    {
+        current: 3,
+        dist: [0, 3, 2, 6, 8],
+        S: [true, true, true, true, true],
+        pq: [{ d: 11, u: 4 }],
+        activeEdges: [],
+        treeEdges: ["0-2", "2-1", "1-3", "3-4"],
+        isDiscard: true,
+        action: "skip {9, 3}",
+        desc: "extreu {9, 3} · node 3 ja tancat (S[3]=T), descarta",
+    },
+    // 15: Pop {11, 4} -> S[4] ja és true! Descarta còpia obsoleta
+    {
+        current: 4,
+        dist: [0, 3, 2, 6, 8],
+        S: [true, true, true, true, true],
+        pq: [],
+        activeEdges: [],
+        treeEdges: ["0-2", "2-1", "1-3", "3-4"],
+        isDiscard: true,
+        action: "skip {11, 4}",
+        desc: "extreu {11, 4} · node 4 ja tancat (S[4]=T), descarta",
+    },
+    // 16: Cua buida -> Completat
     {
         current: null,
         dist: [0, 3, 2, 6, 8],
@@ -167,6 +298,8 @@ const STEPS: Step[] = [
         activeEdges: [],
         treeEdges: ["0-2", "2-1", "1-3", "3-4"],
         isDiscard: false,
+        action: "done",
+        desc: "pq buida · camins mínims trobats",
     },
 ];
 
@@ -186,7 +319,7 @@ export default function DijkstraVisualizer() {
                 }
                 return prev + 1;
             });
-        }, 1400);
+        }, 1100);
         return () => clearInterval(timer);
     }, [isPlaying]);
 
@@ -205,6 +338,15 @@ export default function DijkstraVisualizer() {
         setStepIdx(0);
     };
 
+    const togglePlay = () => {
+        if (stepIdx >= STEPS.length - 1) {
+            setStepIdx(0);
+            setIsPlaying(true);
+        } else {
+            setIsPlaying((p) => !p);
+        }
+    };
+
     return (
         <div className="w-full flex flex-col items-center justify-center gap-4 my-8 font-mono select-none not-prose px-1">
 
@@ -214,9 +356,17 @@ export default function DijkstraVisualizer() {
                     <span className="px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-sky-500/15 text-sky-300 border border-sky-500/20">
                         s = 0
                     </span>
-                    {step.isDiscard && (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 animate-pulse">
-                            skip
+                    {step.action && (
+                        <span
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono border ${
+                                step.isDiscard
+                                    ? "text-amber-400 bg-amber-500/10 border-amber-500/20 animate-pulse"
+                                    : step.action === "done"
+                                    ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/20"
+                                    : "text-sky-300 bg-sky-500/10 border-sky-500/20"
+                            }`}
+                        >
+                            {step.action}
                         </span>
                     )}
                 </div>
@@ -241,7 +391,7 @@ export default function DijkstraVisualizer() {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setIsPlaying((p) => !p)}
+                        onClick={togglePlay}
                         title={isPlaying ? "Pausa" : "Reprodueix"}
                         className={`p-1 rounded-md transition ${
                             isPlaying
@@ -319,14 +469,14 @@ export default function DijkstraVisualizer() {
                             let strokeWidth = "1.2";
                             let marker = "url(#dijk-arr-default)";
 
-                            if (isTree) {
+                            if (isActive) {
+                                stroke = "#38bdf8";
+                                strokeWidth = "2.4";
+                                marker = "url(#dijk-arr-active)";
+                            } else if (isTree) {
                                 stroke = "#10b981";
                                 strokeWidth = "2.2";
                                 marker = "url(#dijk-arr-tree)";
-                            } else if (isActive) {
-                                stroke = "#38bdf8";
-                                strokeWidth = "2";
-                                marker = "url(#dijk-arr-active)";
                             }
 
                             return (
@@ -347,7 +497,7 @@ export default function DijkstraVisualizer() {
                                         height="14"
                                         rx="3"
                                         fill="#090d16"
-                                        stroke={isTree ? "#10b981" : isActive ? "#38bdf8" : "#334155"}
+                                        stroke={isActive ? "#38bdf8" : isTree ? "#10b981" : "#334155"}
                                         strokeWidth="1"
                                         className="transition-colors duration-200"
                                     />
@@ -358,7 +508,7 @@ export default function DijkstraVisualizer() {
                                         dominantBaseline="middle"
                                         fontSize="9"
                                         fontWeight="600"
-                                        fill={isTree ? "#6ee7b7" : isActive ? "#7dd3fc" : "#94a3b8"}
+                                        fill={isActive ? "#7dd3fc" : isTree ? "#6ee7b7" : "#94a3b8"}
                                         className="select-none pointer-events-none"
                                     >
                                         {edge.w}
@@ -373,6 +523,7 @@ export default function DijkstraVisualizer() {
                         {NODES.map((node) => {
                             const isSettled = step.S[node.id];
                             const isCurrent = step.current === node.id;
+                            const isUpdated = step.updatedNode === node.id;
                             const dVal = step.dist[node.id];
 
                             let strokeColor = "#334155";
@@ -385,7 +536,7 @@ export default function DijkstraVisualizer() {
                                 strokeWidth = "2";
                                 fillColor = "rgba(16, 185, 129, 0.16)";
                                 textColor = "#6ee7b7";
-                            } else if (isCurrent) {
+                            } else if (isCurrent || isUpdated) {
                                 strokeColor = "#38bdf8";
                                 strokeWidth = "2.4";
                                 fillColor = "rgba(56, 189, 248, 0.25)";
@@ -401,7 +552,7 @@ export default function DijkstraVisualizer() {
                                             cy={node.y}
                                             r="19"
                                             fill="none"
-                                            stroke="#38bdf8"
+                                            stroke={step.isDiscard ? "#f59e0b" : "#38bdf8"}
                                             strokeWidth="1.2"
                                             strokeDasharray="2 2"
                                             className="opacity-80"
@@ -462,13 +613,19 @@ export default function DijkstraVisualizer() {
                     {step.dist.map((d, idx) => {
                         const isSettled = step.S[idx];
                         const isCurrent = step.current === idx;
+                        const isUpdated = step.updatedNode === idx;
 
                         let borderCls = "border-white/10";
                         let bgCls = "bg-white/[0.02]";
                         let textCls = "text-slate-500";
                         let idxCls = "text-slate-600";
 
-                        if (isSettled) {
+                        if (isUpdated) {
+                            borderCls = "border-sky-400";
+                            bgCls = "bg-sky-500/25";
+                            textCls = "text-sky-200 font-bold";
+                            idxCls = "text-sky-300 font-bold";
+                        } else if (isSettled) {
                             borderCls = "border-emerald-500/40";
                             bgCls = "bg-emerald-500/15";
                             textCls = "text-emerald-300 font-bold";
@@ -547,6 +704,18 @@ export default function DijkstraVisualizer() {
                             })}
                         </div>
                     )}
+                </div>
+
+                {/* Text mínim d'estat estil "$ text" */}
+                <div className="min-h-5 flex items-center justify-center text-center text-[11px] font-mono text-slate-400 pt-0.5">
+                    <motion.span
+                        key={stepIdx}
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <span className="text-slate-500">$</span> {step.desc}
+                    </motion.span>
                 </div>
             </div>
 

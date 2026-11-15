@@ -71,6 +71,7 @@ interface Step {
     components: number[]; // Representant DSU de cada node 0..5 (Kruskal)
     totalWeight: number; // Suma acumulada de pesos a l'MST
     crossingCandidates?: string[]; // Arestes que creuen el tall actual (Prim)
+    action: string; // Text explicatiu mínim per a cada pas
 }
 
 // --- PASSOS DE PRIM (inici a s = 0) ---
@@ -83,6 +84,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 0,
         crossingCandidates: ["0-2", "0-1"],
+        action: "inici a 0 · tall: (0,2):2, (0,1):4 → mínim (0,2):2",
     },
     {
         treeEdges: ["0-2"],
@@ -92,6 +94,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 2,
         crossingCandidates: ["1-2", "0-1", "2-4"],
+        action: "afegeix (0,2):2 · entra 2 · nou mínim al tall: (1,2):3",
     },
     {
         treeEdges: ["0-2", "1-2"],
@@ -101,6 +104,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 5,
         crossingCandidates: ["2-4", "1-3"],
+        action: "afegeix (1,2):3 · entra 1 ((0,1) ja intern) · mínim (2,4):5",
     },
     {
         treeEdges: ["0-2", "1-2", "2-4"],
@@ -110,6 +114,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 10,
         crossingCandidates: ["3-4", "1-3", "4-5"],
+        action: "afegeix (2,4):5 · entra 4 · nou mínim al tall: (3,4):1",
     },
     {
         treeEdges: ["0-2", "1-2", "2-4", "3-4"],
@@ -119,6 +124,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 11,
         crossingCandidates: ["3-5", "4-5"],
+        action: "afegeix (3,4):1 · entra 3 ((1,3) ja intern) · mínim (3,5):7",
     },
     {
         treeEdges: ["0-2", "1-2", "2-4", "3-4", "3-5"],
@@ -128,6 +134,7 @@ const STEPS_PRIM: Step[] = [
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 18,
         crossingCandidates: [],
+        action: "afegeix (3,5):7 · entra 5 · MST complet (5 arestes, ∑=18)",
     },
 ];
 
@@ -140,6 +147,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [],
         components: [0, 1, 2, 3, 4, 5],
         totalWeight: 0,
+        action: "6 components (c:0..c:5) · arestes ordenades per pes",
     },
     // 1: (3, 4) w=1 -> diferents components -> uneix
     {
@@ -149,6 +157,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [3, 4],
         components: [0, 1, 2, 3, 3, 5],
         totalWeight: 1,
+        action: "prova (3,4):1 · c:3 ≠ c:4 → uneix (∑=1)",
     },
     // 2: (0, 2) w=2 -> diferents components -> uneix
     {
@@ -158,6 +167,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 2, 3, 4],
         components: [0, 1, 0, 3, 3, 5],
         totalWeight: 3,
+        action: "prova (0,2):2 · c:0 ≠ c:2 → uneix (∑=3)",
     },
     // 3: (1, 2) w=3 -> diferents components -> uneix
     {
@@ -167,6 +177,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 1, 2, 3, 4],
         components: [0, 0, 0, 3, 3, 5],
         totalWeight: 6,
+        action: "prova (1,2):3 · c:1 ≠ c:0 → uneix (∑=6)",
     },
     // 4: (0, 1) w=4 -> mateixa component {0,1,2} -> cicle!
     {
@@ -176,6 +187,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 1, 2, 3, 4],
         components: [0, 0, 0, 3, 3, 5],
         totalWeight: 6,
+        action: "prova (0,1):4 · mateixa component c:0 → cicle, descarta",
     },
     // 5: (2, 4) w=5 -> diferents components {0,1,2} i {3,4} -> uneix
     {
@@ -185,6 +197,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 1, 2, 3, 4],
         components: [0, 0, 0, 0, 0, 5],
         totalWeight: 11,
+        action: "prova (2,4):5 · c:0 ≠ c:3 → uneix arbres (∑=11)",
     },
     // 6: (1, 3) w=6 -> mateixa component {0,1,2,3,4} -> cicle!
     {
@@ -194,6 +207,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 1, 2, 3, 4],
         components: [0, 0, 0, 0, 0, 5],
         totalWeight: 11,
+        action: "prova (1,3):6 · mateixa component c:0 → cicle, descarta",
     },
     // 7: (3, 5) w=7 -> uneix {0,1,2,3,4} amb {5} -> MST complet (n-1 = 5)
     {
@@ -203,6 +217,7 @@ const STEPS_KRUSKAL: Step[] = [
         treeNodes: [0, 1, 2, 3, 4, 5],
         components: [0, 0, 0, 0, 0, 0],
         totalWeight: 18,
+        action: "prova (3,5):7 · c:0 ≠ c:5 → MST complet (n-1=5, ∑=18)",
     },
 ];
 
@@ -246,6 +261,15 @@ export default function MSTVisualizer() {
     const reset = () => {
         setIsPlaying(false);
         setStepIdx(0);
+    };
+
+    const togglePlay = () => {
+        if (stepIdx >= steps.length - 1) {
+            setStepIdx(0);
+            setIsPlaying(true);
+        } else {
+            setIsPlaying((p) => !p);
+        }
     };
 
     return (
@@ -312,7 +336,7 @@ export default function MSTVisualizer() {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setIsPlaying((p) => !p)}
+                        onClick={togglePlay}
                         title={isPlaying ? "Pausa" : "Reprodueix"}
                         className={`p-1 rounded-md transition ${
                             isPlaying
@@ -565,6 +589,18 @@ export default function MSTVisualizer() {
                         })}
                     </div>
                 )}
+
+                {/* Text mínim d'estat estil "$ text" */}
+                <div className="min-h-5 flex items-center justify-center text-center text-[11px] font-mono text-slate-400 pt-1">
+                    <motion.span
+                        key={`${algo}-${stepIdx}`}
+                        initial={{ opacity: 0, y: 3 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <span className="text-slate-500">$</span> {step.action}
+                    </motion.span>
+                </div>
             </div>
 
         </div>
