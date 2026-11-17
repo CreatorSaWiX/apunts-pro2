@@ -36,15 +36,20 @@ Transforming C source code into an executable binary proceeds through **3 sequen
 * `fd = 1`: **`stdout`** (standard output, display terminal).
 * `fd = 2`: **`stderr`** (standard error stream, default terminal unbuffered).
 
+**Important:**
+- `%d` prints an integer (`int`)
+- `%s` prints a string (`char *`)
+- `%p` prints a memory address (a `void *` pointer).
+
 ```c
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
 char buf[128];
-int valor = 42;
+int value = 42;
 // 1. Format text buffer in memory
-int len = sprintf(buf, "The result is: %d\n", valor);
+int len = sprintf(buf, "The result is: %d\n", value);
 // 2. Transmit to standard output (channel 1)
 write(1, buf, len);
 ```
@@ -170,9 +175,9 @@ All exam assignments require immediate parameter validation prior to performing 
 #include <string.h>
 #include <stdio.h>
 
-void Usage(char *nom_prog) {
+void Usage(char *prog_name) {
     char buf[128];
-    int len = sprintf(buf, "Usage: %s <num_elements> <filename>\n", nom_prog);
+    int len = sprintf(buf, "Usage: %s <num_elements> <filename>\n", prog_name);
     write(2, buf, len); // Channel 2: stderr (error reporting)
     exit(1);
 }

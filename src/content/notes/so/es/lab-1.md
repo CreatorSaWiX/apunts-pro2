@@ -158,9 +158,9 @@ Empaquetar la entrega:
 
 | Archivo | Tipo | Inodo | Links (`st_nlink`) |
 | :--- | :--- | :--- | :---: |
-| `test.txt` | Archivo original | **Inode X** (ej: 1441852) | **2** |
-| `hl_pr` | Hard Link | **Inode X** (¡mismo inodo!) | **2** |
-| `sl_pr` | Soft Link | **Inode Y** (nuevo inodo propio) | **1** |
+| `test.txt` | Archivo original | **Inodo X** (ej: 1441852) | **2** |
+| `hl_pr` | Hard Link | **Inodo X** (¡mismo inodo!) | **2** |
+| `sl_pr` | Soft Link | **Inodo Y** (nuevo inodo propio) | **1** |
 
 * **Significado del valor Links:** Número de entradas de directorio que apuntan directamente a ese inodo. El contenido en disco solo se libera cuando este contador llega a 0.
 
@@ -272,7 +272,7 @@ Suponiendo un ejecutable propio `./ls` en el directorio actual y PATH original `
 | **`>`** | Sobrescritura (*Truncate*) | **Trunca a 0 bytes** y escribe desde el inicio. | Crea el archivo y escribe. |
 | **`>>`** | Añadir (*Append*) | **Conserva el contenido previo** y escribe al final. | Crea el archivo y escribe. |
 
-:::shellviz{command="ls -l > llista.txt" suggestions="ls -l > llista.txt,cat llista.txt,echo 'Nova línia' >> llista.txt" title="Terminal — Prueba las redirecciones > y >>"}
+:::shellviz{command="ls -l > lista.txt" suggestions="ls -l > lista.txt,cat lista.txt,echo 'Nueva línea' >> lista.txt" title="Terminal — Prueba las redirecciones > y >>"}
 :::
 
 * **Ejemplo clásico de examen:**

@@ -37,6 +37,11 @@ El pas de codi font en C a un fitxer executable es fa en **3 passos consecutius*
 * `fd = 1`: **`stdout`** (sortida estàndard, pantalla).
 * `fd = 2`: **`stderr`** (sortida d'errors, pantalla per defecte).
 
+**Important:**
+- `%d` imprimeix un número enter (`int`)
+- `%s` imprimeix un text (`char *`)
+- `%p` imprimeix una adreça de memòria (un punter `void *`). 
+
 ```c
 #include <stdio.h>
 #include <string.h>

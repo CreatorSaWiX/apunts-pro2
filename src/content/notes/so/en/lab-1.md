@@ -236,11 +236,11 @@ Packaging the submission:
 ---
 
 ### Question 22: Defining and inspecting variables
-* **Define and export:** `export VAR1="valor1"`
+* **Define and export:** `export VAR1="value1"`
 * **Inspect:** `echo $VAR1`
 * **List all:** `env`
 
-:::shellviz{command="export VAR1=\"valor1\"" suggestions="export VAR1=\"valor1\",echo $VAR1,env" title="Terminal — Define and inspect environment variables"}
+:::shellviz{command="export VAR1=\"value1\"" suggestions="export VAR1=\"value1\",echo $VAR1,env" title="Terminal — Define and inspect environment variables"}
 :::
 
 ---
@@ -272,7 +272,7 @@ Assuming a custom executable `./ls` in the current directory and an original PAT
 | **`>`** | Overwrite (*Truncate*) | **Truncates to 0 bytes** and writes from the beginning. | Creates file and writes. |
 | **`>>`** | Append (*Append*) | **Preserves previous content** and appends to end. | Creates file and writes. |
 
-:::shellviz{command="ls -l > llista.txt" suggestions="ls -l > llista.txt,cat llista.txt,echo 'Nova línia' >> llista.txt" title="Terminal — Testing > and >> redirections"}
+:::shellviz{command="ls -l > list.txt" suggestions="ls -l > list.txt,cat list.txt,echo 'New line' >> list.txt" title="Terminal — Testing > and >> redirections"}
 :::
 
 * **Classic exam example:**

@@ -10,7 +10,7 @@ El paradigma de **divide y vencerás** descompone un problema de tamaño $n$ en 
 
 | Fase | Acción | Coste asociado |
 | :--- | :--- | :---: |
-| **1. Dividir** | Descomponer la entrada en $a \ge 1$ subproblemas de tamaño $n/b$ con $b > 1$. | $T_{\text{division}}(n)$ |
+| **1. Dividir** | Descomponer la entrada en $a \ge 1$ subproblemas de tamaño $n/b$ con $b > 1$. | $T_{\text{división}}(n)$ |
 | **2. Vencer** | Resolver recursivamente los $a$ subproblemas (resolución directa $\Theta(1)$ en caso base). | $a \cdot T(n/b)$ |
 | **3. Combinar** | Acoplar las soluciones parciales para construir la solución global. | $T_{\text{combinar}}(n)$ |
 
@@ -21,10 +21,10 @@ El paradigma de **divide y vencerás** descompone un problema de tamaño $n$ en 
 El coste total de un algoritmo de divide y vencerás proviene exclusivamente de tres fuentes:
 
 $$
-T(n) = \underbrace{T_{\text{division}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusion/acoplamiento}}
+T(n) = \underbrace{T_{\text{división}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusión/acoplamiento}}
 $$
 
-Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
+Donde el trabajo no recursivo $g(n) = T_{\text{división}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
 
 ### Ejemplo introductorio: búsqueda binaria (dicotómica)
 Dado un vector $A[0 \dots n-1]$ **ordenado**, queremos determinar si un elemento $x$ pertenece a él. En cada paso comparamos $x$ con el elemento central $A[m]$: si coinciden hemos terminado; si $x < A[m]$, buscamos recursivamente en la mitad izquierda; si $x > A[m]$, en la mitad derecha.
@@ -133,8 +133,8 @@ Para subvectores de tamaño pequeño ($n < k_0 \approx 50$), la inserción super
 :::
 
 ```cpp
-const int talla_critica = 50;
-if (d - e < talla_critica) ordena_insercio(T, e, d);
+const int tamano_critico = 50;
+if (d - e < tamano_critico) ordenar_insercion(T, e, d);
 else {
     int m = (e + d) / 2;
     mergesort(T, e, m);
@@ -154,7 +154,7 @@ function mergesort_queue(a[1...n]):
     Q = cola vacía
     para cada elemento x de a:
         encola(Q, [x])
-    mientras tamano(Q) > 1:
+    mientras tamaño(Q) > 1:
         encola(Q, merge(desencola(Q), desencola(Q)))
     retorna desencola(Q)
 ```
@@ -240,9 +240,9 @@ Dado que la partición de Hoare toma como referencia el elemento $T[e]$, cualqui
 
 Código para la estrategia de la mediana de tres:
 ```cpp
-int centre = (e + d) / 2;
-if (T[e] < T[centre]) swap(T[centre], T[e]);
-if (T[d] < T[centre]) swap(T[centre], T[d]);
+int centro = (e + d) / 2;
+if (T[e] < T[centro]) swap(T[centro], T[e]);
+if (T[d] < T[centro]) swap(T[centro], T[d]);
 if (T[d] < T[e]) swap(T[e], T[d]);
 // La mediana queda situada en T[e]
 ```
@@ -494,7 +494,7 @@ $$
 La implementación directa de esta definición requiere 3 bucles anidados:
 
 ```cpp
-matrix<int> producte_estandard(const matrix<int>& A, const matrix<int>& B) {
+matrix<int> producto_estandar(const matrix<int>& A, const matrix<int>& B) {
     int n = A.numrows();
     matrix<int> C(n, n, 0);
     for (int i = 0; i < n; ++i)

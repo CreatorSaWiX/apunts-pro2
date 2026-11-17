@@ -10,7 +10,7 @@ Las señales son el mecanismo básico de comunicación asíncrona entre procesos
 
 ## 4.1 Concepto de signal
 
-Un signal es una notificación asíncrona que el Sistema Operativo (o otro proceso) envía a un proceso. Cada signal tiene un número y un nombre (`SIGALRM`, `SIGKILL`, `SIGINT`, etc.).
+Un signal es una notificación asíncrona que el Sistema Operativo (u otro proceso) envía a un proceso. Cada signal tiene un número y un nombre (`SIGALRM`, `SIGKILL`, `SIGINT`, etc.).
 
 :::shellviz{command="kill -l" suggestions="kill -l,man 7 signal" title="Terminal — Listar todas las señales disponibles con su número y nombre (kill -l)"}
 :::
@@ -178,7 +178,7 @@ Cuando llega la señal, se ejecuta la función de atención, y acto seguido `sig
 * **El programa NO se detiene a esperar**: Continúa ejecutando las siguientes líneas de código al instante mientras el Kernel cuenta en segundo plano.
 * **¿Qué pasa cuando pasan los $N$ segundos?** El Kernel envía una señal `SIGALRM` al proceso:
   1. **Por defecto (sin capturar)**: La señal `SIGALRM` **mata el proceso** (`exit`). Se utiliza como límite de tiempo (*timeout*) para que el programa no se quede colgado.
-  2. **Si la has capturado con `sigaction`**: Al cumplirse los segundos, se interrumpe momentáneamente el programa, se ejecuta tu función (*handler*) y después el programa **continua trabajando normalmente**.
+  2. **Si la has capturado con `sigaction`**: Al cumplirse los segundos, se interrumpe momentáneamente el programa, se ejecuta tu función (*handler*) y después el programa **continúa trabajando normalmente**.
 
 ```c
 alarm(5); // Programa el SIGALRM para dentro de 5 segundos

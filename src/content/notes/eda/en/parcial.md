@@ -164,8 +164,8 @@ Where the non-recursive overhead $g(n) = T_{\text{divide}}(n) + T_{\text{combine
 :::
 
 ```cpp
-const int talla_critica = 50;
-if (d - e < talla_critica) ordena_insercio(T, e, d);
+const int critical_size = 50;
+if (d - e < critical_size) insertion_sort(T, e, d);
 else {
     int m = (e + d) / 2;
     mergesort(T, e, m);
@@ -223,9 +223,9 @@ void mergesort_bottom_up(vector<elem>& T) {
 
 Median-of-three pivot code:
 ```cpp
-int centre = (e + d) / 2;
-if (T[e] < T[centre]) swap(T[centre], T[e]);
-if (T[d] < T[centre]) swap(T[centre], T[d]);
+int mid = (e + d) / 2;
+if (T[e] < T[mid]) swap(T[mid], T[e]);
+if (T[d] < T[mid]) swap(T[mid], T[d]);
 if (T[d] < T[e]) swap(T[e], T[d]);
 // Median element is now located at T[e]
 ```

@@ -136,7 +136,9 @@ for (int k = 0; k < n; ++k) {
 
 ## 6.4. Problemas clásicos de examen final
 
-### 1. El problema de las $n$-reinas (poda en $\Theta(1)$)
+### 1. El problema de las $n$-reinas (poda en $\Theta(1)$) — variantes en Final Lab 2010 T, 2015 T y 2026 P
+*(Clásico de Jutge Tema 6; variantes directas de colocación en tablero han aparecido en Finales de Laboratorio: `Reyes pacíficos` **2010 T**, `Torres dentro de un rectángulo` **2015 T** y `Caballos voraces` **2026 P**).*
+
 Colocar $n$ reinas en un tablero $n \times n$ sin que se amenacen (máximo 1 por fila, columna o diagonal).
 * Representación: `t[i] = j` indica reina en la fila `i`, columna `j`.
 * **Identificación de diagonales en $\Theta(1)$:**
@@ -162,7 +164,9 @@ int reinas(int i, int n, vector<bool>& mc, vector<bool>& md1, vector<bool>& md2)
 :::nqueensviz
 :::
 
-### 2. Navegación en cuadrículas 2D (sudoku y tableros)
+### 2. Navegación en cuadrículas 2D (sudoku y tableros) — Final Lab 2016 T (Sudoku)
+*(También variantes de recorrido en tableros en Finales de Laboratorio: **2010 T**, **2015 P** y **2021 P**).*
+
 Para recorrer matrices casilla a casilla con backtracking, se avanza horizontalmente y se cambia de fila al llegar al límite:
 
 ```cpp
@@ -181,7 +185,7 @@ void backtrack_2d(vector<vector<int>>& M, int i, int j, int n) {
 :::backtrack2dviz
 :::
 
-### 3. Ciclo hamiltoniano sobre grafo
+### 3. Ciclo hamiltoniano sobre grafo — Final Teoría 2020 P
 Encontrar un ciclo que visite cada vértice exactamente una vez y regrese al origen:
 
 ```cpp
@@ -204,7 +208,9 @@ bool hamilton(const vector<vector<int>>& G, int u, int visitados, int n, vector<
 :::hamiltonviz
 :::
 
-### 4. Mochila 0/1 y Branch & Bound (poda por cotas)
+### 4. Mochila 0/1 y Branch & Bound (poda por cotas) — Finales Teoría 2020 P y 2020 T / Final Lab 2011 P
+*(Esquema aplicado en **Final Teoría 2020 P** con TSP, **Final Teoría 2020 T** con Herencia / Subset Sum, y **Final Lab 2011 P** con `Llenando la bolsa`).*
+
 * **Poda 1 (Viabilidad):** Si `peso_act + p[k] > C`, no coger el objeto $k$.
 * **Poda 2 (Cota optimista):** Sea `svr` la suma de valores de los objetos restantes ($k \dots n-1$). Si `val_act + svr <= mejor_valor`, descartar la rama entera:
 
@@ -225,7 +231,7 @@ void mochila(int k, int n, int C, int peso_act, int val_act, int svr, int& mejor
 
 ## 6.5. Backtracking vs solución polinómica
 
-**Exámenes 2022 y 2026:**
+**Finales Teoría 2021 T (ene. 2022) y 2026 P:**
 A menudo se presenta un problema de ordenación con restricciones (ej: resultados de partidas de 3 jugadores donde $j_1$ va antes que $j_2$ y $j_2$ antes que $j_3$) y un código que prueba todas las permutaciones en $\mathbf{\mathcal{O}(n! \cdot m)}$.
 
 **Pregunta:** *"¿Se puede resolver en tiempo polinómico?"*  **SÍ.**

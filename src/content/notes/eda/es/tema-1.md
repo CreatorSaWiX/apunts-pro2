@@ -204,7 +204,7 @@ $$
 El coste de una función recursiva se expresa mediante una ecuación de recurrencia:
 
 $$ 
-C(n) = a \cdot C(\text{tamano subproblema}) + g(n) 
+C(n) = a \cdot C(\text{tamaño subproblema}) + g(n) 
 $$
 
 donde $a \ge 1$ es el número de llamadas recursivas y $g(n)$ es el coste del trabajo no recursivo (preparación y combinación).

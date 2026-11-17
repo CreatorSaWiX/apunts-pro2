@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-:::shellviz{command="./llistaParametres" suggestions="./llistaParametres,./llistaParametres fitxer1 fitxer2" title="Terminal — Ejecución con parámetros incorrectos y Usage()"}
+:::shellviz{command="./llistaParametres" suggestions="./llistaParametres,./llistaParametres archivo1 archivo2" title="Terminal — Ejecución con parámetros incorrectos y Usage()"}
 :::
 
 ---

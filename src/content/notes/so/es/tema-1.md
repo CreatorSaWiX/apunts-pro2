@@ -128,7 +128,7 @@ En UNIX todos los archivos cuelgan de un único árbol desde la raíz `/` (no ha
 | :--- | :---: | :--- |
 | `.` | `1001` | La propia carpeta actual (*ella misma*) |
 | `..` | `1000` | La carpeta padre |
-| `apunts.txt` | `50421` | El archivo real |
+| `apuntes.txt` | `50421` | El archivo real |
 
 * `stat archivo`: muestra todos los datos guardados en el inodo (tamaño, bloques, enlaces, fechas).
 * **Contador de links de una carpeta**: Una carpeta nueva tiene siempre **2 links**: su propio nombre en la carpeta padre y el punto `.` que contiene dentro. Cada subcarpeta que crees dentro sumará $+1$ link (por el `..` de la hija).

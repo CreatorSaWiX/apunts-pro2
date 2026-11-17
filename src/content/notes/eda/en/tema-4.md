@@ -135,12 +135,12 @@ A complete ternary tree where each node has at most **3 children** and satisfies
 void sift_down_ternary(vector<int>& t, int n, int i) {
     int c = 3 * i + 1; // First child
     while (c < n) {
-        int menor = c;
-        if (c + 1 < n && t[c + 1] < t[menor]) menor = c + 1;
-        if (c + 2 < n && t[c + 2] < t[menor]) menor = c + 2;
-        if (t[i] <= t[menor]) break;
-        swap(t[i], t[menor]);
-        i = menor;
+        int smallest = c;
+        if (c + 1 < n && t[c + 1] < t[smallest]) smallest = c + 1;
+        if (c + 2 < n && t[c + 2] < t[smallest]) smallest = c + 2;
+        if (t[i] <= t[smallest]) break;
+        swap(t[i], t[smallest]);
+        i = smallest;
         c = 3 * i + 1;
     }
 }

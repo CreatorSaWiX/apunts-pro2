@@ -4,6 +4,7 @@ description: "Definition and properties of graphs, in-memory representations, DF
 readTime: "15 min"
 order: 6
 draft: false
+isUpdated: 1
 ---
 
 ## 5.1. Fundamental properties and bounds
@@ -46,7 +47,7 @@ More details in [M1 Graph Theory Midterm Summary](./m1-G)
 ## 5.3. Depth-first search (DFS) and breadth-first search (BFS)
 
 ### DFS (depth-first search)
-Explores recursively until reaching a dead end and backtracks.
+The goal of DFS is to check reachability. Explores recursively until reaching a dead end and backtracks.
 
 ```cpp
 void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {

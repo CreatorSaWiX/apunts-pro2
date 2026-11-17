@@ -36,6 +36,11 @@ El paso de código fuente en C a un archivo ejecutable se realiza en **3 pasos c
 * `fd = 1`: **`stdout`** (salida estándar, pantalla).
 * `fd = 2`: **`stderr`** (salida de errores, pantalla por defecto).
 
+**Importante:**
+- `%d` imprime un número entero (`int`)
+- `%s` imprime un texto (`char *`)
+- `%p` imprime una dirección de memoria (un puntero `void *`).
+
 ```c
 #include <stdio.h>
 #include <string.h>
@@ -170,9 +175,9 @@ En todos los exámenes debes comprobar que el usuario haya pasado los argumentos
 #include <string.h>
 #include <stdio.h>
 
-void Usage(char *nom_prog) {
+void Usage(char *nombre_prog) {
     char buf[128];
-    int len = sprintf(buf, "Usage: %s <num_elementos> <archivo>\n", nom_prog);
+    int len = sprintf(buf, "Usage: %s <num_elementos> <archivo>\n", nombre_prog);
     write(2, buf, len); // Canal 2: stderr (mensajes de error)
     exit(1);
 }

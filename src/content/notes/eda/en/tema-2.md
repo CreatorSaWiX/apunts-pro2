@@ -133,8 +133,8 @@ For small subproblems ($n < k_0 \approx 50$), insertion sort outperforms MergeSo
 :::
 
 ```cpp
-const int talla_critica = 50;
-if (d - e < talla_critica) ordena_insercio(T, e, d);
+const int critical_size = 50;
+if (d - e < critical_size) insertion_sort(T, e, d);
 else {
     int m = (e + d) / 2;
     mergesort(T, e, m);
@@ -240,9 +240,9 @@ Because Hoare's partition uses $T[e]$ as pivot, alternative strategies choose a 
 
 Median-of-three snippet:
 ```cpp
-int centre = (e + d) / 2;
-if (T[e] < T[centre]) swap(T[centre], T[e]);
-if (T[d] < T[centre]) swap(T[centre], T[d]);
+int mid = (e + d) / 2;
+if (T[e] < T[mid]) swap(T[mid], T[e]);
+if (T[d] < T[mid]) swap(T[mid], T[d]);
 if (T[d] < T[e]) swap(T[e], T[d]);
 // Median now situated at T[e]
 ```
@@ -307,7 +307,7 @@ $$
 
 ### Complexity analysis and call branching
 
-Storing the intermediate subpower in a local variable (`y = potencia(x, n/2)`) enforces a single recursive call per step:
+Storing the intermediate subpower in a local variable (`y = power(x, n/2)`) enforces a single recursive call per step:
 
 | Master Theorem Parameter | Value | Mathematical Rationale |
 | :--- | :---: | :--- |
@@ -322,7 +322,7 @@ Since $\alpha = \log_b a = \log_2 1 = 0$ and $k = 0$ ($\alpha = k$):
 $$ \mathbf{T(n) \in \Theta(\log n)} $$
 
 > **Note on redundant calls:**  
-> If written redundantly (`potencia(x, n/2) * potencia(x, n/2)`), the call count becomes $a = 2$, yielding $T(n) = 2T(n/2) + \Theta(1)$, which evaluates to $\Theta(n)$ and completely negates algorithmic efficiency.
+> If written redundantly (`power(x, n/2) * power(x, n/2)`), the call count becomes $a = 2$, yielding $T(n) = 2T(n/2) + \Theta(1)$, which evaluates to $\Theta(n)$ and completely negates algorithmic efficiency.
 
 ### Practical applications
 
@@ -494,7 +494,7 @@ $$
 Direct implementation uses 3 nested loops:
 
 ```cpp
-matrix<int> producte_estandard(const matrix<int>& A, const matrix<int>& B) {
+matrix<int> standard_product(const matrix<int>& A, const matrix<int>& B) {
     int n = A.numrows();
     matrix<int> C(n, n, 0);
     for (int i = 0; i < n; ++i)
@@ -546,6 +546,8 @@ Via Master Theorem ($a = 8, b = 2, k = 2$):
 $$
 \alpha = \log_2 8 = 3 > k = 2 \implies \mathbf{T(n) \in \Theta(n^3)}
 $$
+
+Direct block partitioning preserves the same cubic asymptotic class.
 
 ---
 
@@ -654,6 +656,8 @@ M(n) = \begin{cases}
 \end{cases}
 $$
 
+The term $2M(n - 1)$ represents the two transfers of the upper subtower, and $+1$ corresponds to moving the base disk.
+
 | $n$ | $M(n) = 2M(n-1) + 1$ | Powers of 2 Expression |
 | :---: | :---: | :--- |
 | **0** | $0$ | $2^0 - 1 = 0$ |
@@ -670,11 +674,37 @@ $$
 \mathbf{M(n) = 2^n - 1}
 $$
 
+### Formal proof via change of variable
+
+Defining the auxiliary sequence $S(n) = M(n) + 1$:
+
+$$
+S(n) = 2M(n-1) + 1 + 1 = 2(S(n-1) - 1) + 2 = 2S(n-1)
+$$
+
+With the base case $S(0) = M(0) + 1 = 1$, the homogeneous recurrence $S(n) = 2S(n-1)$ corresponds to a geometric progression with ratio 2:
+
+$$
+S(n) = 2^n \implies \mathbf{M(n) = S(n) - 1 = 2^n - 1} \qquad (\forall n \ge 0)
+$$
+
 ---
 
 ### Asymptotic analysis via subtractive master theorem
 
-The recurrence fits the subtractive template $T(n) = a T(n - b) + g(n)$ with $a = 2, b = 1, g(n) = \Theta(1)$. Since $a = 2 > 1$:
+The Towers of Hanoi recurrence fits the general subtractive form:
+
+$$
+T(n) = a T(n - b) + g(n)
+$$
+
+| Parameter | Value | Justification |
+| :--- | :---: | :--- |
+| **Number of subproblems ($a$)** | $2$ | Two independent recursive calls per level. |
+| **Decrement step ($b$)** | $1$ | Problem size decreases by one unit ($n \to n - 1$). |
+| **Non-recursive cost ($g(n)$)** | $\Theta(1)$ | A single elementary write or move operation ($k = 0$). |
+
+By the Master Theorem for subtractive recurrences, since $a = 2 > 1$, the solution is exponential:
 
 $$
 \mathbf{T(n) \in \Theta(a^{n/b}) = \Theta(2^n)}
@@ -711,7 +741,9 @@ Blum, Floyd, Pratt, Rivest, and Tarjan designed a deterministic pivot selection 
 ### Block size $q = 5$ algorithm:
 1. **Partition into blocks:** Divide array of size $n$ into $\lceil n/5 \rceil$ blocks of 5 elements.
 2. **Block medians:** Compute the median of each block ($\Theta(1)$ per 5-element block, $\Theta(n)$ overall).
+   $$ \text{Cost(block medians)} = \frac{n}{5} \cdot \Theta(1) = \Theta(n) $$
 3. **Recursive pivot search:** Recursively find the **median of the $n/5$ block medians** (pseudomedian pivot $p$ costing $T(n/5)$).
+   $$ \text{Cost(finding pivot)} = T(n/5) $$
 4. **Partition array:** Partition original array of size $n$ around pivot $p$ in linear time $\Theta(n)$.
 5. **Final recursive selection:** Recurse into the subvector containing the $k$-th statistic.
 
@@ -751,6 +783,8 @@ $$
 ---
 
 ## 2.8 Topic 2 complexity summary
+
+Below is a summary of the full range of divide-and-conquer algorithms analyzed throughout this topic:
 
 | Algorithm | Problem | Recurrence $T(n)$ | Method & Branch | Time Complexity | Extra Space |
 | :--- | :--- | :--- | :--- | :---: | :---: |

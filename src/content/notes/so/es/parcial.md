@@ -9,7 +9,7 @@ isNew: true
 
 ## 1. Arquitectura del SO, modos y llamadas al kernel
 
-### Modes de la CPU: usuario vs. kernel
+### Modos de la CPU: usuario vs. kernel
 La CPU tiene un bit interno en el registro de estado (PSW) que indica el modo:
 * **Modo usuario**: Los programas de usuario solo acceden a su espacio de memoria lógico y a instrucciones no privilegiadas. No pueden tocar hardware directamente.
 * **Modo kernel (privilegiado)**: El SO tiene acceso a todo el hardware, toda la memoria física y a instrucciones privilegiadas.

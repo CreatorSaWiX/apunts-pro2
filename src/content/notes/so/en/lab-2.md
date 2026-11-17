@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
   * `argv[1]` ... `argv[argc-1]`: User-supplied command-line parameters.
   * `argv[argc]`: Holds `NULL`.
 * **Exam Rule**: Command-line arguments **ALWAYS arrive as `char *`**, never as integers. String conversion (`atoi`) is required for numeric arithmetic.
-* **Quotes in Shell**: `./prog 10 "dos tres"` $\rightarrow$ `argc = 3`: `argv[1]="10"`, `argv[2]="dos tres"`.
+* **Quotes in Shell**: `./prog 10 "two three"` $\rightarrow$ `argc = 3`: `argv[1]="10"`, `argv[2]="two three"`.
 
 :::shellviz{command="./llistaParametros a b c" suggestions="./llistaParametros a b c,./llistaParametros,./llistaParametros 100 200" title="Terminal — Passing arguments through argc and argv"}
 :::
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-:::shellviz{command="./llistaParametres" suggestions="./llistaParametres,./llistaParametres fitxer1 fitxer2" title="Terminal — Execution with invalid parameters and Usage()"}
+:::shellviz{command="./llistaParametres" suggestions="./llistaParametres,./llistaParametres file1 file2" title="Terminal — Execution with invalid parameters and Usage()"}
 :::
 
 ---

@@ -117,10 +117,10 @@ $$
 El coste total de un algoritmo de divide y vencerás proviene exclusivamente de tres fuentes:
 
 $$
-T(n) = \underbrace{T_{\text{division}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusion/acoplamiento}}
+T(n) = \underbrace{T_{\text{división}}(n)}_{\text{partir}} + \underbrace{a \cdot T(n/b)}_{\text{llamadas recursivas}} + \underbrace{T_{\text{combinar}}(n)}_{\text{fusión/acoplamiento}}
 $$
 
-Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
+Donde el trabajo no recursivo $g(n) = T_{\text{división}}(n) + T_{\text{combinar}}(n)$ pertenece típicamente a $\Theta(n^k)$ para $k \ge 0$, pudiendo resolverse mediante el **Teorema Maestro de recurrencias divisoras**.
 
 :::dncviz
 :::
@@ -164,8 +164,8 @@ Donde el trabajo no recursivo $g(n) = T_{\text{division}}(n) + T_{\text{combinar
 :::
 
 ```cpp
-const int talla_critica = 50;
-if (d - e < talla_critica) ordena_insercio(T, e, d);
+const int tamano_critico = 50;
+if (d - e < tamano_critico) ordenar_insercion(T, e, d);
 else {
     int m = (e + d) / 2;
     mergesort(T, e, m);
@@ -183,7 +183,7 @@ function mergesort_queue(a[1...n]):
     Q = cola vacía
     para cada elemento x de a:
         encola(Q, [x])
-    mientras tamano(Q) > 1:
+    mientras tamaño(Q) > 1:
         encola(Q, merge(desencola(Q), desencola(Q)))
     retorna desencola(Q)
 ```
@@ -223,9 +223,9 @@ void mergesort_bottom_up(vector<elem>& T) {
 
 Código para la estrategia de la mediana de tres:
 ```cpp
-int centre = (e + d) / 2;
-if (T[e] < T[centre]) swap(T[centre], T[e]);
-if (T[d] < T[centre]) swap(T[centre], T[d]);
+int centro = (e + d) / 2;
+if (T[e] < T[centro]) swap(T[centro], T[e]);
+if (T[d] < T[centro]) swap(T[centro], T[d]);
 if (T[d] < T[e]) swap(T[e], T[d]);
 // La mediana queda situada en T[e]
 ```

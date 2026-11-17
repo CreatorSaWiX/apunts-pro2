@@ -103,7 +103,7 @@ int main() {
   ```c
   for (int i = 0; i < N; i++) {
       if (fork() == 0) {
-          ferFeina();
+          hacerTrabajo();
           exit(0); // El hijo muere aquí y no hace más forks
       }
   }
@@ -194,12 +194,12 @@ int status;
 int pid_hijo = waitpid(-1, &status, 0); // Espera a que termine cualquier hijo
 
 if (WIFEXITED(status)) {
-    int codi = WEXITSTATUS(status);
-    sprintf(buf, "Hijo %d ha terminado bien con codigo %d\n", pid_hijo, codi);
+    int codigo = WEXITSTATUS(status);
+    sprintf(buf, "Hijo %d ha terminado bien con codigo %d\n", pid_hijo, codigo);
     write(1, buf, strlen(buf));
 } else if (WIFSIGNALED(status)) {
-    int senyal = WTERMSIG(status);
-    sprintf(buf, "Hijo %d ha muerto por la senyal %d\n", pid_hijo, senyal);
+    int senal = WTERMSIG(status);
+    sprintf(buf, "Hijo %d ha muerto por la señal %d\n", pid_hijo, senal);
     write(1, buf, strlen(buf));
 }
 ```
@@ -232,7 +232,7 @@ Combinando `fork()` y `waitpid()` podemos estructurar la ejecución de múltiple
 // El padre crea un hijo y espera a que termine ANTES de crear el siguiente
 for (int i = 0; i < N; i++) {
     if ((pid = fork()) == 0) {
-        ferFeina(i);
+        hacerTrabajo(i);
         exit(0);
     }
     waitpid(pid, NULL, 0); // ¡Espera DENTRO del bucle!
@@ -244,7 +244,7 @@ for (int i = 0; i < N; i++) {
 // El padre crea todos los hijos a la vez y luego los recoge al final
 for (int i = 0; i < N; i++) {
     if ((pid = fork()) == 0) {
-        ferFeina(i);
+        hacerTrabajo(i);
         exit(0);
     }
     // ¡NO espera aquí! Continúa creando hijos en paralelo

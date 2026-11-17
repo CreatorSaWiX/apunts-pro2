@@ -69,9 +69,9 @@ When a signal arrives, the Kernel inspects these 4 descriptor structures in the 
 
 Transmits any signal to the process specified by `pid_target` (the name is misleading: it is not just for killing, it sends any signal):
 ```c
-kill(pid_desti, SIGINT);  // Sends Ctrl+C interrupt
-kill(pid_desti, SIGKILL); // Unconditionally kills target process
-kill(pid_desti, SIGUSR1); // Sends user-defined signal 1
+kill(pid_target, SIGINT);  // Sends Ctrl+C interrupt
+kill(pid_target, SIGKILL); // Unconditionally kills target process
+kill(pid_target, SIGUSR1); // Sends user-defined signal 1
 ```
 * From the command line:
   * **Command `kill`**: `kill -KILL 1234` or numeric code `kill -9 1234`. Command syntax drops the `SIG` prefix (`-KILL`, `-ALRM`, `-INT`).
@@ -85,13 +85,13 @@ kill(pid_desti, SIGUSR1); // Sends user-defined signal 1
 
 Specifies custom handling when receiving a particular signal (e.g., catching `SIGINT` to avoid program termination):
 ```c
-struct sigaction tractament;
-tractament.sa_handler = my_handler; // The C function to execute
-sigemptyset(&tractament.sa_mask);    // Mask no additional signals during handler execution
-tractament.sa_flags = 0;
+struct sigaction action;
+action.sa_handler = my_handler; // The C function to execute
+sigemptyset(&action.sa_mask);    // Mask no additional signals during handler execution
+action.sa_flags = 0;
 
 // Now pressing Ctrl+C (SIGINT) invokes my_handler instead of terminating:
-sigaction(SIGINT, &tractament, NULL);
+sigaction(SIGINT, &action, NULL);
 ```
 
 Key configuration flags in `sa_flags`:
@@ -163,9 +163,9 @@ sigdelset(&mask, SIGINT);   // Remove SIGINT from set
 :::
 
 ```c
-sigsuspend(&mascara);
+sigsuspend(&mask);
 ```
-Suspends execution, replacing the active mask with `mascara` until delivery of an unblocked signal.  
+Suspends execution, replacing the active mask with `mask` until delivery of an unblocked signal.  
 Upon signal handler execution, `sigsuspend` returns and **automatically restores the original pre-call signal mask**.
 
 ### 6. Scheduling timer alarms: `alarm(seconds)`
@@ -231,7 +231,7 @@ If the parent simply calls `sigsuspend(&empty)` without preliminary blocking, a 
 To avoid blocking on `waitpid()`, the parent installs a `SIGCHLD` handler:
 
 ```c
-void trata_muerte_hijo(int s) {
+void handle_child_exit(int s) {
     int status;
     // Mandatory non-blocking loop with WNOHANG!
     while (waitpid(-1, &status, WNOHANG) > 0) {

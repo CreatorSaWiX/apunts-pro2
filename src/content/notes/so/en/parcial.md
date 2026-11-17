@@ -180,7 +180,7 @@ for (i = 0; i < N; i++) {
 }
 while (waitpid(-1, NULL, 0) > 0); // Waits for all children after the loop
 ```
-* All children execute concurrently in parallel.
+* All children can be alive at the same time.
 * **Maximum concurrency degree = N + 1** (parent + N children).
 * Termination and execution order is **non-deterministic**: governed by the OS scheduler.
 
@@ -399,7 +399,7 @@ FIFO queue with a fixed time quantum:
   **Yes.** If other processes block on I/O or wait calls before consuming their full 10 ms, they yield the CPU early, immediately advancing the round.
 
 ### Completely Fair Scheduler (Linux CFS)
-Orders processes by `vruntime` (virtual runtime). Prioritizes interactive / I/O-bound tasks because they sleep frequently, accumulating minimal `vruntime` and gaining immediate CPU preemption upon waking.
+Orders processes by `vruntime` (virtual runtime). Prioritizes interactive / I/O-bound tasks because they sleep frequently, accumulating minimal `vruntime` and receive highest priority upon waking up.
 
 ---
 

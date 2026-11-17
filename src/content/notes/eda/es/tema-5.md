@@ -4,6 +4,7 @@ description: "Definición y propiedades de grafos, representaciones en memoria, 
 readTime: "15 min"
 order: 6
 draft: false
+isUpdated: 1
 ---
 
 ## 5.1. Propiedades fundamentales y cotas
@@ -46,7 +47,7 @@ Más detalles en [Resumen parcial teoría de grafos M1](./m1-G)
 ## 5.3. Búsqueda en profundidad (DFS) y búsqueda en anchura (BFS)
 
 ### DFS (búsqueda en profundidad)
-Explora recursivamente hasta llegar a un callejón sin salida y retrocede.
+El objetivo de DFS es comprobar la alcanzabilidad. Explora recursivamente hasta llegar a un callejón sin salida y retrocede.
 
 ```cpp
 void dfs(const vector<vector<int>>& G, int u, vector<bool>& vis) {
@@ -109,9 +110,9 @@ Calcula las distancias mínimas desde un origen $s$ en grafos con aristas ponder
 
 ```cpp
 typedef pair<double, int> PII; // {distancia_acumulada, nodo}
-typedef vector<vector<pair<int, double>>> GrafP;
+typedef vector<vector<pair<int, double>>> GrafoP;
 
-void dijkstra(const GrafP& G, int s, vector<double>& dist) {
+void dijkstra(const GrafoP& G, int s, vector<double>& dist) {
     int n = G.size();
     dist.assign(n, 1e18);
     vector<bool> S(n, false); // S[u] = true cuando la distancia es definitiva

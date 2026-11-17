@@ -4,6 +4,7 @@ description: "Traducció d'adreces, MMU, paginació, memòria dinàmica (sbrk i 
 readTime: "15 min"
 order: 5
 draft: false
+isUpdated: 1
 ---
 
 ## 5.1 Fonaments i multiprogramació
@@ -170,11 +171,18 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 int munmap(void *addr, size_t length);
 ```
 
-* `addr`: Adreça suggerida (`NULL` perquè el SO triï).
-* `prot`: `PROT_READ | PROT_WRITE | PROT_EXEC | PROT_NONE`.
-* `flags`: Requereix exactament un d'aquests dos:
+* `addr`: Adreça lògica suggerida (`NULL` perquè el Kernel triï una adreça lliure).
+* `length`: Mida en bytes de la regió (el Kernel reserva pàgines completes de 4 KB).
+* `prot` (permisos d'accés; es combinen amb `|`):
+  * **`PROT_READ`**: Permet llegir de la regió.
+  * **`PROT_WRITE`**: Permet escriure-hi (sense aquest permís, escriure provoca `SIGSEGV`).
+  * **`PROT_EXEC`**: Permet executar-ne instruccions.
+  * **`PROT_NONE`**: Sense cap permís d'accés (pàgina bloquejada, útil com a sentinella).
+* `flags` (comportament; requereix **`MAP_PRIVATE`** o **`MAP_SHARED`**, combinables amb altres flags):
   * **`MAP_PRIVATE`**: Canvis privats (via COW). No es modifiquen fitxers ni altres processos els veuen.
   * **`MAP_SHARED`**: Canvis visibles per altres processos i reflectits al fitxer.
+  * **`MAP_ANONYMOUS`**: Reserva memòria pura sense cap fitxer associat (`fd = -1`, `offset = 0`).
+* `fd` i `offset`: Descriptor del fitxer a mapar i desplaçament inicial dins el fitxer (múltiple de pàgina).
 * **Control d'errors**: Si falla, `mmap` retorna **`MAP_FAILED`** (no `NULL`!).
 
 :::mmapviz

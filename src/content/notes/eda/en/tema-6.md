@@ -136,7 +136,9 @@ for (int k = 0; k < n; ++k) {
 
 ## 6.4. Classic Final Exam Problems
 
-### 1. The $n$-Queens Problem ($\Theta(1)$ Pruning)
+### 1. The $n$-Queens Problem ($\Theta(1)$ Pruning) — variants in Final Lab 2010 T, 2015 T, and 2026 P
+*(Jutge Topic 6 classic; direct board-placement variants have appeared in Lab Finals: `Peaceful Kings` (**2010 T**), `Rooks in a Rectangle` (**2015 T**), and `Greedy Knights` (**2026 P**)).*
+
 Place $n$ queens on an $n \times n$ chessboard so that none attack each other (at most 1 per row, column, or diagonal).
 * Representation: `t[i] = j` indicates a queen at row `i`, column `j`.
 * **Diagonal lookup in $\Theta(1)$:**
@@ -162,7 +164,9 @@ int queens(int i, int n, vector<bool>& mc, vector<bool>& md1, vector<bool>& md2)
 :::nqueensviz
 :::
 
-### 2. 2D Grid Navigation (Sudoku and Boards)
+### 2. 2D Grid Navigation (Sudoku and Boards) — Final Lab 2016 T (Sudoku)
+*(Also board-traversal variants in Lab Finals: **2010 T**, **2015 P**, and **2021 P**).*
+
 To traverse matrices cell by cell using backtracking, move horizontally and wrap to the next row upon reaching the boundary:
 
 ```cpp
@@ -181,7 +185,7 @@ void backtrack_2d(vector<vector<int>>& M, int i, int j, int n) {
 :::backtrack2dviz
 :::
 
-### 3. Hamiltonian Cycle on a Graph
+### 3. Hamiltonian Cycle on a Graph — Final Theory 2020 P
 Find a cycle that visits every vertex exactly once and returns to the origin:
 
 ```cpp
@@ -204,7 +208,9 @@ bool hamilton(const vector<vector<int>>& G, int u, int visited_count, int n, vec
 :::hamiltonviz
 :::
 
-### 4. 0/1 Knapsack and Branch & Bound (Bound Pruning)
+### 4. 0/1 Knapsack and Branch & Bound (Bound Pruning) — Final Theory 2020 P & 2020 T / Final Lab 2011 P
+*(Pattern applied in **Final Theory 2020 P** with TSP, **Final Theory 2020 T** with Inheritance / Subset Sum, and **Final Lab 2011 P** with `Filling the Bag`).*
+
 * **Prune 1 (Feasibility):** If `curr_weight + w[k] > C`, do not take item $k$.
 * **Prune 2 (Optimistic bound):** Let `rem_val` be the sum of values of the remaining items ($k \dots n-1$). If `curr_val + rem_val <= best_val`, discard the entire branch:
 
@@ -225,7 +231,7 @@ void knapsack(int k, int n, int C, int curr_weight, int curr_val, int rem_val, i
 
 ## 6.5. Backtracking vs Polynomial Solution
 
-**2022 and 2026 Exams:**
+**Final Theory 2021 T (Jan. 2022) and 2026 P:**
 Often a constrained ordering problem is presented (e.g., results of 3-player matches where $p_1$ comes before $p_2$ and $p_2$ before $p_3$) alongside code that tests all permutations in $\mathbf{\mathcal{O}(n! \cdot m)}$.
 
 **Question:** *"Can it be solved in polynomial time?"*  **YES.**
