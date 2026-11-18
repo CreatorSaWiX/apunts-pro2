@@ -3,7 +3,7 @@ title: "Tema 7: Complexitat"
 description: "Problemes decisionals i mida d'entrada, classes P, NP i EXP, reduccions polinòmiques, teoria de la NP-completesa (Cook-Levin) i problemes NP-complets clàssics."
 readTime: "12 min"
 order: 8
-draft: false
+draft: true
 ---
 
 La teoria de la complexitat classifica els **problemes** (no els algorismes concrets) segons si admeten una solució eficient o si, fins on sabem, requereixen cerca exhaustiva.

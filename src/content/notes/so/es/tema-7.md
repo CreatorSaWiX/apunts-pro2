@@ -3,7 +3,7 @@ title: "Tema 7: Threads y Procesos"
 description: "Hilos de ejecución vs. procesos, API de Pthreads, memoria compartida, condiciones de carrera y exclusión mutua con mutexes."
 readTime: "10 min"
 order: 7
-draft: false
+draft: true
 ---
 
 ## 7.1 Threads vs. Procesos

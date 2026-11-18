@@ -1,36 +1,61 @@
 ---
 title: "Tema 4: PL/pgSQL"
 description: "Procedimientos almacenados en PostgreSQL: estructura, retorno escalar y SETOF, CREATE TYPE, variables (%TYPE), control de flujo (IF, FOUND, FOR), gestión de errores (EXCEPTION) y criterios de calidad."
-readTime: "8 min"
+readTime: "12 min"
 order: 8
 draft: false
 ---
 
-Un **procedimiento almacenado** (o función) es un bloque de código guardado dentro del SGBD. Reduce el tráfico de red, centraliza reglas de negocio, simplifica las aplicaciones y controla las operaciones de los usuarios sobre la BD.
+Hasta ahora, con SQL solo podíamos hacer consultas o modificaciones de una en una (`SELECT`, `INSERT`, `UPDATE`...). Pero SQL por sí solo no tiene variables, ni `if/else`, ni bucles.
+
+Un **procedimiento almacenado** (o función en **PL/pgSQL**) es básicamente un pequeño programa que guardamos **directamente dentro del servidor de la base de datos** (PostgreSQL). En lugar de que nuestra aplicación tenga que enviar 20 consultas por red y procesarlas fuera, lo hacemos todo en un solo bloque dentro del SGBD:
+
+- **Menos tráfico de red:** se ejecuta todo dentro de la BD y solo devuelve el resultado final.
+- **Reglas centralizadas:** cualquier aplicación que acceda a la BD comparte la misma lógica y seguridad.
 
 ---
 
 ## 4.1. Estructura básica y ejecución
 
-```sql
+Una función en PL/pgSQL siempre sigue esta plantilla:
+
+```sql [Plantilla de una función]
 CREATE [OR REPLACE] FUNCTION nombre_funcion(nombre_param tipo [, ...])
 RETURNS tipo_retorno AS $$
 DECLARE
-    -- Variables locales
+    -- (Opcional) Variables locales que solo existen dentro de la función
 BEGIN
-    -- Cuerpo: sentencias SQL y PL/pgSQL
+    -- Cuerpo: sentencias SQL y lógica PL/pgSQL (IF, FOR, etc.)
     RETURN valor;
 END;
 $$ LANGUAGE plpgsql;
-
-DROP FUNCTION nombre_funcion(tipo_param); -- Borrado
 ```
 
-Se puede llamar desde SQL interactivo, desde otro procedimiento o desde una aplicación:
+¿Qué significa cada parte?
+- `CREATE OR REPLACE`: crea la función, o la sobrescribe si ya existe (¡muy útil mientras pruebas código!).
+- `RETURNS tipo_retorno`: indica qué devolverá la función al terminar (un número, un texto, una fila, o `void` si no devuelve nada).
+- `$$ ... $$`: son simplemente las "comillas" que delimitan el bloque de código para que no tengas que escapar las comillas simples (`'`) de dentro.
+- `DECLARE`: donde creas las variables. Si no necesitas ninguna, puedes omitir esta sección.
+- `BEGIN ... END;`: donde va el código que se ejecuta.
 
-```sql
-SELECT nombre_funcion('parámetro');
-SELECT * FROM nombre_funcion('parámetro'); -- Recomendado para SETOF o tipos compuestos
+### Ejemplo mínimo y cómo llamarla
+
+```sql [Ejemplo: sumar dos números]
+CREATE OR REPLACE FUNCTION sumar(a INT, b INT)
+RETURNS INT AS $$
+BEGIN
+    RETURN a + b;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+Una vez creada, la función queda guardada en la BD. Puedes llamarla desde SQL, desde otra función o desde una aplicación:
+
+```sql [Cómo ejecutar y borrar funciones]
+SELECT sumar(3, 5);                      -- Devuelve 8 (ideal para valores únicos)
+SELECT * FROM nombre_funcion('parámetro'); -- Recomendado cuando devuelve múltiples filas (SETOF) o columnas
+
+DROP FUNCTION sumar(INT, INT);           -- Para borrarla (hay que indicar los tipos de los parámetros)
 ```
 
 :::plpgsqlviz
@@ -38,132 +63,54 @@ SELECT * FROM nombre_funcion('parámetro'); -- Recomendado para SETOF o tipos co
 
 ---
 
-## 4.2. Parámetros, tipos de retorno (`SETOF`) y `CREATE TYPE`
+## 4.2. Variables y asignaciones
 
-| Caso | `RETURNS` | ¿Cómo retorna? |
-| :--- | :--- | :--- |
-| **Valor único / fila compuesta** | `tipo` o `TNombre` | `RETURN variable;` (termina la función). |
-| **Sin retorno** | `void` | Solo acciones (`INSERT`, `UPDATE`, `DELETE`). |
-| **Conjunto de tuplas** | `SETOF tipo` o `SETOF TNombre` | `RETURN NEXT variable;` por cada fila (no termina) + `RETURN;` final. |
+Todas las variables declaradas en `DECLARE` son locales (solo existen mientras se ejecuta la función). Si no les das ningún valor inicial, valen **`NULL`** por defecto.
 
-### Retorno escalar
-
-```sql
-CREATE OR REPLACE FUNCTION encontrar_ciudad(dni_cliente VARCHAR(9))
-RETURNS VARCHAR(15) AS $$
-DECLARE
-    ciudad_cliente VARCHAR(15);
-BEGIN
-    SELECT ciutat INTO ciudad_cliente FROM clients WHERE dni = dni_cliente;
-    RETURN ciudad_cliente;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-:::returnviz
-:::
-
-### Tipos compuestos (`CREATE TYPE`) y retorno múltiple (`SETOF`)
-
-Cuando una función devuelve varias columnas que no corresponden a una tabla existente, se define previamente un `TYPE` y se accede a los campos con `variable.campo`:
-
-```sql
-CREATE TYPE Tdatos_cliente AS (
-    dni_cliente  VARCHAR(9),
-    nom_cliente  VARCHAR(15),
-    pref         CHAR(1)
-);
-
-CREATE OR REPLACE FUNCTION clientes_ciudad(ciudad_in clients.ciutat%TYPE)
-RETURNS SETOF Tdatos_cliente AS $$
-DECLARE
-    reg Tdatos_cliente;
-BEGIN
-    FOR reg IN
-        SELECT dni, nom, 'N' FROM clients WHERE ciutat = ciudad_in
-    LOOP
-        reg.pref := 'P';
-        RETURN NEXT reg; -- Añade la fila al resultado sin salir
-    END LOOP;
-    RETURN;              -- Finaliza la función
-END;
-$$ LANGUAGE plpgsql;
-```
-
-:::setofviz
-:::
-
----
-
-## 4.3. Variables y asignaciones
-
-Todas las variables declaradas en `DECLARE` son locales y viven en memoria volátil:
-
-```sql
+```sql [Sintaxis de declaración]
 nombre_var [CONSTANT] tipo [NOT NULL] [{DEFAULT | :=} expresion];
-dni_cliente clients.dni%TYPE; -- Hereda automáticamente el tipo de la columna
 ```
 
-- Sin inicializar, toman valor **`NULL`**. Si llevan `NOT NULL`, es obligatorio asignarles un valor inicial (`DEFAULT` o `:=`).
-- **Asignaciones (solo válidas si devuelven como máximo 1 fila):**
-  - Directa o escalar: `var := expresion;` o `qtt := (SELECT qtt_com FROM clients WHERE dni = dni_cliente);`
-  - Consulta: `SELECT carrer, num_carrer INTO datosCli FROM clients WHERE dni = dni_cliente;`
-  - Llamada a función: `imp := importe_un_ped(num_com);`
+Un truco muy útil y recomendado en los exámenes es **`%TYPE`**:
+
+```sql
+dni_cliente clients.dni%TYPE; -- Copia automáticamente el tipo de la columna 'dni' de 'clients'
+```
+
+Esto evita tener que recordar si `dni` era `CHAR(9)` o `VARCHAR(9)`: si alguna vez cambia en la tabla, la función se adapta sola.
+
+### ¿Cómo dar valor a una variable?
+
+1. **Asignación directa:** `total := precio * cantidad;` (fíjate en los dos puntos `:=`: en PL/pgSQL se usa `:=` para asignar, no solo `=`).
+2. **Desde una consulta (`SELECT ... INTO`):**
+   En SQL normal, un `SELECT` muestra resultados por pantalla. En PL/pgSQL, ==un `SELECT` no puede quedar "al aire": tienes que guardar el resultado dentro de una variable usando `INTO`==.
+   ```sql
+   SELECT carrer, num_carrer INTO datosCli FROM clients WHERE dni = dni_cliente;
+   ```
+   *(También funciona con una subconsulta escalar: `qtt := (SELECT qtt_com FROM clients WHERE dni = dni_cliente);`)*
+3. **Llamando a otra función:** `imp := importe_un_ped(num_com);`
+
+::callout[type="warning" title="¡Cuidado con SELECT ... INTO!"]
+La asignación con `SELECT ... INTO` (o subconsulta `:= (SELECT ...)`) **solo funciona si la consulta devuelve como máximo 1 fila**. Si devuelve 2 o más filas, ¡PostgreSQL lanzará un error en tiempo de ejecución! Si esperas múltiples filas, debes usar un bucle `FOR`.
+::
 
 :::varviz
 :::
 
 ---
 
-## 4.4. Condicionales (`IF`) y variable `FOUND`
+## 4.3. Sentencias iterativas (bucles)
 
-```sql
-IF condicion THEN
-    -- sentencias
-ELSIF condicion THEN
-    -- sentencias
-ELSE
-    -- sentencias
-END IF;
-```
+El bucle estrella en PL/pgSQL (y prácticamente el único que usarás en laboratorio y exámenes) es **`FOR ... IN SELECT`**. Ejecuta una consulta y va guardando fila a fila dentro de la variable del bucle automáticamente:
 
-`FOUND` es una variable booleana local (inicia en `False`) que indica si la última sentencia SQL ha tenido efecto:
-
-| Sentencia | ¿Cuándo queda `FOUND = True`? |
-| :--- | :--- |
-| `SELECT ... INTO` | Si devuelve una fila (`False` si no encuentra ninguna). |
-| `INSERT / UPDATE / DELETE` | Si afecta al menos a una fila. |
-| `FOR ... IN SELECT` | **Al salir del bucle:** `True` si ha iterado $\ge 1$ vez; `False` si 0 veces. |
-
-**Cuidado con `FOUND` dentro y después de un `FOR`:**
-- Dentro de cada iteración del `FOR`, cualquier `SELECT ... INTO` o `UPDATE` modifica `FOUND`, pero al salir del `FOR` se sobrescribe según si se ha iterado o no.
-- Patrón típico de examen para detectar resultados vacíos después de un `FOR`:
-
-```sql
-FOR reg IN SELECT ... LOOP
-    RETURN NEXT reg;
-END LOOP;
-IF NOT FOUND THEN
-    RAISE EXCEPTION 'No se han encontrado resultados';
-END IF;
-```
-
-:::foundviz
-:::
-
----
-
-## 4.5. Sentencias iterativas (bucles)
-
-**Bucle `FOR` sobre consulta SQL (el que se usa en laboratorio y exámenes):**
-
-```sql
+```sql [Recorrer los resultados de un SELECT fila a fila]
 CREATE OR REPLACE FUNCTION importe_todos_ped(dni_cliente clients.dni%TYPE)
 RETURNS void AS $$
 DECLARE
     num_pedido   comandes.num_com%TYPE;
     importe      comandes.import_total%TYPE;
 BEGIN
+    -- Por cada pedido del cliente, calculamos su importe y actualizamos la tabla
     FOR num_pedido IN SELECT num_com FROM comandes WHERE dni = dni_cliente LOOP
         SELECT SUM(ic.quantitat * i.preu_unitat) INTO importe
         FROM items_comanda ic, items i
@@ -175,56 +122,213 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-*(Si el `SELECT` del `FOR` proyecta más de una columna, la variable del bucle debe ser de un tipo compuesto `CREATE TYPE` o `RECORD`.)*
+*(Nota: si el `SELECT` del `FOR` devuelve **más de una columna**, la variable del bucle no puede ser un tipo simple como `INT`; debe ser de un tipo compuesto `CREATE TYPE` o bien de tipo `RECORD`.)*
 
 :::forloopviz
 :::
 
-**Otros bucles:**
+### Otros tipos de bucles (menos habituales)
 
 ```sql
-FOR i IN [REVERSE] 1..10 LOOP ... END LOOP;        -- Número conocido de iteraciones
-WHILE condicion LOOP ... END LOOP;                 -- Reevalúa la condición en cada paso
-LOOP ... EXIT WHEN condicion; END LOOP;            -- Bucle incondicional
+FOR i IN [REVERSE] 1..10 LOOP ... END LOOP;        -- Para recorrer un rango [1, 10]
+WHILE condicion LOOP ... END LOOP;                 -- Mientras se cumpla la condición
+LOOP ... EXIT WHEN condicion; END LOOP;            -- Bucle infinito hasta que se cumple EXIT WHEN
 ```
 
-*(Nota: los **cursores explícitos** (`DECLARE ... CURSOR FOR`, `OPEN`, `FETCH`, `CLOSE`) no se utilizan en laboratorio ni salen en los exámenes; se usa siempre `FOR ... IN SELECT`.)*
+*(Los **cursores explícitos** con `DECLARE ... CURSOR FOR`, `OPEN`, `FETCH` y `CLOSE` no se utilizan en laboratorio ni entran en los exámenes; siempre se usa `FOR ... IN SELECT`.)*
+
+---
+
+## 4.4. Condicionales (`IF`) y la variable `FOUND`
+
+La sintaxis del condicional es muy directa (cuidado porque se escribe **`ELSIF`**, sin la segunda "e"):
+
+```sql [Estructura IF / ELSIF / ELSE]
+IF condicion THEN
+    -- sentencias
+ELSIF otra_condicion THEN
+    -- sentencias
+ELSE
+    -- sentencias
+END IF;
+```
+
+### ¿Qué es `FOUND`?
+
+`FOUND` es una ==variable booleana automática== que PostgreSQL mantiene para ti (empieza en `False`). Cada vez que ejecutas una sentencia SQL, PostgreSQL la actualiza para decirte **si la sentencia ha encontrado o afectado a alguna fila**:
+
+| Sentencia ejecutada | ¿Cuándo queda `FOUND = True`? |
+| :--- | :--- |
+| `SELECT ... INTO` | Si ha encontrado una fila (`False` si la consulta estaba vacía). |
+| `INSERT / UPDATE / DELETE` | Si ha modificado/borrado/insertado **al menos 1 fila**. |
+| `FOR ... IN SELECT` | **Al salir del bucle:** `True` si ha hecho $\ge 1$ iteración; `False` si el `SELECT` no devolvió nada. |
+
+### La trampa de `FOUND` con el bucle `FOR`
+
+Dentro de cada vuelta de un `FOR`, cualquier `SELECT INTO` o `UPDATE` que hagas irá cambiando el valor de `FOUND`. **Pero al salir del `END LOOP;`**, PostgreSQL sobrescribe `FOUND` para indicar si el `FOR` ha iterado alguna vez o no.
+
+Esto nos da el **patrón clásico de examen** para detectar cuándo una consulta `FOR` no ha encontrado ningún resultado:
+
+```sql [Detectar resultado vacío después de un FOR]
+FOR reg IN SELECT ... LOOP
+    -- procesamos cada fila
+END LOOP;
+
+IF NOT FOUND THEN
+    RAISE EXCEPTION 'No se han encontrado resultados';
+END IF;
+```
+
+:::foundviz
+:::
+
+---
+
+## 4.5. Parámetros, tipos de retorno (`SETOF`) y `CREATE TYPE`
+
+Cuando diseñas una función, lo primero que debes decidir es **qué devolverá**. Hay tres casos posibles:
+
+| Caso | ¿Qué pones en `RETURNS`? | ¿Cómo lo devuelve el código? |
+| :--- | :--- | :--- |
+| **Un solo valor (o una sola fila)** | `INT`, `VARCHAR`, `TNombre`... | `RETURN variable;` (devuelve el valor y **termina** la función). |
+| **No devuelve nada (solo hace acciones)** | `void` | Hace `INSERT`/`UPDATE`/`DELETE` y termina (sin `RETURN` o con `RETURN;`). |
+| **Varias filas (como una tabla)** | `SETOF tipo` o `SETOF TNombre` | `RETURN NEXT variable;` por cada fila + `RETURN;` al final. |
+
+### Caso 1: Retorno escalar (un solo valor)
+
+```sql [Retorno de un solo valor con SELECT ... INTO]
+CREATE OR REPLACE FUNCTION encontrar_ciudad(dni_cliente VARCHAR(9))
+RETURNS VARCHAR(15) AS $$
+DECLARE
+    ciudad_cliente VARCHAR(15);
+BEGIN
+    -- Guardamos la columna 'ciutat' dentro de la variable 'ciudad_cliente'
+    SELECT ciutat INTO ciudad_cliente
+    FROM clients
+    WHERE dni = dni_cliente;
+
+    RETURN ciudad_cliente;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+:::returnviz
+:::
+
+### Caso 2: Retorno múltiple (`SETOF`) y tipos compuestos (`CREATE TYPE`)
+
+Antes de mezclar consultas y tipos nuevos, veamos cómo funciona `SETOF` con un **bucle `FOR` muy sencillo** que solo devuelve números:
+
+```sql [Ejemplo sencillo: un FOR básico con SETOF INT]
+CREATE OR REPLACE FUNCTION contar_hasta_5()
+RETURNS SETOF INT AS $$
+DECLARE
+    i INT;
+BEGIN
+    FOR i IN 1..5 LOOP -- Recordemos que IN es un rango [1,5]
+        RETURN NEXT i; -- Añade cada número al resultado, pero NO sale de la función
+    END LOOP;
+
+    RETURN; -- Ahora sí: indica que ya no hay más filas y entrega los 5 números
+END;
+$$ LANGUAGE plpgsql;
+```
+
+Visto esto, ¿qué pasa si quieres devolver **varias filas** de una consulta y, además, **varias columnas** (por ejemplo, `dni`, `nom` y un campo extra)? PostgreSQL necesita saber de antemano qué forma tendrá cada fila.
+
+Si las columnas no coinciden exactamente con ninguna tabla existente, primero definimos una "plantilla de fila" con `CREATE TYPE`:
+
+```sql [Definir un tipo compuesto y devolver múltiples filas]
+-- 1. Creamos el tipo compuesto (la forma que tendrá cada fila)
+CREATE TYPE Tdatos_cliente AS (
+    dni_cliente  VARCHAR(9),
+    nom_cliente  VARCHAR(15),
+    pref         CHAR(1)
+);
+
+-- 2. Función que devuelve un conjunto (SETOF) de este tipo
+CREATE OR REPLACE FUNCTION clientes_ciudad(ciudad_in clients.ciutat%TYPE)
+RETURNS SETOF Tdatos_cliente AS $$
+DECLARE
+    -- 'reg' es una variable compuesta (como un objeto/struct con 3 campos:
+    -- reg.dni_cliente, reg.nom_cliente y reg.pref).
+    reg Tdatos_cliente;
+BEGIN
+    -- En cada vuelta del bucle, PostgreSQL coge UNA fila del SELECT y
+    -- rellena los 3 campos de 'reg' automáticamente:
+    --   reg.dni_cliente := dni
+    --   reg.nom_cliente := nom
+    --   reg.pref        := 'N'
+    FOR reg IN
+        SELECT dni, nom, 'N' FROM clients WHERE ciutat = ciudad_in
+    LOOP
+        reg.pref := 'P'; -- Cambiamos solo el campo 'pref' de esta fila ('N' -> 'P')
+        RETURN NEXT reg; -- Añade esta fila 'reg' a la tabla de salida (¡NO avanza el bucle!)
+    END LOOP;            -- Aquí es donde el FOR pasa a la siguiente fila del SELECT
+
+    RETURN; -- Ahora sí: indica que ya no hay más filas y termina la función
+END;
+$$ LANGUAGE plpgsql;
+```
+
+::callout[type="info" title="¿Qué significa exactamente RETURN NEXT reg?"]
+El nombre `NEXT` engaña un poco: **no significa "pasa a la siguiente fila del `SELECT`"** (eso ya lo hace solo el `END LOOP`).
+
+`RETURN NEXT reg;` significa: **"añade `reg` como la siguiente fila del resultado que devolverá la función"**, pero sin detenerla.
+Imagina que es **poner un producto dentro del carrito**: puedes poner tantos como quieras dentro del bucle, y el `RETURN;` del final es **pasar por caja** y entregar todas las filas acumuladas de golpe.
+::
+
+:::setofviz
+:::
 
 ---
 
 ## 4.6. Gestión de errores (`EXCEPTION` y `RAISE EXCEPTION`)
 
-Se pueden producir errores del propio SGBD o errores de usuario lanzados con `RAISE EXCEPTION`:
+Cuando algo sale mal dentro de una función (por ejemplo, intentamos insertar una clave duplicada o una clave foránea que no existe), PostgreSQL aborta la ejecución. Para controlar estos errores sin que el programa falle de mala manera, ponemos una "red de seguridad" al final del `BEGIN ... END`: el bloque **`EXCEPTION`**.
+
+Además de los errores propios de la BD, nosotros podemos lanzar nuestros propios errores cuando no se cumpla una regla de negocio usando:
+`RAISE EXCEPTION 'Mensaje de error con valor: %', variable;`
+
+### Errores más comunes (`WHEN ...`)
 
 | Condición `WHEN` | `SQLSTATE` | ¿Cuándo salta? |
 | :--- | :---: | :--- |
-| `raise_exception` | `P0001` | Cuando el código ejecuta `RAISE EXCEPTION '...'` |
-| `not_null_violation` | `23502` | Inserción/modificación con `NULL` en columna `NOT NULL` |
-| `foreign_key_violation` | `23503` | Valor inexistente en la tabla referenciada (o borrado bloqueado) |
-| `unique_violation` | `23505` | Duplicado de `PRIMARY KEY` o `UNIQUE` |
-| `check_violation` | `23514` | Incumplimiento de una restricción `CHECK` |
-| `OTHERS` | — | Cualquier otro error no capturado previamente |
+| `raise_exception` | `P0001` | Cuando nuestro código ejecuta `RAISE EXCEPTION '...'` |
+| `not_null_violation` | `23502` | Se intenta poner `NULL` en una columna `NOT NULL` |
+| `foreign_key_violation` | `23503` | El valor no existe en la tabla referenciada (o un borrado está bloqueado) |
+| `unique_violation` | `23505` | Clave primaria (`PK`) o `UNIQUE` duplicada |
+| `check_violation` | `23514` | Se incumple una restricción `CHECK` de la tabla |
+| `OTHERS` | — | Cualquier otro error no capturado más arriba |
 
-Dentro de cada rama `WHEN` están disponibles `SQLSTATE` (código de 5 caracteres) y `SQLERRM` (mensaje).
+Dentro de cada `WHEN` tienes dos variables automáticas: `SQLSTATE` (el código de 5 caracteres) y `SQLERRM` (el texto del mensaje de error).
 
-**Reglas críticas del bloque `EXCEPTION`:**
-1. Al capturarse una excepción dentro de un bloque `BEGIN ... END`, **se deshacen todas las modificaciones SQL hechas dentro de ese `BEGIN`** antes de ejecutar el `EXCEPTION`.
-2. **Poner siempre `WHEN raise_exception` antes de `WHEN OTHERS`:** si no se hace, `WHEN OTHERS` interceptará los `RAISE EXCEPTION` propios y sobrescribirá su mensaje.
-3. Si dentro de un bloque `EXCEPTION` se lanza otra excepción (`RAISE EXCEPTION`), el procedimiento aborta inmediatamente y la propaga hacia arriba.
+### ¿Cómo funciona el bloque `EXCEPTION`? (¡Muy importante!)
 
-```sql
--- Estrategia estándar de examen (Opción 1: captura y relanzamiento con mensaje propio)
+1. **Rollback automático del bloque:** Si salta una excepción dentro de un `BEGIN ... END`, PostgreSQL **deshace automáticamente todos los `INSERT`, `UPDATE` y `DELETE` hechos dentro de ese `BEGIN`** antes de entrar en el `EXCEPTION`.
+2. **Propagación:** Si dentro de un `WHEN` vuelves a hacer un `RAISE EXCEPTION`, la función aborta inmediatamente y pasa el error hacia fuera.
+
+::callout[type="danger" title="Error típico de examen: ¡el orden de WHEN raise_exception!"]
+Pon **SIEMPRE** `WHEN raise_exception` **antes** de `WHEN OTHERS`. Si pones `WHEN OTHERS` primero (u olvidas poner `WHEN raise_exception`), ¡`WHEN OTHERS` capturará tus propios `RAISE EXCEPTION` y enmascarará su mensaje original!
+::
+
+### Ejemplo estándar de examen
+
+```sql [Captura de errores y mensajes personalizados]
 CREATE OR REPLACE FUNCTION nueva_linea(item INT, ped INT, qtt INT)
 RETURNS void AS $$
 BEGIN
+    -- Regla de negocio que no está en el DDL de la tabla: la validamos con IF
     IF (qtt < 12) THEN
         RAISE EXCEPTION 'Cantidad % inferior a 12', qtt;
     END IF;
+
+    -- Si 'item' o 'ped' no existen, saltará 'foreign_key_violation' sola
     INSERT INTO items_comanda VALUES (item, ped, qtt);
     RETURN;
 EXCEPTION
     WHEN raise_exception THEN
-        RAISE EXCEPTION '%', SQLERRM; -- Relanza el mensaje propio sin alterarlo
+        RAISE EXCEPTION '%', SQLERRM; -- Relanza nuestro mensaje intacto
     WHEN foreign_key_violation THEN
         RAISE EXCEPTION 'El pedido o el producto no existen';
     WHEN OTHERS THEN
@@ -236,18 +340,27 @@ $$ LANGUAGE plpgsql;
 :::exceptionviz
 :::
 
-**Otras estrategias (teóricas):**
-- **Retorno de objeto de error (`TError(codigo, motivo)`):** devuelve código `'0'` si tiene éxito o `SQLSTATE`/`SQLERRM` si falla (sin abortar).
-- **Tabla de errores (`INSERT INTO t_errors`):** registra `SQLSTATE` y `SQLERRM` en una tabla de auditoría y retorna normalmente.
-- **Recuperación automática:** resuelve la causa dentro del `WHEN` (ej: `WHEN undefined_table THEN CREATE TABLE ...`), poco habitual.
+*(Nota teórica: aparte de abortar con `RAISE EXCEPTION`, en algunos entornos existen otras estrategias como devolver un tipo `TError(codigo, motivo)` sin abortar, guardar el error en una tabla de auditoría `INSERT INTO t_errors`, o intentar recuperarse automáticamente del error dentro del `WHEN`, aunque en los exámenes el estándar es capturar y relanzar.)*
 
 ---
 
-## 4.7. Criterios de calidad en PL/pgSQL
+## 4.7. Criterios de calidad (qué vigilar en los exámenes)
 
-En los exámenes se penaliza (y se pide explícitamente corregir) incumplir estos criterios:
+En los exámenes no solo miran que el código funcione, sino que esté bien escrito. Estos son los **4 errores de diseño que penalizan** y cómo evitarlos:
 
-1. **Aprovechar las restricciones declarativas del DDL (`PK`, `UNIQUE`, `FK`, `NOT NULL`, `CHECK`):** No hacer `SELECT` previos con `IF EXISTS` / `IF NOT EXISTS` para validar claves o restricciones antes de un `INSERT`/`UPDATE`. Ejecuta la sentencia directamente y captura `foreign_key_violation`, `unique_violation`, `not_null_violation` o `check_violation` en el bloque `EXCEPTION`. *(Solo hace falta `IF ... RAISE EXCEPTION` para reglas que NO están en el DDL.)*
-2. **Sin `SELECT` previos antes de `UPDATE` o `DELETE`:** No compruebes con `IF EXISTS (SELECT ...)` si existen filas a modificar; ejecuta el `UPDATE`/`DELETE` directo (y usa `IF NOT FOUND` si hace falta comprobar si se ha modificado alguna fila).
-3. **Sin tablas innecesarias:** No hagas `JOIN` con tablas padre si la tabla hija ya tiene todas las columnas que necesitas (ej: coger `modul, numero` directamente de `assignacions` sin hacer `JOIN` con `despatxos` ni `professors`).
-4. **No enmascarar `RAISE EXCEPTION` propios:** Pon siempre `WHEN raise_exception THEN RAISE EXCEPTION '%', SQLERRM;` antes de `WHEN OTHERS`.
+1. **Aprovecha las restricciones del DDL (`PK`, `UNIQUE`, `FK`, `NOT NULL`, `CHECK`):**
+   No hagas un `SELECT` previo con `IF EXISTS` para comprobar si una clave ya existe o si una clave foránea es válida. Haz el `INSERT`/`UPDATE` directamente y deja que PostgreSQL lo compruebe; si falla, lo capturas en el `EXCEPTION` (`unique_violation`, `foreign_key_violation`, etc.).
+   - ❌ `SELECT * INTO ...; IF FOUND THEN RAISE EXCEPTION ...; END IF; INSERT INTO ...;`
+   - ✅ `INSERT INTO ...;` y capturar `WHEN unique_violation THEN RAISE EXCEPTION ...;`
+   *(Solo hacemos `IF ... RAISE EXCEPTION` para reglas que NO están definidas en el DDL de las tablas).*
+
+2. **No hagas `SELECT` previos antes de `UPDATE` o `DELETE`:**
+   No compruebes antes si la fila existe. ¡Ejecuta el `UPDATE` o `DELETE` directamente y comprueba `IF NOT FOUND` justo después!
+   - ❌ `IF NOT EXISTS (SELECT ... WHERE id = x) THEN RAISE EXCEPTION ...; END IF; DELETE ...;`
+   - ✅ `DELETE FROM tabla WHERE id = x; IF NOT FOUND THEN RAISE EXCEPTION ...; END IF;`
+
+3. **No hagas `JOIN` innecesarios:**
+   Si la tabla hija ya tiene la columna que necesitas (por ejemplo, una clave foránea como `modul` y `numero` en `assignacions`), cógela directamente de ahí sin hacer `JOIN` con la tabla padre (`despatxos`).
+
+4. **No enmascares tus `RAISE EXCEPTION`:**
+   Recuerda poner `WHEN raise_exception THEN RAISE EXCEPTION '%', SQLERRM;` **antes** de `WHEN OTHERS`.

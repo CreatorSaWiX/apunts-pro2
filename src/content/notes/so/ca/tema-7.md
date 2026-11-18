@@ -3,7 +3,7 @@ title: "Tema 7: Threads i Processos"
 description: "Fils d'execució vs processos, API de Pthreads, memòria compartida, condicions de carrera i exclusió mútua amb mutexes."
 readTime: "10 min"
 order: 7
-draft: false
+draft: true
 ---
 
 ## 7.1 Threads vs Processos

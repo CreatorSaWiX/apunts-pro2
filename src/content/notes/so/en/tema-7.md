@@ -3,7 +3,7 @@ title: "Topic 7: Threads and Processes"
 description: "Threads vs. processes, Pthreads API, shared memory, race conditions, and mutual exclusion with mutexes."
 readTime: "10 min"
 order: 7
-draft: false
+draft: true
 ---
 
 ## 7.1 Threads vs. Processes

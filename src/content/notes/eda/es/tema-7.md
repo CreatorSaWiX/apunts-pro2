@@ -3,7 +3,7 @@ title: "Tema 7: Complejidad"
 description: "Problemas decisionales y tamaño de entrada, clases P, NP y EXP, reducciones polinómicas, teoría de la NP-completitud (Cook-Levin) y problemas NP-completos clásicos."
 readTime: "12 min"
 order: 8
-draft: false
+draft: true
 ---
 
 La teoría de la complejidad clasifica los **problemas** (no los algoritmos concretos) según si admiten una solución eficiente o si, hasta donde sabemos, requieren búsqueda exhaustiva.

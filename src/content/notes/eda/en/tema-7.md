@@ -3,7 +3,7 @@ title: "Topic 7: Complexity"
 description: "Decision problems and input size, complexity classes P, NP, and EXP, polynomial reductions, NP-completeness theory (Cook-Levin), and classic NP-complete problems."
 readTime: "12 min"
 order: 8
-draft: false
+draft: true
 ---
 
 Complexity theory classifies **problems** (not specific algorithms) according to whether they admit an efficient solution or whether, as far as we know, they require exhaustive search.
